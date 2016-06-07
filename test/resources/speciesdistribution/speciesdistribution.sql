@@ -1,0 +1,34 @@
+insert into tbl_biblio (biblio_id, bugs_author, bugs_reference, bugs_title) values (1,'Appleton, D. (2004)','Appleton 2004','Scarcer Coleoptera in Hampshire and Isle of Wight 1964-2001. The Coleopterist, 13, 41-80.');
+insert into tbl_biblio (biblio_id, bugs_author, bugs_reference, bugs_title) values (2,'Atty, D. B. (1983)','Atty 1983','Coleoptera of Gloucestershire. Cheltenham.');
+insert into tbl_biblio (biblio_id, bugs_author, bugs_reference, bugs_title) values (3,'Harde, K.W. (1984)','Harde 1984','A Field Guide in Colour to Beetles. Octopus, London.');
+insert into tbl_biblio (biblio_id, bugs_author, bugs_reference, bugs_title) values (4,'Koch, K. (1989)','Koch 1989','Die Käfer Mitteleuropas. Ökologie, 1. Goecke & Evers, Krefeld.');
+insert into tbl_biblio (biblio_id, bugs_author, bugs_reference, bugs_title) values (5,'Berry, R. J. (1985)','Berry 1985','The Natural History of Orkney. Collins, London.');
+insert into tbl_biblio (biblio_id, bugs_author, bugs_reference, bugs_title) values (6,'Duff, A. (1993)','Duff 1993a','Beetles of Somerset: their status and distribution. Somerset Archaeological & Natural History Society, Taunton.');
+insert into tbl_biblio (biblio_id, bugs_author, bugs_reference, bugs_title) values (7,'Hodge, P.J. & Jones, R.A. (1995)','Hodge & Jones 1995','New British Beetles. Species not in Joy''s practical handbook. British Entomological and Natural History Society, Reading.');
+insert into tbl_biblio (biblio_id, bugs_author, bugs_reference, bugs_title) values (8,'Hyman, P.S. (1992)','Hyman 1992','A review of the scarce and threatened Coleoptera of Great Britain, Part 1 (Revised & updated by M.S.Parsons). UK Joint Nature Conservation Committee, Peterborough.');
+insert into tbl_biblio (biblio_id, bugs_author, bugs_reference, bugs_title) values (9,'Key, R.S. (1996)','Key 1996a','The Dune Tiger Beetle Cicindela maritima Latreille & Dejean (Carabidae) on the north Norfolk coast. Coleopterist, 5, 21.');
+insert into tbl_biblio (biblio_id, bugs_author, bugs_reference, bugs_title) values (10,'Lindroth, C.H. (1974)','Lindroth 1974','Coleoptera: Carabidae. Handbooks for the Identification of British Insects IV,2. Royal Entomological Society of London.');
+insert into tbl_biblio (biblio_id, bugs_author, bugs_reference, bugs_title) values (11,'Lindroth, C.H. (1985)','Lindroth 1985','The Carabidae (Coleoptera) of Fennoscandia and Denmark. Fauna Entomologica Scandinavica, 15,1. E.J.Brill, Leiden.');
+insert into tbl_biblio (biblio_id, bugs_author, bugs_reference, bugs_title) values (12,'Luff, M. L. (1998)','Luff 1998','Provisional atlas of the ground beetles (Coleoptera, Carabidae) of Britain. Centre for Ecology & Hydrology, Biological Records Centre, Abbots Ripton.');
+insert into tbl_biblio (biblio_id, bugs_author, bugs_reference, bugs_title) values (13,'Strand, A. (1946)','Strand 1946','Nord Norges Coleoptera. Tromsø Museums Arshefter, Naturhistorisk Avd. Nr. 34, 67(1). (629pp.)');
+insert into tbl_biblio (biblio_id, bugs_author, bugs_reference, bugs_title) values (14,'Whitehead, P. F. (1997)','Whitehead 1997a','Notes on the coastal Coleoptera of Merthyr Mawr, Glamorgan (SS 87). Entomologist''s monthly Magazine, 133, 172.');
+
+insert into tbl_taxa_tree_authors (author_id, author_name) values (1, 'L.');
+insert into tbl_taxa_tree_orders (order_id, order_name) values(1, 'ORDER PENDING CLASSIFICATION');
+insert into tbl_taxa_tree_families (family_id, family_name, order_id) values (1, 'CARABIDAE', 1);
+insert into tbl_taxa_tree_genera (genus_id, genus_name, family_id) values (2, 'Cicindela', 1);
+insert into tbl_taxa_tree_master (taxon_id, species, genus_id, author_id) values (2, 'sylvatica', 2, 1);
+insert into tbl_taxa_tree_master (taxon_id, species, genus_id, author_id) values (3, 'hybrida', 2, 1);
+insert into tbl_taxonomic_order_systems (taxonomic_order_system_id, system_name) values (1, 'BugsCEP taxonomic order');
+insert into tbl_taxonomic_order (taxonomic_order_id, taxon_id, taxonomic_code, taxonomic_order_system_id) values (2, 2, 1.0010020, 1);
+insert into tbl_taxonomic_order (taxonomic_order_id, taxon_id, taxonomic_code, taxonomic_order_system_id) values (3, 3, 1.0010050, 1);
+
+insert into tbl_text_distribution (distribution_id, biblio_id, taxon_id, distribution_text) values (1, 1, 2, 'England: Hants (1969).');
+insert into tbl_text_distribution (distribution_id, biblio_id, taxon_id, distribution_text) values (2, 2, 2, 'England: Gloucs, 1 example on Durdham Down.');
+insert into tbl_text_distribution (distribution_id, biblio_id, taxon_id, distribution_text) values (3, 3, 2, 'N & E parts of C Europe. S counties of England.');
+insert into tbl_text_distribution (distribution_id, biblio_id, taxon_id, distribution_text) values (4, 4, 2, 'Europe.');
+insert into tbl_text_distribution (distribution_id, biblio_id, taxon_id, distribution_text) values (5, 8, 2, 'England: S & N Hants, E Kent, Surrey, Cambs, W Gloucs, N Lincs, before 1970, since Dorset, S & N Hants, W Sussex, Surrey. RDB status notable A, very local.');
+insert into tbl_text_distribution (distribution_id, biblio_id, taxon_id, distribution_text) values (6, 10, 2, 'England: N to Cambs. Local and usually rare.');
+insert into tbl_text_distribution (distribution_id, biblio_id, taxon_id, distribution_text) values (7, 11, 2, 'Denmark: rare but widespread in Jutland, NEZ and Bornholm. Sweden: throughout but uncommon, more local in S and Lapland. Norway: S of 63 N and E Finnmark. E Fennoscandia: generally distributed except in N. Palaearctic, E to Amur, not in Mediterranean region.');
+insert into tbl_text_distribution (distribution_id, biblio_id, taxon_id, distribution_text) values (8, 12, 2, 'England: Surrey and Dorset heaths. N Lincs (Manton Warren 1926) Cambs & Gloucs, Kent (19th C). Europe: not far N and Mediterranean.');
+insert into tbl_text_distribution (distribution_id, biblio_id, taxon_id, distribution_text) values (9, 13, 2, 'Europe and Asia. Norway: S and Finnmark, E. Sweden, N to Lapland. Finland: N to Lapmark and Kola. Denmark. England.');
