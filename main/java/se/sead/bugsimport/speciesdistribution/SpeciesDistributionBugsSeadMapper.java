@@ -7,6 +7,7 @@ import se.sead.bugsimport.BugsSeadMapper;
 import se.sead.bugsimport.speciesdistribution.bugsmodel.Distrib;
 import se.sead.bugsimport.speciesdistribution.bugsmodel.DistribBugsTable;
 import se.sead.bugsimport.speciesdistribution.seadmodel.TextDistribution;
+import se.sead.bugsimport.translations.BugsValueTranslationService;
 
 @Component
 public class SpeciesDistributionBugsSeadMapper extends BugsSeadMapper<Distrib, TextDistribution> {
@@ -14,10 +15,12 @@ public class SpeciesDistributionBugsSeadMapper extends BugsSeadMapper<Distrib, T
     @Autowired
     public SpeciesDistributionBugsSeadMapper(
             AccessReaderProvider accessReaderProvider,
-            SpeciesDistributionTableRowConverter singleBugsTableRowConverterForMapper) {
+            SpeciesDistributionTableRowConverter singleBugsTableRowConverterForMapper,
+            BugsValueTranslationService dataTranslationService) {
         super(
                 accessReaderProvider.getReader(),
                 new DistribBugsTable(),
-                singleBugsTableRowConverterForMapper);
+                singleBugsTableRowConverterForMapper,
+                dataTranslationService);
     }
 }

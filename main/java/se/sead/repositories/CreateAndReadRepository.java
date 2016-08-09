@@ -12,7 +12,5 @@ import java.io.Serializable;
 public interface CreateAndReadRepository<T, ID extends Serializable> extends Repository<T, ID> {
     T findOne(ID id);
 
-//    T save(T entity);
-
-    T saveUsingMerge(T entity);
+    T saveOrUpdate(T entity);
 }

@@ -23,6 +23,9 @@ public abstract class BugsInformation {
 
     public void setBugsData(TraceableBugsData bugsData){
         bugsTable = bugsData.bugsTable();
-        compressedBugsData = bugsData.compressToString();
+        compressedBugsData = bugsData.getCompressedStringBeforeTranslation();
+        if(compressedBugsData == null) {
+            compressedBugsData = bugsData.compressToString();
+        }
     }
 }

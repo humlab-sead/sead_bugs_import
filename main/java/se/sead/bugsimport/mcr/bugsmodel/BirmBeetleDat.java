@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 /**
  * Created by erer0001 on 2016-05-12.
  */
-public class BirmBeetleDat implements TraceableBugsData {
+public class BirmBeetleDat extends TraceableBugsData {
 
     private Set<Field> fieldData;
     private Short row;

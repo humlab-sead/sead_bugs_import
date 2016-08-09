@@ -14,6 +14,11 @@ import java.util.List;
 public abstract class LoggableEntity {
 
     @Transient
+    private boolean markedForDeletion;
+    @Transient
+    private boolean updated = false;
+
+    @Transient
     private List<String> errors;
 
     public abstract Integer getId();
@@ -38,5 +43,23 @@ public abstract class LoggableEntity {
             errors = new ArrayList<>();
         }
         errors.add(error);
+    }
+
+    public void markForDeletion(){
+        if(getId() != null){
+            markedForDeletion = true;
+        }
+    }
+
+    public boolean isMarkedForDeletion(){
+        return markedForDeletion;
+    }
+
+    public boolean isUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(boolean updated) {
+        this.updated = updated;
     }
 }

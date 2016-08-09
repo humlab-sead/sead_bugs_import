@@ -21,6 +21,6 @@ public class SpeciesDistributionPersister extends Persister<Distrib, TextDistrib
 
     @Override
     protected TextDistribution save(TextDistribution seadValue) {
-        return dataRepository.saveUsingMerge(seadValue);
+        return dataRepository.saveOrUpdate(seadValue);
     }
 }

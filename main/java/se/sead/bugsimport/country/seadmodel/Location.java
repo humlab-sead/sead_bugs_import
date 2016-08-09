@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Entity
 @Table(name="tbl_locations")
 @SequenceGenerator(name="location_id_seq", sequenceName = "tbl_locations_location_id_seq")
-public class Location extends LoggableEntity{
+public class Location extends LoggableEntity implements Comparable<Location>{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "location_id_seq")
@@ -64,5 +64,10 @@ public class Location extends LoggableEntity{
         result = 31 * result + name.hashCode();
         result = 31 * result + type.hashCode();
         return result;
+    }
+
+    @Override
+    public int compareTo(Location o) {
+        return name.compareTo(o.getName());
     }
 }

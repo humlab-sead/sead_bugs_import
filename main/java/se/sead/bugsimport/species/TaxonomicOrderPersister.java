@@ -24,6 +24,6 @@ public class TaxonomicOrderPersister extends Persister<INDEX, TaxonomicOrder> {
 
     @Override
     protected TaxonomicOrder save(TaxonomicOrder seadValue) {
-        return taxonomicOrderRepository.saveUsingMerge(seadValue);
+        return taxonomicOrderRepository.saveOrUpdate(seadValue);
     }
 }

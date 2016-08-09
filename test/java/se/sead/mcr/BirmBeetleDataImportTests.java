@@ -121,7 +121,7 @@ public class BirmBeetleDataImportTests {
     private void verifyTraces(){
         for (BirmBeetleDat bugsData:
                 (List<BirmBeetleDat>) BirmBeetleTestDefinition.EXPECTED_ROW_DATA) {
-            List<BugsTrace> traces = traceRepository.findByBugsTableAndCompressedBugsData("TbirmBEETLEdat", bugsData.compressToString());
+            List<BugsTrace> traces = traceRepository.findByBugsTableAndCompressedBugsData("TbirmBEETLEdat", bugsData.getCompressedStringBeforeTranslation());
             if(bugsData.getBugsCode() == 1.0010070d) {
                 List<String> addedTableReferences = traces.stream()
                         .map(trace -> trace.getSeadTable())
@@ -138,7 +138,7 @@ public class BirmBeetleDataImportTests {
     }
 
     private void checkErrorLogs(BirmBeetleDat bugsData){
-        List<BugsError> errors = errorRepository.findByBugsTableAndCompressedBugsData("TbirmBEETLEdat", bugsData.compressToString());
+        List<BugsError> errors = errorRepository.findByBugsTableAndCompressedBugsData("TbirmBEETLEdat", bugsData.getCompressedStringBeforeTranslation());
         assertEquals(1, errors.size());
         BugsError bugsError = errors.get(0);
         assertEquals("Species not found in SEAD, not imported? bugs_code = 2,0000000", bugsError.getMessage());

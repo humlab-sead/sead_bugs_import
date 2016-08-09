@@ -2,7 +2,7 @@ package se.sead.bugsimport.country.bugsmodel;
 
 import se.sead.bugs.TraceableBugsData;
 
-public class Country implements TraceableBugsData {
+public class Country extends TraceableBugsData {
 
     private String countryCode;
     private String country;

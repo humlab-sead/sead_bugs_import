@@ -5,7 +5,7 @@ import se.sead.bugs.TraceableBugsData;
 /**
  * Created by erer0001 on 2016-04-28.
  */
-public class INDEX implements TraceableBugsData {
+public class INDEX extends TraceableBugsData {
     private Double code;
     private String family;
     private String genus;

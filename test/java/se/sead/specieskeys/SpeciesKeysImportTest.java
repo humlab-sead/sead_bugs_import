@@ -98,7 +98,7 @@ public class SpeciesKeysImportTest {
     private void verifyTraces() {
         for (Keys bugsData :
                 KeysTestDefinition.EXPECTED_READ_ITEMS) {
-            List<BugsTrace> traces = traceRepository.findByBugsTableAndCompressedBugsData("TKeys", bugsData.compressToString());
+            List<BugsTrace> traces = traceRepository.findByBugsTableAndCompressedBugsData("TKeys", bugsData.getCompressedStringBeforeTranslation());
             testDefinition.assertTracces(traces, bugsData);
         }
     }
@@ -106,7 +106,7 @@ public class SpeciesKeysImportTest {
     private void verifyErrors(){
         for (Keys bugsData:
                 KeysTestDefinition.EXPECTED_READ_ITEMS){
-            List<BugsError> errors = errorRepository.findByBugsTableAndCompressedBugsData("TKeys", bugsData.compressToString());
+            List<BugsError> errors = errorRepository.findByBugsTableAndCompressedBugsData("TKeys", bugsData.getCompressedStringBeforeTranslation());
             testDefinition.assertErrors(errors, bugsData);
         }
     }

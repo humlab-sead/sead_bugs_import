@@ -35,6 +35,8 @@ public class MappingResult<BugsType extends TraceableBugsData, SeadType extends 
         public boolean isNewSeadData(){
             return seadData.isNewItem();
         }
+        public boolean isUpdatedSeadData() {return seadData.isUpdated();}
+        public boolean isErrorFree(){return seadData.isErrorFree();}
 
         public BugsType getBugsData() {
             return bugsData;
@@ -45,11 +47,8 @@ public class MappingResult<BugsType extends TraceableBugsData, SeadType extends 
         }
 
         public void setSavedSeadData(SeadType newSeadData){
-            this.seadData = seadData;
+            this.seadData = newSeadData;
         }
 
-        public boolean canAndShouldSave(){
-            return seadData.isErrorFree() && seadData.isNewItem();
-        }
     }
 }

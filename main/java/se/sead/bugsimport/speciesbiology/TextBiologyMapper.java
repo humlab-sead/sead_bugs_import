@@ -8,6 +8,7 @@ import se.sead.bugsimport.BugsSeadMapper;
 import se.sead.bugsimport.speciesbiology.bugsmodel.Biology;
 import se.sead.bugsimport.speciesbiology.bugsmodel.BiologyBugsTable;
 import se.sead.bugsimport.speciesbiology.seadmodel.TextBiology;
+import se.sead.bugsimport.translations.BugsValueTranslationService;
 
 /**
  * Created by erer0001 on 2016-05-18.
@@ -18,7 +19,8 @@ public class TextBiologyMapper extends BugsSeadMapper<Biology, TextBiology> {
     @Autowired
     public TextBiologyMapper(
             AccessReaderProvider accessReaderProvider,
-            BiologyToTextBiologyRowConverter rowConverter) {
-        super(accessReaderProvider.getReader(), new BiologyBugsTable(), rowConverter);
+            BiologyToTextBiologyRowConverter rowConverter,
+            BugsValueTranslationService dataTranslationService) {
+        super(accessReaderProvider.getReader(), new BiologyBugsTable(), rowConverter, dataTranslationService);
     }
 }

@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 import se.sead.repositories.CreateAndReadRepository;
+import se.sead.sead.model.LoggableEntity;
 
 import javax.persistence.EntityManager;
 import java.io.Serializable;
@@ -21,7 +22,13 @@ public class CreateAndReadRepositoryImpl<T, ID extends Serializable> extends Sim
 
     @Override
     @Transactional
-    public T saveUsingMerge(T entity) {
-        return entityManager.merge(entity);
+    public T saveOrUpdate(T entity) {
+        if(entity instanceof LoggableEntity && ((LoggableEntity)entity).isMarkedForDeletion()){
+            Object entityToDelete = entityManager.find(entity.getClass(), ((LoggableEntity) entity).getId());
+            entityManager.remove(entityToDelete);
+            return null;
+        } else {
+            return entityManager.merge(entity);
+        }
     }
 }

@@ -2,7 +2,7 @@ package se.sead.bugsimport.speciesdistribution.bugsmodel;
 
 import se.sead.bugs.TraceableBugsData;
 
-public class Distrib implements TraceableBugsData {
+public class Distrib extends TraceableBugsData {
 
     private Double code;
     private String ref;

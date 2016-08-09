@@ -110,7 +110,7 @@ public class TaxonomicNotesImportTest {
     private void verifyTraces(){
         for (TaxoNotes bugsData :
                 TaxaNotesImportTestDefinition.EXPECTED_READ_ITEMS) {
-            List<BugsTrace> traces = traceRepository.findByBugsTableAndCompressedBugsData("TTaxoNotes", bugsData.compressToString());
+            List<BugsTrace> traces = traceRepository.findByBugsTableAndCompressedBugsData("TTaxoNotes", bugsData.getCompressedStringBeforeTranslation());
             testDefinition.assertTrace(traces, bugsData);
         }
     }
@@ -118,7 +118,7 @@ public class TaxonomicNotesImportTest {
     private void verifyErrors(){
         for (TaxoNotes bugsData :
                 TaxaNotesImportTestDefinition.EXPECTED_READ_ITEMS) {
-            List<BugsError> errors = errorRepository.findByBugsTableAndCompressedBugsData("TTaxoNotes", bugsData.compressToString());
+            List<BugsError> errors = errorRepository.findByBugsTableAndCompressedBugsData("TTaxoNotes", bugsData.getCompressedStringBeforeTranslation());
             testDefinition.assertErrors(errors, bugsData);
         }
     }

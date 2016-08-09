@@ -23,7 +23,11 @@ public class BugsTrace extends BugsInformation{
     @Column(name="sead_reference_id", nullable = false)
     private Integer seadId;
     @Column(name="import_date")
+    @Temporal(value = TemporalType.TIMESTAMP)
     private Date importDate;
+    @Column(name="manipulation_type")
+    @Enumerated(value = EnumType.STRING)
+    private BugsTraceType type;
 
     public Integer getId() {
         return id;
@@ -49,14 +53,22 @@ public class BugsTrace extends BugsInformation{
         return importDate;
     }
 
+    public BugsTraceType getType() {
+        return type;
+    }
+
+    public void setType(BugsTraceType type) {
+        this.type = type;
+    }
+
     @Override
     public String toString() {
         return "BugsTrace{" +
                 "id=" + id +
-                ", bugsTable='" + getBugsTable() + '\'' +
-                ", bugsData='" + getCompressedBugsData() + '\'' +
                 ", seadTable='" + seadTable + '\'' +
                 ", seadId=" + seadId +
+                ", importDate=" + importDate +
+                ", type=" + type +
                 '}';
     }
 }

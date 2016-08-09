@@ -8,6 +8,7 @@ import se.sead.bugsimport.species.bugsmodel.INDEX;
 import se.sead.bugsimport.species.bugsmodel.INDEXBugsTable;
 import se.sead.bugsimport.BugsSeadMapper;
 import se.sead.bugsimport.species.seadmodel.TaxonomicOrder;
+import se.sead.bugsimport.translations.BugsValueTranslationService;
 
 /**
  * Created by erer0001 on 2016-04-22.
@@ -18,7 +19,8 @@ public class TaxonomicOrderIndexMapper extends BugsSeadMapper<INDEX, TaxonomicOr
     @Autowired
     public TaxonomicOrderIndexMapper(
             AccessReaderProvider databaseReader,
-            INDEXtoTaxonomicOrderRowConverter indexToTaxonomicOrderMappings){
-        super(databaseReader.getReader(), new INDEXBugsTable(), indexToTaxonomicOrderMappings);
+            INDEXtoTaxonomicOrderRowConverter indexToTaxonomicOrderMappings,
+            BugsValueTranslationService dataTranslationService){
+        super(databaseReader.getReader(), new INDEXBugsTable(), indexToTaxonomicOrderMappings, dataTranslationService);
     }
 }

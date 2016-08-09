@@ -8,6 +8,7 @@ import se.sead.bugsimport.BugsTableRowConverter;
 import se.sead.bugsimport.country.bugsmodel.Country;
 import se.sead.bugsimport.country.bugsmodel.CountryBugsTable;
 import se.sead.bugsimport.country.seadmodel.Location;
+import se.sead.bugsimport.translations.BugsValueTranslationService;
 
 @Component
 public class CountryToLocationMapper extends BugsSeadMapper<Country, Location> {
@@ -15,8 +16,9 @@ public class CountryToLocationMapper extends BugsSeadMapper<Country, Location> {
     @Autowired
     public CountryToLocationMapper(
             AccessReaderProvider readerProvider,
-            CountryRowConverter countryRowConverter
+            CountryRowConverter countryRowConverter,
+            BugsValueTranslationService dataTranslationService
     ){
-        super(readerProvider.getReader(), new CountryBugsTable(), countryRowConverter);
+        super(readerProvider.getReader(), new CountryBugsTable(), countryRowConverter, dataTranslationService);
     }
 }

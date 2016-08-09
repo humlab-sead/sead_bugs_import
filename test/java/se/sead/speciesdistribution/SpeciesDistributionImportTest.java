@@ -105,14 +105,14 @@ public class SpeciesDistributionImportTest {
 
     private void verifyTraces() {
         for (Distrib bugsData: SpeciesDistributionTestDefinition.EXPECTED_BUGS_ITEMS){
-            List<BugsTrace> traces = traceRepository.findByBugsTableAndCompressedBugsData("TDistrib", bugsData.compressToString());
+            List<BugsTrace> traces = traceRepository.findByBugsTableAndCompressedBugsData("TDistrib", bugsData.getCompressedStringBeforeTranslation());
             testDefinition.assertTraces(traces, bugsData);
         }
     }
 
     private void verifyErrors() {
         for (Distrib bugsData: SpeciesDistributionTestDefinition.EXPECTED_BUGS_ITEMS){
-            List<BugsError> errors = errorRepository.findByBugsTableAndCompressedBugsData("TDistrib", bugsData.compressToString());
+            List<BugsError> errors = errorRepository.findByBugsTableAndCompressedBugsData("TDistrib", bugsData.getCompressedStringBeforeTranslation());
             testDefinition.assertErrors(errors, bugsData);
         }
     }

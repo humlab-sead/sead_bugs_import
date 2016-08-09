@@ -7,6 +7,7 @@ import se.sead.bugsimport.BugsSeadMapper;
 import se.sead.bugsimport.mcr.bugsmodel.MCRSummaryBugsTable;
 import se.sead.bugsimport.mcr.bugsmodel.MCRSummaryData;
 import se.sead.bugsimport.mcr.seadmodel.MCRSummary;
+import se.sead.bugsimport.translations.BugsValueTranslationService;
 
 @Component
 public class MCRSummaryBugsSeadMapper extends BugsSeadMapper<MCRSummaryData, MCRSummary> {
@@ -14,10 +15,12 @@ public class MCRSummaryBugsSeadMapper extends BugsSeadMapper<MCRSummaryData, MCR
     @Autowired
     public MCRSummaryBugsSeadMapper(
             AccessReaderProvider accessReaderProvider,
-            MCRSummaryTableRowConverter singleBugsTableRowConverterForMapper) {
+            MCRSummaryTableRowConverter singleBugsTableRowConverterForMapper,
+            BugsValueTranslationService dataTranslationService) {
         super(
                 accessReaderProvider.getReader(),
                 new MCRSummaryBugsTable(),
-                singleBugsTableRowConverterForMapper);
+                singleBugsTableRowConverterForMapper,
+                dataTranslationService);
     }
 }

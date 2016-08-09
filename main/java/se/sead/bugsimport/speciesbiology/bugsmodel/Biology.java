@@ -5,7 +5,7 @@ import se.sead.bugs.TraceableBugsData;
 /**
  * Created by erer0001 on 2016-05-18.
  */
-public class Biology implements TraceableBugsData {
+public class Biology extends TraceableBugsData {
 
     private Double code;
     private String ref;

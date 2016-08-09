@@ -27,37 +27,27 @@ public class CountryRowConverter implements BugsTableRowConverter<Country, Locat
     }
 
     private Location createNewCountry(Country bugsData) {
-        LocationCreator creator = new LocationCreator(locationTypeRepository.getCountryType(), bugsData);
+        LocationCreator creator = new CountryCreator(locationTypeRepository.getCountryType(), bugsData);
         return creator.create();
     }
 
-    private static class LocationCreator {
-        private LocationType countryType;
-        private Location createdItem;
+    private static class CountryCreator extends LocationCreator {
+
         private Country bugsData;
 
-        public LocationCreator(LocationType countryType, Country bugsData) {
-            this.countryType = countryType;
+        CountryCreator(LocationType type, Country bugsData){
+            super(type);
             this.bugsData = bugsData;
         }
 
-        Location create(){
-            createdItem = new Location();
-            setName();
-            setType();
-            return createdItem;
+        @Override
+        protected String getBugsLocationName() {
+            return bugsData.getCountry();
         }
 
-        private void setName(){
-            String countryName = bugsData.getCountry();
-            createdItem.setName(countryName);
-            if(countryName == null || countryName.isEmpty()){
-                createdItem.addError("Empty country not allowed: " + bugsData.compressToString());
-            }
-        }
-
-        private void setType(){
-            createdItem.setType(countryType);
+        @Override
+        protected String getErrorForEmptyName() {
+            return "Empty country not allowed: " + bugsData.getCompressedStringBeforeTranslation();
         }
     }
 }

@@ -2,7 +2,7 @@ package se.sead.bugsimport.mcr.bugsmodel;
 
 import se.sead.bugs.TraceableBugsData;
 
-public class MCRSummaryData implements TraceableBugsData {
+public class MCRSummaryData extends TraceableBugsData {
 
     private Double code;
     private Short maxLo;

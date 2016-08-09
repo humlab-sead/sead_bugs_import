@@ -28,16 +28,15 @@ public abstract class AccessReaderTest<T> {
         this.baseDirectory = baseDirectory;
     }
 
-    @Deprecated
-    protected void readTable(AccessReader reader, BugsTable<T> bugsTable, List<T> expectedResults){
-        readTable(reader, bugsTable, expectedResults, null);
-    }
-
     private void readTable(AccessReader reader, BugsTable<T> bugsTable, List<T> expectedResults, Comparator<T> resultSorter){
         List<T> readItems = reader.read(bugsTable);
         if(resultSorter != null){
             Collections.sort(expectedResults, resultSorter);
             Collections.sort(readItems, resultSorter);
+        }
+        for (int i = 0; i < expectedResults.size(); i++) {
+            System.out.println(expectedResults.get(i));
+            System.out.println(readItems.get(i));
         }
         assertEquals(expectedResults, readItems);
     }

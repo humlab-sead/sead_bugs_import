@@ -6,6 +6,7 @@ import se.sead.bugsimport.tracing.TraceEventManager;
 import se.sead.sead.model.LoggableEntity;
 
 import javax.persistence.PostPersist;
+import javax.persistence.PostUpdate;
 
 /**
  * Created by erer0001 on 2016-05-12.
@@ -16,14 +17,26 @@ public class PostEventListener {
     private TraceEventManager traceEventManager;
 
     @PostPersist
-    public void event(Object entity){
+    public void onPersist(Object entity){
         ensureAutowire();
         if(entity instanceof LoggableEntity){
-            traceEventManager.addEvent((LoggableEntity) entity);
+            addEvent((LoggableEntity)entity, true);
         }
     }
 
     private void ensureAutowire(){
         Application.LazyAutowireHelper.getInstance().autowire(this, this.traceEventManager);
+    }
+
+    private void addEvent(LoggableEntity entity, boolean insert){
+        traceEventManager.addEvent(entity, insert);
+    }
+
+    @PostUpdate
+    public void onUpdate(Object entity){
+        ensureAutowire();
+        if(entity instanceof LoggableEntity){
+            addEvent((LoggableEntity)entity, false);
+        }
     }
 }

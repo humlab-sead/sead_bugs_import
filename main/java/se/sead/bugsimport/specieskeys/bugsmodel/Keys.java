@@ -2,7 +2,7 @@ package se.sead.bugsimport.specieskeys.bugsmodel;
 
 import se.sead.bugs.TraceableBugsData;
 
-public class Keys implements TraceableBugsData {
+public class Keys extends TraceableBugsData {
 
     private Double code;
     private String ref;

@@ -3,17 +3,17 @@ package se.sead.bugsimport.site.bugsmodel;
 import com.healthmarketscience.jackcess.Row;
 import se.sead.bugs.BugsTable;
 
-public class SiteBugsTable extends BugsTable<Site> {
+public class BugsSiteBugsTable extends BugsTable<BugsSite> {
 
     static final String TABLE_NAME = "TSite";
 
-    public SiteBugsTable(){
+    public BugsSiteBugsTable(){
         super(TABLE_NAME);
     }
 
     @Override
-    public Site createItem(Row accessRow) {
-        Site site = new Site();
+    public BugsSite createItem(Row accessRow) {
+        BugsSite site = new BugsSite();
         site.setCode(accessRow.getString("SiteCODE"));
         site.setName(accessRow.getString("SiteName"));
         site.setRegion(accessRow.getString("Region"));

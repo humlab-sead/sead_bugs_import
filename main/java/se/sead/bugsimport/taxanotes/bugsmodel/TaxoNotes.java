@@ -2,7 +2,7 @@ package se.sead.bugsimport.taxanotes.bugsmodel;
 
 import se.sead.bugs.TraceableBugsData;
 
-public class TaxoNotes implements TraceableBugsData {
+public class TaxoNotes extends TraceableBugsData {
 
     private Double code;
     private String reference;

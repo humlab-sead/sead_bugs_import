@@ -21,6 +21,6 @@ public class IdentificationKeysPersister extends Persister<Keys, TextIdentificat
 
     @Override
     protected TextIdentificationKeys save(TextIdentificationKeys seadValue) {
-        return keysRepository.saveUsingMerge(seadValue);
+        return keysRepository.saveOrUpdate(seadValue);
     }
 }

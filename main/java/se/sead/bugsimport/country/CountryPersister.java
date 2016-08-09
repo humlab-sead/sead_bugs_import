@@ -21,6 +21,6 @@ public class CountryPersister extends Persister<Country, Location> {
 
     @Override
     protected Location save(Location seadValue) {
-        return locationRepository.saveUsingMerge(seadValue);
+        return locationRepository.saveOrUpdate(seadValue);
     }
 }

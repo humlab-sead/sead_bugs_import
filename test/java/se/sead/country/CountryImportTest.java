@@ -84,7 +84,7 @@ public class CountryImportTest {
     private void verifyTraces(){
         for (Country bugsData :
                 CountryExpectedTestDefinition.EXPECTED_COUNTRIES) {
-            List<BugsTrace> traces = traceRepository.findByBugsTableAndCompressedBugsData("Country", bugsData.compressToString());
+            List<BugsTrace> traces = traceRepository.findByBugsTableAndCompressedBugsData("Country", bugsData.getCompressedStringBeforeTranslation());
             testDefinition.assertTraces(bugsData, traces);
         }
     }

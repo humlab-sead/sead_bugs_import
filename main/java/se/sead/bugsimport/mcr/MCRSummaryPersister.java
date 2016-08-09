@@ -22,6 +22,6 @@ public class MCRSummaryPersister extends Persister<MCRSummaryData, MCRSummary> {
 
     @Override
     protected MCRSummary save(MCRSummary seadValue) {
-        return repository.saveUsingMerge(seadValue);
+        return repository.saveOrUpdate(seadValue);
     }
 }

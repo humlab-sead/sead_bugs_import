@@ -7,6 +7,7 @@ import se.sead.bugsimport.BugsSeadMapper;
 import se.sead.bugsimport.mcr.bugsmodel.BirmBeetleDat;
 import se.sead.bugsimport.mcr.bugsmodel.BirmBeetleDatBugsTable;
 import se.sead.bugsimport.mcr.seadmodel.BirmBeetleData;
+import se.sead.bugsimport.translations.BugsValueTranslationService;
 
 /**
  * Created by erer0001 on 2016-05-12.
@@ -17,7 +18,8 @@ public class BirmBeetleToMCRMapper extends BugsSeadMapper<BirmBeetleDat, BirmBee
     @Autowired
     public BirmBeetleToMCRMapper(
             AccessReaderProvider readerProvider,
-            BirmBeetleDatToBirmBeetleRowConverter rowConverter){
-        super(readerProvider.getReader(), new BirmBeetleDatBugsTable(), rowConverter);
+            BirmBeetleDatToBirmBeetleRowConverter rowConverter,
+            BugsValueTranslationService dataTranslationService){
+        super(readerProvider.getReader(), new BirmBeetleDatBugsTable(), rowConverter, dataTranslationService);
     }
 }

@@ -106,7 +106,7 @@ public class SpeciesImportTests {
         List<INDEX> expectedIndex = INDEXAccessDatabaseTestDefinition.EXPECTED_ROW_DATA;
         for (INDEX index :
                 expectedIndex) {
-            List<BugsTrace> bugsTraceData = bugsTraceRepository.findByBugsTableAndCompressedBugsData("INDEX", index.compressToString());
+            List<BugsTrace> bugsTraceData = bugsTraceRepository.findByBugsTableAndCompressedBugsData("INDEX", index.getCompressedStringBeforeTranslation());
             boolean result = false;
             if(index.getCode() == 1.0010070d ||index.getCode() == 1.0010125d) {
                 result = containsTables(bugsTraceData, "tbl_taxonomic_order", "tbl_taxa_tree_master");

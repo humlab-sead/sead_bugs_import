@@ -4,42 +4,70 @@ import se.sead.sead.model.LoggableEntity;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
-public class TestEqualityHelper {
+public class TestEqualityHelper<T> {
 
-    private static final String GETTER_PREFIX = "get";
+    private Map<Class, ClassMethodInformation> methodInformation;
 
-    public static <T> boolean equalsWithoutIdIfNeeded(T entity1, T entity2){
-        if((entity1 == null && entity2 != null) || (entity1 != null && entity2 == null)){
+    public TestEqualityHelper(){
+        methodInformation = new HashMap<>();
+    }
+
+    TestEqualityHelper(Map<Class, ClassMethodInformation> methodInformation){
+        this.methodInformation = methodInformation;
+    }
+
+    public void addMethodInformation(Class entityClass, ClassMethodInformation entityMethodInformation){
+        methodInformation.put(entityClass, entityMethodInformation);
+    }
+
+    public boolean equalsWithoutBlackListedMethods(T entity1, T entity2) {
+        if ((entity1 == null && entity2 != null) || (entity1 != null && entity2 == null)) {
             return false;
         }
-        if(entity1 instanceof LoggableEntity && entity2 instanceof LoggableEntity){
+        if (entity1 instanceof LoggableEntity && entity2 instanceof LoggableEntity) {
             LoggableEntity firstEntity = (LoggableEntity) entity1;
             LoggableEntity secondEntity = (LoggableEntity) entity2;
-            if( firstEntity.isNewItem() || secondEntity.isNewItem()) {
-                EntityEqualityComparator entity1Comparator = new EntityEqualityComparator(firstEntity);
-                EntityEqualityComparator entity2Comparator = new EntityEqualityComparator(secondEntity);
+            if (firstEntity.isNewItem() || secondEntity.isNewItem()) {
+                EntityEqualityComparator entity1Comparator = createEntityEqualityComparator(firstEntity);
+                EntityEqualityComparator entity2Comparator = createEntityEqualityComparator(secondEntity);
                 return entity1Comparator.equals(entity2Comparator);
             }
         }
         return Objects.equals(entity1, entity2);
     }
 
+    private EntityEqualityComparator createEntityEqualityComparator(LoggableEntity entity){
+        return new EntityEqualityComparator(entity, methodInformation);
+    }
+
+    public static <T> boolean equalsWithoutIdIfNeeded(T entity1, T entity2){
+        if((entity1 == null && entity2 != null) || (entity1 != null && entity2 == null)){
+            return false;
+        }
+        TestEqualityHelper<T> helper = new TestEqualityHelper<T>();
+        return helper.equalsWithoutBlackListedMethods(entity1, entity2);
+    }
+
     private static class EntityEqualityComparator {
         private Object entity;
-        private ClassMethodInformation methodInformation;
+        private Map<Class, ClassMethodInformation> methodInformationStore;
+        private ClassMethodInformation currentMethodInformation;
 
-        private EntityEqualityComparator(LoggableEntity entity){
+        EntityEqualityComparator(LoggableEntity entity, Map<Class, ClassMethodInformation> methodInformationStore){
             this.entity = entity;
-            methodInformation = new ClassMethodInformation(entity.getClass());
+            this.methodInformationStore = methodInformationStore;
+            Class entityClass = ClassMethodInformation.getPersistenceClass(entity.getClass());
+            this.currentMethodInformation = methodInformationStore.get(entityClass);
+            if(currentMethodInformation == null){
+                currentMethodInformation = new ClassMethodInformation(entityClass);
+                methodInformationStore.put(entity.getClass(), currentMethodInformation);
+            }
         }
 
-        ClassMethodInformation getMethodInformation(){
-            return methodInformation;
+        ClassMethodInformation getCurrentMethodInformation(){
+            return currentMethodInformation;
         }
 
         Object getEntity(){
@@ -50,15 +78,16 @@ public class TestEqualityHelper {
             if(other == this){ return true;}
             if(other instanceof EntityEqualityComparator){
                 EntityEqualityComparator otherComparator = (EntityEqualityComparator) other;
-                if(!otherComparator.getMethodInformation().getInformationClass().equals(methodInformation.getInformationClass())){
+                if(!otherComparator.getCurrentMethodInformation().getInformationClass().equals(currentMethodInformation.getInformationClass())){
                     return false;
                 }
                 for (Method getterMethod :
-                        methodInformation.getWhiteListedMethods()) {
+                        currentMethodInformation.getWhiteListedMethods()) {
                     try {
                         Object entity1Result = getterMethod.invoke(entity);
                         Object entity2Result = getterMethod.invoke(otherComparator.getEntity());
-                        if(!TestEqualityHelper.equalsWithoutIdIfNeeded(entity1Result, entity2Result))
+                        TestEqualityHelper helper = new TestEqualityHelper(methodInformationStore);
+                        if(!helper.equalsWithoutBlackListedMethods(entity1Result, entity2Result))
                             return false;
                     } catch (IllegalAccessException | InvocationTargetException e) {
                         throw new IllegalStateException(e);
@@ -71,11 +100,11 @@ public class TestEqualityHelper {
 
     }
 
-    private static class ClassMethodInformation {
+    public static class ClassMethodInformation {
 
-        private static final List<String> METHOD_NAME_WHITE_LIST =
+        private static final List<String> DEFAULT_METHOD_NAME_WHITE_LIST =
                 Arrays.asList("get");
-        private static final List<String> BLACK_LISTED_METHOD_NAMES =
+        private static final List<String> DEFAULT_BLACK_LISTED_METHOD_NAMES =
                 Arrays.asList("getId");
         private static final String TEST_PACKAGE_NAME;
 
@@ -85,17 +114,27 @@ public class TestEqualityHelper {
         }
 
         private List<Method> whiteListedMethods = new ArrayList<>();
+        private List<String> blackListedMethodNames = new ArrayList<>();
         private Class entityClass;
 
-        ClassMethodInformation(Class entityClass){
-            setEntityClass(entityClass);
+        public ClassMethodInformation(Class entityClass, String... extraBlackListedMethodNames){
+            this.entityClass = getPersistenceClass(entityClass);
+            blackListedMethodNames.addAll(DEFAULT_BLACK_LISTED_METHOD_NAMES);
+            if(extraBlackListedMethodNames != null) {
+                blackListedMethodNames.addAll(Arrays.asList(extraBlackListedMethodNames));
+            }
             setupMethods();
         }
 
-        private void setEntityClass(Class entityClass) {
-            this.entityClass = entityClass;
+        public ClassMethodInformation(Class entityClass, List<String> extraBlackListedMethodNames){
+            this(entityClass, extraBlackListedMethodNames.toArray(new String[extraBlackListedMethodNames.size()]));
+        }
+
+        private static Class getPersistenceClass(Class entityClass) {
             if(entityClass.getName().startsWith(TEST_PACKAGE_NAME)){
-                this.entityClass = this.entityClass.getSuperclass();
+                return entityClass.getSuperclass();
+            } else {
+                return entityClass;
             }
         }
 
@@ -110,10 +149,10 @@ public class TestEqualityHelper {
 
         private boolean isWhiteListedMethod(Method method) {
             for (String whiteListedPrefix :
-                    METHOD_NAME_WHITE_LIST) {
+                    DEFAULT_METHOD_NAME_WHITE_LIST) {
                 if (method.getName().startsWith(whiteListedPrefix)
                         &&
-                        !BLACK_LISTED_METHOD_NAMES.contains(method.getName())){
+                        !blackListedMethodNames.contains(method.getName())){
                     return true;
                 }
             }

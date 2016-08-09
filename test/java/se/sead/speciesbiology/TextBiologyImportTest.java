@@ -94,7 +94,7 @@ public class TextBiologyImportTest {
     private void verifyTraces(){
         for (Biology bugsData :
                 SpeciesBiologyTestDefinition.EXPECTED_ACCESS_DATA) {
-            List<BugsTrace> traces = traceRepository.findByBugsTableAndCompressedBugsData("TBiology", bugsData.compressToString());
+            List<BugsTrace> traces = traceRepository.findByBugsTableAndCompressedBugsData("TBiology", bugsData.getCompressedStringBeforeTranslation());
             assertTraces(bugsData, traces);
         }
     }
@@ -114,7 +114,7 @@ public class TextBiologyImportTest {
     }
 
     private void verifyErrorExist(Biology bugsData) {
-        List<BugsError> errors = errorRepository.findByBugsTableAndCompressedBugsData("TBiology", bugsData.compressToString());
+        List<BugsError> errors = errorRepository.findByBugsTableAndCompressedBugsData("TBiology", bugsData.getCompressedStringBeforeTranslation());
         assertEquals(1, errors.size());
         BugsError error = errors.get(0);
         assertEquals("No reference found for reference: Böcher (1995)", error.getMessage());

@@ -7,6 +7,7 @@ import se.sead.bugsimport.BugsSeadMapper;
 import se.sead.bugsimport.specieskeys.bugsmodel.Keys;
 import se.sead.bugsimport.specieskeys.bugsmodel.KeysBugsTable;
 import se.sead.bugsimport.specieskeys.seadmodel.TextIdentificationKeys;
+import se.sead.bugsimport.translations.BugsValueTranslationService;
 
 @Component
 public class IdentificationKeysBugsSeadMapper extends BugsSeadMapper<Keys, TextIdentificationKeys> {
@@ -14,10 +15,12 @@ public class IdentificationKeysBugsSeadMapper extends BugsSeadMapper<Keys, TextI
     @Autowired
     public IdentificationKeysBugsSeadMapper(
             AccessReaderProvider accessReaderProvider,
-            KeysTableRowConverter singleBugsTableRowConverterForMapper) {
+            KeysTableRowConverter singleBugsTableRowConverterForMapper,
+            BugsValueTranslationService dataTranslationService) {
         super(
                 accessReaderProvider.getReader(),
                 new KeysBugsTable(),
-                singleBugsTableRowConverterForMapper);
+                singleBugsTableRowConverterForMapper,
+                dataTranslationService);
     }
 }

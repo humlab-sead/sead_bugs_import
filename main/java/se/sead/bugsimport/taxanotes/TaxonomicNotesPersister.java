@@ -21,6 +21,6 @@ public class TaxonomicNotesPersister extends Persister<TaxoNotes, TaxonomicNotes
 
     @Override
     protected TaxonomicNotes save(TaxonomicNotes seadValue) {
-        return repository.saveUsingMerge(seadValue);
+        return repository.saveOrUpdate(seadValue);
     }
 }

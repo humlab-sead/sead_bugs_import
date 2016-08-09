@@ -26,6 +26,6 @@ public class BirmBeetleDataPersister extends Persister<BirmBeetleDat, BirmBeetle
 
     @Override
     protected BirmBeetleData save(BirmBeetleData seadValue) {
-        return dataRepository.saveUsingMerge(seadValue);
+        return dataRepository.saveOrUpdate(seadValue);
     }
 }

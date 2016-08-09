@@ -24,6 +24,6 @@ public class BiologyPersister extends Persister<Biology, TextBiology> {
 
     @Override
     protected TextBiology save(TextBiology seadValue) {
-        return biologyDataRepository.saveUsingMerge(seadValue);
+        return biologyDataRepository.saveOrUpdate(seadValue);
     }
 }

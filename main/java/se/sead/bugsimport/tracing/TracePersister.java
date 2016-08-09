@@ -28,7 +28,7 @@ public class TracePersister {
                     trace.setBugsData(bugsData);
                     traceRepository.save(trace);
                 }
-                );
+            );
 
     }
 

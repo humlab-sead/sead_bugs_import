@@ -6,9 +6,6 @@ import se.sead.sead.model.LoggableEntity;
 
 import javax.persistence.PersistenceException;
 
-/**
- * Created by erer0001 on 2016-05-13.
- */
 public abstract class Persister<BugsType extends TraceableBugsData, SeadType extends LoggableEntity> {
 
     private TracePersister tracePersister;
@@ -21,8 +18,10 @@ public abstract class Persister<BugsType extends TraceableBugsData, SeadType ext
         MappingResult<BugsType, SeadType> mapperResult = mapper.getMapperResult();
         for (MappingResult.BugsSeadMapping<BugsType, SeadType> mappedData:
              mapperResult.getTupleData()) {
-            if(mappedData.canAndShouldSave()){
-                doSave(mappedData);
+            if(mappedData.isErrorFree()){
+                if(mappedData.isNewSeadData() || mappedData.isUpdatedSeadData()) {
+                    doSave(mappedData);
+                }
             } else {
                 insertErrorLog(mappedData);
             }
