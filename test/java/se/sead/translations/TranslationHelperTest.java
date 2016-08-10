@@ -4,6 +4,7 @@ import org.junit.Test;
 import se.sead.bugsimport.translations.converters.TranslationHelper;
 
 import java.math.BigDecimal;
+import java.util.EnumSet;
 
 import static org.junit.Assert.assertEquals;
 

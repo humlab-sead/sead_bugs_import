@@ -53,7 +53,7 @@ public class SiteLocation extends LoggableEntity {
 
         SiteLocation that = (SiteLocation) o;
 
-        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (id != null && that.id != null && !id.equals(that.id)) return false;
         if (location != null ? !location.equals(that.location) : that.location != null) return false;
         return site != null ? site.equals(that.site) : that.site == null;
 

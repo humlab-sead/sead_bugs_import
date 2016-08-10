@@ -18,22 +18,12 @@ public abstract class Persister<BugsType extends TraceableBugsData, SeadType ext
         MappingResult<BugsType, SeadType> mapperResult = mapper.getMapperResult();
         for (MappingResult.BugsListSeadMapping<BugsType, SeadType> dataMapping :
                 mapperResult.getData()) {
-            if (dataMapping.isErrorFree() && (dataMapping.isNewSeadData() || dataMapping.isUpdatedSeadData())) {
-                doSave(dataMapping);
-            } else {
+            if(!dataMapping.isErrorFree()){
                 insertErrorLog(dataMapping);
+            } else if(dataMapping.isNewSeadData() || dataMapping.isUpdatedSeadData()) {
+                doSave(dataMapping);
             }
         }
-//        for (MappingResult.BugsSingleSeadMapping<BugsType, SeadType> mappedData:
-//             mapperResult.getTupleData()) {
-//            if(mappedData.isErrorFree()){
-//                if(mappedData.isNewSeadData() || mappedData.isUpdatedSeadData()) {
-//                    doSave(mappedData);
-//                }
-//            } else {
-//                insertErrorLog(mappedData);
-//            }
-//        }
     }
 
     private void doSave(MappingResult.BugsListSeadMapping<BugsType, SeadType> mappedData){
@@ -49,31 +39,12 @@ public abstract class Persister<BugsType extends TraceableBugsData, SeadType ext
             }
         }
     }
-    @Deprecated
-    private void doSave(MappingResult.BugsSingleSeadMapping<BugsType, SeadType> mappedData) {
-        try {
-            SeadType savedItem = save(mappedData.getSeadData());
-            mappedData.setSavedSeadData(savedItem);
-            insertTraceLog(mappedData);
-        } catch (PersistenceException pe){
-            mappedData.getSeadData().addError(pe.getMessage());
-            insertErrorLog(mappedData);
-        }
-    }
 
     protected abstract SeadType save(SeadType seadValue);
 
 
-    private void insertTraceLog(MappingResult.BugsSingleSeadMapping<BugsType, SeadType> mappedData){
-        tracePersister.saveCurrentEventFor(mappedData.getBugsData());
-    }
-
     private void insertTraceLog(MappingResult.BugsListSeadMapping<BugsType, SeadType> mappedData){
         tracePersister.saveCurrentEventFor(mappedData.getBugsData());
-    }
-
-    private void insertErrorLog(MappingResult.BugsSingleSeadMapping<BugsType, SeadType> dataContainer){
-        tracePersister.saveErrorLog(dataContainer.getBugsData(), dataContainer.getSeadData());
     }
 
     private void insertErrorLog(MappingResult.BugsListSeadMapping<BugsType, SeadType> dataContainer){

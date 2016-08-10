@@ -4,22 +4,31 @@ import se.sead.sead.model.LoggableEntity;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.util.*;
 
 public class TestEqualityHelper<T> {
 
-    private Map<Class, ClassMethodInformation> methodInformation;
+    private ComparisonConfiguration configuration;
 
     public TestEqualityHelper(){
-        methodInformation = new HashMap<>();
+        this(new ComparisonConfiguration());
     }
 
-    TestEqualityHelper(Map<Class, ClassMethodInformation> methodInformation){
-        this.methodInformation = methodInformation;
+    TestEqualityHelper(ComparisonConfiguration configuration){
+        this.configuration = configuration;
     }
 
-    public void addMethodInformation(Class entityClass, ClassMethodInformation entityMethodInformation){
-        methodInformation.put(entityClass, entityMethodInformation);
+    public TestEqualityHelper(boolean useCompareForBigDecimalEquality){
+        this(new ComparisonConfiguration(useCompareForBigDecimalEquality));
+    }
+
+    public void addMethodInformation(ClassMethodInformation entityMethodInformation){
+        configuration.addMethodInformation(entityMethodInformation);
+    }
+
+    public void setUseComparisonInsteadOfEqualsForBigDecimals(){
+        configuration.useCompareForBigDecimalEquality = true;
     }
 
     public boolean equalsWithoutBlackListedMethods(T entity1, T entity2) {
@@ -34,12 +43,14 @@ public class TestEqualityHelper<T> {
                 EntityEqualityComparator entity2Comparator = createEntityEqualityComparator(secondEntity);
                 return entity1Comparator.equals(entity2Comparator);
             }
+        } else if(entity1 instanceof BigDecimal && entity2 instanceof BigDecimal && configuration.useCompareForBigDecimalEquality){
+            return ((BigDecimal) entity1).compareTo((BigDecimal)entity2) == 0;
         }
         return Objects.equals(entity1, entity2);
     }
 
     private EntityEqualityComparator createEntityEqualityComparator(LoggableEntity entity){
-        return new EntityEqualityComparator(entity, methodInformation);
+        return new EntityEqualityComparator(entity, configuration);
     }
 
     public static <T> boolean equalsWithoutIdIfNeeded(T entity1, T entity2){
@@ -51,18 +62,18 @@ public class TestEqualityHelper<T> {
     }
 
     private static class EntityEqualityComparator {
+        private ComparisonConfiguration configuration;
         private Object entity;
-        private Map<Class, ClassMethodInformation> methodInformationStore;
         private ClassMethodInformation currentMethodInformation;
 
-        EntityEqualityComparator(LoggableEntity entity, Map<Class, ClassMethodInformation> methodInformationStore){
+        EntityEqualityComparator(LoggableEntity entity, ComparisonConfiguration configuration){
             this.entity = entity;
-            this.methodInformationStore = methodInformationStore;
+            this.configuration = configuration;
             Class entityClass = ClassMethodInformation.getPersistenceClass(entity.getClass());
-            this.currentMethodInformation = methodInformationStore.get(entityClass);
+            this.currentMethodInformation = configuration.getClassMethodInformation(entityClass);
             if(currentMethodInformation == null){
                 currentMethodInformation = new ClassMethodInformation(entityClass);
-                methodInformationStore.put(entity.getClass(), currentMethodInformation);
+                configuration.addMethodInformation(currentMethodInformation);
             }
         }
 
@@ -86,9 +97,11 @@ public class TestEqualityHelper<T> {
                     try {
                         Object entity1Result = getterMethod.invoke(entity);
                         Object entity2Result = getterMethod.invoke(otherComparator.getEntity());
-                        TestEqualityHelper helper = new TestEqualityHelper(methodInformationStore);
-                        if(!helper.equalsWithoutBlackListedMethods(entity1Result, entity2Result))
+                        TestEqualityHelper helper = new TestEqualityHelper(configuration);
+                        if(!helper.equalsWithoutBlackListedMethods(entity1Result, entity2Result)) {
+                            System.err.println("reporting false for method: " + getterMethod.getName());
                             return false;
+                        }
                     } catch (IllegalAccessException | InvocationTargetException e) {
                         throw new IllegalStateException(e);
                     }
@@ -98,6 +111,28 @@ public class TestEqualityHelper<T> {
             return false;
         }
 
+    }
+
+    private static class ComparisonConfiguration {
+        private Map<Class, ClassMethodInformation> methodInformation;
+        private boolean useCompareForBigDecimalEquality;
+
+        ComparisonConfiguration(){
+            this(false);
+        }
+
+        ComparisonConfiguration(boolean useCompareForBigDecimalEquality){
+            methodInformation = new HashMap<>();
+            this.useCompareForBigDecimalEquality = useCompareForBigDecimalEquality;
+        }
+
+        void addMethodInformation(ClassMethodInformation entityMethodInformation){
+            methodInformation.put(entityMethodInformation.getInformationClass(), entityMethodInformation);
+        }
+
+        ClassMethodInformation getClassMethodInformation(Class entityClass){
+            return methodInformation.get(entityClass);
+        }
     }
 
     public static class ClassMethodInformation {

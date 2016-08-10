@@ -3,9 +3,11 @@ package se.sead.repositories.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import se.sead.Application;
 import se.sead.bugsimport.tracing.TraceEventManager;
+import se.sead.bugsimport.tracing.seadmodel.BugsTraceType;
 import se.sead.sead.model.LoggableEntity;
 
 import javax.persistence.PostPersist;
+import javax.persistence.PostRemove;
 import javax.persistence.PostUpdate;
 
 /**
@@ -18,9 +20,13 @@ public class PostEventListener {
 
     @PostPersist
     public void onPersist(Object entity){
+        addEvent(entity, BugsTraceType.INSERT);
+    }
+
+    private void addEvent(Object entity, BugsTraceType type){
         ensureAutowire();
         if(entity instanceof LoggableEntity){
-            addEvent((LoggableEntity)entity, true);
+            traceEventManager.addEvent((LoggableEntity) entity,type);
         }
     }
 
@@ -28,15 +34,13 @@ public class PostEventListener {
         Application.LazyAutowireHelper.getInstance().autowire(this, this.traceEventManager);
     }
 
-    private void addEvent(LoggableEntity entity, boolean insert){
-        traceEventManager.addEvent(entity, insert);
-    }
-
     @PostUpdate
     public void onUpdate(Object entity){
-        ensureAutowire();
-        if(entity instanceof LoggableEntity){
-            addEvent((LoggableEntity)entity, false);
-        }
+        addEvent(entity, BugsTraceType.UPDATE);
+    }
+
+    @PostRemove
+    public void onDelete(Object entity){
+        addEvent(entity, BugsTraceType.DELETE);
     }
 }

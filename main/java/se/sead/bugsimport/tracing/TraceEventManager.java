@@ -37,17 +37,13 @@ public class TraceEventManager {
         }
     }
 
-    public synchronized void addEvent(LoggableEntity entity, boolean insert){
+    public synchronized void addEvent(LoggableEntity entity, BugsTraceType type){
         initEventList();
         String tableName = getTableNameFromClassAnnotation(entity);
         BugsTrace trace = new BugsTrace();
         trace.setSeadTable(tableName);
         trace.setSeadId(entity.getId());
-        if(insert){
-            trace.setType(BugsTraceType.INSERT);
-        } else {
-            trace.setType(BugsTraceType.UPDATE);
-        }
+        trace.setType(type);
         addTrace(trace);
     }
 
@@ -74,8 +70,7 @@ public class TraceEventManager {
         return tracesForInsertions.stream().anyMatch(
             storedTrace ->
                     sameEntity(storedTrace, trace)
-                    && storedTrace.getType() == BugsTraceType.INSERT
-);
+                    && storedTrace.getType() == BugsTraceType.INSERT);
     }
 
     private static boolean sameEntity(BugsTrace storedTrace, BugsTrace suppliedTrace){

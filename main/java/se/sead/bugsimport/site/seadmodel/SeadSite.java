@@ -106,9 +106,21 @@ public class SeadSite extends LoggableEntity implements Comparable<SeadSite>{
         SeadSite seadSite = (SeadSite) o;
 
         if (id != null ? !id.equals(seadSite.id) : seadSite.id != null) return false;
-        if (altitude != null ? altitude.compareTo(seadSite.altitude) != 0 : seadSite.altitude != null) return false;
-        if (latitude != null ? latitude.compareTo(seadSite.latitude) != 0 : seadSite.latitude != null) return false;
-        if (longitude != null ? longitude.compareTo(seadSite.longitude) != 0 : seadSite.longitude != null) return false;
+        if (altitude != null && seadSite.altitude != null ?
+                altitude.compareTo(seadSite.altitude) != 0 :
+                !(altitude == null && seadSite.altitude == null)) {
+            return false;
+        }
+        if (latitude != null && seadSite.latitude != null ?
+                latitude.compareTo(seadSite.latitude) != 0 :
+                !(latitude == null && seadSite.latitude == null)) {
+            return false;
+        }
+        if (longitude != null && seadSite.longitude != null ?
+                longitude.compareTo(seadSite.longitude) != 0 :
+                !(longitude == null && seadSite.longitude == null)) {
+            return false;
+        }
         if (nationalSiteIdentifier != null ? !nationalSiteIdentifier.equals(seadSite.nationalSiteIdentifier) : seadSite.nationalSiteIdentifier != null)
             return false;
         if (description != null ? !description.equals(seadSite.description) : seadSite.description != null)

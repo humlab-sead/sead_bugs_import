@@ -17,7 +17,6 @@ public abstract class LoggableEntity {
     private boolean markedForDeletion;
     @Transient
     private boolean updated = false;
-
     @Transient
     private List<String> errors;
 
