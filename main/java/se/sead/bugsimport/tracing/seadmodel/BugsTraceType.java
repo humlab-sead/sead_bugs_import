@@ -11,5 +11,6 @@ import javax.persistence.Table;
 public enum BugsTraceType {
     INSERT,
     ERROR,
-    UPDATE
+    UPDATE,
+    DELETE
 }

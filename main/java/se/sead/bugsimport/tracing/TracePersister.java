@@ -32,6 +32,15 @@ public class TracePersister {
 
     }
 
+    public void saveErrorLog(final TraceableBugsData bugsData, final List<String> errorMessages){
+        for (String message :
+                errorMessages) {
+            BugsError errorCarrier = createErrorCarrier(bugsData, message);
+            errorRepository.save(errorCarrier);
+        }
+    }
+
+    @Deprecated
     public void saveErrorLog(final TraceableBugsData bugsData, final LoggableEntity messageHolder){
         for (String message :
                 messageHolder.getErrors()) {

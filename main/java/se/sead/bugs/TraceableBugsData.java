@@ -10,6 +10,10 @@ public abstract class TraceableBugsData {
     public abstract String compressToString();
     public abstract String bugsTable();
 
+    public String getBugsIdentifier(){
+        return null;
+    }
+
     public void setCompressedStringBeforeTranslation(String compressedStringBeforeTranslation){
         this.compressedStringBeforeTranslation = compressedStringBeforeTranslation;
     }

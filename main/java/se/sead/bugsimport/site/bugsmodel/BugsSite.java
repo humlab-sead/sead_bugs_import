@@ -126,6 +126,11 @@ public class BugsSite extends TraceableBugsData {
     }
 
     @Override
+    public String getBugsIdentifier() {
+        return code;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

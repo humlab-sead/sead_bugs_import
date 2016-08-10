@@ -1,5 +1,6 @@
 package se.sead.bugsimport.tracing.seadmodel;
 
+import org.springframework.stereotype.Component;
 import se.sead.bugs.TraceableBugsData;
 
 import javax.persistence.Column;
@@ -12,6 +13,8 @@ public abstract class BugsInformation {
     private String bugsTable;
     @Column(name="bugs_data", nullable = false)
     private String compressedBugsData;
+    @Column(name="bugs_identifier")
+    private String bugsIdentifier;
 
     public final String getBugsTable() {
         return bugsTable;
@@ -21,9 +24,12 @@ public abstract class BugsInformation {
         return compressedBugsData;
     }
 
+    public final String getBugsIdentifier(){ return bugsIdentifier;}
+
     public void setBugsData(TraceableBugsData bugsData){
         bugsTable = bugsData.bugsTable();
         compressedBugsData = bugsData.getCompressedStringBeforeTranslation();
+        bugsIdentifier = bugsData.getBugsIdentifier();
         if(compressedBugsData == null) {
             compressedBugsData = bugsData.compressToString();
         }

@@ -1,10 +1,7 @@
 package se.sead.bugsimport.tracing.seadmodel;
 
-import se.sead.bugs.TraceableBugsData;
-
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by erer0001 on 2016-04-28.
@@ -14,6 +11,13 @@ import java.util.List;
 @SequenceGenerator(schema = "bugs_import", name = "bugs_trace_seq", sequenceName = "bugs_trace_bugs_trace_id_seq")
 public class BugsTrace extends BugsInformation{
 
+    public static final BugsTrace NO_TRACE;
+
+    static {
+        NO_TRACE = new BugsTrace();
+        NO_TRACE.setSeadId(-1);
+    }
+
     @Id
     @GeneratedValue(generator = "bugs_trace_seq", strategy = GenerationType.AUTO)
     @Column(name="bugs_trace_id", nullable = false)
@@ -22,9 +26,9 @@ public class BugsTrace extends BugsInformation{
     private String seadTable;
     @Column(name="sead_reference_id", nullable = false)
     private Integer seadId;
-    @Column(name="import_date")
+    @Column(name="change_date")
     @Temporal(value = TemporalType.TIMESTAMP)
-    private Date importDate;
+    private Date changeDate;
     @Column(name="manipulation_type")
     @Enumerated(value = EnumType.STRING)
     private BugsTraceType type;
@@ -49,8 +53,8 @@ public class BugsTrace extends BugsInformation{
         this.seadId = seadId;
     }
 
-    public Date getImportDate() {
-        return importDate;
+    public Date getChangeDate() {
+        return changeDate;
     }
 
     public BugsTraceType getType() {
@@ -67,7 +71,7 @@ public class BugsTrace extends BugsInformation{
                 "id=" + id +
                 ", seadTable='" + seadTable + '\'' +
                 ", seadId=" + seadId +
-                ", importDate=" + importDate +
+                ", changeDate=" + changeDate +
                 ", type=" + type +
                 '}';
     }

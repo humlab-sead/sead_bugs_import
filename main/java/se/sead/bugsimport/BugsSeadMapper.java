@@ -41,9 +41,9 @@ public abstract class BugsSeadMapper<BugsType extends TraceableBugsData, SeadTyp
         mapperResult.add(readItem, getConvertedValue(readItem));
     }
 
-    private SeadType getConvertedValue(BugsType readItem) {
+    private List<SeadType> getConvertedValue(BugsType readItem) {
         dataTranslationService.translateValues(readItem);
-        return singleBugsTableRowConverterForMapper.convertForDataRow(readItem);
+        return singleBugsTableRowConverterForMapper.convertListForDataRow(readItem);
     }
 
     public MappingResult<BugsType, SeadType> getMapperResult(){

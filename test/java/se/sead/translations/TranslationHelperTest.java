@@ -31,8 +31,8 @@ public class TranslationHelperTest {
 
     @Test
     public void nulls(){
-        assertEquals(null, TranslationHelper.convertToType(Object.class, null));
-        assertEquals(null, TranslationHelper.convertToType(null, "This cannot be converted"));
+        assertEquals(TranslationHelper.ERROR_OBJECT, TranslationHelper.convertToType(Object.class, null));
+        assertEquals(TranslationHelper.ERROR_OBJECT, TranslationHelper.convertToType(null, "This cannot be converted"));
     }
 
     @Test

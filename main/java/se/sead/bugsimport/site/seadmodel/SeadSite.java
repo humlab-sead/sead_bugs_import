@@ -30,7 +30,6 @@ public class SeadSite extends LoggableEntity implements Comparable<SeadSite>{
     @OneToMany(
             mappedBy = "site",
             fetch = FetchType.EAGER
-            //,cascade = CascadeType.MERGE
     )
     private List<SiteLocation> siteLocations;
 
