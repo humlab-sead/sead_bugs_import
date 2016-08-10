@@ -12,6 +12,13 @@ public class TraceableBugsDataImpl extends TraceableBugsData {
     private String columnValue;
     private BigDecimal numericValue;
 
+    private boolean exportIdentifierMethod;
+
+    TraceableBugsDataImpl(){this(false);}
+    TraceableBugsDataImpl(boolean exportIdentifierMethod){
+        this.exportIdentifierMethod = exportIdentifierMethod;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -46,6 +53,15 @@ public class TraceableBugsDataImpl extends TraceableBugsData {
     }
 
     @Override
+    public String getBugsIdentifier() {
+        if(exportIdentifierMethod){
+            return Integer.toString(id);
+        } else {
+            return super.getBugsIdentifier();
+        }
+    }
+
+    @Override
     public String bugsTable() {
         return TEST_IMPLEMENTATION_BUGS_TABLE_NAME;
     }
@@ -53,7 +69,7 @@ public class TraceableBugsDataImpl extends TraceableBugsData {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || !(o instanceof TraceableBugsDataImpl)) return false;
 
         TraceableBugsDataImpl that = (TraceableBugsDataImpl) o;
 

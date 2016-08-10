@@ -17,15 +17,21 @@ public class IdBasedTranslationEngine implements BugsValueTranslationService.Tra
 
     @Override
     public void translate(TraceableBugsData bugsData) {
-        List<IdBasedTranslation> idBasedTransaltions = getIdBasedTranslations(bugsData);
+        List<IdBasedTranslation> idBasedTranslations = getIdBasedTranslations(bugsData);
         for (IdBasedTranslation translation :
-                idBasedTransaltions) {
+                idBasedTranslations) {
             applyTranslation(bugsData, translation);
         }
     }
 
     private List<IdBasedTranslation> getIdBasedTranslations(TraceableBugsData bugsData){
-        return repository.getAllByBugsDefinitionAndBugsTable(bugsData.getCompressedStringBeforeTranslation(), bugsData.bugsTable());
+        final String identifier = bugsData.getBugsIdentifier();
+        if(identifier == null){
+            return repository.getAllByBugsTableAndBugsDefinition(bugsData.bugsTable(), bugsData.getCompressedStringBeforeTranslation());
+        } else {
+            return repository.getAllByBugsTableAndBugsDefinition(bugsData.bugsTable(), identifier);
+        }
+
     }
 
     private void applyTranslation(TraceableBugsData bugsData, IdBasedTranslation translation) {

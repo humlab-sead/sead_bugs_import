@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface IdBasedTranslationRepository extends CreateAndReadRepository<IdBasedTranslation, Integer> {
 
-    List<IdBasedTranslation> getAllByBugsDefinitionAndBugsTable(String compressedSolution, String bugsTable);
+    List<IdBasedTranslation> getAllByBugsTableAndBugsDefinition(String bugsTable, String compressedSolution);
 }

@@ -58,16 +58,28 @@ public class DataConversionTest {
     }
 
     private TraceableBugsDataImpl createTraceableBugsData(Integer id, String columnValue, BigDecimal numericValue){
-        TraceableBugsDataImpl bugsData = new TraceableBugsDataImpl();
+        return createTraceableBugsData(id, columnValue, numericValue, false);
+    }
+
+    private TraceableBugsDataImpl createTraceableBugsData(Integer id, String columnValue, BigDecimal numericValue, boolean exportIdentifier){
+        TraceableBugsDataImpl bugsData = new TraceableBugsDataImpl(exportIdentifier);
         bugsData.setId(id);
         bugsData.setColumnValue(columnValue);
         bugsData.setNumericValue(numericValue);
         return bugsData;
     }
 
-    private IdBasedTranslation createIdBaseTranslation(TraceableBugsData traceable, String targetColumn, String newValue){
+    private IdBasedTranslation createIdBasedTranslation(TraceableBugsData traceable, String targetColumn, String newValue){
+        return createIdBasedTranslation(traceable, targetColumn, newValue, false);
+    }
+
+    private IdBasedTranslation createIdBasedTranslation(TraceableBugsData traceable, String targetColumn, String newValue, boolean useIdentifierField){
         IdBasedTranslation translation = new IdBasedTranslation();
-        translation.setBugsDefinition(traceable.getCompressedStringBeforeTranslation());
+        if(useIdentifierField){
+            translation.setBugsDefinition(traceable.getBugsIdentifier());
+        } else {
+            translation.setBugsDefinition(traceable.getCompressedStringBeforeTranslation());
+        }
         translation.setBugsTable(traceable.bugsTable());
         translation.setTargetColumn(targetColumn);
         translation.setReplacementValue(newValue);
@@ -77,7 +89,7 @@ public class DataConversionTest {
     @Test
     public void idBasedTranslation(){
         TraceableBugsDataImpl bugsDataToTranslate = createTraceableBugsData(1, "wrongContent", BigDecimal.ONE);
-        IdBasedTranslation translation = createIdBaseTranslation(bugsDataToTranslate, "columnValue", "rightContent");
+        IdBasedTranslation translation = createIdBasedTranslation(bugsDataToTranslate, "columnValue", "rightContent");
         idBasedTranslationRepository.saveOrUpdate(translation);
         translationEngine.translateValues(bugsDataToTranslate);
         assertEquals("rightContent", bugsDataToTranslate.getColumnValue());
@@ -87,10 +99,19 @@ public class DataConversionTest {
     @Test
     public void idBasedTranslationBigDecimalTarget(){
         TraceableBugsDataImpl bugsDataToTranslate  = createTraceableBugsData(1, "", BigDecimal.ONE);
-        IdBasedTranslation translation = createIdBaseTranslation(bugsDataToTranslate, "numericValue", "0.00");
+        IdBasedTranslation translation = createIdBasedTranslation(bugsDataToTranslate, "numericValue", "0.00");
         idBasedTranslationRepository.saveOrUpdate(translation);
         translationEngine.translateValues(bugsDataToTranslate);
         assertTrue( BigDecimal.ZERO.compareTo(bugsDataToTranslate.getNumericValue()) == 0);
+    }
+
+    @Test
+    public void idBasedTranslationWithIdentifier(){
+        TraceableBugsDataImpl bugsData = createTraceableBugsData(1, "changeThis", BigDecimal.TEN, true);
+        IdBasedTranslation idBaseTranslation = createIdBasedTranslation(bugsData, "columnValue", "toThis", true);
+        idBasedTranslationRepository.saveOrUpdate(idBaseTranslation);
+        translationEngine.translateValues(bugsData);
+        assertEquals("toThis", bugsData.getColumnValue());
     }
 
     @Test
@@ -150,7 +171,7 @@ public class DataConversionTest {
     public void severalTranslationsDifferentTypes(){
         TypeTranslation typeTranslation = createTypeTranslation(TraceableBugsDataImpl.TEST_IMPLEMENTATION_BUGS_TABLE_NAME, "columnValue", "wrongContent", "columnValue", "rightContent");
         TraceableBugsDataImpl bugsData = createTraceableBugsData(1, "wrongContent", BigDecimal.ONE);
-        IdBasedTranslation idBasedTranslation = createIdBaseTranslation(bugsData, "numericValue", "0");
+        IdBasedTranslation idBasedTranslation = createIdBasedTranslation(bugsData, "numericValue", "0");
         typeTranslationRepository.saveOrUpdate(typeTranslation);
         idBasedTranslationRepository.saveOrUpdate(idBasedTranslation);
         translationEngine.translateValues(bugsData);
