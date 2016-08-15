@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 import se.sead.bugsimport.Persister;
 import se.sead.bugsimport.speciesbiology.bugsmodel.Biology;
 import se.sead.bugsimport.speciesbiology.seadmodel.TextBiology;
-import se.sead.bugsimport.tracing.TracePersister;
 import se.sead.repositories.TextBiologyDataRepository;
 
 /**
@@ -16,11 +15,6 @@ public class BiologyPersister extends Persister<Biology, TextBiology> {
 
     @Autowired
     private TextBiologyDataRepository biologyDataRepository;
-
-    @Autowired
-    public BiologyPersister(TracePersister tracePersister) {
-        super(tracePersister);
-    }
 
     @Override
     protected TextBiology save(TextBiology seadValue) {

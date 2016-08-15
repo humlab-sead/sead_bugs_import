@@ -5,7 +5,7 @@ import se.sead.model.TestTaxaAuthor;
 import se.sead.model.TestTaxaFamily;
 import se.sead.model.TestTaxaGenus;
 import se.sead.model.TestTaxaSpecies;
-import se.sead.util.TestSpeciesTreeBuilder;
+import se.sead.species.TestSpeciesTreeBuilder;
 
 import java.util.HashMap;
 import java.util.Map;

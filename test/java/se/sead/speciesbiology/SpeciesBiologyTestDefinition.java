@@ -2,7 +2,7 @@ package se.sead.speciesbiology;
 
 import se.sead.bugsimport.species.seadmodel.*;
 import se.sead.bugsimport.speciesbiology.bugsmodel.Biology;
-import se.sead.util.TestSpeciesProvider;
+import se.sead.species.TestSpeciesProvider;
 
 import java.util.Arrays;
 import java.util.List;

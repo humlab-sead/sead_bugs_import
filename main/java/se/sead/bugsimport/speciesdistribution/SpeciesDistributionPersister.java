@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 import se.sead.bugsimport.Persister;
 import se.sead.bugsimport.speciesdistribution.bugsmodel.Distrib;
 import se.sead.bugsimport.speciesdistribution.seadmodel.TextDistribution;
-import se.sead.bugsimport.tracing.TracePersister;
 import se.sead.repositories.TextDistributionRepository;
 
 @Component
@@ -13,11 +12,6 @@ public class SpeciesDistributionPersister extends Persister<Distrib, TextDistrib
 
     @Autowired
     private TextDistributionRepository dataRepository;
-
-    @Autowired
-    public SpeciesDistributionPersister(TracePersister tracePersister){
-        super(tracePersister);
-    }
 
     @Override
     protected TextDistribution save(TextDistribution seadValue) {

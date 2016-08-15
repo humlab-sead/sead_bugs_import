@@ -18,9 +18,8 @@ public class SpeciesDistributionBugsSeadMapper extends BugsSeadMapper<Distrib, T
             SpeciesDistributionTableRowConverter singleBugsTableRowConverterForMapper,
             BugsValueTranslationService dataTranslationService) {
         super(
-                accessReaderProvider.getReader(),
                 new DistribBugsTable(),
-                singleBugsTableRowConverterForMapper,
-                dataTranslationService);
+                singleBugsTableRowConverterForMapper
+        );
     }
 }

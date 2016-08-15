@@ -5,7 +5,7 @@ import se.sead.bugsimport.mcr.seadmodel.MCRSummary;
 import se.sead.bugsimport.tracing.seadmodel.BugsError;
 import se.sead.bugsimport.tracing.seadmodel.BugsTrace;
 import se.sead.model.TestMCRSummary;
-import se.sead.util.TestSpeciesProvider;
+import se.sead.species.TestSpeciesProvider;
 
 import java.util.ArrayList;
 import java.util.Arrays;

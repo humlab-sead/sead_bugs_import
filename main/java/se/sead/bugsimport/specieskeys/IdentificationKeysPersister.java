@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 import se.sead.bugsimport.Persister;
 import se.sead.bugsimport.specieskeys.bugsmodel.Keys;
 import se.sead.bugsimport.specieskeys.seadmodel.TextIdentificationKeys;
-import se.sead.bugsimport.tracing.TracePersister;
 import se.sead.repositories.TextIdentificationKeysRepository;
 
 @Component
@@ -13,11 +12,6 @@ public class IdentificationKeysPersister extends Persister<Keys, TextIdentificat
 
     @Autowired
     private TextIdentificationKeysRepository keysRepository;
-
-    @Autowired
-    public IdentificationKeysPersister(TracePersister tracePersister) {
-        super(tracePersister);
-    }
 
     @Override
     protected TextIdentificationKeys save(TextIdentificationKeys seadValue) {

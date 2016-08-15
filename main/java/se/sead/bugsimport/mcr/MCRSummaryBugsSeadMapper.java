@@ -18,9 +18,8 @@ public class MCRSummaryBugsSeadMapper extends BugsSeadMapper<MCRSummaryData, MCR
             MCRSummaryTableRowConverter singleBugsTableRowConverterForMapper,
             BugsValueTranslationService dataTranslationService) {
         super(
-                accessReaderProvider.getReader(),
                 new MCRSummaryBugsTable(),
-                singleBugsTableRowConverterForMapper,
-                dataTranslationService);
+                singleBugsTableRowConverterForMapper
+        );
     }
 }

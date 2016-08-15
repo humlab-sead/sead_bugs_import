@@ -1,5 +1,6 @@
 package se.sead.bugsimport;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import se.sead.bugs.TraceableBugsData;
 import se.sead.bugsimport.tracing.TracePersister;
 import se.sead.sead.model.LoggableEntity;
@@ -8,11 +9,8 @@ import javax.persistence.PersistenceException;
 
 public abstract class Persister<BugsType extends TraceableBugsData, SeadType extends LoggableEntity> {
 
+    @Autowired
     private TracePersister tracePersister;
-
-    protected Persister(TracePersister tracePersister){
-        this.tracePersister = tracePersister;
-    }
 
     public void persist(BugsSeadMapper<BugsType, SeadType> mapper){
         MappingResult<BugsType, SeadType> mapperResult = mapper.getMapperResult();

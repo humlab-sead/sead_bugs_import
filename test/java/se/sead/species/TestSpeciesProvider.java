@@ -1,4 +1,4 @@
-package se.sead.util;
+package se.sead.species;
 
 import se.sead.bugsimport.species.seadmodel.TaxaSpecies;
 

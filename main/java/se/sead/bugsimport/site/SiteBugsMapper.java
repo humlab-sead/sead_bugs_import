@@ -19,9 +19,8 @@ public class SiteBugsMapper extends BugsSeadMapper<BugsSite, SeadSite>{
             BugsSiteTableConverter converter,
             BugsValueTranslationService dataTranslationService) {
         super(
-                accessReaderProvider.getReader(),
                 new BugsSiteBugsTable(),
-                converter,
-                dataTranslationService);
+                converter
+        );
     }
 }

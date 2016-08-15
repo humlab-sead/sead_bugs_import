@@ -23,7 +23,7 @@ import se.sead.bugsimport.tracing.seadmodel.BugsTrace;
 import se.sead.model.TestEqualityHelper;
 import se.sead.repositories.*;
 import se.sead.util.DefaultConfig;
-import se.sead.util.TestSpeciesProvider;
+import se.sead.species.TestSpeciesProvider;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;

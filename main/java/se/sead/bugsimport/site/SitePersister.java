@@ -6,7 +6,6 @@ import se.sead.bugsimport.Persister;
 import se.sead.bugsimport.site.bugsmodel.BugsSite;
 import se.sead.bugsimport.site.seadmodel.SeadSite;
 import se.sead.bugsimport.site.seadmodel.SiteLocation;
-import se.sead.bugsimport.tracing.TracePersister;
 import se.sead.repositories.SiteLocationRepository;
 import se.sead.repositories.SiteRepository;
 
@@ -20,11 +19,6 @@ public class SitePersister extends Persister<BugsSite, SeadSite> {
     private SiteRepository siteRepository;
     @Autowired
     private SiteLocationRepository siteLocationRepository;
-
-    @Autowired
-    public SitePersister(TracePersister tracePersister) {
-        super(tracePersister);
-    }
 
     @Override
     protected SeadSite save(SeadSite seadValue) {

@@ -18,9 +18,8 @@ public class IdentificationKeysBugsSeadMapper extends BugsSeadMapper<Keys, TextI
             KeysTableRowConverter singleBugsTableRowConverterForMapper,
             BugsValueTranslationService dataTranslationService) {
         super(
-                accessReaderProvider.getReader(),
                 new KeysBugsTable(),
-                singleBugsTableRowConverterForMapper,
-                dataTranslationService);
+                singleBugsTableRowConverterForMapper
+        );
     }
 }

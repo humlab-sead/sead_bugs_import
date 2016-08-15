@@ -18,10 +18,8 @@ public class TaxonomicNotesMapper extends BugsSeadMapper<TaxoNotes, TaxonomicNot
             TaxoNotesTableRowConverter singleBugsTableRowConverterForMapper,
             BugsValueTranslationService dataTranslationService) {
         super(
-                accessReaderProvider.getReader(),
                 new TaxoNotesBugsTable(),
-                singleBugsTableRowConverterForMapper,
-                dataTranslationService
+                singleBugsTableRowConverterForMapper
         );
     }
 }

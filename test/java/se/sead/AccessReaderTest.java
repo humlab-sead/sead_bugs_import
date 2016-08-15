@@ -34,11 +34,27 @@ public abstract class AccessReaderTest<T> {
             Collections.sort(expectedResults, resultSorter);
             Collections.sort(readItems, resultSorter);
         }
-        for (int i = 0; i < expectedResults.size(); i++) {
-            System.out.println(expectedResults.get(i));
-            System.out.println(readItems.get(i));
+        try {
+            assertEquals(expectedResults, readItems);
+        } catch (AssertionError ae){
+            logData(expectedResults, readItems);
+            throw ae;
         }
-        assertEquals(expectedResults, readItems);
+    }
+
+    private void logData(List<T> expectedResults, List<T> readItems) {
+        for (int i = 0; i < Math.max(expectedResults.size(), readItems.size()); i++) {
+            printErrorData(expectedResults, i);
+            printErrorData(readItems, i);
+        }
+    }
+
+    private void printErrorData(List<T> expectedResults, int i) {
+        try {
+            System.out.println(expectedResults.get(i));
+        } catch (IndexOutOfBoundsException ioobe){
+            System.out.println("No element at index: " + i);
+        }
     }
 
     protected void readTableFromDefaultFolder(String testMDBFile, BugsTable<T> bugsTable, List<T> expectedResults){

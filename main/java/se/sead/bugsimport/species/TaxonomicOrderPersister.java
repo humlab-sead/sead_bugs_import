@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 import se.sead.bugsimport.Persister;
 import se.sead.bugsimport.species.bugsmodel.INDEX;
 import se.sead.bugsimport.species.seadmodel.TaxonomicOrder;
-import se.sead.bugsimport.tracing.TracePersister;
 import se.sead.repositories.TaxonomicOrderRepository;
 
 /**
@@ -16,11 +15,6 @@ public class TaxonomicOrderPersister extends Persister<INDEX, TaxonomicOrder> {
 
     @Autowired
     private TaxonomicOrderRepository taxonomicOrderRepository;
-
-    @Autowired
-    public TaxonomicOrderPersister(TracePersister tracePersister){
-        super(tracePersister);
-    }
 
     @Override
     protected TaxonomicOrder save(TaxonomicOrder seadValue) {

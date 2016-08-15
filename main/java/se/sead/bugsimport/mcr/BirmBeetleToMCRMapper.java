@@ -20,6 +20,6 @@ public class BirmBeetleToMCRMapper extends BugsSeadMapper<BirmBeetleDat, BirmBee
             AccessReaderProvider readerProvider,
             BirmBeetleDatToBirmBeetleRowConverter rowConverter,
             BugsValueTranslationService dataTranslationService){
-        super(readerProvider.getReader(), new BirmBeetleDatBugsTable(), rowConverter, dataTranslationService);
+        super(new BirmBeetleDatBugsTable(), rowConverter);
     }
 }

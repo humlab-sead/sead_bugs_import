@@ -4,7 +4,7 @@ import se.sead.bugsimport.species.seadmodel.TaxaSpecies;
 import se.sead.bugsimport.speciesbiology.seadmodel.TextBiology;
 import se.sead.model.TestEqualityHelper;
 import se.sead.model.TestTextBiology;
-import se.sead.util.TestSpeciesProvider;
+import se.sead.species.TestSpeciesProvider;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -2,6 +2,7 @@ package se.sead.bugsimport;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import se.sead.bugs.AccessReader;
+import se.sead.bugs.AccessReaderProvider;
 import se.sead.bugs.BugsTable;
 import se.sead.bugs.TraceableBugsData;
 import se.sead.bugsimport.translations.BugsValueTranslationService;
@@ -11,30 +12,33 @@ import java.util.List;
 
 public abstract class BugsSeadMapper<BugsType extends TraceableBugsData, SeadType extends LoggableEntity> {
 
-    private AccessReader accessReader;
     private BugsTable<BugsType> bugsTable;
     private BugsTableRowConverter<BugsType, SeadType> singleBugsTableRowConverterForMapper;
     private MappingResult<BugsType, SeadType> mapperResult;
+
+    @Autowired
     private BugsValueTranslationService dataTranslationService;
+    @Autowired
+    private AccessReaderProvider accessReaderProvider;
 
     public BugsSeadMapper(
-            AccessReader accessReader,
             BugsTable<BugsType> bugsTable,
-            BugsTableRowConverter<BugsType, SeadType> singleBugsTableRowConverterForMapper,
-            BugsValueTranslationService dataTranslationService) {
-        this.accessReader = accessReader;
+            BugsTableRowConverter<BugsType, SeadType> singleBugsTableRowConverterForMapper) {
         this.bugsTable = bugsTable;
         this.singleBugsTableRowConverterForMapper = singleBugsTableRowConverterForMapper;
-        this.dataTranslationService = dataTranslationService;
         mapperResult = new MappingResult<>();
     }
 
     public void importBugsData(){
-        List<BugsType> readItems = accessReader.read(bugsTable);
+        List<BugsType> readItems = getAccessReader().read(bugsTable);
         for (BugsType readItem :
                 readItems) {
             mapResult(readItem);
         }
+    }
+
+    private AccessReader getAccessReader() {
+        return accessReaderProvider.getReader();
     }
 
     protected void mapResult(BugsType readItem){
