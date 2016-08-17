@@ -17,15 +17,13 @@ import se.sead.bugsimport.countsheets.SampleGroupImporter;
 import se.sead.bugsimport.countsheets.bugsmodel.Countsheet;
 import se.sead.bugsimport.countsheets.seadmodel.SampleGroup;
 import se.sead.bugsimport.site.seadmodel.SeadSite;
-import se.sead.bugsimport.tracing.seadmodel.BugsTrace;
 import se.sead.model.TestEqualityHelper;
 import se.sead.repositories.*;
-import se.sead.util.BugsTracesAndErrorsVerification;
-import se.sead.util.DatabaseContentVerification;
-import se.sead.util.DefaultConfig;
+import se.sead.testutils.BugsTracesAndErrorsVerification;
+import se.sead.testutils.DatabaseContentVerification;
+import se.sead.testutils.DefaultConfig;
 
 import javax.sql.DataSource;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 

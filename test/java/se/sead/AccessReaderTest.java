@@ -2,6 +2,7 @@ package se.sead;
 
 import se.sead.bugs.AccessReader;
 import se.sead.bugs.BugsTable;
+import se.sead.bugs.TraceableBugsData;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -9,7 +10,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public abstract class AccessReaderTest<T> {
+public abstract class AccessReaderTest<T extends TraceableBugsData> {
 
     public static final String RESOURCE_FOLDER = "./src/test/resources/";
 

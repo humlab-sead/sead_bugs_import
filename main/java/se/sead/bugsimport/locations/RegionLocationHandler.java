@@ -1,4 +1,4 @@
-package se.sead.bugsimport.site.locations;
+package se.sead.bugsimport.locations;
 
 import se.sead.bugsimport.country.seadmodel.Location;
 import se.sead.bugsimport.country.seadmodel.LocationType;
@@ -73,7 +73,7 @@ class RegionLocationHandler extends LocationHandler.BaseLocationHandler{
         return administrativeRegionType;
     }
 
-    private static interface RegionListReductionRule {
+    private interface RegionListReductionRule {
         List<Location> removeItems(List<Location> regionValues);
     }
 

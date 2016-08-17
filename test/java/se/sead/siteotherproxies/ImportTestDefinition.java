@@ -1,6 +1,6 @@
 package se.sead.siteotherproxies;
 
-import se.sead.BigDecimalDefinition;
+import se.sead.testutils.BigDecimalDefinition;
 import se.sead.bugsimport.site.seadmodel.SeadSite;
 import se.sead.bugsimport.siteotherproxies.bugsmodel.SiteOtherProxies;
 import se.sead.bugsimport.siteotherproxies.seadmodel.SiteOtherRecord;
@@ -12,14 +12,12 @@ import se.sead.model.TestSiteOtherRecord;
 import se.sead.repositories.RecordTypeRepository;
 import se.sead.repositories.SiteRepository;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static se.sead.BigDecimalDefinition.SEAD_MATH_CONTEXT;
 
 public class ImportTestDefinition {
 

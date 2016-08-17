@@ -21,7 +21,7 @@ import se.sead.bugsimport.tracing.seadmodel.BugsError;
 import se.sead.bugsimport.tracing.seadmodel.BugsTrace;
 import se.sead.repositories.*;
 import se.sead.model.TestEqualityHelper;
-import se.sead.util.DefaultConfig;
+import se.sead.testutils.DefaultConfig;
 
 import javax.sql.DataSource;
 import java.util.Arrays;

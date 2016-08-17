@@ -21,7 +21,7 @@ import se.sead.model.TestEqualityHelper;
 import se.sead.repositories.BugsTraceRepository;
 import se.sead.repositories.LocationRepository;
 import se.sead.repositories.LocationTypeRepository;
-import se.sead.util.DefaultConfig;
+import se.sead.testutils.DefaultConfig;
 
 import javax.sql.DataSource;
 import java.util.List;

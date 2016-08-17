@@ -19,11 +19,14 @@ abstract class SiteFromTrace {
     private SiteRepository siteRepository;
 
     public SeadSite getSeadSiteFromBugsCode(String bugsSiteCode){
-        BugsTrace siteTrace = getLatest(bugsSiteCode);
-        return siteRepository.findOne(siteTrace.getSeadId());
+        return getSeadSiteFromTrace(getLatest(bugsSiteCode));
     }
 
-    private BugsTrace getLatest(String bugsSiteCode){
+    public SeadSite getSeadSiteFromTrace(BugsTrace trace){
+        return siteRepository.findOne(trace.getSeadId());
+    }
+
+    public BugsTrace getLatest(String bugsSiteCode){
         List<BugsTrace> siteTraces = traceRepository.findByBugsTableAndBugsIdentifierOrderByChangeDate(BUGS_SITE_TABLE_NAME, bugsSiteCode);
         return filteredResults(siteTraces);
     }

@@ -1,9 +1,13 @@
 package se.sead.bugsimport.site.seadmodel;
 
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 import se.sead.sead.model.LoggableEntity;
+import se.sead.testutils.BigDecimalDefinition;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -105,25 +109,21 @@ public class SeadSite extends LoggableEntity implements Comparable<SeadSite>{
 
         SeadSite seadSite = (SeadSite) o;
 
-        if (id != null ? !id.equals(seadSite.id) : seadSite.id != null) return false;
-        if (altitude != null && seadSite.altitude != null ?
-                altitude.compareTo(seadSite.altitude) != 0 :
-                !(altitude == null && seadSite.altitude == null)) {
+        if (id != null && seadSite.id != null && !id.equals(seadSite.id)) return false;
+        if (!BigDecimalDefinition.equalBigDecimalNumericValues(altitude, seadSite.altitude)) {
             return false;
         }
-        if (latitude != null && seadSite.latitude != null ?
-                latitude.compareTo(seadSite.latitude) != 0 :
-                !(latitude == null && seadSite.latitude == null)) {
+        if (!BigDecimalDefinition.equalBigDecimalNumericValues(latitude, seadSite.latitude)) {
             return false;
         }
-        if (longitude != null && seadSite.longitude != null ?
-                longitude.compareTo(seadSite.longitude) != 0 :
-                !(longitude == null && seadSite.longitude == null)) {
+        if (!BigDecimalDefinition.equalBigDecimalNumericValues(longitude, seadSite.longitude)) {
             return false;
         }
         if (nationalSiteIdentifier != null ? !nationalSiteIdentifier.equals(seadSite.nationalSiteIdentifier) : seadSite.nationalSiteIdentifier != null)
             return false;
-        if (description != null ? !description.equals(seadSite.description) : seadSite.description != null)
+        if (description != null && seadSite.description != null  ?
+                !description.replace("\r\n", "\n").equals(seadSite.description.replace("\r\n", "\n")) :
+                (description == null && seadSite.description != null || description != null && seadSite.description == null))
             return false;
         return name != null ? name.equals(seadSite.name) : seadSite.name == null;
 
@@ -151,6 +151,7 @@ public class SeadSite extends LoggableEntity implements Comparable<SeadSite>{
                 ", longitude=" + longitude +
                 ", nationalSiteIdentifier='" + nationalSiteIdentifier + '\'' +
                 ", description='" + description + '\'' +
+                ", dateUpdated='" + getDateUpdated() + '\'' +
                 '}';
     }
 

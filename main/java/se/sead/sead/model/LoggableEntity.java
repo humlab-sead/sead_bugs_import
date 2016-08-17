@@ -1,17 +1,22 @@
 package se.sead.sead.model;
 
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 import se.sead.repositories.impl.PostEventListener;
 
-import javax.persistence.EntityListeners;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 @MappedSuperclass
 @EntityListeners({PostEventListener.class})
 public abstract class LoggableEntity {
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name="date_updated")
+    private Date dateUpdated;
 
     @Transient
     private boolean markedForDeletion;
@@ -60,5 +65,13 @@ public abstract class LoggableEntity {
 
     public void setUpdated(boolean updated) {
         this.updated = updated;
+    }
+
+    public Date getDateUpdated() {
+        return dateUpdated;
+    }
+
+    public void setDateUpdated(Date dateUpdated) {
+        this.dateUpdated = dateUpdated;
     }
 }

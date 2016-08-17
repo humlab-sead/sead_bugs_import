@@ -169,7 +169,7 @@ public class BugsSite extends TraceableBugsData {
 
     @Override
     public String toString() {
-        return "SeadSite{" +
+        return "BugsSite{" +
                 "code='" + code + '\'' +
                 ", name='" + name + '\'' +
                 ", region='" + region + '\'' +

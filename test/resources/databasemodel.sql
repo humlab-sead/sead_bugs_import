@@ -143,6 +143,7 @@ create table tbl_biblio
 	bugs_author varchar(255) DEFAULT NULL,
 	bugs_reference varchar(60) DEFAULT NULL,
 	bugs_title varchar,
+  date_updated timestamp DEFAULT current_timestamp(),
 	CONSTRAINT pk_biblio_id PRIMARY KEY (biblio_id)
 );
 create table tbl_text_biology

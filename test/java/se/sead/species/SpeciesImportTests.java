@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import se.sead.Application;
-import se.sead.ApplicationConfiguration;
 import se.sead.DataSourceFactory;
 import se.sead.DefaultAccessDatabaseReader;
 import se.sead.bugs.AccessReaderProvider;
@@ -23,7 +22,7 @@ import se.sead.repositories.TaxaOrderRepository;
 import se.sead.repositories.TaxonomicOrderRepository;
 import se.sead.repositories.TaxonomicOrderSystemRepository;
 import se.sead.model.TestEqualityHelper;
-import se.sead.util.DefaultConfig;
+import se.sead.testutils.DefaultConfig;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;

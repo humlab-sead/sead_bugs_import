@@ -1,4 +1,4 @@
-package se.sead;
+package se.sead.testutils;
 
 import java.math.BigDecimal;
 import java.math.MathContext;

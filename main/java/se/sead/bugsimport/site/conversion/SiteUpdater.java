@@ -1,8 +1,8 @@
 package se.sead.bugsimport.site.conversion;
 
-import se.sead.BigDecimalDefinition;
+import se.sead.testutils.BigDecimalDefinition;
 import se.sead.bugsimport.site.bugsmodel.BugsSite;
-import se.sead.bugsimport.site.locations.LocationHandler;
+import se.sead.bugsimport.locations.LocationHandler;
 import se.sead.bugsimport.site.seadmodel.SeadSite;
 
 import java.util.Collections;
@@ -12,17 +12,14 @@ class SiteUpdater {
 
     private SeadSite seadData;
     private SeadSite createdNewVersion;
-    private SiteLocationUpdater siteLocationUpdater;
 
-    SiteUpdater(BugsSite bugsData, SeadSite seadData, LocationHandler locationHandler) {
+    SiteUpdater(BugsSite bugsData, SeadSite seadData) {
         this.seadData = seadData;
-        this.siteLocationUpdater = new SiteLocationUpdater(locationHandler, seadData);
-        createdNewVersion = new SeadSiteCreator(bugsData, Collections.EMPTY_LIST).create();
+        createdNewVersion = new SeadSiteCreator(bugsData).create();
     }
 
     boolean needUpdates(){
-        return siteLocationUpdater.differingLocations() ||
-                !createdNewVersion.equals(createCopyWithoutIdAndLocations(seadData));
+        return !createdNewVersion.equals(createCopyWithoutIdAndLocations(seadData));
     }
 
     private SeadSite createCopyWithoutIdAndLocations(SeadSite site){
@@ -46,23 +43,23 @@ class SiteUpdater {
             seadData.setDescription(createdNewVersion.getDescription());
             updated = true;
         }
-        if(BigDecimalDefinition.equalBigDecimalNumericValues(seadData.getLatitude(), createdNewVersion.getLatitude())
+        if(!BigDecimalDefinition.equalBigDecimalNumericValues(seadData.getLatitude(), createdNewVersion.getLatitude())
                 && createdNewVersion.getLatitude() != null){
             seadData.setLatitude(createdNewVersion.getLatitude());
             updated = true;
         }
-        if(BigDecimalDefinition.equalBigDecimalNumericValues(seadData.getLongitude(), createdNewVersion.getLongitude())
+        if(!BigDecimalDefinition.equalBigDecimalNumericValues(seadData.getLongitude(), createdNewVersion.getLongitude())
                 && createdNewVersion.getLongitude() != null){
             seadData.setLongitude(createdNewVersion.getLongitude());
             updated = true;
         }
-        if(BigDecimalDefinition.equalBigDecimalNumericValues(seadData.getAltitude(), createdNewVersion.getAltitude())
+        if(!BigDecimalDefinition.equalBigDecimalNumericValues(seadData.getAltitude(), createdNewVersion.getAltitude())
                 && createdNewVersion.getAltitude() != null){
             seadData.setAltitude(createdNewVersion.getAltitude());
             updated = true;
         }
-        if(siteLocationUpdater.differingLocations()){
-            siteLocationUpdater.update(seadData);
+        if(!Objects.equals(seadData.getName(), createdNewVersion.getName())){
+            seadData.setName(createdNewVersion.getName());
             updated = true;
         }
         seadData.setUpdated(updated);

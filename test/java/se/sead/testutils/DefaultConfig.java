@@ -1,13 +1,7 @@
-package se.sead.util;
+package se.sead.testutils;
 
-import org.springframework.context.annotation.Bean;
 import se.sead.AccessReaderTest;
 import se.sead.ApplicationConfiguration;
-import se.sead.DataSourceFactory;
-import se.sead.DefaultAccessDatabaseReader;
-import se.sead.bugs.AccessReaderProvider;
-
-import javax.sql.DataSource;
 
 public abstract class DefaultConfig implements ApplicationConfiguration{
 

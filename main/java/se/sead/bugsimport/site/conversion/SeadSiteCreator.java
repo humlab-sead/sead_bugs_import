@@ -1,7 +1,7 @@
 package se.sead.bugsimport.site.conversion;
 
 import org.springframework.util.StringUtils;
-import se.sead.BigDecimalDefinition;
+import se.sead.testutils.BigDecimalDefinition;
 import se.sead.bugsimport.country.seadmodel.Location;
 import se.sead.bugsimport.site.bugsmodel.BugsSite;
 import se.sead.bugsimport.site.seadmodel.SeadSite;
@@ -12,18 +12,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 class SeadSiteCreator {
-    private List<Location> locations;
     private BugsSite bugsVersion;
     private SeadSite seadVersion;
     private String errorMessage;
 
-    public SeadSiteCreator(BugsSite bugsVersion, List<Location> locations) {
-        this.locations = locations;
+    public SeadSiteCreator(BugsSite bugsVersion) {
         this.bugsVersion = bugsVersion;
     }
 
-    public SeadSiteCreator(BugsSite bugsVersion, List<Location> locations, String errorMessage) {
-        this.locations = locations;
+    public SeadSiteCreator(BugsSite bugsVersion, String errorMessage) {
         this.bugsVersion = bugsVersion;
         this.errorMessage = errorMessage;
     }
@@ -36,7 +33,6 @@ class SeadSiteCreator {
         setLongitude();
         setNationalIdentifier();
         setDescription();
-        setLocations();
         setCustomErrorMessage();
         return seadVersion;
     }
@@ -70,25 +66,6 @@ class SeadSiteCreator {
 
     private void setDescription() {
         seadVersion.setDescription(bugsVersion.getInterp());
-    }
-
-    private void setLocations() {
-        if(!locations.isEmpty()){
-            List<SiteLocation> siteLocations = convertToSiteLocations();
-            seadVersion.setSiteLocations(siteLocations);
-        }
-    }
-
-    private List<SiteLocation> convertToSiteLocations() {
-        List<SiteLocation> siteLocations = new ArrayList<>(locations.size());
-        for (Location location :
-                locations) {
-            SiteLocation siteLocation = new SiteLocation();
-            siteLocation.setSite(seadVersion);
-            siteLocation.setLocation(location);
-            siteLocations.add(siteLocation);
-        }
-        return siteLocations;
     }
 
     private void setCustomErrorMessage(){

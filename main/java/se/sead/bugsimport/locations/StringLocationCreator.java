@@ -1,4 +1,4 @@
-package se.sead.bugsimport.site.locations;
+package se.sead.bugsimport.locations;
 
 import se.sead.bugsimport.country.LocationCreator;
 import se.sead.bugsimport.country.seadmodel.LocationType;

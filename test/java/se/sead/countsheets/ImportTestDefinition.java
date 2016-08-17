@@ -1,6 +1,6 @@
 package se.sead.countsheets;
 
-import se.sead.BigDecimalDefinition;
+import se.sead.testutils.BigDecimalDefinition;
 import se.sead.bugsimport.countsheets.bugsmodel.Countsheet;
 import se.sead.bugsimport.countsheets.seadmodel.SampleGroup;
 import se.sead.bugsimport.site.seadmodel.SeadSite;

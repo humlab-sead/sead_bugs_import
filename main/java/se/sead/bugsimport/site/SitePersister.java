@@ -23,8 +23,8 @@ public class SitePersister extends Persister<BugsSite, SeadSite> {
     @Override
     protected SeadSite save(SeadSite seadValue) {
         SeadSite saved = siteRepository.saveOrUpdate(seadValue);
-        List<SiteLocation> savedLocations = saveSiteLocations(seadValue.getSiteLocations(), saved);
-        saved.setSiteLocations(savedLocations);
+//        List<SiteLocation> savedLocations = saveSiteLocations(seadValue.getSiteLocations(), saved);
+//        saved.setSiteLocations(savedLocations);
         return saved;
     }
 

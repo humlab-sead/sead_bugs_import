@@ -1,5 +1,8 @@
 package se.sead.bugsimport.tracing.seadmodel;
 
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -7,6 +10,8 @@ import java.util.Date;
  * Created by erer0001 on 2016-04-28.
  */
 @Entity
+@DynamicInsert
+@DynamicUpdate
 @Table(name="bugs_trace", schema = "bugs_import")
 @SequenceGenerator(schema = "bugs_import", name = "bugs_trace_seq", sequenceName = "bugs_trace_bugs_trace_id_seq")
 public class BugsTrace extends BugsInformation{
@@ -55,6 +60,10 @@ public class BugsTrace extends BugsInformation{
 
     public Date getChangeDate() {
         return changeDate;
+    }
+
+    public void setChangeDate(Date changeDate) {
+        this.changeDate = changeDate;
     }
 
     public BugsTraceType getType() {

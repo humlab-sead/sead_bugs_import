@@ -1,4 +1,4 @@
-package se.sead.util;
+package se.sead.testutils;
 
 import se.sead.bugs.TraceableBugsData;
 import se.sead.bugsimport.tracing.seadmodel.BugsError;

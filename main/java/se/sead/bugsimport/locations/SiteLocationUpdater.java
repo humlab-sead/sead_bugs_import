@@ -1,7 +1,7 @@
-package se.sead.bugsimport.site.conversion;
+package se.sead.bugsimport.locations;
 
 import se.sead.bugsimport.country.seadmodel.Location;
-import se.sead.bugsimport.site.locations.LocationHandler;
+import se.sead.bugsimport.locations.LocationHandler;
 import se.sead.bugsimport.site.seadmodel.SeadSite;
 import se.sead.bugsimport.site.seadmodel.SiteLocation;
 

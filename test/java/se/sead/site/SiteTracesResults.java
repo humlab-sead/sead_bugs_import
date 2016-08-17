@@ -26,62 +26,54 @@ class SiteTracesResults {
     public void assertTracesForBugsData(BugsSite dataFromAccess, List<BugsTrace> traces, List<BugsError> errors){
         try {
             SiteBugsTraceAssertions traceAssertions = new SiteBugsTraceAssertions(traces);
-            SiteBugsErrorAssertions errorAssertions = new SiteBugsErrorAssertions(errors, dataFromAccess);
+            SiteBugsErrorAssertions errorAssertions = new SiteBugsErrorAssertions(errors);
             switch (dataFromAccess.getCode()) {
                 case "SITE000006":
-                    if(canUpdateSite && canCreateCountry){
-                        traceAssertions.assertUpdatedSite();
-                        traceAssertions.assertInsertedSiteLocations(1);
-                        traceAssertions.assertInsertedLocations(1);
-                    } else if(!canUpdateSite && !canCreateCountry){
-                        errorAssertions.assertCountryError();
-                    } else if(!canUpdateSite){
-                        errorAssertions.assertUpdateError();
-                    } else if(!canCreateCountry){
-                        errorAssertions.assertCountryError();
-                    }
+                    traceAssertions.assertPreinsertedSiteTrace();
                     break;
                 case "SITE000008":
-                    traceAssertions.assertNoMoreTraces();
-                    break;
                 case "SITE000009":
-                    if (canUpdateSite) {
+                case "SITE000020":
+                    traceAssertions.assertNewSite();
+                    break;
+                case "SITE000010":
+                    traceAssertions.assertPreinsertedSiteTrace();
+                    if(canUpdateSite){
                         traceAssertions.assertUpdatedSite();
                     } else {
                         errorAssertions.assertUpdateError();
                     }
                     break;
-                case "SITE000010":
-                    if (canCreateCountry) {
+                case "SITE000021":
+                    errorAssertions.assertSiteExistsError();
+                    break;
+                case "SITE000022":
+                    traceAssertions.assertPreinsertedSiteTrace();
+                    errorAssertions.assertSiteChangedError();
+                    break;
+                case "SITE000023":
+                    errorAssertions.assertCountryError();
+                    break;
+                case "SITE000024":
+                    if(canCreateCountry){
                         traceAssertions.assertNewSite();
-                        traceAssertions.assertInsertedSiteLocations(2);
-                        traceAssertions.assertInsertedLocations(1);
                     } else {
                         errorAssertions.assertCountryError();
                     }
                     break;
-                case "SITE000011":
-                case "SITE000012":
-                case "SITE000013":
-                case "SITE000020":
-                case "SITE001274":
-                    traceAssertions.assertNewSite();
-                    traceAssertions.assertInsertedSiteLocations(2);
-                    break;
-                case "SITE000017":
-                    if (canCreateCountry) {
-                        traceAssertions.assertNewSite();
-                        traceAssertions.assertInsertedSiteLocations(2);
-                        traceAssertions.assertInsertedLocations(2);
+                case "SITE000025":
+                    traceAssertions.assertPreinsertedSiteTrace();
+                    if(canUpdateSite){
+                        traceAssertions.assertUpdatedSite();
                     } else {
-                        errorAssertions.assertCountryError();
+                        errorAssertions.assertUpdateError();
                     }
                     break;
-                case "SITE000018":
-                case "SITE000019":
-                    traceAssertions.assertNewSite();
-                    traceAssertions.assertInsertedSiteLocations(2);
-                    traceAssertions.assertInsertedLocations(1);
+                case "SITE000026":
+                    errorAssertions.assertEmptyNameError();
+                    break;
+                case "SITE000027":
+                    errorAssertions.assertNonUniqueSite();
                     break;
             }
             traceAssertions.assertNoMoreTraces();
@@ -94,12 +86,16 @@ class SiteTracesResults {
 
     private static class SiteBugsTraceAssertions {
 
+        private Predicate<BugsTrace> preInsertedTestDataFilter
+                = trace -> trace.getSeadTable().equals("tbl_sites") && trace.getType() == null;
         private Predicate<BugsTrace> insertedSiteFilter
                 = trace -> trace.getSeadTable().equals("tbl_sites") && trace.getType() == BugsTraceType.INSERT;
         private Predicate<BugsTrace> updatedSiteFilter
                 = trace -> trace.getSeadTable().equals("tbl_sites") && trace.getType() == BugsTraceType.UPDATE;
         private Predicate<BugsTrace> insertedSiteLocationFilter
                 = trace -> trace.getSeadTable().equals("tbl_site_locations") && trace.getType() == BugsTraceType.INSERT;
+        private Predicate<BugsTrace> deletedSiteLocationFilter
+                = trace -> trace.getSeadTable().equals("tbl_site_locations") && trace.getType() == BugsTraceType.DELETE;
         private Predicate<BugsTrace> insertedLocationFilter
                 = trace -> trace.getSeadTable().equals("tbl_locations") && trace.getType() == BugsTraceType.INSERT;
 
@@ -143,23 +139,33 @@ class SiteTracesResults {
             assertAndRemoveNumberOfFound(updatedSiteFilter, 1);
         }
 
+        void assertDeleteSiteLocation(int expectedNumberOfDeletedSiteLocations){
+            assertAndRemoveNumberOfFound(deletedSiteLocationFilter, expectedNumberOfDeletedSiteLocations);
+        }
+
+        void assertPreinsertedSiteTrace(){
+            assertAndRemoveNumberOfFound(preInsertedTestDataFilter, 1);
+        }
+
     }
 
     private static class SiteBugsErrorAssertions {
 
-        private static final String EXPECTED_COUNTRY_ERROR = "No country exists for site %s";
+        private static final String EXPECTED_COUNTRY_ERROR = "No country exists for site";
         private static final String EXPECTED_UPDATE_ERRROR = "Bugs data is updated but updates are disallowed.";
+        private static final String EXPECTED_SITE_EXISTS_IN_NON_IMPORTED_MATERIAL_ERROR = "Site name exists for non-imported site";
+        private static final String EXPECTED_SITE_HAS_BEEN_CHANGED_IN_SEAD = "Sead data has been updated since last bugs import";
+        private static final String EXPECTED_EMPTY_NAME_ERROR = "Site name cannot be empty";
+        private static final String EXPECTED_MULTIPLE_SITES_EXISTS_FOR_NAME = "More than one site found by name and location";
 
         private List<BugsError> errors;
-        private BugsSite errorSite;
 
-        SiteBugsErrorAssertions(List<BugsError> errors, BugsSite errorSite){
+        SiteBugsErrorAssertions(List<BugsError> errors){
             this.errors = errors;
-            this.errorSite = errorSite;
         }
 
         void assertCountryError(){
-            assertAndRemoveContainingString(String.format(EXPECTED_COUNTRY_ERROR, errorSite.getCode()));
+            assertAndRemoveContainingString(EXPECTED_COUNTRY_ERROR);
         }
 
         private void assertAndRemoveContainingString(String errorsText){
@@ -174,6 +180,22 @@ class SiteTracesResults {
 
         void assertNoMoreErrors(){
             assertTrue(errors.isEmpty());
+        }
+
+        void assertSiteExistsError(){
+            assertAndRemoveContainingString(EXPECTED_SITE_EXISTS_IN_NON_IMPORTED_MATERIAL_ERROR);
+        }
+
+        void assertSiteChangedError(){
+            assertAndRemoveContainingString(EXPECTED_SITE_HAS_BEEN_CHANGED_IN_SEAD);
+        }
+
+        public void assertEmptyNameError() {
+            assertAndRemoveContainingString(EXPECTED_EMPTY_NAME_ERROR);
+        }
+
+        public void assertNonUniqueSite() {
+            assertAndRemoveContainingString(EXPECTED_MULTIPLE_SITES_EXISTS_FOR_NAME);
         }
     }
 }

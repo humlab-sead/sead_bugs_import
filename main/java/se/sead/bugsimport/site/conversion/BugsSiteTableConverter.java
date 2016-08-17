@@ -6,8 +6,10 @@ import org.springframework.stereotype.Component;
 import se.sead.bugsimport.BugsTableRowConverter;
 import se.sead.bugsimport.country.seadmodel.Location;
 import se.sead.bugsimport.site.bugsmodel.BugsSite;
-import se.sead.bugsimport.site.locations.LocationHandler;
+import se.sead.bugsimport.locations.LocationHandler;
+import se.sead.bugsimport.site.helper.SiteFromCodeAllowDeletedSite;
 import se.sead.bugsimport.site.seadmodel.SeadSite;
+import se.sead.bugsimport.tracing.seadmodel.BugsTrace;
 import se.sead.repositories.LocationRepository;
 import se.sead.repositories.LocationTypeRepository;
 import se.sead.repositories.SiteRepository;
@@ -24,6 +26,8 @@ public class BugsSiteTableConverter implements BugsTableRowConverter<BugsSite, S
     private LocationRepository locationRepository;
     @Autowired
     private SiteRepository siteRepository;
+    @Autowired
+    private SiteFromCodeAllowDeletedSite importSiteHelper;
     @Value("${allow.create.country:true}")
     private Boolean canCreateCountry;
     @Value("${allow.site.updates:false}")
@@ -44,57 +48,105 @@ public class BugsSiteTableConverter implements BugsTableRowConverter<BugsSite, S
         if(!locationHandler.countryExists()){
             return createMissingCountryLocationSite(bugsSite);
         }
-        List<SeadSite> possibleSites = getPossibleExistingSites(bugsSite, locationHandler);
-        if(possibleSites == null || possibleSites.isEmpty()){
-            return createSite(bugsSite, locationHandler.getLocations());
-        } else if(possibleSites.size() == 1){
-            return update(bugsSite, possibleSites.get(0), locationHandler);
+        UpdateHelper updateHelper = new UpdateHelper(bugsSite, locationHandler, importSiteHelper, allowSiteUpdates, siteRepository);
+        if(updateHelper.handle()){
+            return updateHelper.getFoundSeadSite();
+        } else if(updateHelper.getErrorMessage() == null){
+            return createSite(bugsSite);
         } else {
-            return createNonUniqueSite(bugsSite);
+            return createErrorSite(bugsSite, updateHelper.getErrorMessage());
         }
     }
 
     private SeadSite createMissingCountryLocationSite(BugsSite bugsSite){
+        return createErrorSite(bugsSite, "No country exists for site");
+    }
+
+    private SeadSite createErrorSite(BugsSite bugsSite, String errorMessage){
         return new SeadSiteCreator(
                 bugsSite,
-                Collections.EMPTY_LIST,
-                "No country exists for site " + bugsSite.getCode()
+                errorMessage
         ).create();
     }
 
-    private List<SeadSite> getPossibleExistingSites(BugsSite bugsSite, LocationHandler locationHandler) {
-        List<SeadSite> possibleSites;
-        if(!locationHandler.anyCreatedLocations()){
-            possibleSites = siteRepository.findByNameAndLocations(bugsSite.getName(), locationHandler.getLocations());
-        } else {
-            possibleSites = siteRepository.findAllByName(bugsSite.getName());
+    private SeadSite createSite(BugsSite bugsSite) {
+        return new SeadSiteCreator(bugsSite).create();
+    }
+
+    public static class UpdateHelper {
+
+        private SiteFromCodeAllowDeletedSite importSiteHelper;
+        private boolean allowSiteUpdates;
+        private SiteRepository siteRepository;
+
+        private LocationHandler locationHandler;
+        private String errorMessage = null;
+        private BugsSite bugsData;
+        private SeadSite foundSeadSite;
+
+        public UpdateHelper(
+                BugsSite bugsData,
+                LocationHandler locationHandler,
+                SiteFromCodeAllowDeletedSite importSiteHelper,
+                boolean allowSiteUpdates,
+                SiteRepository siteRepository) {
+            this.bugsData = bugsData;
+            this.locationHandler = locationHandler;
+            this.importSiteHelper = importSiteHelper;
+            this.allowSiteUpdates = allowSiteUpdates;
+            this.siteRepository = siteRepository;
         }
-        return possibleSites;
-    }
 
-    private SeadSite createSite(BugsSite bugsSite, List<Location> locations) {
-        return new SeadSiteCreator(bugsSite, locations).create();
-    }
-
-    private SeadSite update(BugsSite bugsData, SeadSite seadData, LocationHandler locationHandler){
-        SiteUpdater updater = new SiteUpdater(bugsData, seadData, locationHandler);
-        if(updater.needUpdates()) {
-            if(allowSiteUpdates) {
-                updater.doUpdates();
+        public boolean handle(){
+            BugsTrace latestTrace = importSiteHelper.getLatest(bugsData.getCode());
+            foundSeadSite = getFromTraceOrByNameAndLocation(latestTrace);
+            if(foundSeadSite == null){
+                return false;
+            } else if(siteHasBeenTouchedInSeadSinceImport(foundSeadSite, latestTrace)){
+                errorMessage = "Sead data has been updated since last bugs import";
             } else {
-                seadData.addError("Bugs data is updated but updates are disallowed.");
+                SiteUpdater updater = new SiteUpdater(bugsData, foundSeadSite);
+                if(updater.needUpdates()) {
+                    if (allowSiteUpdates) {
+                        updater.doUpdates();
+                    } else {
+                        errorMessage = "Bugs data is updated but updates are disallowed.";
+                    }
+                }
             }
+            return errorMessage == null;
         }
 
-        return seadData;
-    }
+        private SeadSite getFromTraceOrByNameAndLocation(BugsTrace latestTrace){
+            SeadSite seadSiteFromTrace = importSiteHelper.getSeadSiteFromTrace(latestTrace);
+            if(seadSiteFromTrace != null){
+                return seadSiteFromTrace;
+            }
+            List<SeadSite> possibleSites;
+            if(!locationHandler.anyCreatedLocations()){
+                possibleSites = siteRepository.findByNameAndLocations(bugsData.getName(), locationHandler.getLocations());
+            } else {
+                possibleSites = siteRepository.findAllByName(bugsData.getName());
+            }
+            if(possibleSites.size() == 1){
+                errorMessage = "Site name exists for non-imported site";
+            } else if(possibleSites.size() > 1){
+                errorMessage = "More than one site found by name and location";
+            }
+            return null;
+        }
 
-    private SeadSite createNonUniqueSite(BugsSite bugsSite){
-        return new SeadSiteCreator(
-                bugsSite,
-                Collections.EMPTY_LIST,
-                "More than one site found by name and location for code: " + bugsSite.getCode()
-        ).create();
-    }
+        private boolean siteHasBeenTouchedInSeadSinceImport(SeadSite seadSite, BugsTrace latestTrace){
+            return latestTrace != BugsTrace.NO_TRACE &&
+                    (seadSite.getDateUpdated().after(latestTrace.getChangeDate()));
+        }
 
+        public String getErrorMessage(){
+            return errorMessage;
+        }
+
+        public SeadSite getFoundSeadSite(){
+            return foundSeadSite;
+        }
+    }
 }

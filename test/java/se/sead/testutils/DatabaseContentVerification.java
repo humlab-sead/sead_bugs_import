@@ -1,4 +1,4 @@
-package se.sead.util;
+package se.sead.testutils;
 
 import se.sead.model.TestEqualityHelper;
 import se.sead.sead.model.LoggableEntity;
