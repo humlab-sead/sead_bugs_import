@@ -2,8 +2,8 @@ package se.sead.country;
 
 import org.junit.Test;
 import se.sead.AccessReaderTest;
-import se.sead.bugsimport.country.bugsmodel.Country;
-import se.sead.bugsimport.country.bugsmodel.CountryBugsTable;
+import se.sead.bugsimport.locations.country.bugsmodel.Country;
+import se.sead.bugsimport.locations.country.bugsmodel.CountryBugsTable;
 
 public class CountryReadTest extends AccessReaderTest<Country>{
 

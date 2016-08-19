@@ -1,4 +1,4 @@
-package se.sead.bugsimport.country.bugsmodel;
+package se.sead.bugsimport.locations.country.bugsmodel;
 
 import com.healthmarketscience.jackcess.Row;
 import se.sead.bugs.BugsTable;

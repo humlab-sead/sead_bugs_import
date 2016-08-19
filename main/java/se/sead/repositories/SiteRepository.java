@@ -2,7 +2,7 @@ package se.sead.repositories;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import se.sead.bugsimport.country.seadmodel.Location;
+import se.sead.bugsimport.locations.seadmodel.Location;
 import se.sead.bugsimport.site.seadmodel.SeadSite;
 
 import java.util.List;

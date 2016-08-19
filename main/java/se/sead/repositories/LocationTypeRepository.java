@@ -2,7 +2,7 @@ package se.sead.repositories;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
-import se.sead.bugsimport.country.seadmodel.LocationType;
+import se.sead.bugsimport.locations.seadmodel.LocationType;
 
 public interface LocationTypeRepository extends Repository<LocationType, Integer> {
 

@@ -1,7 +1,7 @@
 package se.sead.model;
 
-import se.sead.bugsimport.country.seadmodel.Location;
-import se.sead.bugsimport.country.seadmodel.LocationType;
+import se.sead.bugsimport.locations.seadmodel.Location;
+import se.sead.bugsimport.locations.seadmodel.LocationType;
 
 public class TestLocation extends Location {
 

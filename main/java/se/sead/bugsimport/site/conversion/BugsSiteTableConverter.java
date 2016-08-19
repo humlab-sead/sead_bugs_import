@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import se.sead.bugsimport.BugsTableRowConverter;
-import se.sead.bugsimport.country.seadmodel.Location;
 import se.sead.bugsimport.site.bugsmodel.BugsSite;
 import se.sead.bugsimport.locations.LocationHandler;
 import se.sead.bugsimport.site.helper.SiteFromCodeAllowDeletedSite;
@@ -14,7 +13,6 @@ import se.sead.repositories.LocationRepository;
 import se.sead.repositories.LocationTypeRepository;
 import se.sead.repositories.SiteRepository;
 
-import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -32,7 +30,6 @@ public class BugsSiteTableConverter implements BugsTableRowConverter<BugsSite, S
     private Boolean canCreateCountry;
     @Value("${allow.site.updates:false}")
     private Boolean allowSiteUpdates;
-
 
     @Override
     public SeadSite convertForDataRow(BugsSite bugsData) {
@@ -98,12 +95,11 @@ public class BugsSiteTableConverter implements BugsTableRowConverter<BugsSite, S
         }
 
         public boolean handle(){
-            BugsTrace latestTrace = importSiteHelper.getLatest(bugsData.getCode());
-            foundSeadSite = getFromTraceOrByNameAndLocation(latestTrace);
-            if(foundSeadSite == null){
+            foundSeadSite = getFromTraceOrByNameAndLocation();
+            if(foundSeadSite == null) {
                 return false;
-            } else if(siteHasBeenTouchedInSeadSinceImport(foundSeadSite, latestTrace)){
-                errorMessage = "Sead data has been updated since last bugs import";
+            } else if(!foundSeadSite.isErrorFree()){
+                return true;
             } else {
                 SiteUpdater updater = new SiteUpdater(bugsData, foundSeadSite);
                 if(updater.needUpdates()) {
@@ -117,8 +113,8 @@ public class BugsSiteTableConverter implements BugsTableRowConverter<BugsSite, S
             return errorMessage == null;
         }
 
-        private SeadSite getFromTraceOrByNameAndLocation(BugsTrace latestTrace){
-            SeadSite seadSiteFromTrace = importSiteHelper.getSeadSiteFromTrace(latestTrace);
+        private SeadSite getFromTraceOrByNameAndLocation(){
+            SeadSite seadSiteFromTrace = importSiteHelper.getSeadSiteFromBugsCode(bugsData.getCode());
             if(seadSiteFromTrace != null){
                 return seadSiteFromTrace;
             }
@@ -134,11 +130,6 @@ public class BugsSiteTableConverter implements BugsTableRowConverter<BugsSite, S
                 errorMessage = "More than one site found by name and location";
             }
             return null;
-        }
-
-        private boolean siteHasBeenTouchedInSeadSinceImport(SeadSite seadSite, BugsTrace latestTrace){
-            return latestTrace != BugsTrace.NO_TRACE &&
-                    (seadSite.getDateUpdated().after(latestTrace.getChangeDate()));
         }
 
         public String getErrorMessage(){

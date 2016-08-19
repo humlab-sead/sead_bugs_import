@@ -19,11 +19,12 @@ abstract class SiteFromTrace {
     private SiteRepository siteRepository;
 
     public SeadSite getSeadSiteFromBugsCode(String bugsSiteCode){
-        return getSeadSiteFromTrace(getLatest(bugsSiteCode));
-    }
-
-    public SeadSite getSeadSiteFromTrace(BugsTrace trace){
-        return siteRepository.findOne(trace.getSeadId());
+        BugsTrace latest = getLatest(bugsSiteCode);
+        SeadSite site = getSeadSiteFromTrace(latest);
+        if(siteExistsAndHasBeenEditedInSeadSinceImport(site, latest)){
+            return createErrorSite("Sead data has been updated since last bugs import");
+        }
+        return site;
     }
 
     public BugsTrace getLatest(String bugsSiteCode){
@@ -31,6 +32,21 @@ abstract class SiteFromTrace {
         return filteredResults(siteTraces);
     }
 
+    public SeadSite getSeadSiteFromTrace(BugsTrace trace){
+        return siteRepository.findOne(trace.getSeadId());
+    }
+
     protected abstract BugsTrace filteredResults(List<BugsTrace> siteTraces);
+
+    private boolean siteExistsAndHasBeenEditedInSeadSinceImport(SeadSite seadSite, BugsTrace latestTrace){
+        return seadSite != null && latestTrace != BugsTrace.NO_TRACE &&
+                seadSite.getDateUpdated().after(latestTrace.getChangeDate());
+    }
+
+    protected SeadSite createErrorSite(String errorMessage){
+        SeadSite errorSite = new SeadSite();
+        errorSite.addError(errorMessage);
+        return errorSite;
+    }
 
 }

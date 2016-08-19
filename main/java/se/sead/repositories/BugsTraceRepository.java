@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface BugsTraceRepository extends Repository<BugsTrace, Integer> {
     List<BugsTrace> findByBugsTableAndCompressedBugsData(String bugsTable, String compressedBugsData);
+    List<BugsTrace> findByBugsTableAndCompressedBugsDataOrderByChangeDate(String bugsTable, String compressedBugsData);
     List<BugsTrace> findByBugsTableAndBugsIdentifierOrderByChangeDate(String bugsTable, String bugsIdentifier);
     BugsTrace save(BugsTrace trace);
 }

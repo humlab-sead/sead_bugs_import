@@ -27,9 +27,6 @@ import javax.sql.DataSource;
 import java.util.Comparator;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration({Application.class, CountsheetImportTest.Config.class})
 @ActiveProfiles("test")

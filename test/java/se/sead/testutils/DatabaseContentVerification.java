@@ -35,8 +35,8 @@ public class DatabaseContentVerification<SeadType extends LoggableEntity> {
     public void verifyDatabaseContent(){
         List<SeadType> expectedData = contentProvider.getExpectedData();
         List<SeadType> actualData = contentProvider.getActualData();
-        assertEquals(expectedData.size(), actualData.size());
         sortIfPossible(expectedData, actualData);
+        assertEquals(expectedData.size(), actualData.size());
         TestEqualityHelper<SeadType> equalityHelper = contentProvider.getEqualityHelper();
         for (int i = 0; i < expectedData.size(); i++) {
             SeadType expected = expectedData.get(i);

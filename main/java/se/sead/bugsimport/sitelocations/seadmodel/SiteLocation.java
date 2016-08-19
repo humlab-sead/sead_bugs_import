@@ -1,6 +1,7 @@
-package se.sead.bugsimport.site.seadmodel;
+package se.sead.bugsimport.sitelocations.seadmodel;
 
-import se.sead.bugsimport.country.seadmodel.Location;
+import se.sead.bugsimport.locations.seadmodel.Location;
+import se.sead.bugsimport.site.seadmodel.SeadSite;
 import se.sead.sead.model.LoggableEntity;
 
 import javax.persistence.*;

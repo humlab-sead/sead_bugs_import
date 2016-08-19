@@ -2,14 +2,10 @@ package se.sead.bugsimport.site.conversion;
 
 import org.springframework.util.StringUtils;
 import se.sead.testutils.BigDecimalDefinition;
-import se.sead.bugsimport.country.seadmodel.Location;
 import se.sead.bugsimport.site.bugsmodel.BugsSite;
 import se.sead.bugsimport.site.seadmodel.SeadSite;
-import se.sead.bugsimport.site.seadmodel.SiteLocation;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 class SeadSiteCreator {
     private BugsSite bugsVersion;

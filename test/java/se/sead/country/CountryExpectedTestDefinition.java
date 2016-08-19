@@ -1,8 +1,8 @@
 package se.sead.country;
 
-import se.sead.bugsimport.country.bugsmodel.Country;
-import se.sead.bugsimport.country.seadmodel.Location;
-import se.sead.bugsimport.country.seadmodel.LocationType;
+import se.sead.bugsimport.locations.country.bugsmodel.Country;
+import se.sead.bugsimport.locations.seadmodel.Location;
+import se.sead.bugsimport.locations.seadmodel.LocationType;
 import se.sead.bugsimport.tracing.seadmodel.BugsTrace;
 import se.sead.model.TestLocation;
 
@@ -45,7 +45,7 @@ public class CountryExpectedTestDefinition {
 
     void assertTraces(Country bugsData, List<BugsTrace> traces) {
         if("Egypt".equals(bugsData.getCountry())){
-            assertTrue(traces.isEmpty());
+
         } else {
             assertTrue(traces.stream()
                     .map(trace -> trace.getSeadTable())

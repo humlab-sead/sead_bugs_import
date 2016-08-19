@@ -1,7 +1,7 @@
 package se.sead.bugsimport.locations;
 
-import se.sead.bugsimport.country.seadmodel.Location;
-import se.sead.bugsimport.country.seadmodel.LocationType;
+import se.sead.bugsimport.locations.seadmodel.Location;
+import se.sead.bugsimport.locations.seadmodel.LocationType;
 import se.sead.bugsimport.site.bugsmodel.BugsSite;
 import se.sead.repositories.LocationRepository;
 import se.sead.repositories.LocationTypeRepository;
@@ -68,11 +68,8 @@ public class LocationHandler {
         protected Location createLocation(String locationName){
             newLocationCreated = true;
             return
-                    new StringLocationCreator(
-                            getLocationType(),
-                            locationName,
-                            bugsData.getCode()
-                    ).create();
+                    new LocationCreator(getLocationType())
+                            .create(locationName);
         }
 
         public boolean isNewLocationCreated(){

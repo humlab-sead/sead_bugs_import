@@ -1,10 +1,10 @@
 package se.sead.site;
 
 import se.sead.testutils.BigDecimalDefinition;
-import se.sead.bugsimport.country.seadmodel.LocationType;
+import se.sead.bugsimport.locations.seadmodel.LocationType;
 import se.sead.bugsimport.site.bugsmodel.BugsSite;
 import se.sead.bugsimport.site.seadmodel.SeadSite;
-import se.sead.bugsimport.site.seadmodel.SiteLocation;
+import se.sead.bugsimport.sitelocations.seadmodel.SiteLocation;
 import se.sead.bugsimport.translations.model.TypeTranslation;
 import se.sead.model.TestLocation;
 import se.sead.model.TestSeadSite;

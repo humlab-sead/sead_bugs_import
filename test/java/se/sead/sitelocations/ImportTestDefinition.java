@@ -1,0 +1,292 @@
+package se.sead.sitelocations;
+
+import se.sead.bugsimport.locations.seadmodel.Location;
+import se.sead.bugsimport.locations.seadmodel.LocationType;
+import se.sead.bugsimport.site.seadmodel.SeadSite;
+import se.sead.bugsimport.sitelocations.bugsmodel.BugsSiteLocation;
+import se.sead.bugsimport.sitelocations.seadmodel.SiteLocation;
+import se.sead.bugsimport.tracing.seadmodel.BugsError;
+import se.sead.bugsimport.tracing.seadmodel.BugsTrace;
+import se.sead.model.TestLocation;
+import se.sead.model.TestSeadSite;
+import se.sead.model.TestSiteLocation;
+import se.sead.repositories.LocationRepository;
+import se.sead.repositories.LocationTypeRepository;
+import se.sead.repositories.SiteRepository;
+
+import java.util.*;
+
+import static se.sead.sitelocations.AssertHelper.*;
+
+public class ImportTestDefinition {
+
+    private Map<String, SeadSite> sites;
+    private Map<String, Location> locations;
+    private LocationType administrativeLocationType;
+    private LocationType countryType;
+
+    ImportTestDefinition(SiteRepository siteRepository, LocationRepository locationRepository, LocationTypeRepository locationTypeRepository){
+        setupSites(siteRepository);
+        setupLocations(locationRepository);
+        administrativeLocationType = locationTypeRepository.getAdministrativeRegionType();
+        countryType = locationTypeRepository.getCountryType();
+    }
+
+    private void setupSites(SiteRepository siteRepository){
+        sites = new HashMap<>(15);
+        sites.put("all locations exists", siteRepository.findOne(1));
+        sites.put("new region", siteRepository.findOne(2));
+        sites.put("change country", siteRepository.findOne(3));
+        sites.put("change region", siteRepository.findOne(4));
+        sites.put("No locations stored", siteRepository.findOne(5));
+        sites.put("Change country and region", siteRepository.findOne(6));
+        sites.put("Localized region", siteRepository.findOne(7));
+        sites.put("Region with same name different type", siteRepository.findOne(8));
+        sites.put("Sead changed after bugs import", siteRepository.findOne(9));
+        sites.put("Sead locations changed after bugs import", siteRepository.findOne(10));
+        sites.put("Country does not exist", siteRepository.findOne(11));
+        sites.put("Region does not exist", siteRepository.findOne(12));
+        sites.put("Empty country", siteRepository.findOne(13));
+        sites.put("Empty region", siteRepository.findOne(14));
+        sites.put("New site", createNewSite());
+    }
+
+    private void setupLocations(LocationRepository repository){
+        locations = new HashMap<>();
+        locations.put("Country", repository.findOne(1));
+        locations.put("Region", repository.findOne(3));
+        locations.put("Other country", repository.findOne(2));
+        locations.put("Other region", repository.findOne(4));
+        locations.put("Moen", repository.findOne(6));
+        locations.put("Skane", repository.findOne(7));
+        locations.put("Region type", repository.findOne(5));
+    }
+
+    private SeadSite createNewSite() {
+        return TestSeadSite.create(null, "New site", null, null, null, null, null);
+    }
+
+    public List<SiteLocation> getExpectedData(boolean canCreateCountry){
+        List<SiteLocation> expectedData = new ArrayList<>();
+
+        expectedData.addAll(getAllLocationsExistsLocations());
+        expectedData.addAll(getNewRegionLocations());
+        expectedData.addAll(getChangeCountryLocations());
+        expectedData.addAll(getChangeRegionLocations());
+        expectedData.addAll(getNoLocationsStoredLocations());
+        expectedData.addAll(getChangeCountryAndRegionLocations());
+        expectedData.addAll(getLocalizedRegionLocations());
+        expectedData.addAll(getRegionWithSameNameDifferentTypeLocations());
+        expectedData.addAll(getSiteChangedAfterImportLocations());
+        expectedData.addAll(getSiteLocationsChangedAfterImportLocations());
+        expectedData.addAll(getCountryDoesNotExistLocations(canCreateCountry));
+        expectedData.addAll(getRegionDoesNotExistLocations());
+        expectedData.addAll(getEmptyRegionLocations());
+        expectedData.addAll(getNewSiteLocations());
+
+        return expectedData;
+    }
+
+    private List<? extends SiteLocation> getAllLocationsExistsLocations() {
+        SeadSite site = sites.get("all locations exists");
+        return Arrays.asList(
+                TestSiteLocation.create(1, locations.get("Country"), site),
+                TestSiteLocation.create(2, locations.get("Region"), site)
+        );
+    }
+
+    private List<? extends SiteLocation> getNewRegionLocations() {
+        SeadSite site = sites.get("new region");
+        return Arrays.asList(
+                TestSiteLocation.create(3, locations.get("Country"), site),
+                TestSiteLocation.create(null, locations.get("Region"), site)
+        );
+    }
+
+    private List<? extends SiteLocation> getChangeCountryLocations() {
+        SeadSite site = sites.get("change country");
+        return Arrays.asList(
+                TestSiteLocation.create(null, locations.get("Other country"), site),
+                TestSiteLocation.create(5, locations.get("Region"), site)
+        );
+    }
+
+    private List<? extends SiteLocation> getChangeRegionLocations() {
+        SeadSite site = sites.get("change region");
+        return Arrays.asList(
+                TestSiteLocation.create(6, locations.get("Country"), site),
+                TestSiteLocation.create(null, locations.get("Other region"), site)
+        );
+    }
+
+    private List<? extends SiteLocation> getNoLocationsStoredLocations() {
+        SeadSite site = sites.get("No locations stored");
+        return Arrays.asList(
+            TestSiteLocation.create(null, locations.get("Country"), site),
+                TestSiteLocation.create(null, locations.get("Region"), site)
+        );
+    }
+
+    private List<? extends SiteLocation> getChangeCountryAndRegionLocations() {
+        SeadSite site = sites.get("Change country and region");
+        return Arrays.asList(
+            TestSiteLocation.create(null, locations.get("Other country"), site),
+                TestSiteLocation.create(null, locations.get("Other region"), site)
+        );
+    }
+
+    private List<? extends SiteLocation> getLocalizedRegionLocations() {
+        SeadSite site = sites.get("Localized region");
+        return Arrays.asList(
+                TestSiteLocation.create(11, locations.get("Skane"), site),
+                TestSiteLocation.create(null, locations.get("Moen"), site)
+        );
+    }
+
+    private List<? extends SiteLocation> getRegionWithSameNameDifferentTypeLocations() {
+        SeadSite site = sites.get("Region with same name different type");
+        return Arrays.asList(
+                TestSiteLocation.create(12, locations.get("Country"), site),
+                TestSiteLocation.create(null, locations.get("Region type"), site)
+        );
+    }
+
+    private List<? extends SiteLocation> getSiteChangedAfterImportLocations() {
+        SeadSite site = sites.get("Sead changed after bugs import");
+        return Arrays.asList(
+                TestSiteLocation.create(14, locations.get("Country"), site),
+                    TestSiteLocation.create(15, locations.get("Region"), site)
+        );
+    }
+
+    private List<? extends SiteLocation> getSiteLocationsChangedAfterImportLocations() {
+        SeadSite site = sites.get("Sead locations changed after bugs import");
+        return Arrays.asList(
+                TestSiteLocation.create(16, locations.get("Country"), site),
+                TestSiteLocation.create(17, locations.get("Region"), site)
+        );
+    }
+
+    private List<? extends SiteLocation> getCountryDoesNotExistLocations(boolean canCreateCountry) {
+        SeadSite site = sites.get("Country does not exist");
+        if(canCreateCountry) {
+            return Arrays.asList(
+                    TestSiteLocation.create(null, TestLocation.create(null, "Nonexisting", countryType), site),
+                    TestSiteLocation.create(null, locations.get("Region"), site)
+            );
+        }
+        return Collections.EMPTY_LIST;
+    }
+
+    private List<? extends SiteLocation> getRegionDoesNotExistLocations() {
+        SeadSite site = sites.get("Region does not exist");
+        return Arrays.asList(
+                TestSiteLocation.create(null, locations.get("Country"), site),
+                TestSiteLocation.create(null, TestLocation.create(null, "Nonexisting", administrativeLocationType), site)
+        );
+    }
+
+    private List<? extends SiteLocation> getEmptyRegionLocations(){
+        return Arrays.asList(
+            TestSiteLocation.create(18, locations.get("Country"), sites.get("Empty region"))
+        );
+    }
+
+    private List<? extends SiteLocation> getNewSiteLocations() {
+        SeadSite site = sites.get("New site");
+        return Arrays.asList(
+                TestSiteLocation.create(null, locations.get("Country"), site),
+                TestSiteLocation.create(null, locations.get("Region"), site)
+        );
+    }
+
+    void checkTracesAndErrors(BugsSiteLocation bugsData, List<BugsTrace> traces, List<BugsError> errors, boolean canCreateCountries){
+        switch(bugsData.getSiteCode()){
+            case "SITE000001":
+                assertEmpty(traces);
+                assertEmpty(errors);
+                break;
+            case "SITE000002":
+                assertInserts(traces, 1);
+                assertSize(traces, 1);
+                assertEmpty(errors);
+                break;
+            case "SITE000003":
+                assertUpdates(traces,1);
+                assertSize(traces, 2);
+                assertEmpty(errors);
+                break;
+            case "SITE000004":
+                assertUpdates(traces, 1);
+                assertSize(traces, 2);
+                assertEmpty(errors);
+                break;
+            case "SITE000005":
+                assertInserts(traces, 2);
+                assertSize(traces, 2);
+                assertEmpty(errors);
+                break;
+            case "SITE000006":
+                assertUpdates(traces, 2);
+                assertSize(traces, 4);
+                assertEmpty(errors);
+                break;
+            case "SITE000007":
+                assertInserts(traces, 1);
+                assertSize(traces, 1);
+                assertEmpty(errors);
+                break;
+            case "SITE000008":
+                assertUpdates(traces, 1);
+                assertSize(traces, 2);
+                assertEmpty(errors);
+                break;
+            case "SITE000009":
+                assertEmpty(traces);
+                assertContainsError(errors, "Sead data has been updated since last bugs import");
+                assertSize(errors, 1);
+                break;
+            case "SITE000010":
+                assertEmpty(traces);
+                assertContainsError(errors, "Sead site has been updated since last bugs import");
+                assertSize(errors, 2);
+                break;
+            case "SITE000011":
+                if(canCreateCountries){
+                    assertInserts(traces, 2);
+                    assertLocationInserts(traces, 1);
+                    assertSize(traces, 3);
+                    assertEmpty(errors);
+                } else {
+                    assertEmpty(traces);
+                    assertContainsError(errors, "Creation of new country locations not allowed");
+                    assertSize(errors, 1);
+                }
+                break;
+            case "SITE000012":
+                assertInserts(traces, 2);
+                assertLocationInserts(traces, 1);
+                assertSize(traces, 3);
+                assertEmpty(errors);
+                break;
+            case "SITE000013":
+            case "SITE000014":
+                assertEmpty(traces);
+                assertContainsError(errors, "Location name cannot be empty");
+                assertSize(errors, 1);
+                break;
+            case "SITE000015":
+                assertInserts(traces, 2);
+                assertSize(traces, 2);
+                assertEmpty(errors);
+                break;
+            case "SITE000016":
+                assertEmpty(traces);
+                assertContainsError(errors, "Could not find imported site");
+                assertSize(errors, 1);
+                break;
+        }
+    }
+
+
+}

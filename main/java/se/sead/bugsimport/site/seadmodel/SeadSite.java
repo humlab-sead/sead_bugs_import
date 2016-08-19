@@ -1,13 +1,11 @@
 package se.sead.bugsimport.site.seadmodel;
 
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
+import se.sead.bugsimport.sitelocations.seadmodel.SiteLocation;
 import se.sead.sead.model.LoggableEntity;
 import se.sead.testutils.BigDecimalDefinition;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -31,10 +29,7 @@ public class SeadSite extends LoggableEntity implements Comparable<SeadSite>{
     private String description;
     @Column(name="site_name")
     private String name;
-    @OneToMany(
-            mappedBy = "site",
-            fetch = FetchType.EAGER
-    )
+    @OneToMany(mappedBy = "site")
     private List<SiteLocation> siteLocations;
 
     @Override

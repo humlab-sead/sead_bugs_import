@@ -1,4 +1,4 @@
-package se.sead.bugsimport.country.bugsmodel;
+package se.sead.bugsimport.locations.country.bugsmodel;
 
 import se.sead.bugs.TraceableBugsData;
 

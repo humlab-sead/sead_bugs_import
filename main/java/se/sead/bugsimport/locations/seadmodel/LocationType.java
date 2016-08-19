@@ -1,10 +1,10 @@
-package se.sead.bugsimport.country.seadmodel;
+package se.sead.bugsimport.locations.seadmodel;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name="tbl_location_types")
-public class LocationType {
+public class LocationType implements Comparable<LocationType>{
 
     @Id
     @Column(name="location_type_id", nullable = false)
@@ -57,5 +57,18 @@ public class LocationType {
         result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + (name != null ? name.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "LocationType{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
+
+    @Override
+    public int compareTo(LocationType o) {
+        return id.compareTo(o.id);
     }
 }

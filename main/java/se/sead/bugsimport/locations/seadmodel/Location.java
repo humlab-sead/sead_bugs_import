@@ -1,4 +1,4 @@
-package se.sead.bugsimport.country.seadmodel;
+package se.sead.bugsimport.locations.seadmodel;
 
 
 import se.sead.sead.model.LoggableEntity;
@@ -68,6 +68,16 @@ public class Location extends LoggableEntity implements Comparable<Location>{
 
     @Override
     public int compareTo(Location o) {
-        return name.compareTo(o.getName());
+        return type.compareTo(o.getType()) +
+               name.compareTo(o.getName());
+    }
+
+    @Override
+    public String toString() {
+        return "Location{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", type=" + type +
+                '}';
     }
 }
