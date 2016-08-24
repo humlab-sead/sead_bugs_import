@@ -2,10 +2,8 @@ package se.sead.bugsimport.site.conversion;
 
 import se.sead.testutils.BigDecimalDefinition;
 import se.sead.bugsimport.site.bugsmodel.BugsSite;
-import se.sead.bugsimport.locations.LocationHandler;
 import se.sead.bugsimport.site.seadmodel.SeadSite;
 
-import java.util.Collections;
 import java.util.Objects;
 
 class SiteUpdater {

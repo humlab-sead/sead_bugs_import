@@ -104,7 +104,7 @@ public class SiteLocationImportTest {
         logVerification = new BugsTracesAndErrorsVerification<>(
             traceRepository,
             errorRepository,
-            (bugsData, traces, errors) -> testDefinition.checkTracesAndErrors(bugsData, traces, errors, canCreateCountry),
+            new SiteLocationTracesAndErrors(canCreateCountry),
             () -> ExpectedBugsData.EXPECTED_BUGS_DATA
         );
     }

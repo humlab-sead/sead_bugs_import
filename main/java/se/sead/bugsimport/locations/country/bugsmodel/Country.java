@@ -29,6 +29,11 @@ public class Country extends TraceableBugsData {
     }
 
     @Override
+    public String getBugsIdentifier() {
+        return countryCode;
+    }
+
+    @Override
     public String bugsTable() {
         return CountryBugsTable.TABLE_NAME;
     }

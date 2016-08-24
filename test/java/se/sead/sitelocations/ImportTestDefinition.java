@@ -7,6 +7,7 @@ import se.sead.bugsimport.sitelocations.bugsmodel.BugsSiteLocation;
 import se.sead.bugsimport.sitelocations.seadmodel.SiteLocation;
 import se.sead.bugsimport.tracing.seadmodel.BugsError;
 import se.sead.bugsimport.tracing.seadmodel.BugsTrace;
+import se.sead.bugsimport.tracing.seadmodel.BugsTraceType;
 import se.sead.model.TestLocation;
 import se.sead.model.TestSeadSite;
 import se.sead.model.TestSiteLocation;
@@ -15,8 +16,6 @@ import se.sead.repositories.LocationTypeRepository;
 import se.sead.repositories.SiteRepository;
 
 import java.util.*;
-
-import static se.sead.sitelocations.AssertHelper.*;
 
 public class ImportTestDefinition {
 
@@ -199,94 +198,5 @@ public class ImportTestDefinition {
                 TestSiteLocation.create(null, locations.get("Region"), site)
         );
     }
-
-    void checkTracesAndErrors(BugsSiteLocation bugsData, List<BugsTrace> traces, List<BugsError> errors, boolean canCreateCountries){
-        switch(bugsData.getSiteCode()){
-            case "SITE000001":
-                assertEmpty(traces);
-                assertEmpty(errors);
-                break;
-            case "SITE000002":
-                assertInserts(traces, 1);
-                assertSize(traces, 1);
-                assertEmpty(errors);
-                break;
-            case "SITE000003":
-                assertUpdates(traces,1);
-                assertSize(traces, 2);
-                assertEmpty(errors);
-                break;
-            case "SITE000004":
-                assertUpdates(traces, 1);
-                assertSize(traces, 2);
-                assertEmpty(errors);
-                break;
-            case "SITE000005":
-                assertInserts(traces, 2);
-                assertSize(traces, 2);
-                assertEmpty(errors);
-                break;
-            case "SITE000006":
-                assertUpdates(traces, 2);
-                assertSize(traces, 4);
-                assertEmpty(errors);
-                break;
-            case "SITE000007":
-                assertInserts(traces, 1);
-                assertSize(traces, 1);
-                assertEmpty(errors);
-                break;
-            case "SITE000008":
-                assertUpdates(traces, 1);
-                assertSize(traces, 2);
-                assertEmpty(errors);
-                break;
-            case "SITE000009":
-                assertEmpty(traces);
-                assertContainsError(errors, "Sead data has been updated since last bugs import");
-                assertSize(errors, 1);
-                break;
-            case "SITE000010":
-                assertEmpty(traces);
-                assertContainsError(errors, "Sead site has been updated since last bugs import");
-                assertSize(errors, 2);
-                break;
-            case "SITE000011":
-                if(canCreateCountries){
-                    assertInserts(traces, 2);
-                    assertLocationInserts(traces, 1);
-                    assertSize(traces, 3);
-                    assertEmpty(errors);
-                } else {
-                    assertEmpty(traces);
-                    assertContainsError(errors, "Creation of new country locations not allowed");
-                    assertSize(errors, 1);
-                }
-                break;
-            case "SITE000012":
-                assertInserts(traces, 2);
-                assertLocationInserts(traces, 1);
-                assertSize(traces, 3);
-                assertEmpty(errors);
-                break;
-            case "SITE000013":
-            case "SITE000014":
-                assertEmpty(traces);
-                assertContainsError(errors, "Location name cannot be empty");
-                assertSize(errors, 1);
-                break;
-            case "SITE000015":
-                assertInserts(traces, 2);
-                assertSize(traces, 2);
-                assertEmpty(errors);
-                break;
-            case "SITE000016":
-                assertEmpty(traces);
-                assertContainsError(errors, "Could not find imported site");
-                assertSize(errors, 1);
-                break;
-        }
-    }
-
 
 }
