@@ -1,4 +1,4 @@
-package se.sead.testutils;
+package se.sead.utils;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -10,6 +10,9 @@ public class BigDecimalDefinition {
     public static final int SEAD_SCALE = 10;
 
     public static BigDecimal convertToSeadContext(Float bugsValue){
+        if(bugsValue == null){
+            return null;
+        }
         return convertToSeadContext(bugsValue.toString());
     }
 

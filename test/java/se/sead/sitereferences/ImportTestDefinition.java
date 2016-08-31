@@ -1,6 +1,6 @@
 package se.sead.sitereferences;
 
-import se.sead.testutils.BigDecimalDefinition;
+import se.sead.utils.BigDecimalDefinition;
 import se.sead.bugsimport.site.seadmodel.SeadSite;
 import se.sead.bugsimport.sitereferences.seadmodel.SiteReference;
 import se.sead.bugsimport.tracing.seadmodel.BugsError;

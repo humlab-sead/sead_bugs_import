@@ -1,7 +1,6 @@
-package se.sead.util;
+package se.sead.utils;
 
 import org.junit.Test;
-import se.sead.testutils.BigDecimalDefinition;
 
 import java.math.BigDecimal;
 import java.math.MathContext;

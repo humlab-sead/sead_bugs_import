@@ -15,10 +15,13 @@ import se.sead.Application;
 import se.sead.DataSourceFactory;
 import se.sead.DefaultAccessDatabaseReader;
 import se.sead.bugs.AccessReaderProvider;
+import se.sead.bugsimport.countsheets.bugsmodel.Countsheet;
 import se.sead.bugsimport.site.seadmodel.SeadSite;
 import se.sead.bugsimport.sitelocations.SiteLocationImporter;
 import se.sead.bugsimport.sitelocations.bugsmodel.BugsSiteLocation;
 import se.sead.bugsimport.sitelocations.seadmodel.SiteLocation;
+import se.sead.bugsimport.tracing.seadmodel.BugsError;
+import se.sead.bugsimport.tracing.seadmodel.BugsTrace;
 import se.sead.model.TestEqualityHelper;
 import se.sead.repositories.*;
 import se.sead.testutils.BugsTracesAndErrorsVerification;
@@ -101,7 +104,7 @@ public class SiteLocationImportTest {
     }
 
     private void createLogVerification(){
-        logVerification = new BugsTracesAndErrorsVerification<>(
+        logVerification = new BugsTracesAndErrorsVerification.ByCompressed<>(
             traceRepository,
             errorRepository,
             new SiteLocationTracesAndErrors(canCreateCountry),

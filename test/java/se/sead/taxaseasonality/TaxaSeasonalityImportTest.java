@@ -4,18 +4,18 @@ package se.sead.taxaseasonality;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 import se.sead.Application;
 import se.sead.DataSourceFactory;
 import se.sead.DefaultAccessDatabaseReader;
 import se.sead.bugs.AccessReaderProvider;
 import se.sead.bugsimport.species.converters.TaxonomicOrderConverter;
-import se.sead.bugsimport.species.seadmodel.TaxaSpecies;
 import se.sead.bugsimport.taxaseasonality.TaxaSeasonalityImporter;
 import se.sead.bugsimport.taxaseasonality.bugsmodel.SeasonActiveAdult;
 import se.sead.bugsimport.taxaseasonality.seadmodel.TaxaSeasonality;
@@ -25,16 +25,14 @@ import se.sead.testutils.DatabaseContentVerification;
 import se.sead.testutils.DefaultConfig;
 
 import javax.sql.DataSource;
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration({Application.class, TaxaSeasonalityImportTest.Config.class})
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes={Application.class, TaxaSeasonalityImportTest.Config.class})
 @ActiveProfiles("test")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@TestConfiguration
 public class TaxaSeasonalityImportTest {
 
     @Configuration
@@ -84,7 +82,7 @@ public class TaxaSeasonalityImportTest {
     private BugsTracesAndErrorsVerification<SeasonActiveAdult> tracesAndErrorsVerification;
     private DatabaseContentVerification<TaxaSeasonality> databaseContentVerification;
 
-//    @Test
+    @Test
     public void run(){
         createTestDefinition();
         importer.run();
@@ -110,7 +108,7 @@ public class TaxaSeasonalityImportTest {
     }
 
     private void setupTracesAndErrorsVerification(){
-        tracesAndErrorsVerification = new BugsTracesAndErrorsVerification<>(
+        tracesAndErrorsVerification = new BugsTracesAndErrorsVerification.ByIdentity<>(
                 traceRepository,
                 errorRepository,
                 new TaxaSeasonalityTracesAndErrorsVerification(),

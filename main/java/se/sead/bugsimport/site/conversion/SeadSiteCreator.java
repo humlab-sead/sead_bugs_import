@@ -1,7 +1,7 @@
 package se.sead.bugsimport.site.conversion;
 
 import org.springframework.util.StringUtils;
-import se.sead.testutils.BigDecimalDefinition;
+import se.sead.utils.BigDecimalDefinition;
 import se.sead.bugsimport.site.bugsmodel.BugsSite;
 import se.sead.bugsimport.site.seadmodel.SeadSite;
 

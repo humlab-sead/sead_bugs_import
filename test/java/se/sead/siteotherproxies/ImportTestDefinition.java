@@ -1,6 +1,6 @@
 package se.sead.siteotherproxies;
 
-import se.sead.testutils.BigDecimalDefinition;
+import se.sead.utils.BigDecimalDefinition;
 import se.sead.bugsimport.site.seadmodel.SeadSite;
 import se.sead.bugsimport.siteotherproxies.bugsmodel.SiteOtherProxies;
 import se.sead.bugsimport.siteotherproxies.seadmodel.SiteOtherRecord;

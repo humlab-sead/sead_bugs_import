@@ -32,43 +32,42 @@ insert into tbl_sites (site_id, site_name, national_site_identifier, latitude_dd
 insert into tbl_sites (site_id, site_name, national_site_identifier, latitude_dd, longitude_dd, altitude, site_description)
     values (6, 'Knepp Cattle Dung', null, 0, 0, 1, 'SITE000969');
 
-insert into bugs_import.bugs_trace (bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id) values
-  ('TSite', 'SITE000006Abingdon: Stert Street', 'SITE000006', 'tbl_sites', 1);
-insert into bugs_import.bugs_trace (bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id) values
-  ('TSite', 'SITE000009Aghnadarragh', 'SITE000009', 'tbl_sites', 2);
-insert into bugs_import.bugs_trace (bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id) values
-  ('TSite', 'SITE000010Akrotiri', 'SITE000010', 'tbl_sites', 3);
-insert into bugs_import.bugs_trace (bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id) values
-  ('TSite', 'SITE000158Dendermonde', 'SITE000158', 'tbl_sites', 4);
-insert into bugs_import.bugs_trace (bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id) values
-  ('TSite', 'SITE000251Garden under Sandet (GUS)', 'SITE000251', 'tbl_sites', 5);
-insert into bugs_import.bugs_trace (bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id) values
-  ('TSite', 'SITE000969Knepp Cattle Dung', 'SITE000969', 'tbl_sites', 6);
+insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id) values
+  (1, 'TSite', 'SITE000006Abingdon: Stert Street', 'SITE000006', 'tbl_sites', 1);
+insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id) values
+  (2, 'TSite', 'SITE000009Aghnadarragh', 'SITE000009', 'tbl_sites', 2);
+insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id) values
+  (3, 'TSite', 'SITE000010Akrotiri', 'SITE000010', 'tbl_sites', 3);
+insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id) values
+  (4, 'TSite', 'SITE000158Dendermonde', 'SITE000158', 'tbl_sites', 4);
+insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id) values
+  (5, 'TSite', 'SITE000251Garden under Sandet (GUS)', 'SITE000251', 'tbl_sites', 5);
+insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id) values
+  (6, 'TSite', 'SITE000969Knepp Cattle Dung', 'SITE000969', 'tbl_sites', 6);
 
 insert into tbl_sample_groups (sample_group_id, site_id, sampling_context_id, method_id, sample_group_name)
     values (1, 1, 1, 1, 'Abingdon Stert Street_bugsdata');
-insert into bugs_import.bugs_trace (bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
-    values ('TCountsheet', '', 'COUN000482', 'tbl_sample_groups', 1);
+insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
+    values (7, 'TCountsheet', '', 'COUN000482', 'tbl_sample_groups', 1);
 
 insert into tbl_sample_groups (sample_group_id, site_id, sampling_context_id, method_id, sample_group_name)
     values (2, 3, 1, 1, 'Akrotiri Silk');
-insert into bugs_import.bugs_trace (bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
-    values ('TCountsheet', '', 'COUN000927', 'tbl_sample_groups', 2);
+insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
+    values (8, 'TCountsheet', '', 'COUN000927', 'tbl_sample_groups', 2);
 
 
 insert into tbl_sample_groups (sample_group_id, site_id, sampling_context_id, method_id, sample_group_name)
     values (3, 5, 1, 1, 'Garden Under Sandet 1995_bugsdata.XLS');
-insert into bugs_import.bugs_trace (bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
-values ('TCountsheet', '', 'COUN000132', 'tbl_sample_groups', 3);
+insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
+values (9, 'TCountsheet', '', 'COUN000132', 'tbl_sample_groups', 3);
 
 insert into tbl_sample_groups (sample_group_id, site_id, sampling_context_id, method_id, sample_group_name)
     values (4, 1, 5, 1, 'A name that is changed');
-insert into bugs_import.bugs_trace (bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
-    values ('TCountsheet', '', 'COUNUPDATE', 'tbl_sample_groups', 4);
+insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
+    values (10, 'TCountsheet', '', 'COUNUPDATE', 'tbl_sample_groups', 4);
 
 insert into tbl_sample_groups (sample_group_id, site_id, sampling_context_id, method_id, sample_group_name)
     values (5, 3, 1, 1, 'Name exists outside of bugs');
-
 
 insert into bugs_import.bugs_type_translations (bugs_table, bugs_column, triggering_column_value, target_column, replacement_value)
     values ('TCountsheet', 'sheetContext', 'Archaeological contexts', 'sheetContext', 'Archaeological site');

@@ -1,5 +1,6 @@
 package se.sead.testutils;
 
+import org.aspectj.weaver.tools.Trace;
 import se.sead.bugs.TraceableBugsData;
 import se.sead.bugsimport.tracing.seadmodel.BugsError;
 import se.sead.bugsimport.tracing.seadmodel.BugsTrace;
@@ -8,7 +9,7 @@ import se.sead.repositories.BugsTraceRepository;
 
 import java.util.List;
 
-public class BugsTracesAndErrorsVerification<BugsType extends TraceableBugsData> {
+public abstract class BugsTracesAndErrorsVerification<BugsType extends TraceableBugsData> {
 
     @FunctionalInterface
     public interface LogVerificationCallback<BugsType> {
@@ -21,8 +22,8 @@ public class BugsTracesAndErrorsVerification<BugsType extends TraceableBugsData>
 
     private LogVerificationCallback<BugsType> logVerificationHandler;
     private ExpectedImportBugsDataProvider<BugsType> expectedBugsData;
-    private BugsTraceRepository traceRepository;
-    private BugsErrorRepository errorRepository;
+    protected BugsTraceRepository traceRepository;
+    protected BugsErrorRepository errorRepository;
 
     public BugsTracesAndErrorsVerification(
             BugsTraceRepository traceRepository,
@@ -37,10 +38,54 @@ public class BugsTracesAndErrorsVerification<BugsType extends TraceableBugsData>
 
     public void verifyTraceContent(){
         for (BugsType bugsData : expectedBugsData.getExpectedData()) {
-            List<BugsTrace> traces = traceRepository.findByBugsTableAndCompressedBugsData(bugsData.bugsTable(), bugsData.compressToString());
-            List<BugsError> errors = errorRepository.findByBugsTableAndCompressedBugsData(bugsData.bugsTable(), bugsData.compressToString());
+            List<BugsTrace> traces = getTraces(bugsData);
+            List<BugsError> errors = getErrors(bugsData);
             logVerificationHandler.verifyLogData(bugsData, traces, errors);
         }
+    }
 
+    protected abstract List<BugsTrace> getTraces(BugsType bugsData);
+    protected abstract List<BugsError> getErrors(BugsType bugsData);
+
+    public static class ByIdentity<BugsType extends TraceableBugsData> extends BugsTracesAndErrorsVerification<BugsType>  {
+
+        public ByIdentity(
+                BugsTraceRepository traceRepository,
+                BugsErrorRepository errorRepository,
+                LogVerificationCallback<BugsType> logVerificationHandler,
+                ExpectedImportBugsDataProvider<BugsType> expectedBugsData) {
+            super(traceRepository, errorRepository, logVerificationHandler, expectedBugsData);
+        }
+
+        @Override
+        protected List<BugsTrace> getTraces(BugsType bugsData) {
+            return traceRepository.findByBugsTableAndBugsIdentifierOrderByChangeDate(bugsData.bugsTable(), bugsData.getBugsIdentifier());
+        }
+
+        @Override
+        protected List<BugsError> getErrors(BugsType bugsData) {
+            return errorRepository.findByBugsTableAndBugsIdentifier(bugsData.bugsTable(), bugsData.getBugsIdentifier());
+        }
+    }
+
+    public static class ByCompressed<BugsType extends TraceableBugsData> extends BugsTracesAndErrorsVerification<BugsType> {
+
+        public ByCompressed(
+                BugsTraceRepository traceRepository,
+                BugsErrorRepository errorRepository,
+                LogVerificationCallback<BugsType> logVerificationHandler,
+                ExpectedImportBugsDataProvider<BugsType> expectedBugsData) {
+            super(traceRepository, errorRepository, logVerificationHandler, expectedBugsData);
+        }
+
+        @Override
+        protected List<BugsTrace> getTraces(BugsType bugsData) {
+            return traceRepository.findByBugsTableAndCompressedBugsData(bugsData.bugsTable(), bugsData.getCompressedStringBeforeTranslation());
+        }
+
+        @Override
+        protected List<BugsError> getErrors(BugsType bugsData) {
+            return errorRepository.findByBugsTableAndCompressedBugsData(bugsData.bugsTable(), bugsData.getCompressedStringBeforeTranslation());
+        }
     }
 }

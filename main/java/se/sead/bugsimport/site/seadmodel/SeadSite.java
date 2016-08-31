@@ -2,7 +2,7 @@ package se.sead.bugsimport.site.seadmodel;
 
 import se.sead.bugsimport.sitelocations.seadmodel.SiteLocation;
 import se.sead.sead.model.LoggableEntity;
-import se.sead.testutils.BigDecimalDefinition;
+import se.sead.utils.BigDecimalDefinition;
 
 import javax.persistence.*;
 import java.math.BigDecimal;

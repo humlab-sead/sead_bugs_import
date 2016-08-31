@@ -67,7 +67,10 @@ public class ImportTestDefinition {
                 create(1.0000023d, "Ja", "UK"),
                 create(1.0000024d, "Fe", "UK"),
                 create(1.0000025d, "Ja", "UK"),
-                create(1.0000025d, "Fe", "UK")
+                create(1.0000025d, "Fe", "UK"),
+                create(1.0000026d, "Ja", "UK"),
+                create(1.0000026d, "Fe", "UK"),
+                create(1.0000026d, "Mr", "UK")
             );
 
     private static SeasonActiveAdult create(Double code, String season, String countryCode){

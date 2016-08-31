@@ -1,6 +1,6 @@
 package se.sead.bugsimport.site.conversion;
 
-import se.sead.testutils.BigDecimalDefinition;
+import se.sead.utils.BigDecimalDefinition;
 import se.sead.bugsimport.site.bugsmodel.BugsSite;
 import se.sead.bugsimport.site.seadmodel.SeadSite;
 

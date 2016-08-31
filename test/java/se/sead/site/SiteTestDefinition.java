@@ -1,6 +1,6 @@
 package se.sead.site;
 
-import se.sead.testutils.BigDecimalDefinition;
+import se.sead.utils.BigDecimalDefinition;
 import se.sead.bugsimport.locations.seadmodel.LocationType;
 import se.sead.bugsimport.site.bugsmodel.BugsSite;
 import se.sead.bugsimport.site.seadmodel.SeadSite;

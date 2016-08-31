@@ -67,19 +67,23 @@ public class TaxaSeasonalityTracesAndErrorsVerification implements BugsTracesAnd
                 assertHelper.assertEmpty(traces);
                 break;
             case "1.0000023":
-                assertHelper.assertEmpty(traces);
+                assertHelper.assertPrestoredTrace(traces, 6);
+                assertHelper.assertSize(traces, 1);
                 assertHelper.assertEmpty(errors);
                 break;
             case "1.0000024":
                 assertHelper.assertContainsError(errors, "Sead data updated after latest bugs import");
-                assertHelper.assertEmpty(traces);
+                assertHelper.assertPrestoredTrace(traces, 7);
+                assertHelper.assertSize(traces, 1);
                 break;
             case "1.0000025":
+                assertHelper.assertPrestoredTrace(traces, 8);
                 assertHelper.assertInserts(traces, 1);
                 assertHelper.assertEmpty(errors);
                 break;
             case "1.0000026":
-                assertHelper.assertUpdates(traces, 1);
+                assertHelper.assertPrestoredTrace(traces, 9, 10, 11);
+                assertHelper.assertInserts(traces, 1);
                 assertHelper.assertEmpty(errors);
                 break;
         }

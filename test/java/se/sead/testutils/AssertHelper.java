@@ -5,6 +5,7 @@ import se.sead.bugsimport.tracing.seadmodel.BugsInformation;
 import se.sead.bugsimport.tracing.seadmodel.BugsTrace;
 import se.sead.bugsimport.tracing.seadmodel.BugsTraceType;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -51,4 +52,19 @@ public class AssertHelper {
         );
     }
 
+    public void assertPrestoredTrace(List<BugsTrace> traces, int... traceIdFromDatabase) {
+        assert traceIdFromDatabase != null;
+        for (int traceId:
+             traceIdFromDatabase) {
+                assertPrestoredTrace(traces, traceId);
+        }
+
+    }
+
+    private void assertPrestoredTrace(List<BugsTrace> traces, int traceId){
+        assertTrue(
+                traces.stream()
+                        .anyMatch( trace -> trace.getId() == traceId)
+        );
+    }
 }

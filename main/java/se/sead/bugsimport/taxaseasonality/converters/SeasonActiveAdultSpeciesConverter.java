@@ -6,10 +6,6 @@ import se.sead.bugsimport.species.converters.TaxonomicOrderConverter;
 import se.sead.bugsimport.species.seadmodel.TaxaSpecies;
 import se.sead.bugsimport.species.seadmodel.TaxonomicOrder;
 import se.sead.bugsimport.taxaseasonality.bugsmodel.SeasonActiveAdult;
-import se.sead.repositories.TaxonomicOrderRepository;
-import se.sead.testutils.BigDecimalDefinition;
-
-import java.math.BigDecimal;
 
 @Component
 public class SeasonActiveAdultSpeciesConverter {

@@ -1,6 +1,6 @@
 package se.sead.countsheets;
 
-import se.sead.testutils.BigDecimalDefinition;
+import se.sead.utils.BigDecimalDefinition;
 import se.sead.bugsimport.countsheets.bugsmodel.Countsheet;
 import se.sead.bugsimport.countsheets.seadmodel.SampleGroup;
 import se.sead.bugsimport.site.seadmodel.SeadSite;
@@ -17,6 +17,7 @@ import se.sead.sead.model.SamplingContext;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -119,10 +120,13 @@ public class ImportTestDefinition {
     void checkTracesAndErrors(Countsheet bugsData, List<BugsTrace> traces, List<BugsError> errors){
         switch(bugsData.getCode()){
             case "COUN000482":
+                assertPreviouslyStoredTrace(traces, 7);
+                break;
             case "COUN000927":
+                assertPreviouslyStoredTrace(traces, 8);
+                break;
             case "COUN000132":
-                assertTrue(traces.isEmpty());
-                assertTrue(errors.isEmpty());
+                assertPreviouslyStoredTrace(traces, 9);
                 break;
             case "COUN000384":
             case "COUN000030":
@@ -151,7 +155,9 @@ public class ImportTestDefinition {
                 assertOneError(traces, errors, "Empty name not allowed");
                 break;
             case "COUNUPDATE":
-                assertEquals(1, traces.size());
+                assertPreviouslyStoredTrace(traces, 10);
+                assertEquals(2, traces.size());
+                traces = traces.stream().filter(trace -> trace.getId() != 10).collect(Collectors.toList());
                 assertEquals(BugsTraceType.UPDATE, traces.get(0).getType());
                 assertTrue(errors.isEmpty());
                 break;
@@ -167,5 +173,11 @@ public class ImportTestDefinition {
         assertTrue(traces.isEmpty());
         assertEquals(1, errors.size());
         assertEquals(expectedErrorMessage, errors.get(0).getMessage());
+    }
+
+    private void assertPreviouslyStoredTrace(List<BugsTrace> traces, int bugsTraceId){
+        assertTrue(
+                traces.stream().anyMatch(trace -> trace.getId() == bugsTraceId)
+        );
     }
 }

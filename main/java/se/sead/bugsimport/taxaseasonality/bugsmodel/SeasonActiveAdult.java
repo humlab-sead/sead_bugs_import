@@ -40,6 +40,11 @@ public class SeasonActiveAdult extends TraceableBugsData{
     }
 
     @Override
+    public String getBugsIdentifier() {
+        return code.toString();
+    }
+
+    @Override
     public String bugsTable() {
         return SeasonActiveAdultBugsTable.TABLE_NAME;
     }

@@ -88,7 +88,7 @@ public class CountsheetImportTest {
     }
 
     private void setupLogVerification() {
-        logContentVerification = new BugsTracesAndErrorsVerification<>(
+        logContentVerification = new BugsTracesAndErrorsVerification.ByIdentity<>(
                 traceRepository,
                 errorRepository,
                 (bugsData, traces, errors) -> testDefinition.checkTracesAndErrors(bugsData, traces, errors),
