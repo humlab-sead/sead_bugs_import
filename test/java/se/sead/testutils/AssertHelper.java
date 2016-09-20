@@ -41,6 +41,10 @@ public class AssertHelper {
     }
 
     public void assertUpdates(List<BugsTrace> traces, int numberOfUpdates){
+        assertNumberOfTracesOfType(traces, numberOfUpdates, BugsTraceType.UPDATE);
+    }
+
+    public void assertDeleteInsertUpdate(List<BugsTrace> traces, int numberOfUpdates){
         assertNumberOfTracesOfType(traces, numberOfUpdates, BugsTraceType.DELETE);
         assertNumberOfTracesOfType(traces, numberOfUpdates, BugsTraceType.INSERT);
     }

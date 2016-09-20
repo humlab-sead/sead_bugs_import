@@ -5,6 +5,7 @@ import se.sead.bugsimport.species.seadmodel.TaxaSpecies;
 import se.sead.bugsimport.taxaseasonality.seadmodel.ActivityType;
 import se.sead.bugsimport.taxaseasonality.seadmodel.Season;
 import se.sead.bugsimport.taxaseasonality.seadmodel.TaxaSeasonality;
+import se.sead.utils.ErrorCopier;
 
 import java.util.List;
 
@@ -40,33 +41,18 @@ public class TaxaSeasonalityCreator {
     }
 
     private void addLocationErrors(TaxaSeasonality seasonality) {
-        if(!location.isErrorFree()){
-            addErrors(seasonality, location.getErrors());
-        }
-    }
-
-    private void addErrors(TaxaSeasonality seasonality, List<String> errors){
-        for (String error :
-                errors) {
-            seasonality.addError(error);
-        }
+        ErrorCopier.copyErrors(seasonality, location);
     }
 
     private void addTypeErrors(TaxaSeasonality seasonality){
-        if(!activityType.isErrorFree()){
-            addErrors(seasonality, activityType.getErrors());
-        }
+        ErrorCopier.copyErrors(seasonality, activityType);
     }
 
     private void addSpeciesErrors(TaxaSeasonality seasonality){
-        if(!species.isErrorFree()){
-            addErrors(seasonality, species.getErrors());
-        }
+        ErrorCopier.copyErrors(seasonality, species);
     }
 
     private void addSeasonErrors(TaxaSeasonality seasonality){
-        if(!season.isErrorFree()){
-            addErrors(seasonality, season.getErrors());
-        }
+        ErrorCopier.copyErrors(seasonality, season);
     }
 }

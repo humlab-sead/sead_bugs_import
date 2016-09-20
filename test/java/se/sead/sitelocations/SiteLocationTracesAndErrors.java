@@ -33,12 +33,12 @@ public class SiteLocationTracesAndErrors implements BugsTracesAndErrorsVerificat
                 siteLocationHelper.assertEmpty(errors);
                 break;
             case "SITE000003":
-                siteLocationHelper.assertUpdates(traces,1);
+                siteLocationHelper.assertDeleteInsertUpdate(traces,1);
                 siteLocationHelper.assertSize(traces, 2);
                 siteLocationHelper.assertEmpty(errors);
                 break;
             case "SITE000004":
-                siteLocationHelper.assertUpdates(traces, 1);
+                siteLocationHelper.assertDeleteInsertUpdate(traces, 1);
                 siteLocationHelper.assertSize(traces, 2);
                 siteLocationHelper.assertEmpty(errors);
                 break;
@@ -48,7 +48,7 @@ public class SiteLocationTracesAndErrors implements BugsTracesAndErrorsVerificat
                 siteLocationHelper.assertEmpty(errors);
                 break;
             case "SITE000006":
-                siteLocationHelper.assertUpdates(traces, 2);
+                siteLocationHelper.assertDeleteInsertUpdate(traces, 2);
                 siteLocationHelper.assertSize(traces, 4);
                 siteLocationHelper.assertEmpty(errors);
                 break;
@@ -58,7 +58,7 @@ public class SiteLocationTracesAndErrors implements BugsTracesAndErrorsVerificat
                 siteLocationHelper.assertEmpty(errors);
                 break;
             case "SITE000008":
-                siteLocationHelper.assertUpdates(traces, 1);
+                siteLocationHelper.assertDeleteInsertUpdate(traces, 1);
                 siteLocationHelper.assertSize(traces, 2);
                 siteLocationHelper.assertEmpty(errors);
                 break;

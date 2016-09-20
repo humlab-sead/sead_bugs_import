@@ -1,5 +1,6 @@
 package se.sead.testutils;
 
+import org.hibernate.annotations.SourceType;
 import se.sead.model.TestEqualityHelper;
 import se.sead.sead.model.LoggableEntity;
 
@@ -36,7 +37,13 @@ public class DatabaseContentVerification<SeadType extends LoggableEntity> {
         List<SeadType> expectedData = contentProvider.getExpectedData();
         List<SeadType> actualData = contentProvider.getActualData();
         sortIfPossible(expectedData, actualData);
-        assertEquals(expectedData.size(), actualData.size());
+        try {
+            assertEquals(expectedData.size(), actualData.size());
+        } catch (AssertionError ae){
+            System.out.println(expectedData);
+            System.out.println(actualData);
+            throw ae;
+        }
         TestEqualityHelper<SeadType> equalityHelper = contentProvider.getEqualityHelper();
         for (int i = 0; i < expectedData.size(); i++) {
             SeadType expected = expectedData.get(i);

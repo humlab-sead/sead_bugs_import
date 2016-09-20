@@ -40,7 +40,12 @@ public abstract class BugsTracesAndErrorsVerification<BugsType extends Traceable
         for (BugsType bugsData : expectedBugsData.getExpectedData()) {
             List<BugsTrace> traces = getTraces(bugsData);
             List<BugsError> errors = getErrors(bugsData);
-            logVerificationHandler.verifyLogData(bugsData, traces, errors);
+            try {
+                logVerificationHandler.verifyLogData(bugsData, traces, errors);
+            } catch (AssertionError ae){
+                System.out.println(bugsData);
+                throw ae;
+            }
         }
     }
 
