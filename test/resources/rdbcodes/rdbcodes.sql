@@ -17,17 +17,17 @@ values (4, 'TRDBSystems', '{1,Test 2,null,null,null,Hyman 1992,UK}', '2', 'tbl_r
 insert into tbl_rdb_codes (rdb_code_id, rdb_category, rdb_definition, rdb_system_id)
     values (1, 'AB', 'already stored w. trace', 1);
 insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
- values (4, 'TRDBCodes', '{2,AB,already stored w. trace,1}', '1', 'tbl_rdb_codes', 1);
+ values (5, 'TRDBCodes', '{2,AB,already stored w. trace,1}', '2', 'tbl_rdb_codes', 1);
 
 insert into tbl_rdb_codes (rdb_code_id, rdb_category, rdb_definition, rdb_system_id)
- values (2, 'AC', 'already stored w/o trace', 1);
+ values (2, 'AC', 'already added w/o import', 1);
 
 insert into tbl_rdb_codes (rdb_code_id, rdb_category, rdb_definition, rdb_system_id)
  values (3, 'AD', 'update', 2);
 insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
-values (5, 'TRDBCodes', '{4,AD,update,2}', '4', 'tbl_rdb_codes', 3);
+values (6, 'TRDBCodes', '{4,AD,update,2}', '4', 'tbl_rdb_codes', 3);
 
 insert into tbl_rdb_codes (rdb_code_id, rdb_category, rdb_definition, rdb_system_id, date_updated)
 values (4, 'E2', 'sead changes made', 1, '2016-01-01');
 insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id, change_date)
-values (6, 'TRDBCodes', '{7,E2,error sead changes,1}', '7', 'tbl_rdb_codes', 4, '2015-01-01');
+values (7, 'TRDBCodes', '{7,E2,error sead changes,1}', '7', 'tbl_rdb_codes', 4, '2015-01-01');
