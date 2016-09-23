@@ -13,10 +13,17 @@ import java.util.List;
 @Component
 public class RdbCodeByValues implements SearchStrategy {
 
+    private final RdbCode ERROR;
+
     @Autowired
     private RdbCodeRepository repository;
     @Autowired
     private RdbSystemFromTrace systemFromTraceHelper;
+
+    public RdbCodeByValues(){
+        ERROR = new RdbCode();
+        ERROR.addError("Sead data matches values");
+    }
 
     @Override
     public RdbCode get(BugsRDBCodes bugsData) {
@@ -25,8 +32,8 @@ public class RdbCodeByValues implements SearchStrategy {
             return NO_CODE_FOUND;
         }
         List<RdbCode> foundRdbCodes = repository.findByCategoryAndDefinitionAndSystem(bugsData.getCategory(), bugsData.getRdbDefinition(), systemFromTrace);
-        if(foundRdbCodes.size() == 1){
-            return foundRdbCodes.get(0);
+        if(!foundRdbCodes.isEmpty()){
+            return ERROR;
         } else {
             return NO_CODE_FOUND;
         }

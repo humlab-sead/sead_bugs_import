@@ -30,7 +30,7 @@ public class RdbCodeLogTraceAndErrorVerifier implements BugsTracesAndErrorsVerif
                 break;
             case 3:
                 rdbCodeAssertHelper.assertEmpty(traces);
-                rdbCodeAssertHelper.assertEmpty(errors);
+                rdbCodeAssertHelper.assertContainsError(errors, "Sead data matches values");
                 break;
             case 4:
                 rdbCodeAssertHelper.assertPrestoredTrace(traces, 6);
