@@ -18,10 +18,6 @@ public abstract class SeadDataFromTraceHelper<BugsType extends TraceableBugsData
 
     private boolean useCompressedDataForIdentification;
 
-    public SeadDataFromTraceHelper(boolean useCompressedDataForIdentification){
-        this(useCompressedDataForIdentification, null);
-    }
-
     public SeadDataFromTraceHelper(boolean useCompressedDataForIdentification, CreateAndReadRepository<SeadType, Integer> accessRepository){
         this(null, useCompressedDataForIdentification, accessRepository);
     }

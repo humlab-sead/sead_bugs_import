@@ -15,4 +15,8 @@ public class BugsRdbCodeTraceHelper extends SeadDataFromTraceHelper<BugsRDBCodes
     public BugsRdbCodeTraceHelper(RdbCodeRepository repository){
         super(RDBCodesBugsTable.TABLE_NAME, false, repository);
     }
+
+    public RdbCode getFromLastTrace(Integer bugsRdbCodeId){
+        return getFromLastTrace(String.valueOf(bugsRdbCodeId));
+    }
 }

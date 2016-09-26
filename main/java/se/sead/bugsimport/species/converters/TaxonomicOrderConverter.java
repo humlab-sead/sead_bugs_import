@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import se.sead.bugsimport.species.seadmodel.TaxonomicOrder;
 import se.sead.repositories.TaxonomicOrderRepository;
 import se.sead.repositories.TaxonomicOrderSystemRepository;
+import se.sead.utils.BigDecimalDefinition;
 
 import java.math.BigDecimal;
 
@@ -14,8 +15,6 @@ import java.math.BigDecimal;
 @Component
 public class TaxonomicOrderConverter {
 
-    private static final int BUGS_SCALE = 10;
-
     @Autowired
     private TaxonomicOrderRepository seadDataRepository;
     @Autowired
@@ -23,14 +22,10 @@ public class TaxonomicOrderConverter {
 
     public TaxonomicOrder convertToSeadType(Double code) {
         if(code instanceof Double){
-            BigDecimal codeForSeadDatabase = TaxonomicOrderConverter.convertToSeadCode(code);
+            BigDecimal codeForSeadDatabase = BigDecimalDefinition.convertToSeadCode(code);
             return getOrCreate(codeForSeadDatabase);
         }
         return null;
-    }
-
-    public static BigDecimal convertToSeadCode(Double code){
-        return new BigDecimal(code).setScale(BUGS_SCALE, BigDecimal.ROUND_HALF_UP);
     }
 
     private TaxonomicOrder getOrCreate(BigDecimal codeForSeadDatabase) {

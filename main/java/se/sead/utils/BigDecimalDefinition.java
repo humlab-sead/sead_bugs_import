@@ -36,4 +36,8 @@ public class BigDecimalDefinition {
         }
         return first.compareTo(second) == 0;
     }
+
+    public static BigDecimal convertToSeadCode(Double code){
+        return new BigDecimal(code).setScale(SEAD_SCALE, BigDecimal.ROUND_HALF_UP);
+    }
 }

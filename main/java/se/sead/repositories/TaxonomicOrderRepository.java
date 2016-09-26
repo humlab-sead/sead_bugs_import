@@ -12,7 +12,7 @@ import java.math.BigDecimal;
  */
 public interface TaxonomicOrderRepository extends CreateAndReadRepository<TaxonomicOrder, Integer> {
 
-    static final String WHERE_TAXA_ORDER_SYSTEM_IS_BUGS_SYSTEM =
+    String WHERE_TAXA_ORDER_SYSTEM_IS_BUGS_SYSTEM =
             " and taxaOrder.orderSystem.systemName = 'BugsCEP taxonomic order'";
 
     @Query("select taxaOrder from TaxonomicOrder taxaOrder where taxaOrder.code = ?1" + WHERE_TAXA_ORDER_SYSTEM_IS_BUGS_SYSTEM)
