@@ -30,8 +30,7 @@ public class BirmBeetleDatToBirmBeetleRowConverter implements BugsTableRowConver
     }
 
     private TaxaSpecies getSpecies(BirmBeetleDat bugsData) {
-        BigDecimal seadTaxaCode = BigDecimalDefinition.convertToSeadCode(bugsData.getBugsCode());
-        return taxonomicOrderRepository.findBugsSpeciesByCode(seadTaxaCode);
+        return taxonomicOrderRepository.findBugsSpeciesByCode(bugsData.getBugsCode());
     }
 
     private BirmBeetleData getOrCreateData(BirmBeetleDat bugsData, TaxaSpecies species) {

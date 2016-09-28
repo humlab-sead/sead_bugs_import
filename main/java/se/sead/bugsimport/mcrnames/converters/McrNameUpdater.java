@@ -41,7 +41,7 @@ public class McrNameUpdater {
 
         private boolean setSpecies(){
             Integer originalId = original.getId();
-            TaxaSpecies bugsSpeciesByCode = taxonomicOrderRepository.findBugsSpeciesByCode(BigDecimalDefinition.convertToSeadCode(bugsData.getCode()));
+            TaxaSpecies bugsSpeciesByCode = taxonomicOrderRepository.findBugsSpeciesByCode(bugsData.getCode());
             if(bugsSpeciesByCode == null){
                 original.addError("No species found for code");
                 return false;

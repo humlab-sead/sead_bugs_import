@@ -30,8 +30,7 @@ public class BiologyToTextBiologyRowConverter implements BugsTableRowConverter<B
     }
 
     private TaxaSpecies getSpecies(Double code) {
-        TaxaSpecies species = taxonomicOrderRepository
-                .findBugsSpeciesByCode(BigDecimalDefinition.convertToSeadCode(code));
+        TaxaSpecies species = taxonomicOrderRepository.findBugsSpeciesByCode(code);
         return species;
     }
 

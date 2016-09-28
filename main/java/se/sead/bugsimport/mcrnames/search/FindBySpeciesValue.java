@@ -21,7 +21,7 @@ public class FindBySpeciesValue implements MCRSearch {
 
     @Override
     public MCRName findFor(BugsMCRNames bugsData) {
-        TaxaSpecies bugsSpeciesByCode = taxonomicOrderRepository.findBugsSpeciesByCode(BigDecimalDefinition.convertToSeadCode(bugsData.getCode()));
+        TaxaSpecies bugsSpeciesByCode = taxonomicOrderRepository.findBugsSpeciesByCode(bugsData.getCode());
         if(bugsSpeciesByCode == null){
             return NO_MCR_NAME_FOUND;
         }

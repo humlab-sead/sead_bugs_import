@@ -64,7 +64,7 @@ public class CheckTaxaRdbHistoryRule implements RdbSearch {
             if(bugsRDB.getCode() == null){
                 return Collections.EMPTY_LIST;
             }
-            TaxaSpecies bugsSpecies = taxonomicOrderRepository.findBugsSpeciesByCode(BigDecimalDefinition.convertToSeadCode(bugsRDB.getCode()));
+            TaxaSpecies bugsSpecies = taxonomicOrderRepository.findBugsSpeciesByCode(bugsRDB.getCode());
             if(bugsSpecies == null){
                 return Collections.EMPTY_LIST;
             }

@@ -65,7 +65,7 @@ public class RdbUpdater {
             if(bugsData.getCode() == null){
                 return noSpeciesError();
             }
-            TaxaSpecies species = taxonomicOrderRepository.findBugsSpeciesByCode(BigDecimalDefinition.convertToSeadCode(bugsData.getCode()));
+            TaxaSpecies species = taxonomicOrderRepository.findBugsSpeciesByCode(bugsData.getCode());
             if(species == null){
                 return noSpeciesError();
             }

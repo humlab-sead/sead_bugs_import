@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.Query;
 import se.sead.bugsimport.species.seadmodel.TaxaSpecies;
 import se.sead.bugsimport.species.seadmodel.TaxonomicOrder;
 import se.sead.bugsimport.species.seadmodel.TaxonomicOrderSystem;
+import se.sead.utils.BigDecimalDefinition;
 
 import java.math.BigDecimal;
 
@@ -24,4 +25,11 @@ public interface TaxonomicOrderRepository extends CreateAndReadRepository<Taxono
     TaxaSpecies findBugsSpeciesByCode(BigDecimal code);
 
     TaxonomicOrder save(TaxonomicOrder taxonomicOrder);
+
+    default TaxaSpecies findBugsSpeciesByCode(Double bugsCode){
+        if(bugsCode == null){
+            return null;
+        }
+        return findBugsSpeciesByCode(BigDecimalDefinition.convertToSeadCode(bugsCode));
+    }
 }

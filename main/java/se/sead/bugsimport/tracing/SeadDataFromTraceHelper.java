@@ -11,6 +11,8 @@ import java.util.List;
 
 public abstract class SeadDataFromTraceHelper<BugsType extends TraceableBugsData, SeadType extends LoggableEntity> {
 
+    public static final String SEAD_DATA_HAS_BEEN_UPDATED_SINCE_LAST_BUGS_IMPORT = "Sead data has been updated since last bugs import";
+
     @Autowired
     private BugsTraceRepository traceRepository;
     private CreateAndReadRepository<SeadType, Integer> accessRepository;
@@ -32,7 +34,7 @@ public abstract class SeadDataFromTraceHelper<BugsType extends TraceableBugsData
         BugsTrace latest = getLatest(traceIdentifier);
         SeadType seadData = getSeadDataFromTrace(latest);
         if(seadDataExistsAndHasBeenEditedSinceImport(seadData, latest)){
-            seadData.addError("Sead data has been updated since last bugs import");
+            seadData.addError(SEAD_DATA_HAS_BEEN_UPDATED_SINCE_LAST_BUGS_IMPORT);
         }
         return seadData;
     }
