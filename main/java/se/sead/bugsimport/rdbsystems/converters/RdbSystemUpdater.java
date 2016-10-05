@@ -86,7 +86,7 @@ public class RdbSystemUpdater {
 
         private boolean setLocation() {
             Location country = countryConverter.getLocation(bugsData);
-            ErrorCopier.copyErrors(original, country);
+            ErrorCopier.copyPotentialErrors(original, country);
             Location oldLocation = original.getLocation();
             original.setLocation(country);
             return !Objects.equals(oldLocation, country);

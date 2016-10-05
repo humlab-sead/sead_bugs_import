@@ -5,7 +5,7 @@ import se.sead.bugs.BugsTable;
 
 public class CountsheetBugsTable extends BugsTable<Countsheet> {
 
-    static final String TABLE_NAME = "TCountsheet";
+    public static final String TABLE_NAME = "TCountsheet";
 
     public CountsheetBugsTable(){
         super(TABLE_NAME);

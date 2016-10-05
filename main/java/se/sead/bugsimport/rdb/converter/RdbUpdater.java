@@ -10,7 +10,6 @@ import se.sead.bugsimport.rdbcodes.converter.BugsRdbCodeTraceHelper;
 import se.sead.bugsimport.rdbcodes.seadmodel.RdbCode;
 import se.sead.bugsimport.species.seadmodel.TaxaSpecies;
 import se.sead.repositories.TaxonomicOrderRepository;
-import se.sead.utils.BigDecimalDefinition;
 import se.sead.utils.ErrorCopier;
 
 import java.util.Objects;
@@ -54,7 +53,7 @@ public class RdbUpdater {
                 return false;
             }
             if(!codeFromLastTrace.isErrorFree()){
-                ErrorCopier.copyErrors(original, codeFromLastTrace);
+                ErrorCopier.copyPotentialErrors(original, codeFromLastTrace);
             }
             original.setRdbCode(codeFromLastTrace);
             return !Objects.equals(originalCode, codeFromLastTrace);
@@ -70,7 +69,7 @@ public class RdbUpdater {
                 return noSpeciesError();
             }
             if(!species.isErrorFree()){
-                ErrorCopier.copyErrors(original, species);
+                ErrorCopier.copyPotentialErrors(original, species);
             }
             original.setSpecies(species);
             return !Objects.equals(originalSpecies, species);
@@ -89,7 +88,7 @@ public class RdbUpdater {
                 return false;
             }
             if(!countryFromTrace.isErrorFree()){
-                ErrorCopier.copyErrors(original, countryFromTrace);
+                ErrorCopier.copyPotentialErrors(original, countryFromTrace);
             }
             original.setCountry(countryFromTrace);
             return !Objects.equals(oldCountry, countryFromTrace);

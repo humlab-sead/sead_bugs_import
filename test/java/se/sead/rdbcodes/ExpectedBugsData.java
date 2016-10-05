@@ -14,7 +14,8 @@ public class ExpectedBugsData {
                     create(3, "AC", "already added w/o import", 1),
                     create(4, "AD", "update", 1),
                     create(5, null, "error no category", 1),
-                    create(6, "E1", "error no system", 0)
+                    create(6, "E1", "error no system", 0),
+                    create(7, "E2", "error sead changes newer", 1)
             );
 
     private static BugsRDBCodes create(Integer code, String category, String definition, Integer systemCode){

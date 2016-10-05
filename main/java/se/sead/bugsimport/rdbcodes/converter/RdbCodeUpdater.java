@@ -67,7 +67,7 @@ public class RdbCodeUpdater {
 
         private void addErrors(RdbSystem fromSystem){
             if(fromSystem != null){
-                ErrorCopier.copyErrors(original, fromSystem);
+                ErrorCopier.copyPotentialErrors(original, fromSystem);
             } else {
                 original.addError("No rdb system found");
             }

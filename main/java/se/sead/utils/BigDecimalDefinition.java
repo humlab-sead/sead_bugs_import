@@ -38,6 +38,9 @@ public class BigDecimalDefinition {
     }
 
     public static BigDecimal convertToSeadCode(Double code){
+        if(code == null){
+            return null;
+        }
         return new BigDecimal(code).setScale(SEAD_SCALE, BigDecimal.ROUND_HALF_UP);
     }
 }

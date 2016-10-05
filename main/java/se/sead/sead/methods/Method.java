@@ -107,12 +107,12 @@ public class Method extends LoggableEntity {
 
         Method method = (Method) o;
 
-        if (!id.equals(method.id)) return false;
-        if (!name.equals(method.name)) return false;
+        if (id != null ? !id.equals(method.id) : method.id != null) return false;
+        if (name != null ? !name.equals(method.name) : method.name != null) return false;
         if (abbreviation != null ? !abbreviation.equals(method.abbreviation) : method.abbreviation != null)
             return false;
-        if (!description.equals(method.description)) return false;
-        if (!group.equals(method.group)) return false;
+        if (description != null ? !description.equals(method.description) : method.description != null) return false;
+        if (group != null ? !group.equals(method.group) : method.group != null) return false;
         if (reference != null ? !reference.equals(method.reference) : method.reference != null) return false;
         if (recordType != null ? !recordType.equals(method.recordType) : method.recordType != null) return false;
         return unit != null ? unit.equals(method.unit) : method.unit == null;
@@ -121,11 +121,11 @@ public class Method extends LoggableEntity {
 
     @Override
     public int hashCode() {
-        int result = id.hashCode();
-        result = 31 * result + name.hashCode();
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (abbreviation != null ? abbreviation.hashCode() : 0);
-        result = 31 * result + description.hashCode();
-        result = 31 * result + group.hashCode();
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (group != null ? group.hashCode() : 0);
         result = 31 * result + (reference != null ? reference.hashCode() : 0);
         result = 31 * result + (recordType != null ? recordType.hashCode() : 0);
         result = 31 * result + (unit != null ? unit.hashCode() : 0);

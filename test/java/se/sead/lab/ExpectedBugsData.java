@@ -14,7 +14,9 @@ class ExpectedBugsData {
                     create("BC*", "Brooklyn College", "USA"),
                     create("Birm", "Birmingham", "USA???"),
                     create("Test", null, "Sweden"),
-                    create("Test 2", "Test without country", null)
+                    create("Test 2", "Test without country", null),
+                    create("Test 3", "Update", "USA"),
+                    create("Test 4", "Sead data changed", "USA")
             );
 
     private static BugsLab create(

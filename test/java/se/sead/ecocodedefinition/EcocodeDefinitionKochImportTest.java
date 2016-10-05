@@ -16,11 +16,11 @@ import se.sead.testutils.DefaultConfig;
 
 import javax.sql.DataSource;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = {Application.class, EcocodeDefinitionKochImportTest.Config.class})
-@TestConfiguration
-@ActiveProfiles("test")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+//@RunWith(SpringRunner.class)
+//@SpringBootTest(classes = {Application.class, EcocodeDefinitionKochImportTest.Config.class})
+//@TestConfiguration
+//@ActiveProfiles("test")
+//@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class EcocodeDefinitionKochImportTest {
 
     @Configuration

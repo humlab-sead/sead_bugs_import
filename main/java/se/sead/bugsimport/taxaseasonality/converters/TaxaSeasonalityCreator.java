@@ -7,8 +7,6 @@ import se.sead.bugsimport.taxaseasonality.seadmodel.Season;
 import se.sead.bugsimport.taxaseasonality.seadmodel.TaxaSeasonality;
 import se.sead.utils.ErrorCopier;
 
-import java.util.List;
-
 public class TaxaSeasonalityCreator {
 
     private Location location;
@@ -41,18 +39,18 @@ public class TaxaSeasonalityCreator {
     }
 
     private void addLocationErrors(TaxaSeasonality seasonality) {
-        ErrorCopier.copyErrors(seasonality, location);
+        ErrorCopier.copyPotentialErrors(seasonality, location);
     }
 
     private void addTypeErrors(TaxaSeasonality seasonality){
-        ErrorCopier.copyErrors(seasonality, activityType);
+        ErrorCopier.copyPotentialErrors(seasonality, activityType);
     }
 
     private void addSpeciesErrors(TaxaSeasonality seasonality){
-        ErrorCopier.copyErrors(seasonality, species);
+        ErrorCopier.copyPotentialErrors(seasonality, species);
     }
 
     private void addSeasonErrors(TaxaSeasonality seasonality){
-        ErrorCopier.copyErrors(seasonality, season);
+        ErrorCopier.copyPotentialErrors(seasonality, season);
     }
 }

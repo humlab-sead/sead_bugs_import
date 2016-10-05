@@ -5,7 +5,7 @@ import se.sead.sead.model.LoggableEntity;
 public class ErrorCopier {
 
     public static <ErrorReceiver extends LoggableEntity, ErrorProvider extends LoggableEntity>
-        void copyErrors(ErrorReceiver errorReceiver, ErrorProvider errorCarrier){
+        void copyPotentialErrors(ErrorReceiver errorReceiver, ErrorProvider errorCarrier){
         if(errorCarrier.isErrorFree()){
             return;
         }

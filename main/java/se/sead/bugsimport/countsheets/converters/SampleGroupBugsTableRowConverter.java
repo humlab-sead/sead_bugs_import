@@ -40,7 +40,7 @@ public class SampleGroupBugsTableRowConverter implements BugsTableRowConverter<C
     }
 
     private SampleGroup createOrUpdate(Countsheet bugsData, SeadSite site, SamplingContext context){
-        SampleGroup previousGroup = sampleGroupTraceReader.getSampleGroup(bugsData);
+        SampleGroup previousGroup = sampleGroupTraceReader.getFromLastTrace(bugsData.getBugsIdentifier());
         List<SampleGroup> previousByName = sampleGroupRepository.findAllBySiteAndNameIgnoreCase(site, bugsData.getName());
         if(previousGroup == null && previousByName.isEmpty()){
             return create(bugsData, site, context);

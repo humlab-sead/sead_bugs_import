@@ -45,12 +45,31 @@ public class TestEqualityHelper<T> {
             }
         } else if(entity1 instanceof BigDecimal && entity2 instanceof BigDecimal && configuration.useCompareForBigDecimalEquality){
             return ((BigDecimal) entity1).compareTo((BigDecimal)entity2) == 0;
+        } else if(entity1 instanceof Collection && entity2 instanceof Collection){
+            return equals((Collection) entity1, (Collection) entity2);
         }
         return Objects.equals(entity1, entity2);
     }
 
     private EntityEqualityComparator createEntityEqualityComparator(LoggableEntity entity){
         return new EntityEqualityComparator(entity, configuration);
+    }
+
+    private boolean equals(Collection collection1, Collection collection2){
+        if(collection1.size() != collection2.size()){
+            return false;
+        }
+        List list1 = new ArrayList(collection1);
+        List list2 = new ArrayList(collection2);
+        TestEqualityHelper helper = new TestEqualityHelper(configuration);
+        for (int i = 0; i < list1.size(); i++) {
+            Object item1 = list1.get(i);
+            Object item2 = list2.get(i);
+            if(!helper.equalsWithoutBlackListedMethods(item1, item2)){
+                return false;
+            }
+        }
+        return true;
     }
 
     public static <T> boolean equalsWithoutIdIfNeeded(T entity1, T entity2){
