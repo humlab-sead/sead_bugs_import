@@ -1,7 +1,5 @@
 package se.sead.sead.model;
 
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
 import se.sead.repositories.impl.PostEventListener;
 
 import javax.persistence.*;

@@ -1,9 +1,9 @@
 package se.sead.bugsimport.tracing;
 
 import org.springframework.stereotype.Component;
+import se.sead.bugsimport.tracing.seadmodel.BugsTrace;
 import se.sead.bugsimport.tracing.seadmodel.BugsTraceType;
 import se.sead.sead.model.LoggableEntity;
-import se.sead.bugsimport.tracing.seadmodel.BugsTrace;
 
 import javax.persistence.Table;
 import java.lang.annotation.Annotation;

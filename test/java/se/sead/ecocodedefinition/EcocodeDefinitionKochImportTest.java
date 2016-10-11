@@ -1,14 +1,7 @@
 package se.sead.ecocodedefinition;
 
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
-import se.sead.Application;
 import se.sead.DataSourceFactory;
 import se.sead.DefaultAccessDatabaseReader;
 import se.sead.bugs.AccessReaderProvider;

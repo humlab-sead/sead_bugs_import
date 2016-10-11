@@ -1,8 +1,5 @@
 package se.sead.bugsimport.tracing.seadmodel;
 
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
-import org.springframework.stereotype.Component;
 import se.sead.bugs.TraceableBugsData;
 
 import javax.persistence.Column;

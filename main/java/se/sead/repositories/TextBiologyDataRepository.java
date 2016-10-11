@@ -1,8 +1,8 @@
 package se.sead.repositories;
 
-import se.sead.sead.model.Biblio;
 import se.sead.bugsimport.species.seadmodel.TaxaSpecies;
 import se.sead.bugsimport.speciesbiology.seadmodel.TextBiology;
+import se.sead.sead.model.Biblio;
 
 import java.util.List;
 

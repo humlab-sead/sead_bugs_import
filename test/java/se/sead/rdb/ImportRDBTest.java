@@ -17,7 +17,6 @@ import se.sead.bugs.AccessReaderProvider;
 import se.sead.bugsimport.rdb.RdbImporter;
 import se.sead.bugsimport.rdb.bugsmodel.BugsRDB;
 import se.sead.bugsimport.rdb.seadmodel.Rdb;
-import se.sead.rdbcodes.RdbCodeLogTraceAndErrorVerifier;
 import se.sead.repositories.*;
 import se.sead.testutils.BugsTracesAndErrorsVerification;
 import se.sead.testutils.DatabaseContentVerification;

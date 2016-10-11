@@ -1,6 +1,5 @@
 package se.sead.testutils;
 
-import org.aspectj.weaver.tools.Trace;
 import se.sead.bugs.TraceableBugsData;
 import se.sead.bugsimport.tracing.seadmodel.BugsError;
 import se.sead.bugsimport.tracing.seadmodel.BugsTrace;

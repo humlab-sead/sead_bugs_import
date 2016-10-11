@@ -17,8 +17,8 @@ import se.sead.bugsimport.specieskeys.bugsmodel.Keys;
 import se.sead.bugsimport.specieskeys.seadmodel.TextIdentificationKeys;
 import se.sead.bugsimport.tracing.seadmodel.BugsError;
 import se.sead.bugsimport.tracing.seadmodel.BugsTrace;
-import se.sead.repositories.*;
 import se.sead.model.TestEqualityHelper;
+import se.sead.repositories.*;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;

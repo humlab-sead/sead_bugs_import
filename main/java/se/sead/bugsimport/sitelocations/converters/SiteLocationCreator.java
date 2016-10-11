@@ -4,7 +4,6 @@ import se.sead.bugsimport.locations.seadmodel.Location;
 import se.sead.bugsimport.site.seadmodel.SeadSite;
 import se.sead.bugsimport.sitelocations.seadmodel.SiteLocation;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class SiteLocationCreator {

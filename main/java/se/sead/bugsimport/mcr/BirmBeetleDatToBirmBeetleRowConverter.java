@@ -2,16 +2,13 @@ package se.sead.bugsimport.mcr;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import se.sead.bugsimport.mcr.bugsmodel.BirmBeetleDat;
 import se.sead.bugsimport.BugsTableRowConverter;
+import se.sead.bugsimport.mcr.bugsmodel.BirmBeetleDat;
 import se.sead.bugsimport.mcr.seadmodel.BirmBeetleData;
 import se.sead.bugsimport.species.seadmodel.TaxaSpecies;
 import se.sead.repositories.BirmBeetleDataRepository;
 import se.sead.repositories.SpeciesRepository;
 import se.sead.repositories.TaxonomicOrderRepository;
-import se.sead.utils.BigDecimalDefinition;
-
-import java.math.BigDecimal;
 
 @Component
 public class BirmBeetleDatToBirmBeetleRowConverter implements BugsTableRowConverter<BirmBeetleDat, BirmBeetleData> {

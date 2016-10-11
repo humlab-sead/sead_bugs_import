@@ -2,9 +2,8 @@ package se.sead.bugsimport.species;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import se.sead.bugsimport.species.bugsmodel.INDEX;
 import se.sead.bugsimport.Importer;
-import se.sead.bugsimport.BugsSeadMapper;
+import se.sead.bugsimport.species.bugsmodel.INDEX;
 import se.sead.bugsimport.species.seadmodel.TaxonomicOrder;
 
 /**

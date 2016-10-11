@@ -6,8 +6,6 @@ import se.sead.sead.model.LoggableEntity;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 public class MappingResult<BugsType extends TraceableBugsData, SeadType extends LoggableEntity> {
 

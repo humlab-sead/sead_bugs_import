@@ -1,6 +1,5 @@
 package se.sead.sitereferences;
 
-import se.sead.utils.BigDecimalDefinition;
 import se.sead.bugsimport.site.seadmodel.SeadSite;
 import se.sead.bugsimport.sitereferences.seadmodel.SiteReference;
 import se.sead.bugsimport.tracing.seadmodel.BugsError;
@@ -11,6 +10,7 @@ import se.sead.model.TestSiteReference;
 import se.sead.repositories.BiblioDataRepository;
 import se.sead.repositories.SiteRepository;
 import se.sead.sead.model.Biblio;
+import se.sead.utils.BigDecimalDefinition;
 
 import java.util.ArrayList;
 import java.util.List;

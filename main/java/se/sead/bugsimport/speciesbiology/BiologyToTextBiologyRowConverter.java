@@ -2,15 +2,14 @@ package se.sead.bugsimport.speciesbiology;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import se.sead.bugsimport.speciesbiology.bugsmodel.Biology;
 import se.sead.bugsimport.BugsTableRowConverter;
-import se.sead.sead.model.Biblio;
 import se.sead.bugsimport.species.seadmodel.TaxaSpecies;
+import se.sead.bugsimport.speciesbiology.bugsmodel.Biology;
 import se.sead.bugsimport.speciesbiology.seadmodel.TextBiology;
 import se.sead.repositories.BiblioDataRepository;
 import se.sead.repositories.TaxonomicOrderRepository;
 import se.sead.repositories.TextBiologyDataRepository;
-import se.sead.utils.BigDecimalDefinition;
+import se.sead.sead.model.Biblio;
 
 @Component
 public class BiologyToTextBiologyRowConverter implements BugsTableRowConverter<Biology, TextBiology> {

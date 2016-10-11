@@ -1,13 +1,14 @@
 package se.sead.species;
 
-import se.sead.bugs.AccessReader;
-import se.sead.AccessReaderTest;
 import se.sead.bugsimport.species.bugsmodel.INDEX;
 import se.sead.bugsimport.species.seadmodel.*;
 import se.sead.model.*;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by erer0001 on 2016-04-28.

@@ -2,9 +2,7 @@ package se.sead.bugsimport.sitereferences;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import se.sead.bugsimport.BugsSeadMapper;
 import se.sead.bugsimport.Importer;
-import se.sead.bugsimport.Persister;
 import se.sead.bugsimport.site.SiteImporter;
 import se.sead.bugsimport.sitereferences.bugsmodel.BugsSiteRef;
 import se.sead.bugsimport.sitereferences.seadmodel.SiteReference;

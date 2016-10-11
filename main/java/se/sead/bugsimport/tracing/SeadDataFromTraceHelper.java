@@ -9,7 +9,6 @@ import se.sead.sead.model.LoggableEntity;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.List;
 
 public abstract class SeadDataFromTraceHelper<BugsType extends TraceableBugsData, SeadType extends LoggableEntity> {

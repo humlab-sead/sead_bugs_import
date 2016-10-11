@@ -2,8 +2,8 @@ package se.sead.bugsimport.mcr;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import se.sead.bugsimport.mcr.bugsmodel.BirmBeetleDat;
 import se.sead.bugsimport.Persister;
+import se.sead.bugsimport.mcr.bugsmodel.BirmBeetleDat;
 import se.sead.bugsimport.mcr.seadmodel.BirmBeetleData;
 import se.sead.repositories.BirmBeetleDataRepository;
 

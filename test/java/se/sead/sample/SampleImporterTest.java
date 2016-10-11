@@ -17,7 +17,6 @@ import se.sead.bugs.AccessReaderProvider;
 import se.sead.bugsimport.sample.SampleImporter;
 import se.sead.bugsimport.sample.bugsmodel.BugsSample;
 import se.sead.bugsimport.sample.seadmodel.Sample;
-import se.sead.bugsimport.tracing.seadmodel.BugsError;
 import se.sead.repositories.*;
 import se.sead.testutils.BugsTracesAndErrorsVerification;
 import se.sead.testutils.DatabaseContentVerification;

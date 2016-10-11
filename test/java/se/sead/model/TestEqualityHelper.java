@@ -38,7 +38,7 @@ public class TestEqualityHelper<T> {
         if (entity1 instanceof LoggableEntity && entity2 instanceof LoggableEntity) {
             LoggableEntity firstEntity = (LoggableEntity) entity1;
             LoggableEntity secondEntity = (LoggableEntity) entity2;
-            if (firstEntity.isNewItem() || secondEntity.isNewItem()) {
+            if (firstEntity.isNewItem() || secondEntity.isNewItem() || configuration.useCompareForBigDecimalEquality) {
                 EntityEqualityComparator entity1Comparator = createEntityEqualityComparator(firstEntity);
                 EntityEqualityComparator entity2Comparator = createEntityEqualityComparator(secondEntity);
                 return entity1Comparator.equals(entity2Comparator);

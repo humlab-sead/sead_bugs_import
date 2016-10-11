@@ -1,6 +1,5 @@
 package se.sead.site;
 
-import se.sead.utils.BigDecimalDefinition;
 import se.sead.bugsimport.locations.seadmodel.LocationType;
 import se.sead.bugsimport.site.bugsmodel.BugsSite;
 import se.sead.bugsimport.site.seadmodel.SeadSite;
@@ -10,13 +9,12 @@ import se.sead.model.TestLocation;
 import se.sead.model.TestSeadSite;
 import se.sead.model.TestSiteLocation;
 import se.sead.repositories.LocationTypeRepository;
+import se.sead.utils.BigDecimalDefinition;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import static org.junit.Assert.assertEquals;
 
 public class SiteTestDefinition {
 

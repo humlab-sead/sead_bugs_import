@@ -1,6 +1,5 @@
 package se.sead.siteotherproxies;
 
-import org.h2.table.Plan;
 import se.sead.bugsimport.siteotherproxies.bugsmodel.SiteOtherProxies;
 import se.sead.bugsimport.siteotherproxies.converters.BugsProxyToSeadRecordTypeNames;
 

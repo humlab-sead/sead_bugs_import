@@ -1,8 +1,6 @@
 package se.sead.repositories;
 
 import org.springframework.data.repository.Repository;
-import se.sead.bugsimport.rdb.bugsmodel.BugsRDB;
-import se.sead.bugsimport.tracing.seadmodel.BugsError;
 import se.sead.bugsimport.tracing.seadmodel.BugsTrace;
 
 import java.util.List;

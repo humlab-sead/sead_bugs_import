@@ -1,8 +1,8 @@
 package se.sead.bugsimport.countsheets.seadmodel;
 
 import se.sead.bugsimport.site.seadmodel.SeadSite;
-import se.sead.sead.model.LoggableEntity;
 import se.sead.sead.methods.Method;
+import se.sead.sead.model.LoggableEntity;
 import se.sead.sead.model.SamplingContext;
 
 import javax.persistence.*;

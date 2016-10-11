@@ -1,8 +1,8 @@
 package se.sead.model;
 
 import se.sead.bugsimport.species.seadmodel.TaxaAuthor;
-import se.sead.bugsimport.species.seadmodel.TaxaSpecies;
 import se.sead.bugsimport.species.seadmodel.TaxaGenus;
+import se.sead.bugsimport.species.seadmodel.TaxaSpecies;
 
 /**
  * Created by erer0001 on 2016-04-28.

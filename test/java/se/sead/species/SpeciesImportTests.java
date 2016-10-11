@@ -13,15 +13,15 @@ import se.sead.Application;
 import se.sead.DataSourceFactory;
 import se.sead.DefaultAccessDatabaseReader;
 import se.sead.bugs.AccessReaderProvider;
-import se.sead.bugsimport.species.bugsmodel.INDEX;
 import se.sead.bugsimport.species.IndexImporter;
+import se.sead.bugsimport.species.bugsmodel.INDEX;
 import se.sead.bugsimport.species.seadmodel.TaxonomicOrder;
 import se.sead.bugsimport.tracing.seadmodel.BugsTrace;
+import se.sead.model.TestEqualityHelper;
 import se.sead.repositories.BugsTraceRepository;
 import se.sead.repositories.TaxaOrderRepository;
 import se.sead.repositories.TaxonomicOrderRepository;
 import se.sead.repositories.TaxonomicOrderSystemRepository;
-import se.sead.model.TestEqualityHelper;
 import se.sead.testutils.DefaultConfig;
 
 import javax.sql.DataSource;

@@ -1,7 +1,5 @@
 package se.sead.bugsimport.tracing.seadmodel;
 
-import se.sead.bugs.TraceableBugsData;
-
 import javax.persistence.*;
 
 @Entity

@@ -8,7 +8,6 @@ import se.sead.bugsimport.mcrnames.seadmodel.MCRName;
 import se.sead.bugsimport.species.seadmodel.TaxaSpecies;
 import se.sead.repositories.McrNamesRepository;
 import se.sead.repositories.TaxonomicOrderRepository;
-import se.sead.utils.BigDecimalDefinition;
 
 @Component
 @Order(2)

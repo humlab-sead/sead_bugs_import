@@ -1,6 +1,9 @@
 package se.sead.mcr;
 
-import se.sead.bugsimport.species.seadmodel.*;
+import se.sead.bugsimport.species.seadmodel.TaxaAuthor;
+import se.sead.bugsimport.species.seadmodel.TaxaGenus;
+import se.sead.bugsimport.species.seadmodel.TaxaOrder;
+import se.sead.bugsimport.species.seadmodel.TaxaSpecies;
 import se.sead.model.TestTaxaAuthor;
 import se.sead.model.TestTaxaFamily;
 import se.sead.model.TestTaxaGenus;

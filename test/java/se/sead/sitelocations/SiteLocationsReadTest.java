@@ -2,8 +2,6 @@ package se.sead.sitelocations;
 
 import org.junit.Test;
 import se.sead.AccessReaderTest;
-import se.sead.bugsimport.site.bugsmodel.BugsSite;
-import se.sead.bugsimport.site.bugsmodel.BugsSiteBugsTable;
 import se.sead.bugsimport.sitelocations.bugsmodel.BugsSiteLocation;
 import se.sead.bugsimport.sitelocations.bugsmodel.BugsSiteLocationBugsTable;
 

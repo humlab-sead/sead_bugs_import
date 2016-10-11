@@ -1,7 +1,5 @@
 package se.sead.bugsimport.sitelocations.converters;
 
-import se.sead.bugsimport.locations.seadmodel.Location;
-import se.sead.bugsimport.site.seadmodel.SeadSite;
 import se.sead.bugsimport.sitelocations.seadmodel.SiteLocation;
 
 import java.util.List;

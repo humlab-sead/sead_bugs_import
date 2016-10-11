@@ -2,7 +2,8 @@ package se.sead.bugsimport.mcr.bugsmodel;
 
 import se.sead.bugs.TraceableBugsData;
 
-import java.util.*;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 /**

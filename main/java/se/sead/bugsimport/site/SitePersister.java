@@ -5,12 +5,7 @@ import org.springframework.stereotype.Component;
 import se.sead.bugsimport.Persister;
 import se.sead.bugsimport.site.bugsmodel.BugsSite;
 import se.sead.bugsimport.site.seadmodel.SeadSite;
-import se.sead.bugsimport.sitelocations.seadmodel.SiteLocation;
-import se.sead.repositories.SiteLocationRepository;
 import se.sead.repositories.SiteRepository;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 public class SitePersister extends Persister<BugsSite, SeadSite> {

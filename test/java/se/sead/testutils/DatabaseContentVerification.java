@@ -1,6 +1,5 @@
 package se.sead.testutils;
 
-import org.hibernate.annotations.SourceType;
 import se.sead.model.TestEqualityHelper;
 import se.sead.sead.model.LoggableEntity;
 

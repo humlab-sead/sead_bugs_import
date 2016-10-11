@@ -2,9 +2,9 @@ package se.sead.bugsimport.sitelocations.converters.locations;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import se.sead.bugsimport.locations.LocationCreator;
 import se.sead.bugsimport.locations.seadmodel.Location;
 import se.sead.bugsimport.locations.seadmodel.LocationType;
-import se.sead.bugsimport.locations.LocationCreator;
 import se.sead.bugsimport.site.helper.SiteFromCodeDisallowDeletedSite;
 import se.sead.bugsimport.sitelocations.bugsmodel.BugsSiteLocation;
 import se.sead.bugsimport.sitelocations.converters.SiteLocationTraceHelper;

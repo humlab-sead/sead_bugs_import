@@ -1,7 +1,5 @@
 package se.sead.mcr;
 
-import se.sead.AccessReaderTest;
-import se.sead.bugs.AccessReader;
 import se.sead.bugsimport.mcr.bugsmodel.BirmBeetleDat;
 import se.sead.bugsimport.mcr.seadmodel.BirmBeetleData;
 import se.sead.bugsimport.species.seadmodel.*;

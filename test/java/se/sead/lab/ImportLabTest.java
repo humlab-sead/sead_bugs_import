@@ -14,8 +14,6 @@ import se.sead.Application;
 import se.sead.DataSourceFactory;
 import se.sead.DefaultAccessDatabaseReader;
 import se.sead.bugs.AccessReaderProvider;
-import se.sead.bugsimport.attributes.bugsmodel.BugsAttributes;
-import se.sead.bugsimport.attributes.seadmodel.TaxaMeasuredAttributes;
 import se.sead.bugsimport.lab.LabImporter;
 import se.sead.bugsimport.lab.bugsmodel.BugsLab;
 import se.sead.bugsimport.lab.seadmodel.DatingLab;

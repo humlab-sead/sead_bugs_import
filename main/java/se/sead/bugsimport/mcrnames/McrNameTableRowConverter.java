@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import se.sead.bugsimport.BugsTableRowConverter;
 import se.sead.bugsimport.mcrnames.bugsmodel.BugsMCRNames;
-import se.sead.bugsimport.mcrnames.converters.McrNameTracerHelper;
 import se.sead.bugsimport.mcrnames.converters.McrNameUpdater;
 import se.sead.bugsimport.mcrnames.seadmodel.MCRName;
 import se.sead.bugsimport.mcrnames.search.MCRSearch;

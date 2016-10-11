@@ -2,10 +2,10 @@ package se.sead.bugsimport.species;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import se.sead.bugsimport.BugsTableRowConverter;
 import se.sead.bugsimport.species.bugsmodel.INDEX;
 import se.sead.bugsimport.species.converters.TaxaSpeciesConverter;
 import se.sead.bugsimport.species.converters.TaxonomicOrderConverter;
-import se.sead.bugsimport.BugsTableRowConverter;
 import se.sead.bugsimport.species.seadmodel.TaxaSpecies;
 import se.sead.bugsimport.species.seadmodel.TaxonomicOrder;
 

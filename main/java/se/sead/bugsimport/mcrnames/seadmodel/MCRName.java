@@ -3,7 +3,10 @@ package se.sead.bugsimport.mcrnames.seadmodel;
 import se.sead.bugsimport.species.seadmodel.TaxaSpecies;
 import se.sead.sead.model.LoggableEntity;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "tbl_mcr_names")

@@ -1,6 +1,5 @@
 package se.sead.countsheets;
 
-import se.sead.utils.BigDecimalDefinition;
 import se.sead.bugsimport.countsheets.bugsmodel.Countsheet;
 import se.sead.bugsimport.countsheets.seadmodel.SampleGroup;
 import se.sead.bugsimport.site.seadmodel.SeadSite;
@@ -14,6 +13,7 @@ import se.sead.repositories.SamplingContextRepository;
 import se.sead.repositories.SiteRepository;
 import se.sead.sead.methods.Method;
 import se.sead.sead.model.SamplingContext;
+import se.sead.utils.BigDecimalDefinition;
 
 import java.util.ArrayList;
 import java.util.List;

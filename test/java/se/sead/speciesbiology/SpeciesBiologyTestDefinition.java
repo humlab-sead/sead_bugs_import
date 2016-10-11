@@ -1,6 +1,6 @@
 package se.sead.speciesbiology;
 
-import se.sead.bugsimport.species.seadmodel.*;
+import se.sead.bugsimport.species.seadmodel.TaxaOrder;
 import se.sead.bugsimport.speciesbiology.bugsmodel.Biology;
 import se.sead.species.TestSpeciesProvider;
 

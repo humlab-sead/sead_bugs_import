@@ -8,8 +8,6 @@ import se.sead.testutils.BugsTracesAndErrorsVerification;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-
 public class LogTraceAndErrorVerifier implements BugsTracesAndErrorsVerification.LogVerificationCallback<BugsRDBSystem> {
 
     private AssertHelper rdbSystemAssertHelper;

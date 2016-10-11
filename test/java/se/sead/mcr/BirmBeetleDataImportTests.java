@@ -13,14 +13,14 @@ import se.sead.Application;
 import se.sead.DataSourceFactory;
 import se.sead.DefaultAccessDatabaseReader;
 import se.sead.bugs.AccessReaderProvider;
-import se.sead.bugsimport.mcr.bugsmodel.BirmBeetleDat;
 import se.sead.bugsimport.mcr.BirmBeetleDataImporter;
+import se.sead.bugsimport.mcr.bugsmodel.BirmBeetleDat;
 import se.sead.bugsimport.mcr.seadmodel.BirmBeetleData;
 import se.sead.bugsimport.species.seadmodel.TaxaSpecies;
 import se.sead.bugsimport.tracing.seadmodel.BugsError;
 import se.sead.bugsimport.tracing.seadmodel.BugsTrace;
-import se.sead.repositories.*;
 import se.sead.model.TestEqualityHelper;
+import se.sead.repositories.*;
 import se.sead.testutils.DefaultConfig;
 
 import javax.sql.DataSource;
@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)

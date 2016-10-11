@@ -11,7 +11,6 @@ import se.sead.bugsimport.tracing.seadmodel.BugsTrace;
 import se.sead.repositories.BugsTraceRepository;
 import se.sead.repositories.RdbRepository;
 import se.sead.repositories.TaxonomicOrderRepository;
-import se.sead.utils.BigDecimalDefinition;
 
 import java.util.Collections;
 import java.util.List;

@@ -1,6 +1,9 @@
 package se.sead.bugsimport.locations.seadmodel;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
 @Table(name="tbl_location_types")

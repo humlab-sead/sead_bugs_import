@@ -1,6 +1,5 @@
 package se.sead.siteotherproxies;
 
-import se.sead.utils.BigDecimalDefinition;
 import se.sead.bugsimport.site.seadmodel.SeadSite;
 import se.sead.bugsimport.siteotherproxies.bugsmodel.SiteOtherProxies;
 import se.sead.bugsimport.siteotherproxies.seadmodel.SiteOtherRecord;
@@ -11,6 +10,7 @@ import se.sead.model.TestSeadSite;
 import se.sead.model.TestSiteOtherRecord;
 import se.sead.repositories.RecordTypeRepository;
 import se.sead.repositories.SiteRepository;
+import se.sead.utils.BigDecimalDefinition;
 
 import java.util.ArrayList;
 import java.util.List;

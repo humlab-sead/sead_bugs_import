@@ -1,8 +1,6 @@
 package se.sead.bugsimport.sitelocations.bugsmodel;
 
 import se.sead.bugs.TraceableBugsData;
-import se.sead.bugsimport.site.bugsmodel.BugsSite;
-import se.sead.bugsimport.site.bugsmodel.BugsSiteBugsTable;
 
 public class BugsSiteLocation extends TraceableBugsData {
 

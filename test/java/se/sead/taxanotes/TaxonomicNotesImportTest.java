@@ -20,8 +20,8 @@ import se.sead.bugsimport.taxanotes.bugsmodel.TaxoNotes;
 import se.sead.bugsimport.taxanotes.seadmodel.TaxonomicNotes;
 import se.sead.bugsimport.tracing.seadmodel.BugsError;
 import se.sead.bugsimport.tracing.seadmodel.BugsTrace;
-import se.sead.repositories.*;
 import se.sead.model.TestEqualityHelper;
+import se.sead.repositories.*;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;

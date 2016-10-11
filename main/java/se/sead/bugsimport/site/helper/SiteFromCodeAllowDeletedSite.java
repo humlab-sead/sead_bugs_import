@@ -1,9 +1,7 @@
 package se.sead.bugsimport.site.helper;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import se.sead.bugsimport.tracing.seadmodel.BugsTrace;
-import se.sead.repositories.BugsTraceRepository;
 
 import java.util.List;
 

@@ -4,9 +4,9 @@ import se.sead.bugsimport.specieskeys.bugsmodel.Keys;
 import se.sead.bugsimport.specieskeys.seadmodel.TextIdentificationKeys;
 import se.sead.bugsimport.tracing.seadmodel.BugsError;
 import se.sead.bugsimport.tracing.seadmodel.BugsTrace;
-import se.sead.sead.model.Biblio;
 import se.sead.model.TestBiblio;
 import se.sead.model.TestTextIdentificationKeys;
+import se.sead.sead.model.Biblio;
 
 import java.util.ArrayList;
 import java.util.Arrays;
