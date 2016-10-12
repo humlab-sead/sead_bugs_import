@@ -31,10 +31,10 @@ public class GeochronologyAnalysisEntityCreator {
     ){
         bugsDatasetMaster = masterRepository.findBugsMasterSet();
         geochronologyDataType = dataTypeRepository.findBugsGeochronologyDataType();
-        assert bugsDatasetMaster != null && geochronologyDataType != null;
     }
 
     public AnalysisEntity create(DatesRadio bugsData){
+        assert bugsDatasetMaster != null && geochronologyDataType != null;
         return new Creator(bugsData).create();
     }
 

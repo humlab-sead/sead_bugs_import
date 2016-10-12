@@ -15,7 +15,6 @@ public class GeochronologyMethodManager {
     private Method defaultMethodIfEmpty;
     private MethodGroup geochronologyMethodGroup;
 
-
     @Autowired
     public GeochronologyMethodManager(
             @Value("${geochronology.method.group:Dating by radiometric methods}")
@@ -26,7 +25,6 @@ public class GeochronologyMethodManager {
             MethodRepository methodRepository
     ){
         geochronologyMethodGroup = methodGroupRepository.findByName(geochronologyMethodGroupName);
-        assert geochronologyMethodGroup != null;
         this.methodRepository = methodRepository;
         setDefaultMethod(defaultGeochronologyMethodAbbrev);
     }
@@ -40,6 +38,7 @@ public class GeochronologyMethodManager {
     }
 
     public Method get(String datingMethod){
+        assert geochronologyMethodGroup != null;
         if(isConfiguredForAllowedEmptyMethod() &&
                 (datingMethod == null || datingMethod.isEmpty())){
            return defaultMethodIfEmpty;

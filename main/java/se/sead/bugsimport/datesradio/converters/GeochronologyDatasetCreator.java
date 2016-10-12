@@ -26,10 +26,10 @@ public class GeochronologyDatasetCreator {
     ){
         bugsDatasetMaster = masterRepository.findBugsMasterSet();
         geochronologyDataType = dataTypeRepository.findBugsGeochronologyDataType();
-        assert bugsDatasetMaster != null && geochronologyDataType != null;
     }
 
     public Dataset create(DatesRadio bugsData){
+        assert bugsDatasetMaster != null && geochronologyDataType != null;
         Dataset newDataset = new Dataset();
         newDataset.setName(bugsData.getDateCode());
         newDataset.setDataType(geochronologyDataType);
