@@ -43,6 +43,8 @@ public abstract class BugsTracesAndErrorsVerification<BugsType extends Traceable
                 logVerificationHandler.verifyLogData(bugsData, traces, errors);
             } catch (AssertionError ae){
                 System.out.println(bugsData);
+                System.out.println(traces);
+                System.out.println(errors);
                 throw ae;
             }
         }

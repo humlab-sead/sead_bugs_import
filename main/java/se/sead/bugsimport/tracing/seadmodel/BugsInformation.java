@@ -33,4 +33,13 @@ public abstract class BugsInformation {
             compressedBugsData = bugsData.compressToString();
         }
     }
+
+    @Override
+    public String toString() {
+        return "BugsInformation{" +
+                "bugsTable='" + bugsTable + '\'' +
+                ", compressedBugsData='" + compressedBugsData + '\'' +
+                ", bugsIdentifier='" + bugsIdentifier + '\'' +
+                '}';
+    }
 }

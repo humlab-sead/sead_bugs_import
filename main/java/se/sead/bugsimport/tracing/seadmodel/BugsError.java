@@ -29,4 +29,11 @@ public class BugsError extends BugsInformation{
     public void setMessage(String message) {
         this.message = message;
     }
+
+    @Override
+    public String toString() {
+        return super.toString() + " BugsError{" +
+                "message='" + message + '\'' +
+                '}';
+    }
 }
