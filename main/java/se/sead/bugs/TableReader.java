@@ -8,9 +8,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by erer0001 on 2016-04-22.
- */
 class TableReader {
 
     private Database database;
