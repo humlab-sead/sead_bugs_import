@@ -5,6 +5,7 @@ import se.sead.bugsimport.sample.seadmodel.AlternativeReferenceType;
 import se.sead.bugsimport.sample.seadmodel.Sample;
 import se.sead.bugsimport.sample.seadmodel.SampleDimension;
 import se.sead.bugsimport.sample.seadmodel.SampleType;
+import se.sead.bugsimport.site.seadmodel.SeadSite;
 import se.sead.model.TestEqualityHelper;
 import se.sead.model.TestSample;
 import se.sead.model.TestSampleDimension;
@@ -130,6 +131,9 @@ public class DatabaseContentProvider implements DatabaseContentVerification.Data
         TestEqualityHelper<Sample> equalityHelper = new TestEqualityHelper<>(true);
         equalityHelper.addMethodInformation(
                 new TestEqualityHelper.ClassMethodInformation(SampleDimension.class, "getSample")
+        );
+        equalityHelper.addMethodInformation(
+                new TestEqualityHelper.ClassMethodInformation(SeadSite.class, "getSiteLocations")
         );
         return equalityHelper;
     }

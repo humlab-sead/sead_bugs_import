@@ -10,7 +10,7 @@ class ExpectedBugsData {
     static final List<Period> EXPECTED_DATA =
             Arrays.asList(
                 create("?", "unknown/not given", "Other", "No data", null, null, null, null, null, null, "?"),
-                create("ERR_NO_BP_ETC", "No age type", "Geological", "No BP etc specified", null, "UK", 0, null, 0, null, "Radiometric"),
+                create("NO_BP_ETC", "No age type", "Geological", "No BP etc specified", null, "UK", 0, null, 0, null, "Radiometric"),
                 create("ERR_NO_LOC", "No location", "Geological", "No location found", null, "Error", 0, "BP", 1, "BP", "Radiometric"),
                 create("ERR_NO_NAME", null, "Geological", "This period has no name", null, "UK", 0, "BP", 1, "BP", "Radiometric"),
                 create("ERR_NO_TYPE", "No type", null, "Type not found", null, "UK", 0, "BP", 1, "BP", "Radiometric"),
