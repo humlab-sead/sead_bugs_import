@@ -53,10 +53,10 @@ public class Countsheet extends TraceableBugsData {
     @Override
     public String compressToString() {
         return "{" +
-                code +
-                name +
-                siteCode +
-                sheetContext +
+                code + ',' +
+                name + ',' +
+                siteCode + ',' +
+                sheetContext + ',' +
                 type +
                 "}";
     }

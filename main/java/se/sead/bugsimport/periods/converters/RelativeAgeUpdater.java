@@ -2,7 +2,6 @@ package se.sead.bugsimport.periods.converters;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import se.sead.bugsimport.locations.country.CountryImportTraceHelper;
 import se.sead.bugsimport.locations.seadmodel.Location;
 import se.sead.bugsimport.periods.bugsmodel.Period;
 import se.sead.bugsimport.periods.converters.age.C14AgeConverter;
@@ -14,7 +13,6 @@ import se.sead.repositories.RelativeAgeTypeRepository;
 import se.sead.utils.BigDecimalDefinition;
 import se.sead.utils.ErrorCopier;
 
-import javax.jws.Oneway;
 import java.math.BigDecimal;
 import java.util.Objects;
 

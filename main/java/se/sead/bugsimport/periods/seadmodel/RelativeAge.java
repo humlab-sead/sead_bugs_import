@@ -1,12 +1,10 @@
 package se.sead.bugsimport.periods.seadmodel;
 
 import se.sead.bugsimport.locations.seadmodel.Location;
-import se.sead.sead.model.Biblio;
 import se.sead.sead.model.LoggableEntity;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.List;
 
 @Entity
 @Table(name = "tbl_relative_ages")

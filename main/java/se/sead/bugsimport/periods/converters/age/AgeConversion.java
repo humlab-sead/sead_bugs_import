@@ -1,7 +1,5 @@
 package se.sead.bugsimport.periods.converters.age;
 
-import se.sead.bugsimport.periods.bugsmodel.Period;
-
 import java.math.BigDecimal;
 
 interface AgeConversion {

@@ -9,4 +9,6 @@ public interface DataTypeRepository extends Repository<DataType, Integer>{
 
     @Query("select dataType from DataType dataType where dataType.name = 'Undefined other'")
     DataType findBugsGeochronologyDataType();
+
+    DataType findByName(String name);
 }
