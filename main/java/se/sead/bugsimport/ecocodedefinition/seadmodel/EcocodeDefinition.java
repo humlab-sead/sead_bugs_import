@@ -17,7 +17,7 @@ public class EcocodeDefinition extends LoggableEntity{
     private String abbreviation;
     @Column(name = "definition")
     private String definition;
-    @Column(name = "label")
+    @Column(name = "name")
     private String label;
     @Column(name = "notes")
     private String notes;

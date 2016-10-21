@@ -15,7 +15,7 @@ public class EcocodeGroup extends LoggableEntity{
     private Integer id;
     @Column(name = "definition")
     private String definition;
-    @Column(name = "label")
+    @Column(name = "name")
     private String label;
     @ManyToOne
     @JoinColumn(name = "ecocode_system_id")
