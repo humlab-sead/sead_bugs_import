@@ -22,7 +22,11 @@ class ExpectedBugsData {
                     create("SAMP000001", "From", "CALE000015", 100, "AD", "ArchCal", "Already stored"),
                     create("SAMP000001", "From", "CALE000016", 120, "AD", "ArchCal", "update change date"),
                     create("SAMP000001", "From", "CALE000017", 100, "BC", "ArchCal", "insert bc version"),
-                    create("SAMP000001", "From", "CALE000018", 100, "BP", "GeolCal", "insert bp version")
+                    create("SAMP000001", "From", "CALE000018", 100, "BP", "GeolCal", "insert bp version"),
+                    create("SAMP000002", "From", "CALE000019", 100, "AD", "ArchCal", "range"),
+                    create("SAMP000002", "To", "CALE000020", 200, "AD", "ArchCal", "range"),
+                    create("SAMP000003", "From ca.", "CALE000021", 100, "AD", "ArchCal", null),
+                    create("SAMP000003", "To ca.", "CALE000022", 200, "AD", "ArchCal", "existing calendar range but with uncertainty")
             );
 
     private static DatesCalendar create(

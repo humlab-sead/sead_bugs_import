@@ -19,6 +19,10 @@ public class MappingResult<BugsType extends TraceableBugsData, SeadType extends 
         data.add(new BugsListSeadMapping<BugsType, SeadType>(bugsData, seadItems));
     }
 
+    protected void add(BugsListSeadMapping<BugsType, SeadType> mapping){
+        data.add(mapping);
+    }
+
     public List<BugsListSeadMapping<BugsType, SeadType>> getData(){ return data;}
 
     public static class BugsListSeadMapping<BugsType extends TraceableBugsData, SeadType extends LoggableEntity> {
@@ -29,7 +33,7 @@ public class MappingResult<BugsType extends TraceableBugsData, SeadType extends 
         private Boolean cachedIsNewData = null;
         private Boolean cachedIsUpdated = null;
 
-        BugsListSeadMapping(BugsType bugsData, List<SeadType> seadData){
+        public BugsListSeadMapping(BugsType bugsData, List<SeadType> seadData){
             this.bugsData = bugsData;
             if(seadData == null){
                 this.seadData = Collections.EMPTY_LIST;

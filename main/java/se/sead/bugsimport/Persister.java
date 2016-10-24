@@ -12,8 +12,7 @@ public abstract class Persister<BugsType extends TraceableBugsData, SeadType ext
     @Autowired
     private TracePersister tracePersister;
 
-    public void persist(BugsSeadMapper<BugsType, SeadType> mapper){
-        MappingResult<BugsType, SeadType> mapperResult = mapper.getMapperResult();
+    public void persist(MappingResult<BugsType, SeadType> mapperResult){
         for (MappingResult.BugsListSeadMapping<BugsType, SeadType> dataMapping :
                 mapperResult.getData()) {
             if(!dataMapping.isErrorFree()){

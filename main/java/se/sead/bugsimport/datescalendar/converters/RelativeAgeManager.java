@@ -12,12 +12,13 @@ import se.sead.repositories.RelativeAgeRepository;
 public class RelativeAgeManager {
 
     private static final String NAME_TEMPLATE = "CAL_%d_%s";
-    private static final String STANDARD_NOTES = "Autocreated from bugs import";
 
     @Autowired
     private RelativeAgeRepository relativeAgeRepository;
     @Autowired
     private RelativeAgeUpdater updater;
+    @Autowired
+    private RelativeAgeTypeManager typeManager;
 
     public RelativeAge getOrCreateRelativeAge(DatesCalendar bugsData){
         String abbreviation = createAbbreviation(bugsData.getDate(), bugsData.getBcadbp());
@@ -33,32 +34,32 @@ public class RelativeAgeManager {
         return String.format(NAME_TEMPLATE, date, bcadbp);
     }
 
-    private RelativeAge create(DatesCalendar bugsData, String abbreviation){
-        return new RelativeAgeCreator(bugsData, abbreviation).create();
+    protected RelativeAge create(DatesCalendar bugsData, String abbreviation){
+        Period period = new PeriodCreator(bugsData, abbreviation).create();
+        RelativeAge created = new RelativeAge();
+        updater.update(created, period);
+        return created;
     }
 
-    private class RelativeAgeCreator {
+    private class PeriodCreator extends AbstractPeriodForRelativeAgeCreator {
 
-        private DatesCalendar datesCalendar;
-        private String computedAbbreviation;
-
-        public RelativeAgeCreator(DatesCalendar datesCalendar, String computedAbbreviation) {
-            this.datesCalendar = datesCalendar;
-            this.computedAbbreviation = computedAbbreviation;
+        public PeriodCreator(DatesCalendar datesCalendar, String computedAbbreviation) {
+            super(datesCalendar, computedAbbreviation);
         }
 
-        RelativeAge create(){
-            Period period = new Period();
-            period.setBegin(datesCalendar.getDate());
-            period.setEnd(datesCalendar.getDate());
-            period.setBeginBCad(datesCalendar.getBcadbp());
-            period.setEndBCad(datesCalendar.getBcadbp());
-            period.setType(datesCalendar.getDatingMethod());
-            period.setDesc(STANDARD_NOTES);
-            period.setPeriodCode(computedAbbreviation);
-            RelativeAge created = new RelativeAge();
-            updater.update(created, period);
-            return created;
+        @Override
+        protected Integer getStart(){
+            return datesCalendar.getDate();
+        }
+
+        @Override
+        protected Integer getStop(){
+            return datesCalendar.getDate();
+        }
+
+        @Override
+        protected String getType(){
+            return typeManager.getCalendarDateTypeName();
         }
     }
 

@@ -42,8 +42,8 @@ public abstract class Importer<BugsType extends TraceableBugsData, SeadType exte
             return;
         }
         runRequiredImporters();
-        mapData();
-        saveData();
+        MappingResult<BugsType, SeadType> mappedData = mapData();
+        saveData(mappedData);
         hasRun = true;
     }
 
@@ -54,15 +54,11 @@ public abstract class Importer<BugsType extends TraceableBugsData, SeadType exte
         }
     }
 
-    private void mapData() {
-        dataMapper.importBugsData();
+    private MappingResult<BugsType, SeadType> mapData() {
+        return dataMapper.importBugsData();
     }
 
-    private void saveData(){
-        persister.persist(dataMapper);
-    }
-
-    protected void setHasRun(boolean hasRun){
-        this.hasRun = hasRun;
+    private void saveData(MappingResult<BugsType, SeadType> mappedData){
+        persister.persist(mappedData);
     }
 }

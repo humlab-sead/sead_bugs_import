@@ -27,13 +27,16 @@ class DatabaseContentProvider implements DatabaseContentVerification.DatabaseCon
 
     private RelativeDateRepository relativeDateRepository;
     private Sample defaultSample;
+    private Sample sample2;
+    private Sample sample3;
     private DatingUncertainty fromUncertainty;
+    private DatingUncertainty caUncertainty;
     private RelativeAge cal100AD;
     private RelativeAge cal120AD;
     private Method archPer;
     private Method geolPer;
-    private RelativeAgeType geologicalType;
-    private RelativeAgeType archaeologicalType;
+    private RelativeAgeType calendarDateTyp;
+    private RelativeAgeType calendarDateRange;
 
     DatabaseContentProvider(
             SampleRepository sampleRepository,
@@ -44,13 +47,16 @@ class DatabaseContentProvider implements DatabaseContentVerification.DatabaseCon
             RelativeDateRepository relativeDateRepository
     ){
         defaultSample = sampleRepository.findOne(1);
+        sample2 = sampleRepository.findOne(2);
+        sample3 = sampleRepository.findOne(3);
         fromUncertainty = datingUncertaintyRepository.findOne(3);
+        caUncertainty = datingUncertaintyRepository.findOne(5);
         cal100AD = relativeAgeRepository.findOne(1);
         cal120AD = relativeAgeRepository.findOne(2);
         archPer = methodRepository.findOne(3);
         geolPer = methodRepository.findOne(4);
-        geologicalType = relativeAgeTypeRepository.findOne(1);
-        archaeologicalType = relativeAgeTypeRepository.findOne(2);
+        calendarDateTyp = relativeAgeTypeRepository.findOne(2);
+        calendarDateRange = relativeAgeTypeRepository.findOne(3);
         this.relativeDateRepository = relativeDateRepository;
     }
 
@@ -117,7 +123,7 @@ class DatabaseContentProvider implements DatabaseContentVerification.DatabaseCon
                         null,
                         defaultSample,
                         fromUncertainty,
-                        createCalenderRelativeAge("CAL_" + 100 + "_BC", 2050, archaeologicalType),
+                        createCalenderRelativeAge("CAL_" + 100 + "_BC", 2050, calendarDateTyp),
                         archPer,
                         "insert bc version"
                 ),
@@ -125,9 +131,25 @@ class DatabaseContentProvider implements DatabaseContentVerification.DatabaseCon
                         null,
                         defaultSample,
                         fromUncertainty,
-                        createC14RelativeAge(100, "BP", geologicalType),
+                        createC14RelativeAge(100, "BP", calendarDateTyp),
                         geolPer,
                         "insert bp version"
+                ),
+                TestRelativeDate.create(
+                        null,
+                        sample2,
+                        null,
+                        createCalendarRelativeAge("CAL_" + 100 + "-" + 200 + "_AD", 1850, 1750, calendarDateRange),
+                        archPer,
+                        "range"
+                ),
+                TestRelativeDate.create(
+                        null,
+                        sample3,
+                        caUncertainty,
+                        createCalendarRelativeAge("CAL_" + 100 + "-" + 200 + "_AD", 1850, 1750, calendarDateRange),
+                        archPer,
+                        "existing calendar range but with uncertainty"
                 )
         );
     }
@@ -170,6 +192,23 @@ class DatabaseContentProvider implements DatabaseContentVerification.DatabaseCon
         );
     }
 
+    private RelativeAge createCalendarRelativeAge(String abbrev, Integer start, Integer stop, RelativeAgeType type){
+        BigDecimal startValue = createSeadValue(start);
+        BigDecimal stopValue = createSeadValue(stop);
+        return TestRelativeAge.create(
+                null,
+                abbrev,
+                null,
+                null,
+                null,
+                startValue,
+                stopValue,
+                "Autocreated from bugs import",
+                type,
+                null
+        );
+    }
+
     @Override
     public List<RelativeDate> getActualData() {
         return relativeDateRepository.findAll();
@@ -190,7 +229,15 @@ class DatabaseContentProvider implements DatabaseContentVerification.DatabaseCon
     private static class RelativeDateComparator implements Comparator<RelativeDate> {
         @Override
         public int compare(RelativeDate o1, RelativeDate o2) {
-            return o1.getNotes().compareTo(o2.getNotes());
+            String o1Notes = o1.getNotes();
+            String o2Notes = o2.getNotes();
+            if(o1.getNotes() == null){
+                o1Notes = "";
+            }
+            if(o2.getNotes() == null){
+                o2Notes = "";
+            }
+            return o1Notes.compareTo(o2Notes);
         }
     }
 }

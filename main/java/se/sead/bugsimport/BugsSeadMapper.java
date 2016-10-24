@@ -14,7 +14,6 @@ public abstract class BugsSeadMapper<BugsType extends TraceableBugsData, SeadTyp
 
     private BugsTable<BugsType> bugsTable;
     private BugsTableRowConverter<BugsType, SeadType> singleBugsTableRowConverterForMapper;
-    private MappingResult<BugsType, SeadType> mapperResult;
 
     @Autowired
     private BugsValueTranslationService dataTranslationService;
@@ -26,31 +25,28 @@ public abstract class BugsSeadMapper<BugsType extends TraceableBugsData, SeadTyp
             BugsTableRowConverter<BugsType, SeadType> singleBugsTableRowConverterForMapper) {
         this.bugsTable = bugsTable;
         this.singleBugsTableRowConverterForMapper = singleBugsTableRowConverterForMapper;
-        mapperResult = new MappingResult<>();
     }
 
-    public void importBugsData(){
+    public MappingResult<BugsType, SeadType> importBugsData(){
+        MappingResult<BugsType, SeadType> resultContainer = initMapperResultContainer();
         List<BugsType> readItems = getAccessReader().read(bugsTable);
         for (BugsType readItem :
                 readItems) {
-            mapResult(readItem);
+            resultContainer.add(readItem, getConvertedValue(readItem));
         }
+        return resultContainer;
+    }
+
+    protected MappingResult<BugsType, SeadType> initMapperResultContainer(){
+        return new MappingResult<>();
     }
 
     private AccessReader getAccessReader() {
         return accessReaderProvider.getReader();
     }
 
-    protected void mapResult(BugsType readItem){
-        mapperResult.add(readItem, getConvertedValue(readItem));
-    }
-
     private List<SeadType> getConvertedValue(BugsType readItem) {
         dataTranslationService.translateValues(readItem);
         return singleBugsTableRowConverterForMapper.convertListForDataRow(readItem);
-    }
-
-    public MappingResult<BugsType, SeadType> getMapperResult(){
-        return mapperResult;
     }
 }

@@ -23,9 +23,8 @@ public class DatesCalendarRowConverter implements BugsTableRowConverter<DatesCal
             return create(bugsData);
         } else if(fromLastTrace.isErrorFree()){
             return update(fromLastTrace, bugsData);
-        } else {
-            return fromLastTrace;
         }
+        return fromLastTrace;
     }
 
     private RelativeDate create(DatesCalendar bugsData){

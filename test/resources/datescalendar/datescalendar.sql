@@ -50,9 +50,13 @@ values (3, 'TSample', '', 'SAMP000001', 'tbl_physical_samples', 1);
 insert into tbl_dating_uncertainty (dating_uncertainty_id, uncertainty) values (1, '>');
 insert into tbl_dating_uncertainty (dating_uncertainty_id, uncertainty) values (2, '?');
 insert into tbl_dating_uncertainty (dating_uncertainty_id, uncertainty) values (3, 'From');
+insert into tbl_dating_uncertainty (dating_uncertainty_id, uncertainty) values (4, 'To');
+insert into tbl_dating_uncertainty (dating_uncertainty_id, uncertainty) values (5, 'Ca.');
+insert into tbl_dating_uncertainty (dating_uncertainty_id, uncertainty) values (6, 'From ca.');
+insert into tbl_dating_uncertainty (dating_uncertainty_id, uncertainty) values (7, 'To ca.');
 
-insert into tbl_relative_age_types (relative_age_type_id, age_type) values (1, 'GeolCal');
-insert into tbl_relative_age_types (relative_age_type_id, age_type) values (2, 'ArchCal');
+insert into tbl_relative_age_types (relative_age_type_id, age_type) values (2, 'Calendar date');
+insert into tbl_relative_age_types (relative_age_type_id, age_type) values (3, 'Calendar date range');
 
 insert into tbl_relative_ages (relative_age_id, relative_age_type_id, relative_age_name, abbreviation, description, cal_age_older, cal_age_younger, location_id)
   values (1, 2, null, 'CAL_100_AD', 'Autocreated from bugs import', 1850, 1850, null);
@@ -78,3 +82,12 @@ insert into tbl_relative_dates (relative_date_id, relative_age_id, physical_samp
 insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
     values (7, 'TDatesCalendar', '{}', 'CALE000016', 'tbl_relative_dates', 4);
 
+insert into tbl_physical_samples (physical_sample_id, sample_group_id, alt_ref_type_id, sample_type_id, sample_name)
+values (2, 1, 1, 1, 'SAMP 2');
+insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
+values (8, 'TSample', '', 'SAMP000002', 'tbl_physical_samples', 2);
+
+insert into tbl_physical_samples (physical_sample_id, sample_group_id, alt_ref_type_id, sample_type_id, sample_name)
+values (3, 1, 1, 1, 'SAMP 3');
+insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
+values (9, 'TSample', '', 'SAMP000003', 'tbl_physical_samples', 3);
