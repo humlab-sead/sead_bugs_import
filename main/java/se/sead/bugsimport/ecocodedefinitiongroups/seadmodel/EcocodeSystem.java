@@ -1,28 +1,22 @@
-package se.sead.bugsimport.ecocodedefinition.seadmodel;
+package se.sead.bugsimport.ecocodedefinitiongroups.seadmodel;
 
-import se.sead.sead.model.Biblio;
 import se.sead.sead.model.LoggableEntity;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "tbl_ecocode_systems")
-@SequenceGenerator(name = "ecocode_system_id_gen", sequenceName = "tbl_ecocode_systems_ecocode_system_id_seq")
+@SequenceGenerator(name = "ecocode_system_gen", sequenceName = "tbl_ecocode_systems_ecocode_system_id_seq")
 public class EcocodeSystem extends LoggableEntity {
 
     @Id
-    @GeneratedValue(generator = "ecocode_system_id_gen", strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "ecocode_system_gen", strategy = GenerationType.IDENTITY)
     @Column(name = "ecocode_system_id", nullable = false)
     private Integer id;
     @Column(name = "definition")
     private String definition;
     @Column(name = "name")
     private String name;
-    @Column(name = "notes")
-    private String notes;
-    @ManyToOne
-    @JoinColumn(name = "biblio_id")
-    private Biblio reference;
 
     @Override
     public Integer getId() {
@@ -49,22 +43,6 @@ public class EcocodeSystem extends LoggableEntity {
         this.name = name;
     }
 
-    public String getNotes() {
-        return notes;
-    }
-
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
-
-    public Biblio getReference() {
-        return reference;
-    }
-
-    public void setReference(Biblio reference) {
-        this.reference = reference;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -74,9 +52,7 @@ public class EcocodeSystem extends LoggableEntity {
 
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
         if (definition != null ? !definition.equals(that.definition) : that.definition != null) return false;
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        if (notes != null ? !notes.equals(that.notes) : that.notes != null) return false;
-        return reference != null ? reference.equals(that.reference) : that.reference == null;
+        return name != null ? name.equals(that.name) : that.name == null;
 
     }
 
@@ -85,8 +61,6 @@ public class EcocodeSystem extends LoggableEntity {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (definition != null ? definition.hashCode() : 0);
         result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (notes != null ? notes.hashCode() : 0);
-        result = 31 * result + (reference != null ? reference.hashCode() : 0);
         return result;
     }
 
@@ -94,6 +68,7 @@ public class EcocodeSystem extends LoggableEntity {
     public String toString() {
         return "EcocodeSystem{" +
                 "id=" + id +
+                ", name='" + name + '\'' +
                 '}';
     }
 }

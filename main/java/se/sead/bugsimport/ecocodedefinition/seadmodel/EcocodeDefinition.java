@@ -1,5 +1,6 @@
 package se.sead.bugsimport.ecocodedefinition.seadmodel;
 
+import se.sead.bugsimport.ecocodedefinitiongroups.seadmodel.EcocodeGroup;
 import se.sead.sead.model.LoggableEntity;
 
 import javax.persistence.*;

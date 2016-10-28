@@ -39,4 +39,31 @@ public class EcoDefGroups extends TraceableBugsData {
     public String bugsTable() {
         return EcoDefGroupsBugsTable.TABLE_NAME;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        EcoDefGroups that = (EcoDefGroups) o;
+
+        if (ecoGroupCode != null ? !ecoGroupCode.equals(that.ecoGroupCode) : that.ecoGroupCode != null) return false;
+        return ecoName != null ? ecoName.equals(that.ecoName) : that.ecoName == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = ecoGroupCode != null ? ecoGroupCode.hashCode() : 0;
+        result = 31 * result + (ecoName != null ? ecoName.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "EcoDefGroups{" +
+                "ecoGroupCode='" + ecoGroupCode + '\'' +
+                ", ecoName='" + ecoName + '\'' +
+                '}';
+    }
 }

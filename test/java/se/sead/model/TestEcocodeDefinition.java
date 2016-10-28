@@ -1,7 +1,7 @@
 package se.sead.model;
 
 import se.sead.bugsimport.ecocodedefinition.seadmodel.EcocodeDefinition;
-import se.sead.bugsimport.ecocodedefinition.seadmodel.EcocodeGroup;
+import se.sead.bugsimport.ecocodedefinitiongroups.seadmodel.EcocodeGroup;
 
 public class TestEcocodeDefinition extends EcocodeDefinition {
 

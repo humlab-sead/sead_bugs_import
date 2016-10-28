@@ -1,5 +1,6 @@
 package se.sead.ecocodedefinitiongroups;
 
+import org.junit.Test;
 import se.sead.AccessReaderTest;
 import se.sead.bugsimport.ecocodedefinitiongroups.bugsmodel.EcoDefGroups;
 import se.sead.bugsimport.ecocodedefinitiongroups.bugsmodel.EcoDefGroupsBugsTable;
@@ -11,6 +12,8 @@ public class ReadEcocodeDefinitionGroupTest extends AccessReaderTest<EcoDefGroup
     public ReadEcocodeDefinitionGroupTest(){
         super("ecocodedefinitiongroups");
     }
+
+    @Test
     public void run(){
         readTableFromDefaultFolder(
                 "ecocodedefinitiongroups.mdb",
