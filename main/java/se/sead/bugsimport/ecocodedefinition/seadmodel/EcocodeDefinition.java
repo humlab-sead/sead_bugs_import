@@ -19,7 +19,7 @@ public class EcocodeDefinition extends LoggableEntity{
     @Column(name = "definition")
     private String definition;
     @Column(name = "name")
-    private String label;
+    private String name;
     @Column(name = "notes")
     private String notes;
     @ManyToOne
@@ -51,12 +51,12 @@ public class EcocodeDefinition extends LoggableEntity{
         this.definition = definition;
     }
 
-    public String getLabel() {
-        return label;
+    public String getName() {
+        return name;
     }
 
-    public void setLabel(String label) {
-        this.label = label;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getNotes() {
@@ -78,14 +78,14 @@ public class EcocodeDefinition extends LoggableEntity{
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || !(o instanceof EcocodeDefinition)) return false;
 
         EcocodeDefinition that = (EcocodeDefinition) o;
 
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
         if (abbreviation != null ? !abbreviation.equals(that.abbreviation) : that.abbreviation != null) return false;
         if (definition != null ? !definition.equals(that.definition) : that.definition != null) return false;
-        if (label != null ? !label.equals(that.label) : that.label != null) return false;
+        if (name != null ? !name.equals(that.name) : that.name != null) return false;
         if (notes != null ? !notes.equals(that.notes) : that.notes != null) return false;
         return group != null ? group.equals(that.group) : that.group == null;
 
@@ -96,7 +96,7 @@ public class EcocodeDefinition extends LoggableEntity{
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (abbreviation != null ? abbreviation.hashCode() : 0);
         result = 31 * result + (definition != null ? definition.hashCode() : 0);
-        result = 31 * result + (label != null ? label.hashCode() : 0);
+        result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (notes != null ? notes.hashCode() : 0);
         result = 31 * result + (group != null ? group.hashCode() : 0);
         return result;
@@ -108,7 +108,7 @@ public class EcocodeDefinition extends LoggableEntity{
                 "id=" + id +
                 ", abbreviation='" + abbreviation + '\'' +
                 ", definition='" + definition + '\'' +
-                ", label='" + label + '\'' +
+                ", name='" + name + '\'' +
                 ", notes='" + notes + '\'' +
                 ", group=" + group +
                 '}';

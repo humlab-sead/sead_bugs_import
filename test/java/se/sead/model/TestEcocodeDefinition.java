@@ -13,7 +13,7 @@ public class TestEcocodeDefinition extends EcocodeDefinition {
         EcocodeDefinition def = new TestEcocodeDefinition(id);
         def.setDefinition(definition);
         def.setAbbreviation(abbreviation);
-        def.setLabel(label);
+        def.setName(label);
         def.setNotes(notes);
         def.setGroup(group);
         return def;

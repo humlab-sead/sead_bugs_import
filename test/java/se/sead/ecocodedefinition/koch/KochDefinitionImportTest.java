@@ -1,4 +1,4 @@
-package se.sead.ecocodedefinitiongroups;
+package se.sead.ecocodedefinition.koch;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,13 +14,13 @@ import se.sead.Application;
 import se.sead.DataSourceFactory;
 import se.sead.DefaultAccessDatabaseReader;
 import se.sead.bugs.AccessReaderProvider;
-import se.sead.bugsimport.ecocodedefinitiongroups.EcocodeGroupImporter;
-import se.sead.bugsimport.ecocodedefinitiongroups.bugsmodel.EcoDefGroups;
-import se.sead.bugsimport.ecocodedefinitiongroups.seadmodel.EcocodeGroup;
+import se.sead.bugsimport.ecocodedefinition.koch.KochDefinitionImporter;
+import se.sead.bugsimport.ecocodedefinition.koch.bugsmodel.EcoDefKoch;
+import se.sead.bugsimport.ecocodedefinition.seadmodel.EcocodeDefinition;
 import se.sead.repositories.BugsErrorRepository;
 import se.sead.repositories.BugsTraceRepository;
+import se.sead.repositories.EcocodeDefinitionRepository;
 import se.sead.repositories.EcocodeGroupRepository;
-import se.sead.repositories.EcocodeSystemRepository;
 import se.sead.testutils.BugsTracesAndErrorsVerification;
 import se.sead.testutils.DatabaseContentVerification;
 import se.sead.testutils.DefaultConfig;
@@ -28,18 +28,18 @@ import se.sead.testutils.DefaultConfig;
 import javax.sql.DataSource;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {Application.class, EcocodeDefinitionGroupImportTest.Config.class})
+@SpringBootTest(classes = {Application.class, KochDefinitionImportTest.Config.class})
 @TestConfiguration
 @ActiveProfiles("test")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-public class EcocodeDefinitionGroupImportTest {
+public class KochDefinitionImportTest {
 
 
     @Configuration
     public static class Config extends DefaultConfig {
 
         public Config(){
-            super("ecocodedefinitiongroups", "ecocodedefinitiongroups.mdb", "ecocodedefinitiongroups.sql");
+            super("ecocodedefinition/koch", "ecocodedefinition.mdb", "kochecocodedefinition.sql");
         }
 
         @Bean
@@ -56,42 +56,39 @@ public class EcocodeDefinitionGroupImportTest {
     }
 
     @Autowired
-    private EcocodeGroupRepository ecocodeGroupRepository;
+    private EcocodeGroupRepository groupRepository;
     @Autowired
-    private EcocodeSystemRepository ecocodeSystemRepository;
+    private EcocodeDefinitionRepository definitionRepository;
     @Autowired
     private BugsTraceRepository traceRepository;
     @Autowired
     private BugsErrorRepository errorRepository;
 
     @Autowired
-    private EcocodeGroupImporter importer;
-
+    private KochDefinitionImporter importer;
 
     @Test
     public void run(){
-        DatabaseContentVerification<EcocodeGroup> databaseContentVerifier = createDatabaseContentVerifier();
-        BugsTracesAndErrorsVerification<EcoDefGroups> logVerifier = createLogVerifier();
+        DatabaseContentVerification<EcocodeDefinition> databaseContentVerifier = createDatabaseContentVerifier();
+        BugsTracesAndErrorsVerification<EcoDefKoch> logVerifier = createLogVerifier();
         importer.run();
         databaseContentVerifier.verifyDatabaseContent();
         logVerifier.verifyTraceContent();
     }
 
-    private DatabaseContentVerification<EcocodeGroup> createDatabaseContentVerifier(){
-        return new DatabaseContentVerification<>(
-                new DatabaseContentProvider(
-                        ecocodeGroupRepository,
-                        ecocodeSystemRepository
-                )
-        );
+    private DatabaseContentVerification<EcocodeDefinition> createDatabaseContentVerifier(){
+        return new DatabaseContentVerification<>(new DatabaseContentProvider(
+                groupRepository,
+                definitionRepository
+        ));
     }
 
-    private BugsTracesAndErrorsVerification<EcoDefGroups> createLogVerifier(){
+    private BugsTracesAndErrorsVerification<EcoDefKoch> createLogVerifier(){
         return new BugsTracesAndErrorsVerification.ByIdentity<>(
                 traceRepository,
                 errorRepository,
-                new LogVerification(),
-                () -> BugsExpectedData.EXPECTED_ACCESS_DATA
+                new LogVerifier(),
+                () -> ExpectedBugsData.EXPECTED_DATA
         );
     }
 }

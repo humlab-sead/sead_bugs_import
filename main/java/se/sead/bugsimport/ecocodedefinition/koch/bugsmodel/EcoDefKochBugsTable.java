@@ -1,4 +1,4 @@
-package se.sead.bugsimport.ecocodedefinition.bugsmodel;
+package se.sead.bugsimport.ecocodedefinition.koch.bugsmodel;
 
 import com.healthmarketscience.jackcess.Row;
 import se.sead.bugs.BugsTable;

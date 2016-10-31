@@ -9,4 +9,5 @@ public interface EcocodeGroupRepository extends CreateAndReadRepository<EcocodeG
 
     List<EcocodeGroup> findBySystem(EcocodeSystem system);
 
+    EcocodeGroup findBySystemAndAbbreviation(EcocodeSystem kochSystem, String abbreviation);
 }

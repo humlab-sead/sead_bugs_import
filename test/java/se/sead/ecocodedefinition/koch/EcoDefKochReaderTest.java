@@ -1,16 +1,17 @@
-package se.sead.ecocodedefinition;
+package se.sead.ecocodedefinition.koch;
 
 import org.junit.Test;
 import se.sead.AccessReaderTest;
-import se.sead.bugsimport.ecocodedefinition.bugsmodel.EcoDefKoch;
-import se.sead.bugsimport.ecocodedefinition.bugsmodel.EcoDefKochBugsTable;
+import se.sead.bugsimport.ecocodedefinition.koch.bugsmodel.EcoDefKoch;
+import se.sead.bugsimport.ecocodedefinition.koch.bugsmodel.EcoDefKochBugsTable;
+import se.sead.rdbcodes.*;
 
 import java.util.Comparator;
 
-public class ReadEcocodeDefinitionTest extends AccessReaderTest<EcoDefKoch> {
+public class EcoDefKochReaderTest extends AccessReaderTest<EcoDefKoch> {
 
-    public ReadEcocodeDefinitionTest() {
-        super("ecocodedefinition");
+    public EcoDefKochReaderTest(){
+        super("ecocodedefinition/koch");
     }
 
     @Test
@@ -18,9 +19,8 @@ public class ReadEcocodeDefinitionTest extends AccessReaderTest<EcoDefKoch> {
         readTableFromDefaultFolder(
                 "ecocodedefinition.mdb",
                 new EcoDefKochBugsTable(),
-                ExpectedBugsAccessData.EXPECTED_DATA,
-                new EcoDefKochComparator()
-                );
+                ExpectedBugsData.EXPECTED_DATA,
+                new EcoDefKochComparator());
     }
 
     private static class EcoDefKochComparator implements Comparator<EcoDefKoch> {

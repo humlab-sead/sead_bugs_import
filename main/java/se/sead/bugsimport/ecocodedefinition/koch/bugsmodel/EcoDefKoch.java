@@ -1,4 +1,4 @@
-package se.sead.bugsimport.ecocodedefinition.bugsmodel;
+package se.sead.bugsimport.ecocodedefinition.koch.bugsmodel;
 
 import se.sead.bugs.TraceableBugsData;
 import se.sead.bugsimport.ecocodedefinitiongroups.bugsmodel.EcoDefGroupsBugsTable;
@@ -78,7 +78,7 @@ public class EcoDefKoch extends TraceableBugsData{
 
     @Override
     public String bugsTable() {
-        return EcoDefGroupsBugsTable.TABLE_NAME;
+        return EcoDefKochBugsTable.TABLE_NAME;
     }
 
     @Override
@@ -106,5 +106,17 @@ public class EcoDefKoch extends TraceableBugsData{
         result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + (notes != null ? notes.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "EcoDefKoch{" +
+                "bugsKochCode='" + bugsKochCode + '\'' +
+                ", kochCode='" + kochCode + '\'' +
+                ", fullName='" + fullName + '\'' +
+                ", kochGroup='" + kochGroup + '\'' +
+                ", description='" + description + '\'' +
+                ", notes='" + notes + '\'' +
+                '}';
     }
 }
