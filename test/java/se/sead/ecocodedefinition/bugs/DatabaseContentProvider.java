@@ -1,4 +1,4 @@
-package se.sead.ecocodedefinition.koch;
+package se.sead.ecocodedefinition.bugs;
 
 import se.sead.bugsimport.ecocodedefinition.seadmodel.EcocodeDefinition;
 import se.sead.bugsimport.ecocodedefinitiongroups.seadmodel.EcocodeGroup;
@@ -15,11 +15,11 @@ import java.util.List;
 
 class DatabaseContentProvider implements DatabaseContentVerification.DatabaseContentTestDataProvider<EcocodeDefinition> {
 
-    private EcocodeGroup grpGroup;
+    private EcocodeGroup bugsGroup;
     private EcocodeDefinitionRepository definitionRepository;
 
     DatabaseContentProvider(EcocodeGroupRepository groupRepository, EcocodeDefinitionRepository definitionRepository){
-        grpGroup = groupRepository.findOne(1);
+        bugsGroup = groupRepository.findOne(1);
         this.definitionRepository = definitionRepository;
     }
 
@@ -28,43 +28,35 @@ class DatabaseContentProvider implements DatabaseContentVerification.DatabaseCon
         return Arrays.asList(
                 TestEcocodeDefinition.create(
                         1,
-                        "An existing definition",
-                        "Exist",
-                        "definition exists",
+                        "Item exists",
+                        "Exists",
+                        "Exists",
                         "with notes",
-                        grpGroup
+                        bugsGroup
                 ),
                 TestEcocodeDefinition.create(
                         2,
-                        "A non-problematic update",
+                        "Update item",
                         "Upd",
-                        "Update entry",
+                        "Updated",
                         "with notes",
-                        grpGroup
+                        bugsGroup
                 ),
                 TestEcocodeDefinition.create(
                         3,
                         "This value should not be updated",
                         "UpdE",
-                        "Try update",
+                        "Fail update",
                         "with notes",
-                        grpGroup
+                        bugsGroup
                 ),
                 TestEcocodeDefinition.create(
                         null,
-                        "A non-problematic definition",
+                        "New item",
                         "New",
-                        "New entry",
+                        "New",
                         "with notes",
-                        grpGroup
-                ),
-                TestEcocodeDefinition.create(
-                        null,
-                        "No name specified",
-                        "NoN",
-                        null,
-                        "is ok",
-                        grpGroup
+                        bugsGroup
                 )
         );
     }
@@ -83,5 +75,6 @@ class DatabaseContentProvider implements DatabaseContentVerification.DatabaseCon
     public TestEqualityHelper<EcocodeDefinition> getEqualityHelper() {
         return new TestEqualityHelper<>();
     }
+
 
 }

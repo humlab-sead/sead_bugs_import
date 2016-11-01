@@ -9,11 +9,11 @@ public class TestEcocodeDefinition extends EcocodeDefinition {
         super.setId(id);
     }
 
-    public static EcocodeDefinition create(Integer id, String definition, String abbreviation, String label, String notes, EcocodeGroup group){
+    public static EcocodeDefinition create(Integer id, String definition, String abbreviation, String name, String notes, EcocodeGroup group){
         EcocodeDefinition def = new TestEcocodeDefinition(id);
         def.setDefinition(definition);
         def.setAbbreviation(abbreviation);
-        def.setName(label);
+        def.setName(name);
         def.setNotes(notes);
         def.setGroup(group);
         return def;
