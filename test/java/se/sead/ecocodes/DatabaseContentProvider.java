@@ -1,4 +1,4 @@
-package se.sead.ecocodes.koch;
+package se.sead.ecocodes;
 
 import se.sead.bugsimport.ecocodes.seadmodel.Ecocode;
 import se.sead.model.TestEcocode;
@@ -13,13 +13,13 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
-class DatabaseContentProvider implements DatabaseContentVerification.DatabaseContentTestDataProvider<Ecocode> {
+public class DatabaseContentProvider implements DatabaseContentVerification.DatabaseContentTestDataProvider<Ecocode> {
 
     private SpeciesRepository speciesRepository;
     private EcocodeDefinitionRepository definitionRepository;
     private EcocodeRepository ecocodeRepository;
 
-    DatabaseContentProvider(SpeciesRepository speciesRepository, EcocodeDefinitionRepository definitionRepository, EcocodeRepository ecocodeRepository) {
+    public DatabaseContentProvider(SpeciesRepository speciesRepository, EcocodeDefinitionRepository definitionRepository, EcocodeRepository ecocodeRepository) {
         this.speciesRepository = speciesRepository;
         this.definitionRepository = definitionRepository;
         this.ecocodeRepository = ecocodeRepository;

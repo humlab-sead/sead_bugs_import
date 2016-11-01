@@ -1,6 +1,6 @@
-package se.sead.ecocodes.koch;
+package se.sead.ecocodes;
 
-import se.sead.bugsimport.ecocodes.koch.bugsmodel.EcoKoch;
+import se.sead.bugs.TraceableBugsData;
 import se.sead.bugsimport.tracing.seadmodel.BugsError;
 import se.sead.bugsimport.tracing.seadmodel.BugsTrace;
 import se.sead.testutils.AssertHelper;
@@ -8,16 +8,16 @@ import se.sead.testutils.BugsTracesAndErrorsVerification;
 
 import java.util.List;
 
-class LogVerifier implements BugsTracesAndErrorsVerification.LogVerificationCallback<EcoKoch> {
+public abstract class LogVerifier<T extends TraceableBugsData> implements BugsTracesAndErrorsVerification.LogVerificationCallback<T> {
 
     private AssertHelper assertHelper;
 
-    LogVerifier(){
+    protected LogVerifier(){
         assertHelper = new AssertHelper("tbl_ecocodes");
     }
 
     @Override
-    public void verifyLogData(EcoKoch bugsData, List<BugsTrace> traces, List<BugsError> errors) {
+    public void verifyLogData(T bugsData, List<BugsTrace> traces, List<BugsError> errors) {
         switch(bugsData.compressToString()){
             case "{1.0,Def}":
                 assertHelper.assertSize(traces, 1);
@@ -26,11 +26,11 @@ class LogVerifier implements BugsTracesAndErrorsVerification.LogVerificationCall
                 break;
             case "{1.0,null}":
                 assertHelper.assertEmpty(traces);
-                assertHelper.assertContainsError(errors, "No koch code specified");
+                assertHelper.assertContainsError(errors, getNoCodeSpecifiedMessage());
                 break;
             case "{1.0,Error}":
                 assertHelper.assertEmpty(traces);
-                assertHelper.assertContainsError(errors, "No koch code found");
+                assertHelper.assertContainsError(errors, getNoCodeFoundMessage());
                 break;
             case "{2.0,Def 2}":
                 assertHelper.assertSize(traces, 1);
@@ -55,4 +55,7 @@ class LogVerifier implements BugsTracesAndErrorsVerification.LogVerificationCall
                 throw new AssertionError();
         }
     }
+
+    protected abstract String getNoCodeSpecifiedMessage();
+    protected abstract String getNoCodeFoundMessage();
 }
