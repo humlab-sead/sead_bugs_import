@@ -26,31 +26,10 @@ import javax.sql.DataSource;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {Application.class, EcocodeImporterBaseTest.Config.class})
 @TestConfiguration
 @ActiveProfiles("test")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public abstract class EcocodeImporterBaseTest<T extends TraceableBugsData> {
-
-    @Configuration
-    public static class Config extends DefaultConfig {
-
-        public Config(){
-            super("ecocodes/koch", "ecocodes.mdb", "ecocodes.sql");
-        }
-
-        @Bean
-        @Override
-        public AccessReaderProvider getDatabaseReader() {
-            return new DefaultAccessDatabaseReader(getMdbFile());
-        }
-
-        @Bean
-        @Override
-        public DataSource createDataSource() {
-            return DataSourceFactory.createDefault(getDataFile());
-        }
-    }
 
     @Autowired
     private SpeciesRepository speciesRepository;

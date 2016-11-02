@@ -31,7 +31,7 @@ class LogVerification implements BugsTracesAndErrorsVerification.LogVerification
                 break;
             case "FOSI000002":
                 listAsserter.assertEmpty(traces);
-                listAsserter.assertContainsError(errors, "No species code specified");
+                listAsserter.assertContainsError(errors, "No species specified");
                 break;
             case "FOSI000003":
                 listAsserter.assertEmpty(traces);

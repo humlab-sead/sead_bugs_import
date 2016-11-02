@@ -55,7 +55,7 @@ public class AssertHelper {
     public void assertContainsError(List<BugsError> errors, String errorMessage){
         assertTrue(
                 errors.stream()
-                .anyMatch(error -> errorMessage.equals(errorMessage))
+                .anyMatch(error -> error.getMessage().equals(errorMessage))
         );
     }
 

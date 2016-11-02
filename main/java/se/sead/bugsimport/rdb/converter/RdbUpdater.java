@@ -46,6 +46,10 @@ public class RdbUpdater {
         }
 
         private boolean setCode(){
+            if(bugsData.getRdbCode() == null){
+                original.addError("No RDB code specified");
+                return false;
+            }
             RdbCode originalCode = original.getRdbCode();
             RdbCode codeFromLastTrace = codeTraceHelper.getFromLastTrace(bugsData.getRdbCode());
             if(codeFromLastTrace == null){
@@ -84,7 +88,7 @@ public class RdbUpdater {
             Location oldCountry = original.getCountry();
             Location countryFromTrace = countryTraceHelper.getFromLastTrace(bugsData.getCountryCode());
             if(countryFromTrace == null){
-                original.addError("No country found");
+                original.addError("No country specified");
                 return false;
             }
             if(!countryFromTrace.isErrorFree()){

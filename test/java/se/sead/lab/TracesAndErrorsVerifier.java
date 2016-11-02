@@ -34,7 +34,7 @@ public class TracesAndErrorsVerifier implements BugsTracesAndErrorsVerification.
                 break;
             case "Birm":
                 assertHelper.assertEmpty(traces);
-                assertHelper.assertContainsError(errors, "No country exists for name");
+                assertHelper.assertContainsError(errors, "No country found");
                 break;
             case "Test":
                 assertHelper.assertEmpty(traces);
@@ -42,7 +42,7 @@ public class TracesAndErrorsVerifier implements BugsTracesAndErrorsVerification.
                 break;
             case "Test 2":
                 assertHelper.assertEmpty(traces);
-                assertHelper.assertContainsError(errors, "No country supplied");
+                assertHelper.assertContainsError(errors, "No country specified");
                 break;
             case "Test 3":
                 assertHelper.assertUpdates(traces, 1);

@@ -31,7 +31,7 @@ class LogVerifier implements BugsTracesAndErrorsVerification.LogVerificationCall
                 break;
             case "LabelE":
                 assertHelper.assertEmpty(traces);
-                assertHelper.assertContainsError(errors, "No eco label specified");
+                assertHelper.assertContainsError(errors, "No label specified");
                 break;
             case "New":
                 assertHelper.assertSize(traces, 1);

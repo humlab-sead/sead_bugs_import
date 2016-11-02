@@ -26,7 +26,7 @@ class LogVerificationCallback implements BugsTracesAndErrorsVerification.LogVeri
                 break;
             case "ERR_NO_LOC":
                 assertHelper.assertEmpty(traces);
-                assertHelper.assertContainsError(errors, "No location specified or found");
+                assertHelper.assertContainsError(errors, "No location found");
                 break;
             case "ERR_NO_NAME":
                 assertHelper.assertEmpty(traces);

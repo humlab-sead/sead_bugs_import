@@ -37,7 +37,7 @@ public class CheckTaxaSeasonalityHistoryRule implements SeasonalitySearchRule{
 
     private void createErrorMessage(){
         seadDataUpdatedAfterInitialImportErrorCarrier = new TaxaSeasonality();
-        seadDataUpdatedAfterInitialImportErrorCarrier.addError("Sead data contain seasonality items updated more recently than initial import");
+        seadDataUpdatedAfterInitialImportErrorCarrier.addError(SeadDataFromTraceHelper.SEAD_DATA_HAS_BEEN_UPDATED_SINCE_LAST_BUGS_IMPORT);
     }
 
     @Override

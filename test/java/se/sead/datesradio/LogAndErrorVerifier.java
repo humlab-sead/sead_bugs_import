@@ -68,13 +68,13 @@ public class LogAndErrorVerifier implements BugsTracesAndErrorsVerification.LogV
                 break;
             case "DATE000005":
             case "DATE000009":
-                assertErrorMessage(traces, errors, "Unknown dating method");
+                assertErrorMessage(traces, errors, "No method found");
                 break;
             case "DATE000010":
-                assertErrorMessage(traces, errors, "Unknown sample id");
+                assertErrorMessage(traces, errors, "No sample found");
                 break;
             case "DATE000011":
-                assertErrorMessage(traces, errors, "Unknown lab");
+                assertErrorMessage(traces, errors, "No lab found");
                 break;
             case "DATE000012":
                 listHelper.assertSize(traces, 3);

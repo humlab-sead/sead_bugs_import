@@ -23,7 +23,7 @@ public class CheckTaxaRdbHistoryRule implements RdbSearch {
 
     static {
         seadDataUpdatedAfterLatestTrace = new Rdb();
-        seadDataUpdatedAfterLatestTrace.addError("Sead rdb data updated after latest Bugs import.");
+        seadDataUpdatedAfterLatestTrace.addError(SeadDataFromTraceHelper.SEAD_DATA_HAS_BEEN_UPDATED_SINCE_LAST_BUGS_IMPORT);
     }
 
     private RdbIdentificationTraceHelper historySearcher;

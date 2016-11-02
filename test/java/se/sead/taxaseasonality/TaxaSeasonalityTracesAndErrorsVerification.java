@@ -1,6 +1,7 @@
 package se.sead.taxaseasonality;
 
 import se.sead.bugsimport.taxaseasonality.bugsmodel.SeasonActiveAdult;
+import se.sead.bugsimport.tracing.SeadDataFromTraceHelper;
 import se.sead.bugsimport.tracing.seadmodel.BugsError;
 import se.sead.bugsimport.tracing.seadmodel.BugsTrace;
 import se.sead.testutils.AssertHelper;
@@ -72,7 +73,7 @@ public class TaxaSeasonalityTracesAndErrorsVerification implements BugsTracesAnd
                 assertHelper.assertEmpty(errors);
                 break;
             case "1.0000024":
-                assertHelper.assertContainsError(errors, "Sead data updated after latest bugs import");
+                assertHelper.assertContainsError(errors, SeadDataFromTraceHelper.SEAD_DATA_HAS_BEEN_UPDATED_SINCE_LAST_BUGS_IMPORT);
                 assertHelper.assertPrestoredTrace(traces, 7);
                 assertHelper.assertSize(traces, 1);
                 break;

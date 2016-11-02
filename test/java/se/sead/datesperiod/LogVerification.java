@@ -30,7 +30,7 @@ class LogVerification implements BugsTracesAndErrorsVerification.LogVerification
                 break;
             case "PERI000003":
                 assertHelper.assertEmpty(traces);
-                assertHelper.assertContainsError(errors, "No period found for the code");
+                assertHelper.assertContainsError(errors, "No period found for code");
                 break;
             case "PERI000004":
                 assertHelper.assertEmpty(traces);

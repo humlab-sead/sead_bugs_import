@@ -34,7 +34,7 @@ public class LogVerifier implements BugsTracesAndErrorsVerification.LogVerificat
                 break;
             case "CALE000006":
                 listHelper.assertEmpty(traces);
-                listHelper.assertContainsError(errors, "No method found");
+                listHelper.assertContainsError(errors, "No dating method found");
                 break;
             case "CALE000007":
                 listHelper.assertEmpty(traces);

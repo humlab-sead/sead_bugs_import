@@ -1,6 +1,7 @@
 package se.sead.rdb;
 
 import se.sead.bugsimport.rdb.bugsmodel.BugsRDB;
+import se.sead.bugsimport.tracing.SeadDataFromTraceHelper;
 import se.sead.bugsimport.tracing.seadmodel.BugsError;
 import se.sead.bugsimport.tracing.seadmodel.BugsTrace;
 import se.sead.testutils.AssertHelper;
@@ -25,7 +26,7 @@ public class RdbLogTraceAndErrorVerifier implements BugsTracesAndErrorsVerificat
                 break;
             case "{1.0010001,Svw,1}":
                 assertHelper.assertEmpty(traces);
-                assertHelper.assertContainsError(errors, "No country found");
+                assertHelper.assertContainsError(errors, "No country specified");
                 break;
             case "{1.0010122,Swe,2}":
                 assertHelper.assertEmpty(traces);
@@ -49,7 +50,7 @@ public class RdbLogTraceAndErrorVerifier implements BugsTracesAndErrorsVerificat
                 break;
             case "{1.0010123,UK,2}":
                 assertHelper.assertEmpty(traces);
-                assertHelper.assertContainsError(errors, "Sead data has been updated since last bugs import");
+                assertHelper.assertContainsError(errors, SeadDataFromTraceHelper.SEAD_DATA_HAS_BEEN_UPDATED_SINCE_LAST_BUGS_IMPORT);
                 break;
             case "{null,Swe,1}":
                 assertHelper.assertEmpty(traces);
@@ -57,7 +58,7 @@ public class RdbLogTraceAndErrorVerifier implements BugsTracesAndErrorsVerificat
                 break;
             case "{1.0010122,null,1}":
                 assertHelper.assertEmpty(traces);
-                assertHelper.assertContainsError(errors, "No Country specified");
+                assertHelper.assertContainsError(errors, "No country specified");
                 break;
             case "{1.0010122,Swe,null}":
                 assertHelper.assertEmpty(traces);

@@ -62,7 +62,7 @@ public class SpeciesAssociationUpdater {
         }
 
         private boolean setTargetSpecies(){
-            if(bugsData.getCode() == null){
+            if(bugsData.getAssociatedSpeciesCODE() == null){
                 original.addError("No target association");
                 return false;
             }
