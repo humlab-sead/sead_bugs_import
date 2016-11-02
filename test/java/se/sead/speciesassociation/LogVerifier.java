@@ -66,6 +66,11 @@ class LogVerifier implements BugsTracesAndErrorsVerification.LogVerificationCall
                 assertHelper.assertPrestoredTrace(traces, 3);
                 assertHelper.assertContainsError(errors, SeadDataFromTraceHelper.SEAD_DATA_HAS_BEEN_UPDATED_SINCE_LAST_BUGS_IMPORT);
                 break;
+            case 13:
+                assertHelper.assertSize(traces, 1);
+                assertHelper.assertInserts(traces, 1);
+                assertHelper.assertEmpty(errors);
+                break;
         }
     }
 }

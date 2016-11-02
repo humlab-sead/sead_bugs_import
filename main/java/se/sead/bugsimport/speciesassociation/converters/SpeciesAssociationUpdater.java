@@ -77,11 +77,7 @@ public class SpeciesAssociationUpdater {
         }
 
         private boolean setType(){
-            if(bugsData.getAssociationType() == null || bugsData.getAssociationType().isEmpty()){
-                original.addError("No type specified");
-                return false;
-            }
-            SpeciesAssociationType type = speciesAssociationTypeRepository.findByName(bugsData.getAssociationType());
+            SpeciesAssociationType type = findType(bugsData.getAssociationType());
             if(type == null){
                 original.addError("Association type not found");
                 return false;
@@ -89,6 +85,14 @@ public class SpeciesAssociationUpdater {
             SpeciesAssociationType originalType = original.getType();
             original.setType(type);
             return !Objects.equals(originalType, type);
+        }
+
+        private SpeciesAssociationType findType(String bugsAssociationType){
+            if(bugsAssociationType == null){
+                return speciesAssociationTypeRepository.getDefaultType();
+            } else {
+                return speciesAssociationTypeRepository.findByName(bugsAssociationType);
+            }
         }
 
         private boolean setReference(){

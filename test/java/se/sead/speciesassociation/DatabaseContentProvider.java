@@ -22,6 +22,7 @@ class DatabaseContentProvider implements DatabaseContentVerification.DatabaseCon
 
     private TaxaSpecies code01;
     private TaxaSpecies code02;
+    private TaxaSpecies code03;
 
     private SpeciesAssociationType parasitizesType;
     private SpeciesAssociationType isAssociatedWithType;
@@ -38,6 +39,7 @@ class DatabaseContentProvider implements DatabaseContentVerification.DatabaseCon
         this.speciesAssociationRepository = speciesAssociationRepository;
         code01 = speciesRepository.findOne(1);
         code02 = speciesRepository.findOne(2);
+        code03 = speciesRepository.findOne(3);
         parasitizesType = speciesAssociationTypeRepository.findOne(1);
         isAssociatedWithType = speciesAssociationTypeRepository.findOne(2);
         ref1 = referenceRepository.findOne(1);
@@ -81,6 +83,13 @@ class DatabaseContentProvider implements DatabaseContentVerification.DatabaseCon
                         code02,
                         parasitizesType,
                         ref1
+                ),
+                TestSpeciesAssociation.create(
+                        null,
+                        code01,
+                        code03,
+                        isAssociatedWithType,
+                        null
                 )
         );
     }

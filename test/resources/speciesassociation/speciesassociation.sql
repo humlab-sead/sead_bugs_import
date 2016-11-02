@@ -4,9 +4,11 @@ insert into tbl_taxa_tree_families (family_id, family_name, order_id) values (1,
 insert into tbl_taxa_tree_genera (genus_id, genus_name, family_id) values (1, 'Cicindela', 1);
 insert into tbl_taxa_tree_master (taxon_id, species, genus_id, author_id) values (1, 'sylvatica', 1, 1);
 insert into tbl_taxa_tree_master (taxon_id, species, genus_id, author_id) values (2, 'clathratus', 1, 1);
+insert into tbl_taxa_tree_master (taxon_id, species, genus_id, author_id) values (3, 'species 3', 1, 1);
 insert into tbl_taxonomic_order_systems (taxonomic_order_system_id, system_name) values (1, 'BugsCEP taxonomic order');
 insert into tbl_taxonomic_order (taxonomic_order_id, taxon_id, taxonomic_code, taxonomic_order_system_id) values (1, 1, 1.0000000, 1);
 insert into tbl_taxonomic_order (taxonomic_order_id, taxon_id, taxonomic_code, taxonomic_order_system_id) values (2, 2, 2.0000000, 1);
+insert into tbl_taxonomic_order (taxonomic_order_id, taxon_id, taxonomic_code, taxonomic_order_system_id) values (3, 3, 3.0000000, 1);
 
 insert into tbl_biblio (biblio_id, bugs_author, bugs_reference, bugs_title) values (1, 'Ref 1', 'Ref 1', 'Ref 1');
 insert into tbl_biblio (biblio_id, bugs_author, bugs_reference, bugs_title) values (2, 'Ref 3', 'Ref 3', 'Ref 3');
