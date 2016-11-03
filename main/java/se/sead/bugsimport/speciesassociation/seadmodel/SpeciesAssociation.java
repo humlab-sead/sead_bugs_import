@@ -15,7 +15,7 @@ public class SpeciesAssociation extends LoggableEntity {
     @GeneratedValue(generator = "species_associations_id_gen", strategy = GenerationType.IDENTITY)
     @Column(name = "species_association_id", nullable = false)
     private Integer id;
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "taxon_id")
     private TaxaSpecies sourceSpecies;
     @ManyToOne
