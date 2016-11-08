@@ -6,21 +6,32 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestComponent;
 import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import se.sead.Application;
+import se.sead.DataSourceFactory;
 import se.sead.bugsimport.taxaseasonality.search.*;
 
+import javax.sql.DataSource;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes={Application.class, SearchRuleOrderTest.class})
-@TestConfiguration
-@TestComponent
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
+@SpringBootTest
+@DirtiesContext
 public class SearchRuleOrderTest {
+
+    @TestConfiguration
+    public static class Config {
+        @Bean
+        @Primary
+        public DataSource getDataSource(){
+            return DataSourceFactory.createDefault();
+        }
+    }
 
     private static final int EXPECTED_LAST_TRACE_ORDER_INDEX = 0;
     private static final int EXPECTED_SEASONALITY_HISTORY_INDEX = 1;

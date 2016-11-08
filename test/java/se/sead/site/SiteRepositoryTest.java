@@ -4,13 +4,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import se.sead.Application;
 import se.sead.DataSourceFactory;
 import se.sead.bugsimport.locations.seadmodel.Location;
 import se.sead.bugsimport.locations.seadmodel.LocationType;
@@ -31,14 +30,13 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration({Application.class, SiteRepositoryTest.Config.class})
+@SpringBootTest
 @ActiveProfiles("test")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class SiteRepositoryTest {
 
-    @Configuration
+    @TestConfiguration
     public static class Config  {
-
         @Bean
         public DataSource createDataSource() {
             return DataSourceFactory.createDefault("country/countries.sql");
