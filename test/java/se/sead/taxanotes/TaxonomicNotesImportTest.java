@@ -4,16 +4,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import se.sead.AccessReaderTest;
-import se.sead.Application;
-import se.sead.DataSourceFactory;
-import se.sead.DefaultAccessDatabaseReader;
-import se.sead.bugs.AccessReaderProvider;
 import se.sead.bugsimport.species.seadmodel.TaxaSpecies;
 import se.sead.bugsimport.taxanotes.TaxonomicNotesImporter;
 import se.sead.bugsimport.taxanotes.bugsmodel.TaxoNotes;
@@ -22,8 +17,8 @@ import se.sead.bugsimport.tracing.seadmodel.BugsError;
 import se.sead.bugsimport.tracing.seadmodel.BugsTrace;
 import se.sead.model.TestEqualityHelper;
 import se.sead.repositories.*;
+import se.sead.testutils.DefaultConfig;
 
-import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -33,23 +28,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration({Application.class, TaxonomicNotesImportTest.Config.class})
+@SpringBootTest
 @ActiveProfiles("test")
+@DirtiesContext
 public class TaxonomicNotesImportTest {
 
-    @Configuration
-    public static class Config {
-        @Bean
-        public AccessReaderProvider getDatabaseReader(){
-            return new DefaultAccessDatabaseReader(
-                    AccessReaderTest.RESOURCE_FOLDER +
-                            "taxanotes/taxanotes.mdb"
-            );
-        }
-
-        @Bean
-        public DataSource createDataSource(){
-            return DataSourceFactory.createDefault("taxanotes/taxanotes.sql");
+    @TestConfiguration
+    public static class Config extends DefaultConfig{
+        public Config(){
+            super("taxanotes");
         }
     }
 

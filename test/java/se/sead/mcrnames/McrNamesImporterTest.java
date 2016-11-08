@@ -28,30 +28,15 @@ import se.sead.testutils.DefaultConfig;
 import javax.sql.DataSource;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {Application.class, McrNamesImporterTest.Config.class})
-@TestConfiguration
+@SpringBootTest
 @ActiveProfiles("test")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@DirtiesContext
 public class McrNamesImporterTest {
 
-
-    @Configuration
+    @TestConfiguration
     public static class Config extends DefaultConfig {
-
         public Config(){
-            super("mcrnames", "mcrnames.mdb", "mcrnames.sql");
-        }
-
-        @Bean
-        @Override
-        public AccessReaderProvider getDatabaseReader() {
-            return new DefaultAccessDatabaseReader(getMdbFile());
-        }
-
-        @Bean
-        @Override
-        public DataSource createDataSource() {
-            return DataSourceFactory.createDefault(getDataFile());
+            super("mcrnames");
         }
     }
 

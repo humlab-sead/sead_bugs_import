@@ -4,12 +4,17 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import se.sead.*;
+import org.springframework.test.context.junit4.SpringRunner;
+import se.sead.AccessReaderTest;
+import se.sead.ApplicationConfiguration;
+import se.sead.DataSourceFactory;
+import se.sead.DefaultAccessDatabaseReader;
 import se.sead.bugs.AccessReaderProvider;
 import se.sead.bugsimport.species.seadmodel.TaxaSpecies;
 import se.sead.bugsimport.speciesdistribution.SpeciesDistributionImporter;
@@ -29,15 +34,17 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration({Application.class, SpeciesDistributionImportTest.Config.class})
+@RunWith(SpringRunner.class)
+@SpringBootTest
 @ActiveProfiles("test")
+@DirtiesContext
 public class SpeciesDistributionImportTest {
 
-    @Configuration
+    @TestConfiguration
     public static class Config implements ApplicationConfiguration {
 
         @Bean
+        @Primary
         public AccessReaderProvider getDatabaseReader(){
             return new DefaultAccessDatabaseReader(
                     AccessReaderTest.RESOURCE_FOLDER +
@@ -46,6 +53,7 @@ public class SpeciesDistributionImportTest {
         }
 
         @Bean
+        @Primary
         public DataSource createDataSource(){
             return DataSourceFactory.createDefault("speciesdistribution/speciesdistribution.sql");
         }

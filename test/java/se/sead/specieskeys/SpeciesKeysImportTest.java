@@ -4,13 +4,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import se.sead.*;
-import se.sead.bugs.AccessReaderProvider;
+import org.springframework.test.context.junit4.SpringRunner;
 import se.sead.bugsimport.species.seadmodel.TaxaSpecies;
 import se.sead.bugsimport.specieskeys.IdentificationKeysImporter;
 import se.sead.bugsimport.specieskeys.bugsmodel.Keys;
@@ -19,34 +17,39 @@ import se.sead.bugsimport.tracing.seadmodel.BugsError;
 import se.sead.bugsimport.tracing.seadmodel.BugsTrace;
 import se.sead.model.TestEqualityHelper;
 import se.sead.repositories.*;
+import se.sead.testutils.DefaultConfig;
 
-import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration({Application.class, SpeciesKeysImportTest.Config.class})
+@RunWith(SpringRunner.class)
+@SpringBootTest
 @ActiveProfiles("test")
+@DirtiesContext
 public class SpeciesKeysImportTest {
 
-    @Configuration
-    public static class Config implements ApplicationConfiguration {
+    @TestConfiguration
+    public static class Config extends DefaultConfig {
 
-        @Bean
-        public AccessReaderProvider getDatabaseReader(){
-            return new DefaultAccessDatabaseReader(
-                    AccessReaderTest.RESOURCE_FOLDER +
-                            "specieskeys/specieskeys.mdb"
-            );
+        public Config(){
+            super("specieskeys");
         }
-
-        @Bean
-        public DataSource createDataSource(){
-            return DataSourceFactory.createDefault("specieskeys/specieskeys.sql");
-        }
+//
+//        @Bean
+//        public AccessReaderProvider getDatabaseReader(){
+//            return new DefaultAccessDatabaseReader(
+//                    AccessReaderTest.RESOURCE_FOLDER +
+//                            "specieskeys/specieskeys.mdb"
+//            );
+//        }
+//
+//        @Bean
+//        public DataSource createDataSource(){
+//            return DataSourceFactory.createDefault("specieskeys/specieskeys.sql");
+//        }
     }
 
     @Autowired

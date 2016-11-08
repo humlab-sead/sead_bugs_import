@@ -4,15 +4,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import se.sead.Application;
-import se.sead.DataSourceFactory;
-import se.sead.DefaultAccessDatabaseReader;
-import se.sead.bugs.AccessReaderProvider;
+import org.springframework.test.context.junit4.SpringRunner;
 import se.sead.bugsimport.species.IndexImporter;
 import se.sead.bugsimport.species.bugsmodel.INDEX;
 import se.sead.bugsimport.species.seadmodel.TaxonomicOrder;
@@ -24,35 +20,22 @@ import se.sead.repositories.TaxonomicOrderRepository;
 import se.sead.repositories.TaxonomicOrderSystemRepository;
 import se.sead.testutils.DefaultConfig;
 
-import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration({Application.class, SpeciesImportTests.Config.class})
+@RunWith(SpringRunner.class)
+@SpringBootTest
 @ActiveProfiles("test")
+@DirtiesContext
 public class SpeciesImportTests {
 
-    @Configuration
+    @TestConfiguration
     public static class Config extends DefaultConfig {
-
         public Config(){
             super("species", "INDEX.mdb", "species.sql");
-        }
-
-        @Bean
-        @Override
-        public AccessReaderProvider getDatabaseReader() {
-            return new DefaultAccessDatabaseReader(getMdbFile());
-        }
-
-        @Bean
-        @Override
-        public DataSource createDataSource() {
-            return DataSourceFactory.createDefault(getDataFile());
         }
     }
 

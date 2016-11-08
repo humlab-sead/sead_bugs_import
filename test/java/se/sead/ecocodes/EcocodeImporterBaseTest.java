@@ -26,7 +26,7 @@ import javax.sql.DataSource;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
-@TestConfiguration
+@SpringBootTest
 @ActiveProfiles("test")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public abstract class EcocodeImporterBaseTest<T extends TraceableBugsData> {
