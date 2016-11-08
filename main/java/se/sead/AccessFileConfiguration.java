@@ -1,17 +1,42 @@
 package se.sead;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.ApplicationArguments;
 import org.springframework.stereotype.Component;
 import se.sead.bugs.AccessReader;
 import se.sead.bugs.AccessReaderProvider;
 
 import java.io.File;
+import java.util.Collections;
+import java.util.List;
 
 @Component
 public class AccessFileConfiguration implements AccessReaderProvider{
 
-    @Value("${file:}")
     private String accessDatabaseFile;
+
+    @Autowired
+    public AccessFileConfiguration(
+            @Value("${file:}")
+            String accessDatabaseFile,
+            ApplicationArguments arguments){
+        setDatabaseFile(arguments, accessDatabaseFile);
+    }
+
+    private void setDatabaseFile(ApplicationArguments arguments, String fileNameFromProperty){
+        List<String> optionValues = Collections.EMPTY_LIST;
+        if(arguments.containsOption("file")){
+            optionValues = arguments.getOptionValues("file");
+        } else {
+            optionValues = arguments.getNonOptionArgs();
+        }
+        if(!optionValues.isEmpty()){
+           accessDatabaseFile = optionValues.get(0);
+        } else {
+            accessDatabaseFile = fileNameFromProperty;
+        }
+    }
 
     @Override
     public AccessReader getReader() {
