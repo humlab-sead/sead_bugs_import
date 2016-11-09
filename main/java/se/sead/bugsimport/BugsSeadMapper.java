@@ -1,5 +1,7 @@
 package se.sead.bugsimport;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import se.sead.bugs.AccessReader;
 import se.sead.bugs.AccessReaderProvider;
@@ -11,6 +13,8 @@ import se.sead.sead.model.LoggableEntity;
 import java.util.List;
 
 public abstract class BugsSeadMapper<BugsType extends TraceableBugsData, SeadType extends LoggableEntity> {
+
+    private static final Logger logger = LoggerFactory.getLogger(BugsSeadMapper.class);
 
     private BugsTable<BugsType> bugsTable;
     private BugsTableRowConverter<BugsType, SeadType> singleBugsTableRowConverterForMapper;
@@ -32,6 +36,9 @@ public abstract class BugsSeadMapper<BugsType extends TraceableBugsData, SeadTyp
         List<BugsType> readItems = getAccessReader().read(bugsTable);
         for (BugsType readItem :
                 readItems) {
+            if(logger.isDebugEnabled()){
+                logger.debug("mapping row item: ", readItem);
+            }
             resultContainer.add(readItem, getConvertedValue(readItem));
         }
         return resultContainer;
