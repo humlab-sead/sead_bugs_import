@@ -4,16 +4,13 @@ import se.sead.sead.model.LoggableEntity;
 
 import javax.persistence.*;
 
-/**
- * Created by erer0001 on 2016-04-21.
- */
 @Entity
 @Table(name="tbl_taxa_tree_genera", schema = "public")
+@SequenceGenerator(name="taxa_genus_id_seq", sequenceName = "tbl_taxa_tree_genera_genus_id_seq")
 public class TaxaGenus extends LoggableEntity {
 
     @Id
     @GeneratedValue(generator = "taxa_genus_id_seq", strategy = GenerationType.AUTO)
-    @SequenceGenerator(name="taxa_genus_id_seq", sequenceName = "tbl_taxa_tree_genera_genus_id_seq")
     @Column(name="genus_id", nullable = false)
     private Integer id;
     @Column(name="genus_name")

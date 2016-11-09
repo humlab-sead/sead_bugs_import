@@ -3,16 +3,15 @@ package se.sead.bugsimport.mcrnames.seadmodel;
 import se.sead.bugsimport.species.seadmodel.TaxaSpecies;
 import se.sead.sead.model.LoggableEntity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "tbl_mcr_names")
+@SequenceGenerator(name="mcrname_id_gen", sequenceName = "tbl_mcr_names_taxon_id_seq")
 public class MCRName extends LoggableEntity {
 
     @Id
+    @GeneratedValue(generator = "mcrname_id_gen", strategy = GenerationType.IDENTITY)
     @Column(name="taxon_id", nullable = false)
     private Integer id;
     @Column(name="comparison_notes")

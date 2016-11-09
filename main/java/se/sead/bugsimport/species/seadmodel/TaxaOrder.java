@@ -2,16 +2,13 @@ package se.sead.bugsimport.species.seadmodel;
 
 import javax.persistence.*;
 
-/**
- * Created by erer0001 on 2016-04-21.
- */
 @Entity
 @Table(name="tbl_taxa_tree_orders", schema = "public")
+@SequenceGenerator(name="taxa_order_seq", sequenceName = "tbl_taxa_tree_orders_order_id_seq")
 public class TaxaOrder{
 
     @Id
     @GeneratedValue(generator = "taxa_order_seq", strategy = GenerationType.AUTO)
-    @SequenceGenerator(name="taxa_order_seq", sequenceName = "tbl_taxa_tree_orders_order_id_seq")
     @Column(name="order_id", nullable = false)
     private Integer id;
     @Column(name="order_name", nullable = false)

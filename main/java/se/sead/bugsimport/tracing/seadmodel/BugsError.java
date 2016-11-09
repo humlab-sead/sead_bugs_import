@@ -5,7 +5,7 @@ import java.util.Date;
 
 @Entity
 @Table(name="bugs_errors", schema = "bugs_import")
-@SequenceGenerator(name="error_seq", sequenceName = "bugs_import_errors_id_seq")
+@SequenceGenerator(name="error_seq", sequenceName = "bugs_errors_bugs_error_id_seq", schema = "bugs_import")
 public class BugsError extends BugsInformation{
 
     @Id

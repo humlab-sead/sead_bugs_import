@@ -1,15 +1,14 @@
 package se.sead.bugsimport.locations.seadmodel;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name="tbl_location_types")
+@SequenceGenerator(name = "location_type_id_gen", sequenceName = "tbl_location_types_location_type_id_seq")
 public class LocationType implements Comparable<LocationType>{
 
     @Id
+    @GeneratedValue(generator = "location_type_id_gen", strategy = GenerationType.IDENTITY)
     @Column(name="location_type_id", nullable = false)
     private Integer id;
     @Column(name="description")

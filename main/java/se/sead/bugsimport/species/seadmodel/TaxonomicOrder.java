@@ -5,13 +5,9 @@ import se.sead.sead.model.LoggableEntity;
 import javax.persistence.*;
 import java.math.BigDecimal;
 
-/**
- * Created by erer0001 on 2016-04-21.
- */
 @Entity
 @Table(name = "tbl_taxonomic_order", schema = "public")
 @SequenceGenerator(name = "taxonomic_order_id_seq", sequenceName = "tbl_taxonomic_order_taxonomic_order_id_seq")
-//@SequenceGenerator(name = "id_generator", sequenceName = "tbl_taxonomic_order_taxonomic_order_id_seq")
 public class TaxonomicOrder extends LoggableEntity implements Comparable<TaxonomicOrder> {
     @Id
     @GeneratedValue(generator = "taxonomic_order_id_seq", strategy = GenerationType.AUTO)
@@ -19,7 +15,6 @@ public class TaxonomicOrder extends LoggableEntity implements Comparable<Taxonom
     private Integer id;
     @Column(name = "taxonomic_code", precision = 18, scale = 10)
     private BigDecimal code;
-    //@ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "taxon_id")
     private TaxaSpecies species;

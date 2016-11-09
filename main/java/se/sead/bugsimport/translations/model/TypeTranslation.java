@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name="bugs_type_translations", schema = "bugs_import")
-@SequenceGenerator(name="bugs_type_translation_id_seq", sequenceName = "bugs_type_translation_id_seq", schema = "bugs_import")
+@SequenceGenerator(name="bugs_type_translation_id_seq", sequenceName = "bugs_type_translations_type_translation_id_seq", schema = "bugs_import")
 public class TypeTranslation {
 
     @Id
