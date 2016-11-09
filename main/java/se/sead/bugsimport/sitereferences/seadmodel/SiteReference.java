@@ -12,7 +12,7 @@ import javax.persistence.*;
 public class SiteReference extends LoggableEntity {
 
     @Id
-    @GeneratedValue(generator = "site_references_id_seq", strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "site_references_id_seq", strategy = GenerationType.IDENTITY)
     @Column(name="site_reference_id", nullable = false)
     private Integer id;
     @ManyToOne

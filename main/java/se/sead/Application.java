@@ -62,7 +62,9 @@ public class Application {
 
         @Override
         public void run(ApplicationArguments applicationArguments) throws Exception {
-            runner.run();
+            if(!applicationArguments.getOptionNames().contains("no-run")){
+                runner.run();
+            }
         }
     }
 }

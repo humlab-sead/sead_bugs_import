@@ -15,7 +15,7 @@ import javax.persistence.*;
 public class TextBiology extends LoggableEntity {
 
     @Id
-    @GeneratedValue(generator = "text_biology_seq")
+    @GeneratedValue(generator = "text_biology_seq", strategy = GenerationType.IDENTITY)
     @Column(name="biology_id")
     private Integer id;
     @ManyToOne

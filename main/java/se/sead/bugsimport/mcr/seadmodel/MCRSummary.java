@@ -11,7 +11,7 @@ import javax.persistence.*;
 public class MCRSummary extends LoggableEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "mcr_summary_seq")
+    @GeneratedValue(generator = "mcr_summary_seq", strategy = GenerationType.IDENTITY)
     @Column(name="mcr_summary_data_id", nullable = false)
     private Integer id;
     @Column(name="tmax_lo")

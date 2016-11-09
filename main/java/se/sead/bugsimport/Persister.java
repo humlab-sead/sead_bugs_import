@@ -1,6 +1,7 @@
 package se.sead.bugsimport;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import se.sead.bugs.TraceableBugsData;
 import se.sead.bugsimport.tracing.TracePersister;
 import se.sead.sead.model.LoggableEntity;
@@ -30,8 +31,8 @@ public abstract class Persister<BugsType extends TraceableBugsData, SeadType ext
                 SeadType savedItem = save(seadData);
                 mappedData.setSavedData(seadData, savedItem);
                 insertTraceLog(mappedData);
-            } catch (PersistenceException pe) {
-                seadData.addError(pe.getMessage());
+            } catch (DataAccessException dae) {
+                seadData.addError(dae.getMessage());
                 insertErrorLog(mappedData);
             }
         }

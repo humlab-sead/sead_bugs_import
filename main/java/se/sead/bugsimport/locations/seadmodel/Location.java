@@ -11,7 +11,7 @@ import javax.persistence.*;
 public class Location extends LoggableEntity implements Comparable<Location>{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "location_id_seq")
+    @GeneratedValue(generator = "location_id_seq", strategy = GenerationType.IDENTITY)
     @Column(name = "location_id", nullable = false)
     private Integer id;
     @Column(name="location_name", nullable = false)

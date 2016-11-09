@@ -14,7 +14,7 @@ import java.util.List;
 public class SeadSite extends LoggableEntity implements Comparable<SeadSite>{
 
     @Id
-    @GeneratedValue(generator = "site_id_seq", strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "site_id_seq", strategy = GenerationType.IDENTITY)
     @Column(name="site_id", nullable = false)
     private Integer id;
     @Column(name="altitude")

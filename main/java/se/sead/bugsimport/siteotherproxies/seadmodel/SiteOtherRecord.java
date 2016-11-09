@@ -13,7 +13,7 @@ import javax.persistence.*;
 public class SiteOtherRecord extends LoggableEntity {
 
     @Id
-    @GeneratedValue(generator = "other_record_id_seq", strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "other_record_id_seq", strategy = GenerationType.IDENTITY)
     @Column(name = "site_other_records_id", nullable = false)
     private Integer id;
     @Column(name="description")

@@ -12,7 +12,7 @@ import javax.persistence.*;
 public class TaxonomicNotes extends LoggableEntity{
 
     @Id
-    @GeneratedValue(generator = "taxonomy_notes_id_seq", strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "taxonomy_notes_id_seq", strategy = GenerationType.IDENTITY)
     @Column(name="taxonomy_notes_id", nullable = false)
     private Integer id;
     @Column(name="taxonomy_notes")

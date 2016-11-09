@@ -12,7 +12,7 @@ import javax.persistence.*;
 public class TextIdentificationKeys extends LoggableEntity{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "id_keys_seq")
+    @GeneratedValue(generator = "id_keys_seq", strategy = GenerationType.IDENTITY)
     @Column(name="key_id")
     private Integer id;
     @Column(name="key_text")

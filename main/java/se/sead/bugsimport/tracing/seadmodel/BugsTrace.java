@@ -24,7 +24,7 @@ public class BugsTrace extends BugsInformation{
     }
 
     @Id
-    @GeneratedValue(generator = "bugs_trace_seq", strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "bugs_trace_seq", strategy = GenerationType.IDENTITY)
     @Column(name="bugs_trace_id", nullable = false)
     private Integer id;
     @Column(name="sead_table", nullable = false)

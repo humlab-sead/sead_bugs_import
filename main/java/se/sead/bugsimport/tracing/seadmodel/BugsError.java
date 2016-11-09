@@ -9,7 +9,7 @@ import java.util.Date;
 public class BugsError extends BugsInformation{
 
     @Id
-    @GeneratedValue(generator = "error_seq", strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "error_seq", strategy = GenerationType.IDENTITY)
     @Column(name="bugs_error_id", nullable = false)
     private Integer id;
     @Column

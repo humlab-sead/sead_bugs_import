@@ -13,7 +13,7 @@ import javax.persistence.*;
 public class Method extends LoggableEntity {
 
     @Id
-    @GeneratedValue(generator = "method_id_seq", strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "method_id_seq", strategy = GenerationType.IDENTITY)
     @Column(name="method_id", nullable = false)
     private Integer id;
     @Column(name="method_name", nullable = false)

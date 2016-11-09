@@ -10,7 +10,7 @@ import javax.persistence.*;
 public class ActivityType extends LoggableEntity{
 
     @Id
-    @GeneratedValue(generator = "activity_type_id_gen", strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "activity_type_id_gen", strategy = GenerationType.IDENTITY)
     @Column(name="activity_type_id", nullable = false)
     private Integer id;
     @Column(name="activity_type")

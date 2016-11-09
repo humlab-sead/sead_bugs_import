@@ -8,7 +8,7 @@ import javax.persistence.*;
 public class IdBasedTranslation {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "bugs_id_based_translation_id_seq")
+    @GeneratedValue(generator = "bugs_id_based_translation_id_seq", strategy = GenerationType.IDENTITY)
     @Column(name="id_based_translation_id")
     private Integer id;
 

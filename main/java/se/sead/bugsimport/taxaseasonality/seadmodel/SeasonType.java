@@ -10,7 +10,7 @@ import javax.persistence.*;
 public class SeasonType extends LoggableEntity {
 
     @Id
-    @GeneratedValue(generator = "season_type_id_gen", strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "season_type_id_gen", strategy = GenerationType.IDENTITY)
     @Column(name="season_type_id", nullable = false)
     private Integer id;
 

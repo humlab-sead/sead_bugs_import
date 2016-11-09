@@ -10,7 +10,7 @@ import javax.persistence.*;
 public class MethodGroup extends LoggableEntity {
 
     @Id
-    @GeneratedValue(generator = "method_group_id_seq", strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "method_group_id_seq", strategy = GenerationType.IDENTITY)
     @Column(name="method_group_id", nullable = false)
     private Integer id;
     @Column(name="group_name", nullable = false)

@@ -14,7 +14,7 @@ import javax.persistence.*;
 public class BirmBeetleData extends LoggableEntity implements Comparable<BirmBeetleData>{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "birmbeetledat_id_seq")
+    @GeneratedValue(generator = "birmbeetledat_id_seq", strategy = GenerationType.IDENTITY)
     @Column(name="mcrdata_birmbeetledat_id", nullable = false)
     private Integer id;
 

@@ -10,7 +10,7 @@ import javax.persistence.*;
 public class TaxaGenus extends LoggableEntity {
 
     @Id
-    @GeneratedValue(generator = "taxa_genus_id_seq", strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "taxa_genus_id_seq", strategy = GenerationType.IDENTITY)
     @Column(name="genus_id", nullable = false)
     private Integer id;
     @Column(name="genus_name")

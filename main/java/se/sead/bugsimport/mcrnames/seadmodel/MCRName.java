@@ -11,7 +11,7 @@ import javax.persistence.*;
 public class MCRName extends LoggableEntity {
 
     @Id
-    @GeneratedValue(generator = "mcrname_id_gen", strategy = GenerationType.IDENTITY)
+    //@GeneratedValue(generator = "mcrname_id_gen", strategy = GenerationType.IDENTITY)
     @Column(name="taxon_id", nullable = false)
     private Integer id;
     @Column(name="comparison_notes")

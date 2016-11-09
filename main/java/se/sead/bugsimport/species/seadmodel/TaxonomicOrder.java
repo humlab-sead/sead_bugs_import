@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 @SequenceGenerator(name = "taxonomic_order_id_seq", sequenceName = "tbl_taxonomic_order_taxonomic_order_id_seq")
 public class TaxonomicOrder extends LoggableEntity implements Comparable<TaxonomicOrder> {
     @Id
-    @GeneratedValue(generator = "taxonomic_order_id_seq", strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "taxonomic_order_id_seq", strategy = GenerationType.IDENTITY)
     @Column(name = "taxonomic_order_id", nullable = false)
     private Integer id;
     @Column(name = "taxonomic_code", precision = 18, scale = 10)

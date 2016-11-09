@@ -12,7 +12,7 @@ import javax.persistence.*;
 public class SiteLocation extends LoggableEntity {
 
     @Id
-    @GeneratedValue(generator = "site_location_id_seq", strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "site_location_id_seq", strategy = GenerationType.IDENTITY)
     @Column(name="site_location_id")
     private Integer id;
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})

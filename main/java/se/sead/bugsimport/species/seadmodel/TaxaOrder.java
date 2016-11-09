@@ -8,7 +8,7 @@ import javax.persistence.*;
 public class TaxaOrder{
 
     @Id
-    @GeneratedValue(generator = "taxa_order_seq", strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "taxa_order_seq", strategy = GenerationType.IDENTITY)
     @Column(name="order_id", nullable = false)
     private Integer id;
     @Column(name="order_name", nullable = false)

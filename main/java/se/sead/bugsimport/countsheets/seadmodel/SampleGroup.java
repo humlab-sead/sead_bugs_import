@@ -13,7 +13,7 @@ import javax.persistence.*;
 public class SampleGroup extends LoggableEntity{
 
     @Id
-    @GeneratedValue(generator = "sample_group_id_seq", strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "sample_group_id_seq", strategy = GenerationType.IDENTITY)
     @Column(name="sample_group_id", nullable = false)
     private Integer id;
     @Column(name="sample_group_name", nullable = false)

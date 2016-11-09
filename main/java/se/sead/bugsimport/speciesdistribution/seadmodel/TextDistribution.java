@@ -12,7 +12,7 @@ import javax.persistence.*;
 public class TextDistribution extends LoggableEntity {
 
     @Id
-    @GeneratedValue(generator = "text_distribution_id_seq", strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "text_distribution_id_seq", strategy = GenerationType.IDENTITY)
     @Column(name="distribution_id", nullable = false)
     private Integer id;
 

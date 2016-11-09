@@ -2,15 +2,12 @@ package se.sead.bugsimport.species.seadmodel;
 
 import javax.persistence.*;
 
-/**
- * Created by erer0001 on 2016-04-21.
- */
 @Entity
 @Table(name = "tbl_taxonomic_order_systems", schema = "public")
 @SequenceGenerator(name="taxonomic_order_system_id_seq", sequenceName = "tbl_taxonomic_order_systems_taxonomic_order_system_id_seq")
 public class TaxonomicOrderSystem implements Comparable<TaxonomicOrderSystem>{
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "taxonomic_order_system_id_seq")
+    @GeneratedValue(generator = "taxonomic_order_system_id_seq", strategy = GenerationType.IDENTITY)
     @Column(name="taxonomic_order_system_id", nullable = false)
     private Integer id;
     @Column(name="system_name")

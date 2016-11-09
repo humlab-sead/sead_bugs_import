@@ -11,7 +11,7 @@ import javax.persistence.*;
 public class EcocodeDefinition extends LoggableEntity{
 
     @Id
-    @GeneratedValue(generator = "ecocode_definition_id_gen", strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "ecocode_definition_id_gen", strategy = GenerationType.IDENTITY)
     @Column(name = "ecocode_definition_id", nullable = false)
     private Integer id;
     @Column(name = "abbreviation")

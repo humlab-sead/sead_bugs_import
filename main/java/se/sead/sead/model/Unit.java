@@ -8,7 +8,7 @@ import javax.persistence.*;
 public class Unit extends LoggableEntity {
 
     @Id
-    @GeneratedValue(generator = "unit_id_seq", strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "unit_id_seq", strategy = GenerationType.IDENTITY)
     @Column(name="unit_id", nullable = false)
     private Integer id;
     @Column(name="unit_name", nullable = false, length = 50)

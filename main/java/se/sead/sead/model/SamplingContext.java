@@ -8,7 +8,7 @@ import javax.persistence.*;
 public class SamplingContext extends LoggableEntity{
 
     @Id
-    @GeneratedValue(generator = "sampling_context_id_seq", strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "sampling_context_id_seq", strategy = GenerationType.IDENTITY)
     @Column(name="sampling_context_id", nullable = false)
     private Integer id;
     @Column(name="sampling_context", nullable = false)
