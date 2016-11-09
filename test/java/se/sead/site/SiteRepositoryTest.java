@@ -7,10 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import se.sead.DataSourceFactory;
+import se.sead.DefaultImportRunner;
 import se.sead.bugsimport.locations.seadmodel.Location;
 import se.sead.bugsimport.locations.seadmodel.LocationType;
 import se.sead.bugsimport.site.seadmodel.SeadSite;
@@ -41,7 +43,15 @@ public class SiteRepositoryTest {
         public DataSource createDataSource() {
             return DataSourceFactory.createDefault("country/countries.sql");
         }
-
+        @Bean
+        @Primary
+        public DefaultImportRunner getImportRunner(){
+            return new DefaultImportRunner(){
+                @Override
+                public void run() throws Exception {
+                }
+            };
+        }
     }
 
     @Autowired

@@ -24,6 +24,7 @@ import se.sead.bugsimport.tracing.seadmodel.BugsError;
 import se.sead.bugsimport.tracing.seadmodel.BugsTrace;
 import se.sead.model.TestEqualityHelper;
 import se.sead.repositories.*;
+import se.sead.testutils.DefaultConfig;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
@@ -41,21 +42,9 @@ import static org.junit.Assert.assertTrue;
 public class SpeciesDistributionImportTest {
 
     @TestConfiguration
-    public static class Config implements ApplicationConfiguration {
-
-        @Bean
-        @Primary
-        public AccessReaderProvider getDatabaseReader(){
-            return new DefaultAccessDatabaseReader(
-                    AccessReaderTest.RESOURCE_FOLDER +
-                            "speciesdistribution/speciesdistribution.mdb"
-            );
-        }
-
-        @Bean
-        @Primary
-        public DataSource createDataSource(){
-            return DataSourceFactory.createDefault("speciesdistribution/speciesdistribution.sql");
+    public static class Config extends DefaultConfig {
+        public Config(){
+            super("speciesdistribution");
         }
     }
 

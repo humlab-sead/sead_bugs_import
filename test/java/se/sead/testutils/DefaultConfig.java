@@ -2,10 +2,7 @@ package se.sead.testutils;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
-import se.sead.AccessReaderTest;
-import se.sead.ApplicationConfiguration;
-import se.sead.DataSourceFactory;
-import se.sead.DefaultAccessDatabaseReader;
+import se.sead.*;
 import se.sead.bugs.AccessReaderProvider;
 
 import javax.sql.DataSource;
@@ -49,13 +46,42 @@ public abstract class DefaultConfig implements ApplicationConfiguration{
     @Bean
     @Primary
     public AccessReaderProvider getDatabaseReader() {
-        return new DefaultAccessDatabaseReader(getMdbFile());
+        String mdbFile = getMdbFile();
+        if(mdbFile == null || mdbFile.isEmpty()){
+            return new NoOpAccessReaderProvider();
+        }
+        return new DefaultAccessDatabaseReader(mdbFile);
     }
 
     @Override
     @Bean
     @Primary
     public DataSource createDataSource() {
-        return DataSourceFactory.createDefault(getDataFile());
+        String extraDataFile = getDataFile();
+        if(!extraDataFile.isEmpty()){
+            return DataSourceFactory.createDefault(extraDataFile);
+        } else {
+            return DataSourceFactory.createDefault();
+        }
+    }
+
+    @Bean
+    @Primary
+    public DefaultImportRunner getImportRunner(){
+        return new DefaultImportRunner(){
+            @Override
+            public void run() throws Exception {
+            }
+        };
+    }
+
+    @Bean
+    public ExitReporter getExitReporter(){
+        return new ExitReporter(){
+            @Override
+            public void reportErrors() {
+
+            }
+        };
     }
 }

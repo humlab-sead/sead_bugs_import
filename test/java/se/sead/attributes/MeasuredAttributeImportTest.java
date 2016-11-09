@@ -20,8 +20,8 @@ import se.sead.testutils.DatabaseContentVerification;
 import se.sead.testutils.DefaultConfig;
 
 @RunWith(SpringRunner.class)
+@SpringBootTest(classes = MeasuredAttributeImportTest.Config.class)
 @ActiveProfiles("test")
-@SpringBootTest
 @DirtiesContext
 public class MeasuredAttributeImportTest  {
 

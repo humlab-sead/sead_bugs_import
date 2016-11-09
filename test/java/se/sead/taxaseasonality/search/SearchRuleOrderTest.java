@@ -13,6 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import se.sead.Application;
 import se.sead.DataSourceFactory;
 import se.sead.bugsimport.taxaseasonality.search.*;
+import se.sead.testutils.DefaultConfig;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -25,11 +26,19 @@ import static org.junit.Assert.assertEquals;
 public class SearchRuleOrderTest {
 
     @TestConfiguration
-    public static class Config {
-        @Bean
-        @Primary
-        public DataSource getDataSource(){
-            return DataSourceFactory.createDefault();
+    public static class Config extends DefaultConfig{
+        public Config(){
+            super("");
+        }
+
+        @Override
+        protected String getMdbFile() {
+            return null;
+        }
+
+        @Override
+        protected String getDataFile() {
+            return "";
         }
     }
 
