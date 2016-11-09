@@ -56,7 +56,7 @@ public class TaxaNotesImportTestDefinition {
             assertFalse(actualList.isEmpty());
             assertTrue(actualList.stream()
                     .map(trace -> trace.getSeadTable())
-                    .allMatch(tableName -> "tbl_taxonomic_notes".equals(tableName))
+                    .allMatch(tableName -> "tbl_taxonomy_notes".equals(tableName))
             );
         } else {
             assertEquals(0, actualList.size());

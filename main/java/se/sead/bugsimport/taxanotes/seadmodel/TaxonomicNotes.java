@@ -7,12 +7,12 @@ import se.sead.sead.model.LoggableEntity;
 import javax.persistence.*;
 
 @Entity
-@Table(name="tbl_taxonomic_notes")
-@SequenceGenerator(name = "taxonomic_notes_id_seq", sequenceName = "tbl_taxonomy_notes_taxonomy_notes_id_seq")
+@Table(name="tbl_taxonomy_notes")
+@SequenceGenerator(name = "taxonomy_notes_id_seq", sequenceName = "tbl_taxonomy_notes_taxonomy_notes_id_seq")
 public class TaxonomicNotes extends LoggableEntity{
 
     @Id
-    @GeneratedValue(generator = "taxonomic_notes_id_seq", strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "taxonomy_notes_id_seq", strategy = GenerationType.AUTO)
     @Column(name="taxonomy_notes_id", nullable = false)
     private Integer id;
     @Column(name="taxonomy_notes")
