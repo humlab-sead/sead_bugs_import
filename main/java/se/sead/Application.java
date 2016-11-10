@@ -62,9 +62,19 @@ public class Application {
 
         @Override
         public void run(ApplicationArguments applicationArguments) throws Exception {
-            if(!applicationArguments.getOptionNames().contains("no-run")){
+            if(shouldRun(applicationArguments)){
                 runner.run();
             }
         }
+
+        private boolean shouldRun(ApplicationArguments applicationArguments){
+			boolean shouldNotRun = applicationArguments.getOptionNames().stream()
+					.anyMatch(
+							name ->
+							name.equals("no-run") ||
+							name.equals("validate-schema")
+					);
+			return !shouldNotRun;
+		}
     }
 }
