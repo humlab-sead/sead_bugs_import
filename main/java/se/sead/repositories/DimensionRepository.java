@@ -8,14 +8,13 @@ import se.sead.sead.model.Dimension;
 public interface DimensionRepository extends Repository<Dimension, Integer>{
     Dimension findOne(Integer id);
     Dimension findByName(String name);
-    Dimension findByNameAndMethodGroup(String name, MethodGroup methodGroup);
 
     @Query("select dim from Dimension dim " +
-            "where dim.methodGroup.name = 'Coordinate and altitude systems' " +
+            "where dim.methodGroup.name = 'Size measurement' " +
             "and dim.name = 'Upper boundary depth from unknown reference'")
     Dimension getUpperDepthFromUnknownReference();
     @Query("select dim from Dimension dim " +
-            "where dim.methodGroup.name = 'Coordinate and altitude systems' " +
+            "where dim.methodGroup.name = 'Size measurement' " +
             "and dim.name = 'Lower boundary depth from unknown reference'")
     Dimension getLowerDepthFromUnknownReference();
 }

@@ -22,9 +22,11 @@ insert into tbl_method_groups (method_group_id , group_name, description)
 values (2, 'Coordinate and altitude systems', 'Coordinate and altitude systems');
 insert into tbl_methods (method_id, method_group_id, method_name, method_abbrev_or_alt_name)
 values (2, 2, 'Depth from datum', 'Depth from datum');
+insert into tbl_method_groups (method_group_id, group_name, description)
+    values (3, 'Size measurement', 'Size measurement');
 
-insert into tbl_dimensions (dimension_id, method_group_id, dimension_name) values (1, 2, 'Upper boundary depth from unknown reference');
-insert into tbl_dimensions (dimension_id, method_group_id, dimension_name) values (2, 2, 'Lower boundary depth from unknown reference');
+insert into tbl_dimensions (dimension_id, method_group_id, dimension_name) values (1, 3, 'Upper boundary depth from unknown reference');
+insert into tbl_dimensions (dimension_id, method_group_id, dimension_name) values (2, 3, 'Lower boundary depth from unknown reference');
 
 insert into tbl_sample_groups (sample_group_id, site_id, sampling_context_id, method_id, sample_group_name)
 values (1, 1, 1, 1, 'Testsheet 1');
