@@ -3,6 +3,7 @@ package se.sead.bugsimport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import se.sead.bugs.AccessReader;
 import se.sead.bugs.AccessReaderProvider;
 import se.sead.bugs.BugsTable;
@@ -53,7 +54,15 @@ public abstract class BugsSeadMapper<BugsType extends TraceableBugsData, SeadTyp
     }
 
     private List<SeadType> getConvertedValue(BugsType readItem) {
-        dataTranslationService.translateValues(readItem);
-        return singleBugsTableRowConverterForMapper.convertListForDataRow(readItem);
+        BugsType unalteredVersion = readItem;
+        try {
+            dataTranslationService.translateValues(readItem);
+            return singleBugsTableRowConverterForMapper.convertListForDataRow(readItem);
+        } catch (DataAccessException dae){
+            if(logger.isErrorEnabled()){
+                logger.error("data access error during convert for object {} - {}", getClass().getSimpleName(), unalteredVersion);
+            }
+            throw dae;
+        }
     }
 }
