@@ -40,15 +40,15 @@ public class BugsSiteRef extends TraceableBugsData {
 
         BugsSiteRef siteRef = (BugsSiteRef) o;
 
-        if (!siteCode.equals(siteRef.siteCode)) return false;
-        return ref.equals(siteRef.ref);
+        if (siteCode != null ? !siteCode.equals(siteRef.siteCode) : siteRef.siteCode != null) return false;
+        return ref != null ? ref.equals(siteRef.ref) : siteRef.ref == null;
 
     }
 
     @Override
     public int hashCode() {
-        int result = siteCode.hashCode();
-        result = 31 * result + ref.hashCode();
+        int result = siteCode != null ? siteCode.hashCode() : 0;
+        result = 31 * result + (ref != null ? ref.hashCode() : 0);
         return result;
     }
 

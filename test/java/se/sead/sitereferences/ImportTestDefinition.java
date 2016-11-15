@@ -97,6 +97,11 @@ public class ImportTestDefinition {
                 assertEquals(1, errors.size());
                 assertEquals("Missing reference: Girling (1986a)", errors.get(0).getMessage());
                 break;
+            case "SITE000013":
+                assertTrue(traces.isEmpty());
+                assertEquals(1, errors.size());
+                assertEquals("No reference specified.", errors.get(0).getMessage());
+                break;
         }
     }
 }

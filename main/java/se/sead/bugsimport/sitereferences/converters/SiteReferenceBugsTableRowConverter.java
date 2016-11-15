@@ -29,6 +29,9 @@ public class SiteReferenceBugsTableRowConverter implements BugsTableRowConverter
         if(seadSite == null){
             return createMissingSiteErrorReference(bugsData);
         }
+        if(bugsData.getRef() == null || bugsData.getRef().isEmpty()){
+            return createNoReferenceProvidedError();
+        }
         Biblio reference = biblioRepository.getByBugsReferenceIgnoreCase(bugsData.getRef());
         if(reference == null){
             return createMissingBibliographyError(bugsData);
@@ -44,6 +47,10 @@ public class SiteReferenceBugsTableRowConverter implements BugsTableRowConverter
         SiteReference siteReference = new SiteReference();
         siteReference.addError(error);
         return siteReference;
+    }
+
+    private SiteReference createNoReferenceProvidedError(){
+        return createError("No reference specified.");
     }
 
     private SiteReference createMissingBibliographyError(BugsSiteRef bugsData) {

@@ -21,6 +21,8 @@ insert into tbl_sites (site_id, site_name, national_site_identifier, latitude_dd
     values (3, 'Akrotiri', null, 36.04623, 25.41966,	10, 'Panagiotakopulu	Largely pests of stored products, preserved by both charring and desiccation by tephra burying Late Bronze Age town, ca. 1600 BC.');
 insert into tbl_sites (site_id, site_name, national_site_identifier, latitude_dd, longitude_dd, altitude, site_description)
     values (4, 'Alcester: Coulter''s Garage', 'SP 088575', 52.21556,	-1.8725,	43, 'Girling	Late Iron Age natural assemblage adjacent to Roman town.');
+insert into tbl_sites (site_id, site_name, national_site_identifier, latitude_dd, longitude_dd, altitude, site_description)
+    values (5, 'Test', null, 1.1, 2.2, null, 'A test site for errors');
 
 insert into bugs_import.bugs_trace (bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id) values
   ('TSite', 'SITE000006Abingdon: Stert Street', 'SITE000006', 'tbl_sites', 1);
@@ -30,6 +32,8 @@ insert into bugs_import.bugs_trace (bugs_table, bugs_data, bugs_identifier, sead
   ('TSite', 'SITE000010Akrotiri', 'SITE000010', 'tbl_sites', 3);
 insert into bugs_import.bugs_trace (bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id) values
   ('TSite', 'SITE000012Alcester: Coulter''s Garage', 'SITE000012', 'tbl_sites', 4);
+insert into bugs_import.bugs_trace (bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id) values
+  ('TSite', 'SITE000013Test', 'SITE000013', 'tbl_sites', 5);
 
 insert into tbl_site_locations (site_location_id, site_id, location_id) values (1, 1, 747);
 insert into tbl_site_locations (site_location_id, site_id, location_id) values (2, 1, 240);

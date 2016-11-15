@@ -17,7 +17,8 @@ public class ExpectedBugsSiteRefData {
                 create("SITE000010","Panagiotakopulu & Buckland (1991)"),
                 create("SITE000010", "Lemdahl (1983)"),
                 create("SITE000011","Shotton et al. (1977)"),
-                create("SITE000012","Girling (1986a)")
+                create("SITE000012","Girling (1986a)"),
+                create("SITE000013", null)
             );
 
     private static BugsSiteRef create(String code, String ref){
