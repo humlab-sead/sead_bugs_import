@@ -11,7 +11,7 @@ public interface MethodRepository extends Repository<Method, Integer> {
     Method findOne(Integer id);
 
     @Query("select method from Method method " +
-            "where method.name = 'Depth from datum' and " +
+            "where method.abbreviation = 'Depth from datum' and " +
             "method.group.name = 'Coordinate and altitude systems'")
     Method getBugsSampleDimensionMethod();
 }
