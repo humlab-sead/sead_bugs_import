@@ -37,6 +37,11 @@ class ExpectedBugsData {
                             01.00101220d,
                             null,
                             "Error, no reference"
+                    ),
+                    create(
+                            01.00101220d,
+                            "Skidmore unpubl.",
+                            null
                     )
             );
 

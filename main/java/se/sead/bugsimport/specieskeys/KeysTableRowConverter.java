@@ -87,7 +87,7 @@ public class KeysTableRowConverter implements BugsTableRowConverter<Keys, TextId
         }
 
         private void setKeys() {
-            if(bugsData.getData() == null && bugsData.getData().isEmpty()){
+            if(bugsData.getData() == null || bugsData.getData().isEmpty()){
                 seadData.addError("Keys without content not permitted");
             }
             seadData.setKeys(bugsData.getData());

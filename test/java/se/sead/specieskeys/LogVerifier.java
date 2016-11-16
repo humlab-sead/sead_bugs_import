@@ -40,6 +40,10 @@ class LogVerifier implements BugsTracesAndErrorsVerification.LogVerificationCall
                 assertHelper.assertEmpty(traces);
                 assertHelper.assertContainsError(errors, "No species found for code: " + bugsData.getCode());
                 break;
+            case "1.0010122null":
+                assertHelper.assertEmpty(traces);
+                assertHelper.assertContainsError(errors, "Keys without content not permitted");
+                break;
         }
     }
 }

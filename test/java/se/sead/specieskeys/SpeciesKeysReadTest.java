@@ -27,7 +27,15 @@ public class SpeciesKeysReadTest extends AccessReaderTest<Keys> {
         public int compare(Keys o1, Keys o2) {
             int codeDifference = o1.getCode().compareTo(o2.getCode());
             if(codeDifference == 0){
-                return o1.getData().compareTo(o2.getData());
+                if(o1.getData() != null && o2.getData() != null) {
+                    return o1.getData().compareTo(o2.getData());
+                } else if(o1.getData() != null && o2.getData() == null){
+                    return -1;
+                } else if(o1.getData() == null && o2.getData() != null){
+                    return 1;
+                } else {
+                    return o1.compressToString().compareTo(o2.compressToString());
+                }
             }
             return codeDifference;
         }
