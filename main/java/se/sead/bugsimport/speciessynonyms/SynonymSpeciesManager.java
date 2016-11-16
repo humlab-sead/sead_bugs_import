@@ -144,7 +144,8 @@ public class SynonymSpeciesManager {
 
         private TaxaSpecies getOrCreate(TaxaGenus synonymGenus, Synonym synonym, TaxaSpecies targetSpecies){
             String name = synonym.getSynSpecies() != null ? synonym.getSynSpecies() : targetSpecies.getSpeciesName();
-            TaxaSpecies found = speciesRepository.findByName(name, synonymGenus.getGenusName());
+            String authorName = targetSpecies.getTaxaAuthor() != null ? targetSpecies.getTaxaAuthor().getAuthorName() : null;
+            TaxaSpecies found = speciesRepository.findBySpeciesNameAndGenusGenusNameAndTaxaAuthorAuthorName(name, synonymGenus.getGenusName(), authorName);
             if(found == null || !authorityManager.authorityMatches(found, targetSpecies)){
                 return createBaseSynonymSpecies(synonymGenus, synonym, targetSpecies);
             } else {
