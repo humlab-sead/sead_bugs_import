@@ -1,17 +1,8 @@
 package se.sead.bugsimport.tracing.seadmodel;
 
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
-
 import javax.persistence.*;
-import java.util.Date;
 
-/**
- * Created by erer0001 on 2016-04-28.
- */
 @Entity
-@DynamicInsert
-@DynamicUpdate
 @Table(name="bugs_trace", schema = "bugs_import")
 @SequenceGenerator(schema = "bugs_import", name = "bugs_trace_seq", sequenceName = "bugs_trace_bugs_trace_id_seq")
 public class BugsTrace extends BugsInformation{
@@ -31,9 +22,6 @@ public class BugsTrace extends BugsInformation{
     private String seadTable;
     @Column(name="sead_reference_id", nullable = false)
     private Integer seadId;
-    @Column(name="change_date")
-    @Temporal(value = TemporalType.TIMESTAMP)
-    private Date changeDate;
     @Column(name="manipulation_type")
     @Enumerated(value = EnumType.STRING)
     private BugsTraceType type;
@@ -58,14 +46,6 @@ public class BugsTrace extends BugsInformation{
         this.seadId = seadId;
     }
 
-    public Date getChangeDate() {
-        return changeDate;
-    }
-
-    public void setChangeDate(Date changeDate) {
-        this.changeDate = changeDate;
-    }
-
     public BugsTraceType getType() {
         return type;
     }
@@ -80,7 +60,7 @@ public class BugsTrace extends BugsInformation{
                 "id=" + id +
                 ", seadTable='" + seadTable + '\'' +
                 ", seadId=" + seadId +
-                ", changeDate=" + changeDate +
+                ", changeDate=" + getChangeDate() +
                 ", type=" + type +
                 '}';
     }
