@@ -34,7 +34,7 @@ public class Keys extends TraceableBugsData {
 
     @Override
     public String compressToString() {
-        return '{' +
+        return "{" +
                 code + ',' +
                 ref + ',' +
                 data + '}';

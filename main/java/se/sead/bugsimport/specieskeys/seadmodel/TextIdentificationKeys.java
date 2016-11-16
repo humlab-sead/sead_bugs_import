@@ -60,7 +60,7 @@ public class TextIdentificationKeys extends LoggableEntity{
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || !(o instanceof TextIdentificationKeys)) return false;
 
         TextIdentificationKeys that = (TextIdentificationKeys) o;
 

@@ -34,7 +34,7 @@ public class SpeciesBuilder {
     }
 
     private void addExistingSpecies() {
-        species.put("01.00100010", TestTaxaSpecies.create(1, "index.", TestTaxaGenus.create(1, "Carabidae", carabidae), null));
+        species.put("01.00100010", TestTaxaSpecies.create(1, "indet.", TestTaxaGenus.create(1, "Carabidae", carabidae), null));
         species.put("01.00101220", TestTaxaSpecies.create(2, "sp.", TestTaxaGenus.create(2, "Cicindela", carabidae), null));
     }
 

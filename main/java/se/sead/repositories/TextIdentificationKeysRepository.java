@@ -7,6 +7,7 @@ import se.sead.sead.model.Biblio;
 import java.util.List;
 
 public interface TextIdentificationKeysRepository extends CreateAndReadRepository<TextIdentificationKeys, Integer> {
+    List<TextIdentificationKeys> findAll();
     List<TextIdentificationKeys> findBySpecies(TaxaSpecies species);
     TextIdentificationKeys findByKeysAndSpeciesAndReference(String keys, TaxaSpecies species, Biblio reference);
 }

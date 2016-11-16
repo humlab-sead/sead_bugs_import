@@ -10,3 +10,5 @@ insert into tbl_taxonomic_order (taxonomic_order_id, taxon_id, taxonomic_code, t
 insert into tbl_taxonomic_order (taxonomic_order_id, taxon_id, taxonomic_code, taxonomic_order_system_id) values (2, 2, 1.0010122, 1);
 
 insert into tbl_text_identification_keys (key_id, biblio_id, key_text, taxon_id) values (1, 1, 'Key to Subfamilies of Carabidae', 1);
+insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
+    values (1, 'TKeys', '{1.0010001,Skidmore unpubl.,Key to Subfamilies of Carabidae}', null, 'tbl_text_identification_keys', 1);

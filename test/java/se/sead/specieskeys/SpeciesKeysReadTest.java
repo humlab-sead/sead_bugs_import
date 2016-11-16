@@ -18,7 +18,7 @@ public class SpeciesKeysReadTest extends AccessReaderTest<Keys> {
         readTableFromDefaultFolder(
                 "specieskeys.mdb",
                 new KeysBugsTable(),
-                KeysTestDefinition.EXPECTED_READ_ITEMS,
+                ExpectedBugsData.EXPECTED_READ_ITEMS,
                 new TestKeysComparator());
     }
 

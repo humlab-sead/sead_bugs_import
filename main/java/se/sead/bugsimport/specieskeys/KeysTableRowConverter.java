@@ -38,6 +38,9 @@ public class KeysTableRowConverter implements BugsTableRowConverter<Keys, TextId
     }
 
     private Biblio getReference(String ref) {
+        if(ref == null){
+            return null;
+        }
         return biblioRepository.getByBugsReferenceIgnoreCase(ref);
     }
 
