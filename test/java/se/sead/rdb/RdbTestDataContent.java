@@ -1,5 +1,6 @@
 package se.sead.rdb;
 
+import se.sead.bugsimport.locations.seadmodel.Location;
 import se.sead.bugsimport.rdb.seadmodel.Rdb;
 import se.sead.model.TestEqualityHelper;
 import se.sead.model.TestRdb;
@@ -30,10 +31,13 @@ public class RdbTestDataContent implements DatabaseContentVerification.DatabaseC
 
     @Override
     public List<Rdb> getExpectedData() {
+        Location UK = locationRepository.findOne(1);
+        Location SWE = locationRepository.findOne(2);
         return Arrays.asList(
-                TestRdb.create(1, speciesRepository.findOne(1), locationRepository.findOne(1), rdbCodeRepository.findOne(1)),
-                TestRdb.create(3, speciesRepository.findOne(3), locationRepository.findOne(1), rdbCodeRepository.findOne(1)),
-                TestRdb.create(4, speciesRepository.findOne(2), locationRepository.findOne(2), rdbCodeRepository.findOne(2))
+                TestRdb.create(1, speciesRepository.findOne(1), UK, rdbCodeRepository.findOne(1)),
+                TestRdb.create(3, speciesRepository.findOne(3), UK, rdbCodeRepository.findOne(1)),
+                TestRdb.create(4, speciesRepository.findOne(2), SWE, rdbCodeRepository.findOne(2)),
+                TestRdb.create(null, speciesRepository.findOne(1), SWE, rdbCodeRepository.findOne(2))
         );
     }
 
@@ -55,11 +59,7 @@ public class RdbTestDataContent implements DatabaseContentVerification.DatabaseC
     private static class RdbComparator implements Comparator<Rdb> {
         @Override
         public int compare(Rdb o1, Rdb o2) {
-            if(o1.getId() != null && o2.getId() != null){
-                return o1.getId().compareTo(o2.getId());
-            } else {
-                return o1.getSpecies().getId().compareTo(o2.getSpecies().getId());
-            }
+            return o1.toString().compareTo(o2.toString());
         }
     }
 }

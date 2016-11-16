@@ -18,7 +18,8 @@ public class ExpectedBugData {
                 create(1.0010123d, "UK", 2),
                 create(null, "Swe", 1),
                 create(1.0010122d, null, 1),
-                create(1.0010122d, "Swe", null)
+                create(1.0010122d, "Swe", null),
+                create(1.0010001d, "Swe", 2)
             );
 
     private static BugsRDB create(Double code, String countryCode, Integer rdbCode){
