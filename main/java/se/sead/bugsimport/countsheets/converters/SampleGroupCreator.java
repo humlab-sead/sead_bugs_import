@@ -31,10 +31,10 @@ class SampleGroupCreator {
     }
 
     private void setSamplingContext(){
-        if(bugsData.getSheetContext() == null || bugsData.getSheetContext().isEmpty()){
+        if(bugsData.getContext() == null || bugsData.getContext().isEmpty()){
             seadVersion.addError("Empty context not allowed");
         } else if(context == null){
-            seadVersion.addError("Unknown context: " + bugsData.getSheetContext());
+            seadVersion.addError("Unknown context: " + bugsData.getContext());
         } else {
             seadVersion.setSamplingContext(context);
         }

@@ -1,4 +1,4 @@
-package se.sead.bugsimport.translations.engines;
+package se.sead.bugsimport.translations.engines.reflection;
 
 import se.sead.bugsimport.translations.converters.TranslationHelper;
 
@@ -7,9 +7,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
-class ReflectionHelper {
+public class ReflectionHelper {
 
-    enum MethodType {
+    public enum MethodType {
           SET("set")
         , GET("get")
         ;
@@ -23,6 +23,10 @@ class ReflectionHelper {
         }
     }
 
+    interface FieldExtractor {
+        Field getField(Class sourceClass, String fieldName);
+    }
+
     private Object targetObject;
     private Class targetObjectClass;
     private String targetColumnName;
@@ -30,29 +34,23 @@ class ReflectionHelper {
 
     private Field targetColumnField;
 
-    ReflectionHelper(Object targetObject, String targetColumnName, MethodType type) {
+    public ReflectionHelper(Object targetObject, String targetColumnName, MethodType type){
+        this(targetObject, targetColumnName, type, new AttributeNameFieldExtractor());
+    }
+
+    public ReflectionHelper(Object targetObject, String targetColumnName, MethodType type, FieldExtractor fieldExtractor) {
         this.targetObject = targetObject;
         this.targetObjectClass = targetObject.getClass();
         this.targetColumnName = targetColumnName;
         this.type = type;
-        targetColumnField = getField();
+        targetColumnField = fieldExtractor.getField(targetObjectClass, targetColumnName);
     }
 
-    private Field getField() {
-        try {
-            return targetObjectClass.getDeclaredField(targetColumnName);
-        } catch (NoSuchFieldException e) {
-            throw new IllegalArgumentException("no field named " +
-                    targetColumnName + " for type " +
-                    targetObjectClass);
-        }
-    }
-
-    Class getTargetColumnType(){
+    public Class getTargetColumnType(){
         return targetColumnField.getType();
     }
 
-    Object invokeOnTarget(Object... args){
+    public Object invokeOnTarget(Object... args){
         if(argumentListContainConvertionErrors(args)){
             throw new IllegalStateException("Untranslatable item " + targetColumnName + ", " + targetObjectClass);
         }

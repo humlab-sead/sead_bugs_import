@@ -35,7 +35,7 @@ public class SampleGroupBugsTableRowConverter implements BugsTableRowConverter<C
     @Override
     public SampleGroup convertForDataRow(Countsheet bugsData) {
         SeadSite site = siteFromBugsCodeHelper.getSeadSiteFromBugsCode(bugsData.getSiteCode());
-        SamplingContext context = contextRepository.findByNameIgnoreCase(bugsData.getSheetContext());
+        SamplingContext context = contextRepository.findByNameIgnoreCase(bugsData.getContext());
         return createOrUpdate(bugsData, site, context);
     }
 

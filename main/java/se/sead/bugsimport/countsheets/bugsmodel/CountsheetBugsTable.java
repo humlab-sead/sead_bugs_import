@@ -15,9 +15,9 @@ public class CountsheetBugsTable extends BugsTable<Countsheet> {
     public Countsheet createItem(Row accessRow) {
         Countsheet countsheet = new Countsheet();
         countsheet.setCode(accessRow.getString("CountsheetCODE"));
-        countsheet.setSheetContext(accessRow.getString("SheetContext"));
+        countsheet.setContext(accessRow.getString("SheetContext"));
         countsheet.setName(accessRow.getString("CountsheetName"));
-        countsheet.setSheetType(accessRow.getString("SheetType"));
+        countsheet.setType(accessRow.getString("SheetType"));
         countsheet.setSiteCode(accessRow.getString("SiteCODE"));
         return countsheet;
     }

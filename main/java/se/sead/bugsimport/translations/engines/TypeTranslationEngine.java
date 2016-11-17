@@ -3,6 +3,9 @@ package se.sead.bugsimport.translations.engines;
 import se.sead.bugs.TraceableBugsData;
 import se.sead.bugsimport.translations.BugsValueTranslationService;
 import se.sead.bugsimport.translations.converters.TranslationHelper;
+import se.sead.bugsimport.translations.engines.reflection.ReflectionHelper;
+import se.sead.bugsimport.translations.engines.reflection.ReflectionHelperBuilder;
+import se.sead.bugsimport.translations.engines.reflection.ReflectionTranslationApplicator;
 import se.sead.bugsimport.translations.model.TypeTranslation;
 import se.sead.repositories.TypeTranslationRepository;
 
@@ -64,8 +67,7 @@ public class TypeTranslationEngine implements BugsValueTranslationService.Transl
         }
 
         private Object getColumnValueFor(String column, TraceableBugsData sourceObject){
-            ReflectionHelper sourceColumnReflectionHelper =
-                    new ReflectionHelper(sourceObject, column, ReflectionHelper.MethodType.GET);
+            ReflectionHelper sourceColumnReflectionHelper = ReflectionHelperBuilder.build(sourceObject, column, ReflectionHelper.MethodType.GET);
             return sourceColumnReflectionHelper.invokeOnTarget();
         }
     }

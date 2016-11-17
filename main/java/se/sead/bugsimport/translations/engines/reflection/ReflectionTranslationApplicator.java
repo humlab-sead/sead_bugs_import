@@ -1,4 +1,4 @@
-package se.sead.bugsimport.translations.engines;
+package se.sead.bugsimport.translations.engines.reflection;
 
 import se.sead.bugs.TraceableBugsData;
 import se.sead.bugsimport.translations.BugsValueTranslationService;
@@ -19,8 +19,12 @@ public class ReflectionTranslationApplicator {
     }
 
     private void doTranslate(Object targetObject) {
-        ReflectionHelper reflectionHelper = new ReflectionHelper(targetObject, translation.getTargetColumn(), ReflectionHelper.MethodType.SET);
+        ReflectionHelper reflectionHelper = getReflectionHelper(targetObject);
         reflectionHelper.invokeOnTarget(getCorrectedValue(reflectionHelper.getTargetColumnType()));
+    }
+
+    private ReflectionHelper getReflectionHelper(Object targetObject) {
+        return ReflectionHelperBuilder.build(targetObject, translation.getTargetColumn(), ReflectionHelper.MethodType.SET);
     }
 
     protected Object getCorrectedValue(Class targetType){
