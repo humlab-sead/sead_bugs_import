@@ -42,7 +42,7 @@ public class TaxaMeasuredAttributesUpdater {
 
         private boolean setType() {
             String originalType = original.getType();
-            String attribType = bugsData.getAttribType();
+            String attribType = bugsData.getType();
             if(attribType == null || attribType.isEmpty()){
                 original.addError("No attribute type");
                 return false;
@@ -53,8 +53,8 @@ public class TaxaMeasuredAttributesUpdater {
 
         private boolean setMeasure() {
             String originalMeasure = original.getMeasure();
-            original.setMeasure(bugsData.getAttribMeasure());
-            return !Objects.equals(originalMeasure, bugsData.getAttribMeasure());
+            original.setMeasure(bugsData.getMeasure());
+            return !Objects.equals(originalMeasure, bugsData.getMeasure());
         }
 
         private boolean setValue() {
@@ -70,7 +70,7 @@ public class TaxaMeasuredAttributesUpdater {
 
         private boolean setUnits() {
             String originalUnits = original.getUnits();
-            String attribUnits = bugsData.getAttribUnits();
+            String attribUnits = bugsData.getUnits();
             if(attribUnits == null || attribUnits.isEmpty()){
                 original.addError("No attribute unit");
                 return false;

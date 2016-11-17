@@ -15,10 +15,10 @@ public class AttributesBugsTable extends BugsTable<BugsAttributes> {
     public BugsAttributes createItem(Row accessRow) {
         BugsAttributes attributes = new BugsAttributes();
         attributes.setCode(accessRow.getDouble("CODE"));
-        attributes.setAttribType(accessRow.getString("AttribType"));
-        attributes.setAttribMeasure(accessRow.getString("AttribMeasure"));
+        attributes.setType(accessRow.getString("AttribType"));
+        attributes.setMeasure(accessRow.getString("AttribMeasure"));
         attributes.setValue(accessRow.getFloat("Value"));
-        attributes.setAttribUnits(accessRow.getString("AttribUnits"));
+        attributes.setUnits(accessRow.getString("AttribUnits"));
         return attributes;
     }
 }

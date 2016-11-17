@@ -21,7 +21,7 @@ public class TaxaMeasuredAttributesByValueSearch implements TaxaMeasuredAttribut
     @Override
     public TaxaMeasuredAttributes findFor(BugsAttributes bugsData) {
         TaxaSpecies bugsSpeciesByCode = taxonomicOrderRepository.findBugsSpeciesByCode(bugsData.getCode());
-        TaxaMeasuredAttributes found = repository.findByTypeAndMeasureAndUnitsAndSpecies(bugsData.getAttribType(), bugsData.getAttribMeasure(), bugsData.getAttribUnits(), bugsSpeciesByCode);
+        TaxaMeasuredAttributes found = repository.findByTypeAndMeasureAndUnitsAndSpecies(bugsData.getType(), bugsData.getMeasure(), bugsData.getUnits(), bugsSpeciesByCode);
         if(found == null){
             return NO_ATTRIBUTES_FOUND;
         }

@@ -37,10 +37,10 @@ public class ExpectedBugsData {
             String units){
         BugsAttributes attributes = new BugsAttributes();
         attributes.setCode(code);
-        attributes.setAttribType(type);
-        attributes.setAttribMeasure(measure);
+        attributes.setType(type);
+        attributes.setMeasure(measure);
         attributes.setValue(value);
-        attributes.setAttribUnits(units);
+        attributes.setUnits(units);
         return attributes;
     }
 }

@@ -1,14 +1,20 @@
 package se.sead.bugsimport.attributes.bugsmodel;
 
+import se.sead.bugs.BugsColumn;
 import se.sead.bugs.TraceableBugsData;
 
 public class BugsAttributes extends TraceableBugsData {
 
+    @BugsColumn("CODE")
     private Double code;
-    private String attribType;
-    private String attribMeasure;
+    @BugsColumn("AttribType")
+    private String type;
+    @BugsColumn("AttribMeasure")
+    private String measure;
+    @BugsColumn("Value")
     private Float value;
-    private String attribUnits;
+    @BugsColumn("AttribUnits")
+    private String units;
 
     public Double getCode() {
         return code;
@@ -18,20 +24,20 @@ public class BugsAttributes extends TraceableBugsData {
         this.code = code;
     }
 
-    public String getAttribType() {
-        return attribType;
+    public String getType() {
+        return type;
     }
 
-    public void setAttribType(String attribType) {
-        this.attribType = attribType;
+    public void setType(String type) {
+        this.type = type;
     }
 
-    public String getAttribMeasure() {
-        return attribMeasure;
+    public String getMeasure() {
+        return measure;
     }
 
-    public void setAttribMeasure(String attribMeasure) {
-        this.attribMeasure = attribMeasure;
+    public void setMeasure(String measure) {
+        this.measure = measure;
     }
 
     public Float getValue() {
@@ -42,22 +48,22 @@ public class BugsAttributes extends TraceableBugsData {
         this.value = value;
     }
 
-    public String getAttribUnits() {
-        return attribUnits;
+    public String getUnits() {
+        return units;
     }
 
-    public void setAttribUnits(String attribUnits) {
-        this.attribUnits = attribUnits;
+    public void setUnits(String units) {
+        this.units = units;
     }
 
     @Override
     public String compressToString() {
         return "{" +
                 (code != null ? code.toString() : "") + ',' +
-                attribType + ',' +
-                attribMeasure + ',' +
+                type + ',' +
+                measure + ',' +
                 value + ',' +
-                attribUnits +
+                units +
                 '}';
     }
 
@@ -79,21 +85,21 @@ public class BugsAttributes extends TraceableBugsData {
         BugsAttributes that = (BugsAttributes) o;
 
         if (code != null ? !code.equals(that.code) : that.code != null) return false;
-        if (attribType != null ? !attribType.equals(that.attribType) : that.attribType != null) return false;
-        if (attribMeasure != null ? !attribMeasure.equals(that.attribMeasure) : that.attribMeasure != null)
+        if (type != null ? !type.equals(that.type) : that.type != null) return false;
+        if (measure != null ? !measure.equals(that.measure) : that.measure != null)
             return false;
         if (value != null ? !value.equals(that.value) : that.value != null) return false;
-        return attribUnits != null ? attribUnits.equals(that.attribUnits) : that.attribUnits == null;
+        return units != null ? units.equals(that.units) : that.units == null;
 
     }
 
     @Override
     public int hashCode() {
         int result = code != null ? code.hashCode() : 0;
-        result = 31 * result + (attribType != null ? attribType.hashCode() : 0);
-        result = 31 * result + (attribMeasure != null ? attribMeasure.hashCode() : 0);
+        result = 31 * result + (type != null ? type.hashCode() : 0);
+        result = 31 * result + (measure != null ? measure.hashCode() : 0);
         result = 31 * result + (value != null ? value.hashCode() : 0);
-        result = 31 * result + (attribUnits != null ? attribUnits.hashCode() : 0);
+        result = 31 * result + (units != null ? units.hashCode() : 0);
         return result;
     }
 
@@ -101,10 +107,10 @@ public class BugsAttributes extends TraceableBugsData {
     public String toString() {
         return "BugsAttributes{" +
                 "code=" + code +
-                ", attribType='" + attribType + '\'' +
-                ", attribMeasure='" + attribMeasure + '\'' +
+                ", type='" + type + '\'' +
+                ", measure='" + measure + '\'' +
                 ", value=" + value +
-                ", attribUnits='" + attribUnits + '\'' +
+                ", units='" + units + '\'' +
                 '}';
     }
 }
