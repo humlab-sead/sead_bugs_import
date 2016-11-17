@@ -8,7 +8,7 @@ public class Countsheet extends TraceableBugsData {
     private String name;
     private String siteCode;
     private String sheetContext;
-    private String type;
+    private String sheetType;
 
     public String getCode() {
         return code;
@@ -42,12 +42,12 @@ public class Countsheet extends TraceableBugsData {
         this.sheetContext = sheetContext;
     }
 
-    public String getType() {
-        return type;
+    public String getSheetType() {
+        return sheetType;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setSheetType(String sheetType) {
+        this.sheetType = sheetType;
     }
 
     @Override
@@ -57,7 +57,7 @@ public class Countsheet extends TraceableBugsData {
                 name + ',' +
                 siteCode + ',' +
                 sheetContext + ',' +
-                type +
+                sheetType +
                 "}";
     }
 
@@ -87,7 +87,7 @@ public class Countsheet extends TraceableBugsData {
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
         if (!siteCode.equals(that.siteCode)) return false;
         if (sheetContext != null ? !sheetContext.equals(that.sheetContext) : that.sheetContext != null) return false;
-        return type != null ? type.equals(that.type) : that.type == null;
+        return sheetType != null ? sheetType.equals(that.sheetType) : that.sheetType == null;
 
     }
 
@@ -97,7 +97,7 @@ public class Countsheet extends TraceableBugsData {
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + siteCode.hashCode();
         result = 31 * result + (sheetContext != null ? sheetContext.hashCode() : 0);
-        result = 31 * result + (type != null ? type.hashCode() : 0);
+        result = 31 * result + (sheetType != null ? sheetType.hashCode() : 0);
         return result;
     }
 }
