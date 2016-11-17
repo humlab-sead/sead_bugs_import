@@ -1,14 +1,21 @@
 package se.sead.bugsimport.datesperiod.bugsmodel;
 
+import se.sead.bugs.BugsColumn;
 import se.sead.bugs.TraceableBugsData;
 
 public class DatesPeriod extends TraceableBugsData {
 
+    @BugsColumn("PeriodDateCODE")
     private String periodDateCode;
+    @BugsColumn("SampelCODE")
     private String sampleCode;
+    @BugsColumn("Uncertainty")
     private String uncertainty;
+    @BugsColumn("PeriodCODE")
     private String periodCode;
+    @BugsColumn("DatingMethod")
     private String datingMethod;
+    @BugsColumn("Notes")
     private String notes;
 
     public String getPeriodDateCode() {
