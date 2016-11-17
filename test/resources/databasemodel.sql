@@ -6,7 +6,7 @@ create table bugs_import.bugs_trace (
   bugs_identifier varchar,
   sead_table varchar(255) not null,
   sead_reference_id integer not null,
-  change_date timestamp DEFAULT current_timestamp(),
+  change_date timestamp not null DEFAULT current_timestamp(),
   manipulation_type varchar(50),
   constraint pk_bugs_trace_bugs_trace_id primary key(bugs_trace_id)
 );
@@ -17,7 +17,7 @@ create table bugs_import.bugs_errors (
   bugs_data varchar,
   bugs_identifier varchar,
   message longvarchar,
-  change_date timestamp DEFAULT current_timestamp(),
+  change_date timestamp not null DEFAULT current_timestamp(),
   constraint pk_bugs_import_bugs_error_id primary key(bugs_error_id)
 );
 

@@ -87,8 +87,7 @@ public abstract class SeadDataFromTraceHelper<BugsType extends TraceableBugsData
     }
 
     public static boolean seadDataExistsAndHasBeenEditedSinceImport(LoggableEntity loggableEntity, BugsTrace comparableTrace){
-        return loggableEntity != null && comparableTrace != BugsTrace.NO_TRACE &&
-                loggableEntity.getDateUpdated().after(comparableTrace.getChangeDate());
+        return seadDataExistsAndHasBeenEditedSinceImportByDate(loggableEntity, comparableTrace);
     }
 
     public static boolean seadDataExistsAndHasBeenEditedSinceImportByDate(LoggableEntity loggableEntity, BugsTrace comparableTrace){

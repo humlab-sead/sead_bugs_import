@@ -3,6 +3,7 @@ package se.sead.bugsimport.site.helper;
 import org.springframework.beans.factory.annotation.Autowired;
 import se.sead.bugsimport.site.bugsmodel.BugsSite;
 import se.sead.bugsimport.site.seadmodel.SeadSite;
+import se.sead.bugsimport.tracing.SeadDataFromTraceHelper;
 import se.sead.bugsimport.tracing.seadmodel.BugsTrace;
 import se.sead.repositories.BugsTraceRepository;
 import se.sead.repositories.SiteRepository;
@@ -39,8 +40,7 @@ abstract class SiteFromTrace {
     protected abstract BugsTrace filteredResults(List<BugsTrace> siteTraces);
 
     private boolean siteExistsAndHasBeenEditedInSeadSinceImport(SeadSite seadSite, BugsTrace latestTrace){
-        return seadSite != null && latestTrace != BugsTrace.NO_TRACE &&
-                seadSite.getDateUpdated().after(latestTrace.getChangeDate());
+        return SeadDataFromTraceHelper.seadDataExistsAndHasBeenEditedSinceImport(seadSite, latestTrace);
     }
 
     protected SeadSite createErrorSite(String errorMessage){
