@@ -39,7 +39,7 @@ class ExpectedBugsData {
             String notes
     ) {
         DatesCalendar datesCalendar = new DatesCalendar();
-        datesCalendar.setSampleCODE(sampleCode);
+        datesCalendar.setSample(sampleCode);
         datesCalendar.setUncertainty(uncertainty);
         datesCalendar.setCalendarCODE(calendarCode);
         datesCalendar.setDate(date);

@@ -1,23 +1,31 @@
 package se.sead.bugsimport.datescalendar.bugsmodel;
 
+import se.sead.bugs.BugsColumn;
 import se.sead.bugs.TraceableBugsData;
 
 public class DatesCalendar extends TraceableBugsData {
 
-    private String sampleCODE;
+    @BugsColumn("SampleCODE")
+    private String sample;
+    @BugsColumn("Uncertainty")
     private String uncertainty;
+    @BugsColumn("CalendarCODE")
     private String calendarCODE;
+    @BugsColumn("Date")
     private Integer date;
+    @BugsColumn("BCADBP")
     private String bcadbp;
+    @BugsColumn("DatingMethod")
     private String datingMethod;
+    @BugsColumn("Notes")
     private String notes;
 
-    public String getSampleCODE() {
-        return sampleCODE;
+    public String getSample() {
+        return sample;
     }
 
-    public void setSampleCODE(String sampleCODE) {
-        this.sampleCODE = sampleCODE;
+    public void setSample(String sample) {
+        this.sample = sample;
     }
 
     public String getUncertainty() {
@@ -71,7 +79,7 @@ public class DatesCalendar extends TraceableBugsData {
     @Override
     public String compressToString() {
         return "{" +
-                sampleCODE + ',' +
+                sample + ',' +
                 uncertainty + ',' +
                 calendarCODE + ',' +
                 date + ',' +
@@ -97,7 +105,7 @@ public class DatesCalendar extends TraceableBugsData {
 
         DatesCalendar that = (DatesCalendar) o;
 
-        if (sampleCODE != null ? !sampleCODE.equals(that.sampleCODE) : that.sampleCODE != null) return false;
+        if (sample != null ? !sample.equals(that.sample) : that.sample != null) return false;
         if (uncertainty != null ? !uncertainty.equals(that.uncertainty) : that.uncertainty != null) return false;
         if (calendarCODE != null ? !calendarCODE.equals(that.calendarCODE) : that.calendarCODE != null) return false;
         if (date != null ? !date.equals(that.date) : that.date != null) return false;
@@ -109,7 +117,7 @@ public class DatesCalendar extends TraceableBugsData {
 
     @Override
     public int hashCode() {
-        int result = sampleCODE != null ? sampleCODE.hashCode() : 0;
+        int result = sample != null ? sample.hashCode() : 0;
         result = 31 * result + (uncertainty != null ? uncertainty.hashCode() : 0);
         result = 31 * result + (calendarCODE != null ? calendarCODE.hashCode() : 0);
         result = 31 * result + (date != null ? date.hashCode() : 0);
@@ -122,7 +130,7 @@ public class DatesCalendar extends TraceableBugsData {
     @Override
     public String toString() {
         return "DatesCalendar{" +
-                "sampleCODE='" + sampleCODE + '\'' +
+                "sample='" + sample + '\'' +
                 ", uncertainty='" + uncertainty + '\'' +
                 ", calendarCODE='" + calendarCODE + '\'' +
                 ", date=" + date +

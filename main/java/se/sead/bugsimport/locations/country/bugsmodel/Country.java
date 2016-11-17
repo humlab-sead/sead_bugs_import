@@ -1,10 +1,13 @@
 package se.sead.bugsimport.locations.country.bugsmodel;
 
+import se.sead.bugs.BugsColumn;
 import se.sead.bugs.TraceableBugsData;
 
 public class Country extends TraceableBugsData {
 
+    @BugsColumn("CountryCode")
     private String countryCode;
+    @BugsColumn("Country")
     private String country;
 
     public String getCountryCode() {

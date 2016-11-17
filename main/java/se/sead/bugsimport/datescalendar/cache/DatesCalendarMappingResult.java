@@ -30,7 +30,7 @@ public class DatesCalendarMappingResult extends MappingResult<DatesCalendar, Rel
         DatesCalendarRangeMerger rangeMerger = new DatesCalendarRangeMerger(
                 uncertaintyManager,
                 relativeAgeMerger,
-                datesBySample.get(bugsData.getSampleCODE()));
+                datesBySample.get(bugsData.getSample()));
         if(rangeMerger.shouldMerge(mapping)){
             rangeMerger.doMerge(mapping);
         } else {
@@ -41,7 +41,7 @@ public class DatesCalendarMappingResult extends MappingResult<DatesCalendar, Rel
 
     private void addToCache(BugsListSeadMapping<DatesCalendar, RelativeDate> mapping){
         if(mapping.isErrorFree() && mapping.getSeadData() != null && !mapping.getSeadData().isEmpty()){
-            String sampleCODE = mapping.getBugsData().getSampleCODE();
+            String sampleCODE = mapping.getBugsData().getSample();
             List<BugsListSeadMapping<DatesCalendar, RelativeDate>> storedDates = datesBySample.get(sampleCODE);
             if(storedDates == null){
                 storedDates = new ArrayList<>();

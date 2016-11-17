@@ -35,7 +35,7 @@ public class RelativeDateUpdaterForCalendar extends BaseRelativeDatesUpdater<Dat
 
         @Override
         protected String getBugsSampleCode() {
-            return bugsData.getSampleCODE();
+            return bugsData.getSample();
         }
 
         @Override

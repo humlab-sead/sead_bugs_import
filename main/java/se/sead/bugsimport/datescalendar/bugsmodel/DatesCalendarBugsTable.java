@@ -14,7 +14,7 @@ public class DatesCalendarBugsTable extends BugsTable<DatesCalendar> {
     @Override
     public DatesCalendar createItem(Row accessRow) {
         DatesCalendar datesCalendar = new DatesCalendar();
-        datesCalendar.setSampleCODE(accessRow.getString("SampleCODE"));
+        datesCalendar.setSample(accessRow.getString("SampleCODE"));
         datesCalendar.setUncertainty(accessRow.getString("Uncertainty"));
         datesCalendar.setCalendarCODE(accessRow.getString("CalendarCODE"));
         datesCalendar.setDate(accessRow.getInt("Date"));
