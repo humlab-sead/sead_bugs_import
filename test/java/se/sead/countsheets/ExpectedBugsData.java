@@ -33,9 +33,9 @@ public class ExpectedBugsData {
     private static Countsheet create(String code, String name, String siteCode, String context, String type){
         Countsheet sheet = new Countsheet();
         sheet.setSiteCode(siteCode);
-        sheet.setSheetType(type);
+        sheet.setType(type);
         sheet.setName(name);
-        sheet.setSheetContext(context);
+        sheet.setContext(context);
         sheet.setCode(code);
         return sheet;
     }
