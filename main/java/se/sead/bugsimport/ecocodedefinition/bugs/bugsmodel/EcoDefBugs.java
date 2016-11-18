@@ -1,13 +1,19 @@
 package se.sead.bugsimport.ecocodedefinition.bugs.bugsmodel;
 
+import se.sead.bugs.BugsColumn;
 import se.sead.bugs.TraceableBugsData;
 
 public class EcoDefBugs extends TraceableBugsData {
 
+    @BugsColumn("BugsEcoCODE")
     private String bugsEcoCODE;
+    @BugsColumn("Definition")
     private String definition;
+    @BugsColumn("Notes")
     private String notes;
+    @BugsColumn("EcoLabel")
     private String ecoLabel;
+    @BugsColumn("SortOrder")
     private Short sortOrder;
 
     public String getBugsEcoCODE() {
