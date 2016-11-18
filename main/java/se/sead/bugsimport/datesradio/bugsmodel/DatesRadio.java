@@ -1,19 +1,31 @@
 package se.sead.bugsimport.datesradio.bugsmodel;
 
+import se.sead.bugs.BugsColumn;
 import se.sead.bugs.TraceableBugsData;
 
 public class DatesRadio extends TraceableBugsData {
 
+    @BugsColumn("DateCODE")
     private String dateCode;
+    @BugsColumn("SampleCODE")
     private String sampleCode;
+    @BugsColumn("LabNr")
     private String labNr;
+    @BugsColumn("Uncertainty")
     private String uncertainty;
+    @BugsColumn("Date")
     private Integer date;
+    @BugsColumn("AgeErrorOrPlusError")
     private Short ageErrorOrPlusError;
+    @BugsColumn("AgeErrorMinus")
     private Integer ageErrorMinus;
+    @BugsColumn("DatingMethod")
     private String datingMethod;
+    @BugsColumn("MaterialType")
     private String materialType;
+    @BugsColumn("LabID")
     private String labId;
+    @BugsColumn("Notes")
     private String notes;
 
     public String getDateCode() {

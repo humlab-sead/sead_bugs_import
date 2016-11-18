@@ -9,6 +9,7 @@ enum TranslationConverters {
     , DOUBLE(new DoubleTranslationValueConverter(), Double.class)
     , FLOAT(new FloatTranslationValueConverter(), Float.class)
     , STRING(new StringTranslationValueConverter(), String.class)
+    , SHORT(new ShortTranslationValueConverter(), Short.class)
     ;
     private TranslationValueConverter converter;
     private Class targetType;

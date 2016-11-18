@@ -24,7 +24,7 @@ public class TranslationHelper {
     }
 
     public static Object convertToType(Object sourceTypeCarrier, String value){
-        if(sourceTypeCarrier == null || value == null){
+        if(sourceTypeCarrier == null){
             return ERROR_OBJECT;
         }
         return convertToType(sourceTypeCarrier.getClass(), value);
