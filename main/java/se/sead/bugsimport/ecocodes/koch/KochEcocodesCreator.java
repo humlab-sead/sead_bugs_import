@@ -30,7 +30,7 @@ public class KochEcocodesCreator {
 
         @Override
         public Double getSpeciesCode() {
-            return bugsData.getCODE();
+            return bugsData.getCode();
         }
 
         @Override

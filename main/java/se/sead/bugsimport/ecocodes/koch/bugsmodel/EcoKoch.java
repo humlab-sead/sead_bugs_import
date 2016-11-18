@@ -1,18 +1,21 @@
 package se.sead.bugsimport.ecocodes.koch.bugsmodel;
 
+import se.sead.bugs.BugsColumn;
 import se.sead.bugs.TraceableBugsData;
 
 public class EcoKoch extends TraceableBugsData {
 
-    private Double CODE;
+    @BugsColumn("CODE")
+    private Double code;
+    @BugsColumn("BugsKochCode")
     private String bugsKochCode;
 
-    public Double getCODE() {
-        return CODE;
+    public Double getCode() {
+        return code;
     }
 
-    public void setCODE(Double CODE) {
-        this.CODE = CODE;
+    public void setCode(Double code) {
+        this.code = code;
     }
 
     public String getBugsKochCode() {
@@ -26,7 +29,7 @@ public class EcoKoch extends TraceableBugsData {
     @Override
     public String compressToString() {
         return "{" +
-                CODE + ',' +
+                code + ',' +
                 bugsKochCode +
                 '}';
     }
@@ -43,14 +46,14 @@ public class EcoKoch extends TraceableBugsData {
 
         EcoKoch ecoKoch = (EcoKoch) o;
 
-        if (CODE != null ? !CODE.equals(ecoKoch.CODE) : ecoKoch.CODE != null) return false;
+        if (code != null ? !code.equals(ecoKoch.code) : ecoKoch.code != null) return false;
         return bugsKochCode != null ? bugsKochCode.equals(ecoKoch.bugsKochCode) : ecoKoch.bugsKochCode == null;
 
     }
 
     @Override
     public int hashCode() {
-        int result = CODE != null ? CODE.hashCode() : 0;
+        int result = code != null ? code.hashCode() : 0;
         result = 31 * result + (bugsKochCode != null ? bugsKochCode.hashCode() : 0);
         return result;
     }
@@ -58,7 +61,7 @@ public class EcoKoch extends TraceableBugsData {
     @Override
     public String toString() {
         return "EcoKoch{" +
-                "CODE=" + CODE +
+                "code=" + code +
                 ", bugsKochCode='" + bugsKochCode + '\'' +
                 '}';
     }

@@ -27,7 +27,7 @@ public class KochEcocodesReadTest extends AccessReaderTest<EcoKoch> {
     private static class EcoKochComparator implements Comparator<EcoKoch> {
         @Override
         public int compare(EcoKoch o1, EcoKoch o2) {
-            if(Objects.equals(o1.getCODE(), o2.getCODE())){
+            if(Objects.equals(o1.getCode(), o2.getCode())){
                 String o1KochCode = o1.getBugsKochCode();
                 String o2KochCode = o2.getBugsKochCode();
                 if(o1KochCode == null && o2KochCode == null){
@@ -40,7 +40,7 @@ public class KochEcocodesReadTest extends AccessReaderTest<EcoKoch> {
                     return o1KochCode.compareTo(o2KochCode);
                 }
             } else {
-                return o1.getCODE().compareTo(o2.getCODE());
+                return o1.getCode().compareTo(o2.getCode());
             }
         }
     }

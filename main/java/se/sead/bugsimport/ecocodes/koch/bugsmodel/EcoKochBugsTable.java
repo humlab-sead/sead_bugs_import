@@ -14,7 +14,7 @@ public class EcoKochBugsTable extends BugsTable<EcoKoch> {
     @Override
     public EcoKoch createItem(Row accessRow) {
         EcoKoch ecoKoch = new EcoKoch();
-        ecoKoch.setCODE(accessRow.getDouble("CODE"));
+        ecoKoch.setCode(accessRow.getDouble("CODE"));
         ecoKoch.setBugsKochCode(accessRow.getString("BugsKochCode"));
         return ecoKoch;
     }

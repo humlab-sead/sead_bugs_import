@@ -23,7 +23,7 @@ class ExpectedBugsData {
         String kochCode
     ){
         EcoKoch ecoKoch = new EcoKoch();
-        ecoKoch.setCODE(code);
+        ecoKoch.setCode(code);
         ecoKoch.setBugsKochCode(kochCode);
         return ecoKoch;
     }
