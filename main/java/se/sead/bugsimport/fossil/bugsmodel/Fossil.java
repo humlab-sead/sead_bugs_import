@@ -1,12 +1,17 @@
 package se.sead.bugsimport.fossil.bugsmodel;
 
+import se.sead.bugs.BugsColumn;
 import se.sead.bugs.TraceableBugsData;
 
 public class Fossil extends TraceableBugsData {
 
+    @BugsColumn("FossilBugsCODE")
     private String fossilBugsCODE;
+    @BugsColumn("CODE")
     private Double code;
+    @BugsColumn("SampleCODE")
     private String sampleCODE;
+    @BugsColumn("Abundance")
     private Integer abundance;
 
     public String getFossilBugsCODE() {
