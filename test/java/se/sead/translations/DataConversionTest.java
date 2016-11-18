@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -187,7 +188,15 @@ public class DataConversionTest {
         translationEngine.translateValues(wrongNumericValue);
         assertEquals("wrongNumericValue", wrongNumericValue.getColumnValue());
         assertEquals(BigDecimal.ONE, wrongNumericValue.getNumericValue());
+    }
 
-
+    @Test
+    public void typeTranslationCausingNullValue(){
+        TypeTranslation typeTranslation = createTypeTranslation(TraceableBugsDataImpl.TEST_IMPLEMENTATION_BUGS_TABLE_NAME, "columnValue", "Empty", "columnValue", null);
+        typeTranslationRepository.saveOrUpdate(typeTranslation);
+        TraceableBugsDataImpl toBeNullValue = createTraceableBugsData(1, "Empty", BigDecimal.ONE);
+        translationEngine.translateValues(toBeNullValue);
+        assertEquals(BigDecimal.ONE, toBeNullValue.getNumericValue());
+        assertNull(toBeNullValue.getColumnValue());
     }
 }

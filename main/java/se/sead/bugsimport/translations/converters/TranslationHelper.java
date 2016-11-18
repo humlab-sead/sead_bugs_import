@@ -1,49 +1,26 @@
 package se.sead.bugsimport.translations.converters;
 
-import java.math.BigDecimal;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TranslationHelper {
 
+    private static final Logger logger = LoggerFactory.getLogger(TranslationHelper.class);
+
     public static final Object ERROR_OBJECT = new Object();
 
-    interface TranslationValueConverter<TargetType>{
-        TargetType convert(String source);
-    }
-
-    enum TranslationConverters {
-          INTEGER(new IntegerTranslationValueConverter(), Integer.class)
-        , BIG_DECIMAL(new BigDecimalTranslationValueConverter(), BigDecimal.class)
-        , DOUBLE(new DoubleTranslationValueConverter(), Double.class)
-        , FLOAT(new FloatTranslationValueConverter(), Float.class)
-        , STRING(new StringTranslationValueConverter(), String.class)
-        ;
-        private TranslationValueConverter converter;
-        private Class targetType;
-        TranslationConverters(TranslationValueConverter converter, Class targetType){
-            this.converter = converter;
-            this.targetType = targetType;
-        }
-
-        TranslationValueConverter getConverter(){
-            return converter;
-        }
-
-        static TranslationValueConverter getConverterFor(Class targetType){
-            for (TranslationConverters converter :
-                    values()) {
-                if (converter.targetType == targetType) {
-                    return converter.getConverter();
-                }
-            }
-            throw new UnsupportedOperationException("no converter for " + targetType);
-        }
-    }
-
     public static Object convertToType(Class targetType, String source){
-        if(source == null || targetType == null){
-            return ERROR_OBJECT;
+        try {
+            TranslationValueConverter converter = TranslationConverters.getConverterFor(targetType);
+            if(converter.canConvertValue(source)){
+                return converter.convert(source);
+            }
+        } catch (UnsupportedOperationException uoe){
+            if(logger.isErrorEnabled()){
+                logger.error("Unsupported converter type requested: " + targetType);
+            }
         }
-        return TranslationConverters.getConverterFor(targetType).convert(source);
+        return ERROR_OBJECT;
     }
 
     public static Object convertToType(Object sourceTypeCarrier, String value){
