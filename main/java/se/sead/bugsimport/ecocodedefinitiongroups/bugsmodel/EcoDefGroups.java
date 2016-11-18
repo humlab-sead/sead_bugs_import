@@ -1,10 +1,13 @@
 package se.sead.bugsimport.ecocodedefinitiongroups.bugsmodel;
 
+import se.sead.bugs.BugsColumn;
 import se.sead.bugs.TraceableBugsData;
 
 public class EcoDefGroups extends TraceableBugsData {
 
+    @BugsColumn("EcoGroupCode")
     private String ecoGroupCode;
+    @BugsColumn("EcoName")
     private String ecoName;
 
     public String getEcoGroupCode() {
