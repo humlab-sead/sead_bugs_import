@@ -1,15 +1,22 @@
 package se.sead.bugsimport.ecocodedefinition.koch.bugsmodel;
 
+import se.sead.bugs.BugsColumn;
 import se.sead.bugs.TraceableBugsData;
 import se.sead.bugsimport.ecocodedefinitiongroups.bugsmodel.EcoDefGroupsBugsTable;
 
 public class EcoDefKoch extends TraceableBugsData{
 
+    @BugsColumn("BugsKochCode")
     private String bugsKochCode;
+    @BugsColumn("KochCode")
     private String kochCode;
+    @BugsColumn("FullName")
     private String fullName;
+    @BugsColumn("KochGroup")
     private String kochGroup;
+    @BugsColumn("Description")
     private String description;
+    @BugsColumn("Notes")
     private String notes;
 
     public String getBugsKochCode() {
