@@ -1,33 +1,36 @@
 package se.sead.bugsimport.ecocodes.bugs.bugsmodel;
 
+import se.sead.bugs.BugsColumn;
 import se.sead.bugs.TraceableBugsData;
 
 public class EcoBugs extends TraceableBugsData {
 
-    private Double CODE;
-    private String bugsEcoCODE;
+    @BugsColumn("CODE")
+    private Double code;
+    @BugsColumn("BugsEcoCODE")
+    private String bugsEcoCode;
 
-    public Double getCODE() {
-        return CODE;
+    public Double getCode() {
+        return code;
     }
 
-    public void setCODE(Double CODE) {
-        this.CODE = CODE;
+    public void setCode(Double code) {
+        this.code = code;
     }
 
-    public String getBugsEcoCODE() {
-        return bugsEcoCODE;
+    public String getBugsEcoCode() {
+        return bugsEcoCode;
     }
 
-    public void setBugsEcoCODE(String bugsEcoCODE) {
-        this.bugsEcoCODE = bugsEcoCODE;
+    public void setBugsEcoCode(String bugsEcoCode) {
+        this.bugsEcoCode = bugsEcoCode;
     }
 
     @Override
     public String compressToString() {
         return "{" +
-                CODE + ',' +
-                bugsEcoCODE + '}';
+                code + ',' +
+                bugsEcoCode + '}';
     }
 
     @Override
@@ -42,23 +45,23 @@ public class EcoBugs extends TraceableBugsData {
 
         EcoBugs ecoBugs = (EcoBugs) o;
 
-        if (CODE != null ? !CODE.equals(ecoBugs.CODE) : ecoBugs.CODE != null) return false;
-        return bugsEcoCODE != null ? bugsEcoCODE.equals(ecoBugs.bugsEcoCODE) : ecoBugs.bugsEcoCODE == null;
+        if (code != null ? !code.equals(ecoBugs.code) : ecoBugs.code != null) return false;
+        return bugsEcoCode != null ? bugsEcoCode.equals(ecoBugs.bugsEcoCode) : ecoBugs.bugsEcoCode == null;
 
     }
 
     @Override
     public int hashCode() {
-        int result = CODE != null ? CODE.hashCode() : 0;
-        result = 31 * result + (bugsEcoCODE != null ? bugsEcoCODE.hashCode() : 0);
+        int result = code != null ? code.hashCode() : 0;
+        result = 31 * result + (bugsEcoCode != null ? bugsEcoCode.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
         return "EcoBugs{" +
-                "CODE=" + CODE +
-                ", bugsEcoCODE='" + bugsEcoCODE + '\'' +
+                "code=" + code +
+                ", bugsEcoCode='" + bugsEcoCode + '\'' +
                 '}';
     }
 }

@@ -14,8 +14,8 @@ public class EcoBugsBugsTable extends BugsTable<EcoBugs> {
     @Override
     public EcoBugs createItem(Row accessRow) {
         EcoBugs ecoBugs = new EcoBugs();
-        ecoBugs.setCODE(accessRow.getDouble("CODE"));
-        ecoBugs.setBugsEcoCODE(accessRow.getString("BugsEcoCODE"));
+        ecoBugs.setCode(accessRow.getDouble("CODE"));
+        ecoBugs.setBugsEcoCode(accessRow.getString("BugsEcoCODE"));
         return ecoBugs;
     }
 }

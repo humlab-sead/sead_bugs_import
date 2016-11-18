@@ -31,12 +31,12 @@ public class BugsEcocodeCreator {
 
         @Override
         public Double getSpeciesCode() {
-            return bugsData.getCODE();
+            return bugsData.getCode();
         }
 
         @Override
         public String getEcocodeDefinitionCode() {
-            return bugsData.getBugsEcoCODE();
+            return bugsData.getBugsEcoCode();
         }
 
         @Override

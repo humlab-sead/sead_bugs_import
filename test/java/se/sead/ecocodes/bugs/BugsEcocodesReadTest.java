@@ -27,9 +27,9 @@ public class BugsEcocodesReadTest extends AccessReaderTest<EcoBugs> {
     private static class EcoBugsComparator implements Comparator<EcoBugs> {
         @Override
         public int compare(EcoBugs o1, EcoBugs o2) {
-            if(Objects.equals(o1.getCODE(), o2.getCODE())){
-                String o1BugsCode = o1.getBugsEcoCODE();
-                String o2BugsCode = o2.getBugsEcoCODE();
+            if(Objects.equals(o1.getCode(), o2.getCode())){
+                String o1BugsCode = o1.getBugsEcoCode();
+                String o2BugsCode = o2.getBugsEcoCode();
                 if(o1BugsCode == null && o2BugsCode == null){
                     return 0;
                 } else if(o1BugsCode != null && o2BugsCode == null){
@@ -40,7 +40,7 @@ public class BugsEcocodesReadTest extends AccessReaderTest<EcoBugs> {
                     return o1BugsCode.compareTo(o2BugsCode);
                 }
             } else {
-                return o1.getCODE().compareTo(o2.getCODE());
+                return o1.getCode().compareTo(o2.getCode());
             }
         }
     }

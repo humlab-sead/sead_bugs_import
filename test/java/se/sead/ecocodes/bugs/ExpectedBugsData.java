@@ -23,8 +23,8 @@ class ExpectedBugsData {
             String bugsCode
     ){
         EcoBugs ecoBugs = new EcoBugs();
-        ecoBugs.setCODE(code);
-        ecoBugs.setBugsEcoCODE(bugsCode);
+        ecoBugs.setCode(code);
+        ecoBugs.setBugsEcoCode(bugsCode);
         return ecoBugs;
     }
 }
