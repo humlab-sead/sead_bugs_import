@@ -1,11 +1,15 @@
 package se.sead.bugsimport.rdb.bugsmodel;
 
+import se.sead.bugs.BugsColumn;
 import se.sead.bugs.TraceableBugsData;
 
 public class BugsRDB extends TraceableBugsData {
 
+    @BugsColumn("CODE")
     private Double code;
+    @BugsColumn("CountryCode")
     private String countryCode;
+    @BugsColumn("RDBCode")
     private Integer rdbCode;
 
     public Double getCode() {
