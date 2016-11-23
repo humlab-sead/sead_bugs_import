@@ -1,19 +1,31 @@
 package se.sead.bugsimport.periods.bugsmodel;
 
+import se.sead.bugs.BugsColumn;
 import se.sead.bugs.TraceableBugsData;
 
 public class Period extends TraceableBugsData {
 
+    @BugsColumn("PeriodCODE")
     private String periodCode;
+    @BugsColumn("PeriodName")
     private String name;
+    @BugsColumn("PeriodType")
     private String type;
+    @BugsColumn("PeriodDesc")
     private String desc;
+    @BugsColumn("PeriodRef")
     private String ref;
+    @BugsColumn("PeriodGeog")
     private String geography;
+    @BugsColumn("Begin")
     private Integer begin;
+    @BugsColumn("BeginBCAD")
     private String beginBCad;
+    @BugsColumn("End")
     private Integer end;
+    @BugsColumn("EndBCAD")
     private String endBCad;
+    @BugsColumn("YearsType")
     private String yearsType;
 
     public String getPeriodCode() {
