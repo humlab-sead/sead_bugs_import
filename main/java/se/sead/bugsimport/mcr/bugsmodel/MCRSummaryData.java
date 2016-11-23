@@ -1,17 +1,27 @@
 package se.sead.bugsimport.mcr.bugsmodel;
 
+import se.sead.bugs.BugsColumn;
 import se.sead.bugs.TraceableBugsData;
 
 public class MCRSummaryData extends TraceableBugsData {
 
+    @BugsColumn("CODE")
     private Double code;
+    @BugsColumn("TMaxLo")
     private Short maxLo;
+    @BugsColumn("TMaxHi")
     private Short maxHi;
+    @BugsColumn("TMinLo")
     private Short minLo;
+    @BugsColumn("TMinHi")
     private Short minHi;
+    @BugsColumn("TRangeLo")
     private Short rangeLo;
+    @BugsColumn("TRangeHi")
     private Short rangeHi;
+    @BugsColumn("COGMidTMax")
     private Short cogMidTMax;
+    @BugsColumn("COGMidTRange")
     private Short cogMidTRange;
 
     public Double getCode() {
@@ -97,7 +107,7 @@ public class MCRSummaryData extends TraceableBugsData {
                 rangeLo + ',' +
                 rangeHi + ',' +
                 cogMidTMax + ',' +
-                cogMidTRange + ",}"
+                cogMidTRange + "}"
                 ;
     }
 
