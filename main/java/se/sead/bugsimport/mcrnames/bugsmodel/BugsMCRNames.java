@@ -1,14 +1,21 @@
 package se.sead.bugsimport.mcrnames.bugsmodel;
 
+import se.sead.bugs.BugsColumn;
 import se.sead.bugs.TraceableBugsData;
 
 public class BugsMCRNames extends TraceableBugsData {
 
+    @BugsColumn("MCRNameTrim")
     private String mcrNameTrim;
+    @BugsColumn("CompareStatus")
     private String compareStatus;
+    @BugsColumn("CODE")
     private Double code;
+    @BugsColumn("tempCODE")
     private Double tempCode;
+    @BugsColumn("MCRNumber")
     private Short mcrNumber;
+    @BugsColumn("MCRName")
     private String mcrName;
 
     public String getMcrNameTrim() {
