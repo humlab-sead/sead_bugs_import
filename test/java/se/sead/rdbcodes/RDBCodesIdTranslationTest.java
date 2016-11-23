@@ -19,9 +19,9 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 @ActiveProfiles("test")
-@SpringBootTest(classes = RDBSystemIdTranslationTest.Config.class)
+@SpringBootTest(classes = RDBCodesIdTranslationTest.Config.class)
 @Transactional
-public class RDBSystemIdTranslationTest {
+public class RDBCodesIdTranslationTest {
     @TestConfiguration
     static class Config extends NoAccessFileOnlyDataModelConfig{}
 
