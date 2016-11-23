@@ -1,15 +1,23 @@
 package se.sead.bugsimport.lab.bugsmodel;
 
+import se.sead.bugs.BugsColumn;
 import se.sead.bugs.TraceableBugsData;
 
 public class BugsLab extends TraceableBugsData {
 
+    @BugsColumn("LabID")
     private String labId;
+    @BugsColumn("Labname")
     private String labName;
+    @BugsColumn("Address")
     private String address;
+    @BugsColumn("Country")
     private String country;
+    @BugsColumn("Telephone")
     private String telephone;
+    @BugsColumn("Website")
     private String website;
+    @BugsColumn("email")
     private String email;
 
     public String getLabId() {
