@@ -1,19 +1,19 @@
 package se.sead.bugsimport.mcr.bugsmodel;
 
+import se.sead.bugs.BugsColumn;
 import se.sead.bugs.TraceableBugsData;
 
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-/**
- * Created by erer0001 on 2016-05-12.
- */
 public class BirmBeetleDat extends TraceableBugsData {
 
-    private Set<Field> fieldData;
+    @BugsColumn("MCRRow")
     private Short row;
+    @BugsColumn("CODE")
     private Double bugsCode;
+    private Set<Field> fieldData;
 
     public BirmBeetleDat(){
         fieldData = new TreeSet<>();
