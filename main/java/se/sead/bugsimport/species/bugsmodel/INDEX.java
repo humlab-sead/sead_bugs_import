@@ -1,15 +1,19 @@
 package se.sead.bugsimport.species.bugsmodel;
 
+import se.sead.bugs.BugsColumn;
 import se.sead.bugs.TraceableBugsData;
 
-/**
- * Created by erer0001 on 2016-04-28.
- */
 public class INDEX extends TraceableBugsData {
+
+    @BugsColumn("CODE")
     private Double code;
+    @BugsColumn("FAMILY")
     private String family;
+    @BugsColumn("GENUS")
     private String genus;
+    @BugsColumn("SPECIES")
     private String species;
+    @BugsColumn("AUTHORITY")
     private String authority;
 
     public Double getCode() {
@@ -91,5 +95,10 @@ public class INDEX extends TraceableBugsData {
     @Override
     public String bugsTable() {
         return INDEXBugsTable.TABLE_NAME;
+    }
+
+    @Override
+    public String getBugsIdentifier() {
+        return code.toString();
     }
 }
