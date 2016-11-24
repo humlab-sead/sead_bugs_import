@@ -1,11 +1,15 @@
 package se.sead.bugsimport.speciesdistribution.bugsmodel;
 
+import se.sead.bugs.BugsColumn;
 import se.sead.bugs.TraceableBugsData;
 
 public class Distrib extends TraceableBugsData {
 
+    @BugsColumn("CODE")
     private Double code;
+    @BugsColumn("Ref")
     private String ref;
+    @BugsColumn("Data")
     private String data;
 
     public Double getCode() {
@@ -34,7 +38,7 @@ public class Distrib extends TraceableBugsData {
 
     @Override
     public String compressToString() {
-        return '{' +
+        return "{" +
                 code + ',' +
                 ref + ',' +
                 data + '}';
