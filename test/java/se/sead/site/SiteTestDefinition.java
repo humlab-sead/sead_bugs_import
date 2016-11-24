@@ -55,7 +55,7 @@ public class SiteTestDefinition {
         site.setLatDD(latDD);
         site.setLongDD(longDD);
         site.setAlt(alt);
-        site.setiDBy(idBy);
+        site.setIDBy(idBy);
         site.setInterp(interp);
         site.setSpecimens(speciments);
         return site;

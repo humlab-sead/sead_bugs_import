@@ -1,19 +1,31 @@
 package se.sead.bugsimport.site.bugsmodel;
 
+import se.sead.bugs.BugsColumn;
 import se.sead.bugs.TraceableBugsData;
 
 public class BugsSite extends TraceableBugsData {
 
+    @BugsColumn("SiteCODE")
     private String code;
+    @BugsColumn("SiteName")
     private String name;
+    @BugsColumn("Region")
     private String region;
+    @BugsColumn("Country")
     private String country;
+    @BugsColumn("NGR")
     private String ngr;
+    @BugsColumn("LatDD")
     private Float latDD;
+    @BugsColumn("LongDD")
     private Float longDD;
+    @BugsColumn("Alt")
     private Float alt;
+    @BugsColumn("IDBy")
     private String iDBy;
+    @BugsColumn("Interp")
     private String interp;
+    @BugsColumn("Specimens")
     private String specimens;
 
     public String getCode() {
@@ -80,11 +92,11 @@ public class BugsSite extends TraceableBugsData {
         this.alt = alt;
     }
 
-    public String getiDBy() {
+    public String getIDBy() {
         return iDBy;
     }
 
-    public void setiDBy(String iDBy) {
+    public void setIDBy(String iDBy) {
         this.iDBy = iDBy;
     }
 

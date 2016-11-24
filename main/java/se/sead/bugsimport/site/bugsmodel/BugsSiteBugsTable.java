@@ -22,7 +22,7 @@ public class BugsSiteBugsTable extends BugsTable<BugsSite> {
         site.setLatDD(accessRow.getFloat("LatDD"));
         site.setLongDD(accessRow.getFloat("LongDD"));
         site.setAlt(accessRow.getFloat("Alt"));
-        site.setiDBy(accessRow.getString("IDBy"));
+        site.setIDBy(accessRow.getString("IDBy"));
         site.setInterp(accessRow.getString("Interp"));
         site.setSpecimens(accessRow.getString("Specimens"));
         return site;
