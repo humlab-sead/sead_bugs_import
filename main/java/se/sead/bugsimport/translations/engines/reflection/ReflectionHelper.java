@@ -58,7 +58,9 @@ public class ReflectionHelper {
             Method method = getMethod();
             return method.invoke(targetObject, args);
         } catch (NoSuchMethodException e) {
-            throw new IllegalArgumentException("no setter for field name " +
+            throw new IllegalArgumentException("no " +
+                    (type == MethodType.GET ? "getter": "setter") +
+                    " for field name " +
                     targetColumnName + " found for class: " +
                     targetObjectClass);
         } catch (IllegalAccessException | InvocationTargetException e) {

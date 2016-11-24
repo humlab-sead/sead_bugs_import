@@ -77,7 +77,7 @@ public class DimensionUpdater {
 
         private boolean setZorDepthToTopValue(){
             Optional<SampleDimension> originalUpperDimension = findBoundDimension(upperDimension);
-            ValueSetter valueSetter = new ValueSetter(originals, originalUpperDimension, bugsData.getzOrDepthTop(), upperDimension);
+            ValueSetter valueSetter = new ValueSetter(originals, originalUpperDimension, bugsData.getZOrDepthTop(), upperDimension);
             return valueSetter.update();
         }
 
@@ -101,7 +101,7 @@ public class DimensionUpdater {
 
         private boolean setZOrDepthToBotValue(){
             Optional<SampleDimension> originalLowerDimension = findBoundDimension(lowerDimension);
-            ValueSetter valueSetter = new ValueSetter(originals, originalLowerDimension, bugsData.getzOrDepthBot(), lowerDimension);
+            ValueSetter valueSetter = new ValueSetter(originals, originalLowerDimension, bugsData.getZOrDepthBot(), lowerDimension);
             return valueSetter.update();
         }
     }

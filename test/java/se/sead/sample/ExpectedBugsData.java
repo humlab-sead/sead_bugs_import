@@ -57,8 +57,8 @@ class ExpectedBugsData {
         sample.setSiteCode(siteCode);
         sample.setX(x);
         sample.setY(y);
-        sample.setzOrDepthTop(zOrDepthTop);
-        sample.setzOrDepthBot(zOrDepthBot);
+        sample.setZOrDepthTop(zOrDepthTop);
+        sample.setZOrDepthBot(zOrDepthBot);
         sample.setRefNrContext(refNrContext);
         sample.setCountSheetCode(countSheetCode);
         return sample;

@@ -1,16 +1,25 @@
 package se.sead.bugsimport.sample.bugsmodel;
 
+import se.sead.bugs.BugsColumn;
 import se.sead.bugs.TraceableBugsData;
 
 public class BugsSample extends TraceableBugsData {
 
+    @BugsColumn("SampleCODE")
     private String sampleCode;
+    @BugsColumn("SiteCODE")
     private String siteCode;
+    @BugsColumn("X")
     private String x;
+    @BugsColumn("Y")
     private String y;
+    @BugsColumn("ZorDepthTop")
     private Double zOrDepthTop;
+    @BugsColumn("ZorDepthBot")
     private Double zOrDepthBot;
+    @BugsColumn("RefNrContext")
     private String refNrContext;
+    @BugsColumn("CountsheetCODE")
     private String countSheetCode;
 
     public String getSampleCode() {
@@ -45,19 +54,19 @@ public class BugsSample extends TraceableBugsData {
         this.y = y;
     }
 
-    public Double getzOrDepthTop() {
+    public Double getZOrDepthTop() {
         return zOrDepthTop;
     }
 
-    public void setzOrDepthTop(Double zOrDepthTop) {
+    public void setZOrDepthTop(Double zOrDepthTop) {
         this.zOrDepthTop = zOrDepthTop;
     }
 
-    public Double getzOrDepthBot() {
+    public Double getZOrDepthBot() {
         return zOrDepthBot;
     }
 
-    public void setzOrDepthBot(Double zOrDepthBot) {
+    public void setZOrDepthBot(Double zOrDepthBot) {
         this.zOrDepthBot = zOrDepthBot;
     }
 

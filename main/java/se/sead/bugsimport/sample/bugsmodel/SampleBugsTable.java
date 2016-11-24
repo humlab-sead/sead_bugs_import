@@ -20,8 +20,8 @@ public class SampleBugsTable extends BugsTable<BugsSample> {
         sample.setX(accessRow.getString("X"));
         sample.setY(accessRow.getString("Y"));
         sample.setRefNrContext(accessRow.getString("RefNrContext"));
-        sample.setzOrDepthTop(accessRow.getDouble("ZorDepthTop"));
-        sample.setzOrDepthBot(accessRow.getDouble("ZorDepthBot"));
+        sample.setZOrDepthTop(accessRow.getDouble("ZorDepthTop"));
+        sample.setZOrDepthBot(accessRow.getDouble("ZorDepthBot"));
         return sample;
     }
 }
