@@ -1,14 +1,15 @@
 package se.sead.bugsimport.speciesbiology.bugsmodel;
 
+import se.sead.bugs.BugsColumn;
 import se.sead.bugs.TraceableBugsData;
 
-/**
- * Created by erer0001 on 2016-05-18.
- */
 public class Biology extends TraceableBugsData {
 
+    @BugsColumn("CODE")
     private Double code;
+    @BugsColumn("Ref")
     private String ref;
+    @BugsColumn("Data")
     private String data;
 
     public Double getCode() {
