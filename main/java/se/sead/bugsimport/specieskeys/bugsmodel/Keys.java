@@ -1,11 +1,15 @@
 package se.sead.bugsimport.specieskeys.bugsmodel;
 
+import se.sead.bugs.BugsColumn;
 import se.sead.bugs.TraceableBugsData;
 
 public class Keys extends TraceableBugsData {
 
+    @BugsColumn("CODE")
     private Double code;
+    @BugsColumn("Ref")
     private String ref;
+    @BugsColumn("Data")
     private String data;
 
     public Double getCode() {
