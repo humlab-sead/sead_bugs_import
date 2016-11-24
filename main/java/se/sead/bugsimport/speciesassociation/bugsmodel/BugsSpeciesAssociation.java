@@ -1,13 +1,20 @@
 package se.sead.bugsimport.speciesassociation.bugsmodel;
 
+import se.sead.bugs.BugsColumn;
 import se.sead.bugs.TraceableBugsData;
+
+import java.lang.annotation.Native;
 
 public class BugsSpeciesAssociation extends TraceableBugsData {
 
     private Integer speciesAssociationID;
+    @BugsColumn("CODE")
     private Double code;
+    @BugsColumn("AssociatedSpeciesCODE")
     private Double associatedSpeciesCODE;
+    @BugsColumn("AssociationType")
     private String associationType;
+    @BugsColumn("Ref")
     private String ref;
 
     public Integer getSpeciesAssociationID() {
