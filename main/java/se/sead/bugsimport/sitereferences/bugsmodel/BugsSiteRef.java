@@ -1,10 +1,13 @@
 package se.sead.bugsimport.sitereferences.bugsmodel;
 
+import se.sead.bugs.BugsColumn;
 import se.sead.bugs.TraceableBugsData;
 
 public class BugsSiteRef extends TraceableBugsData {
 
+    @BugsColumn("SiteCODE")
     private String siteCode;
+    @BugsColumn("Ref")
     private String ref;
 
     public String getSiteCode() {
@@ -25,7 +28,7 @@ public class BugsSiteRef extends TraceableBugsData {
 
     @Override
     public String compressToString() {
-        return "{" + siteCode + ref + "}";
+        return "{" + siteCode + ','+ ref + '}';
     }
 
     @Override
