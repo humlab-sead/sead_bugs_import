@@ -1,4 +1,4 @@
-package se.sead.bugsimport.locations;
+package se.sead.bugsimport.site.conversion.locations;
 
 import se.sead.bugsimport.locations.seadmodel.Location;
 import se.sead.bugsimport.locations.seadmodel.LocationType;
@@ -9,19 +9,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-class CountryLocationHandler extends LocationHandler.BaseLocationHandler{
+class CountryLocationHandler extends SiteLocationHandler.BaseLocationHandler{
 
     private LocationType countryType;
     private LocationRepository locationRepository;
     private boolean canCreateNonExistingCountry = false;
-
-    public CountryLocationHandler(
-            LocationType countryType,
-            LocationRepository locationRepository,
-            BugsSite bugsData
-    ) {
-        this(countryType, locationRepository, bugsData, false);
-    }
 
     public CountryLocationHandler(
             LocationType countryType,

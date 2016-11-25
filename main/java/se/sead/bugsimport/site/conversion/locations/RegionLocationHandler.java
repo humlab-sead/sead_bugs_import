@@ -1,4 +1,4 @@
-package se.sead.bugsimport.locations;
+package se.sead.bugsimport.site.conversion.locations;
 
 import se.sead.bugsimport.locations.seadmodel.Location;
 import se.sead.bugsimport.locations.seadmodel.LocationType;
@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-class RegionLocationHandler extends LocationHandler.BaseLocationHandler{
+class RegionLocationHandler extends SiteLocationHandler.BaseLocationHandler{
 
     private LocationType administrativeRegionType;
     private LocationRepository locationRepository;

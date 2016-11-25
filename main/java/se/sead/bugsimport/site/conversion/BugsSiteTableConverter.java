@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import se.sead.bugsimport.BugsTableRowConverter;
-import se.sead.bugsimport.locations.LocationHandler;
+import se.sead.bugsimport.site.conversion.locations.SiteLocationHandler;
 import se.sead.bugsimport.site.bugsmodel.BugsSite;
 import se.sead.bugsimport.site.helper.SiteFromCodeAllowDeletedSite;
 import se.sead.bugsimport.site.seadmodel.SeadSite;
@@ -32,19 +32,19 @@ public class BugsSiteTableConverter implements BugsTableRowConverter<BugsSite, S
 
     @Override
     public SeadSite convertForDataRow(BugsSite bugsData) {
-        LocationHandler locationHandler = getLocations(bugsData);
-        return getOrCreate(bugsData, locationHandler);
+        SiteLocationHandler siteLocationHandler = getLocations(bugsData);
+        return getOrCreate(bugsData, siteLocationHandler);
     }
 
-    private LocationHandler getLocations(BugsSite bugsData) {
-        return new LocationHandler(locationRepository, locationTypeRepository, bugsData, canCreateCountry);
+    private SiteLocationHandler getLocations(BugsSite bugsData) {
+        return new SiteLocationHandler(locationRepository, locationTypeRepository, bugsData, canCreateCountry);
     }
 
-    private SeadSite getOrCreate(BugsSite bugsSite, LocationHandler locationHandler){
-        if(!locationHandler.countryExists()){
+    private SeadSite getOrCreate(BugsSite bugsSite, SiteLocationHandler siteLocationHandler){
+        if(!siteLocationHandler.countryExists()){
             return createMissingCountryLocationSite(bugsSite);
         }
-        UpdateHelper updateHelper = new UpdateHelper(bugsSite, locationHandler, importSiteHelper, allowSiteUpdates, siteRepository);
+        UpdateHelper updateHelper = new UpdateHelper(bugsSite, siteLocationHandler, importSiteHelper, allowSiteUpdates, siteRepository);
         if(updateHelper.handle()){
             return updateHelper.getFoundSeadSite();
         } else if(updateHelper.getErrorMessage() == null){
@@ -75,19 +75,19 @@ public class BugsSiteTableConverter implements BugsTableRowConverter<BugsSite, S
         private boolean allowSiteUpdates;
         private SiteRepository siteRepository;
 
-        private LocationHandler locationHandler;
+        private SiteLocationHandler siteLocationHandler;
         private String errorMessage = null;
         private BugsSite bugsData;
         private SeadSite foundSeadSite;
 
         public UpdateHelper(
                 BugsSite bugsData,
-                LocationHandler locationHandler,
+                SiteLocationHandler siteLocationHandler,
                 SiteFromCodeAllowDeletedSite importSiteHelper,
                 boolean allowSiteUpdates,
                 SiteRepository siteRepository) {
             this.bugsData = bugsData;
-            this.locationHandler = locationHandler;
+            this.siteLocationHandler = siteLocationHandler;
             this.importSiteHelper = importSiteHelper;
             this.allowSiteUpdates = allowSiteUpdates;
             this.siteRepository = siteRepository;
@@ -118,8 +118,8 @@ public class BugsSiteTableConverter implements BugsTableRowConverter<BugsSite, S
                 return seadSiteFromTrace;
             }
             List<SeadSite> possibleSites;
-            if(!locationHandler.anyCreatedLocations()){
-                possibleSites = siteRepository.findByNameAndLocations(bugsData.getName(), locationHandler.getLocations());
+            if(!siteLocationHandler.anyCreatedLocations()){
+                possibleSites = siteRepository.findByNameAndLocations(bugsData.getName(), siteLocationHandler.getLocations());
             } else {
                 possibleSites = siteRepository.findAllByName(bugsData.getName());
             }

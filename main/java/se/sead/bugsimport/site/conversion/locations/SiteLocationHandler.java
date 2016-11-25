@@ -1,5 +1,6 @@
-package se.sead.bugsimport.locations;
+package se.sead.bugsimport.site.conversion.locations;
 
+import se.sead.bugsimport.locations.LocationCreator;
 import se.sead.bugsimport.locations.seadmodel.Location;
 import se.sead.bugsimport.locations.seadmodel.LocationType;
 import se.sead.bugsimport.site.bugsmodel.BugsSite;
@@ -10,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class LocationHandler {
+public class SiteLocationHandler {
 
     private List<BaseLocationHandler> locationHandlers;
     private List<Location> gatheredLocations;
@@ -18,7 +19,7 @@ public class LocationHandler {
 
     private LocationType countryType;
 
-    public LocationHandler(
+    public SiteLocationHandler(
             LocationRepository locationRepository,
             LocationTypeRepository locationTypeRepository,
             BugsSite bugsData,
