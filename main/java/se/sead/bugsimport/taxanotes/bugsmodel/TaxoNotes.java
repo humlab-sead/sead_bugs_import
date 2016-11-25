@@ -1,11 +1,15 @@
 package se.sead.bugsimport.taxanotes.bugsmodel;
 
+import se.sead.bugs.BugsColumn;
 import se.sead.bugs.TraceableBugsData;
 
 public class TaxoNotes extends TraceableBugsData {
 
+    @BugsColumn("CODE")
     private Double code;
+    @BugsColumn("Ref")
     private String reference;
+    @BugsColumn("Data")
     private String data;
 
     public Double getCode() {
@@ -34,7 +38,7 @@ public class TaxoNotes extends TraceableBugsData {
 
     @Override
     public String compressToString() {
-        return '{'
+        return "{"
                 + code + ','
                 + reference + ','
                 + data + '}';
