@@ -7,7 +7,7 @@ public class DatesPeriod extends TraceableBugsData {
 
     @BugsColumn("PeriodDateCODE")
     private String periodDateCode;
-    @BugsColumn("SampelCODE")
+    @BugsColumn("SampleCODE")
     private String sampleCode;
     @BugsColumn("Uncertainty")
     private String uncertainty;

@@ -1,5 +1,6 @@
 package se.sead.species;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,11 +31,17 @@ public class SpeciesTypeTranslationTest {
     @Autowired
     private BugsValueTranslationService translationService;
 
+    private INDEX source;
+
+    @Before
+    public void setup(){
+        source = new INDEX();
+        source.setCode(1d);
+    }
+
     @Test
     public void changeCODE(){
-        createAndSaveTypeTranslation("CODE", "10", "100");
-        INDEX source = new INDEX();
-        source.setCode(10d);
+        createAndSaveTypeTranslation("CODE", "1", "100");
         translationService.translateValues(source);
         assertEquals(new Double(100d), source.getCode());
     }
@@ -51,7 +58,6 @@ public class SpeciesTypeTranslationTest {
     @Test
     public void changeFamily(){
         createAndSaveTypeTranslation("FAMILY", "Wrong", "Correct");
-        INDEX source = new INDEX();
         source.setFamily("Wrong");
         translationService.translateValues(source);
         assertEquals("Correct", source.getFamily());
@@ -60,7 +66,6 @@ public class SpeciesTypeTranslationTest {
     @Test
     public void changeGenus(){
         createAndSaveTypeTranslation("GENUS", "Wrong", "Correct");
-        INDEX source = new INDEX();
         source.setGenus("Wrong");
         translationService.translateValues(source);
         assertEquals("Correct", source.getGenus());
@@ -69,7 +74,6 @@ public class SpeciesTypeTranslationTest {
     @Test
     public void changeSpecies(){
         createAndSaveTypeTranslation("SPECIES", "Wrong", "Correct");
-        INDEX source = new INDEX();
         source.setSpecies("Wrong");
         translationService.translateValues(source);
         assertEquals("Correct", source.getSpecies());
@@ -78,7 +82,6 @@ public class SpeciesTypeTranslationTest {
     @Test
     public void changeAuthority(){
         createAndSaveTypeTranslation("AUTHORITY", "Wrong", "Correct");
-        INDEX source = new INDEX();
         source.setAuthority("Wrong");
         translationService.translateValues(source);
         assertEquals("Correct", source.getAuthority());

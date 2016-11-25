@@ -70,4 +70,4 @@ insert into tbl_sample_groups (sample_group_id, site_id, sampling_context_id, me
     values (5, 3, 1, 1, 'Name exists outside of bugs');
 
 insert into bugs_import.bugs_type_translations (bugs_table, bugs_column, triggering_column_value, target_column, replacement_value)
-    values ('TCountsheet', 'sheetContext', 'Archaeological contexts', 'sheetContext', 'Archaeological site');
+    values ('TCountsheet', 'SheetContext', 'Archaeological contexts', 'SheetContext', 'Archaeological site');
