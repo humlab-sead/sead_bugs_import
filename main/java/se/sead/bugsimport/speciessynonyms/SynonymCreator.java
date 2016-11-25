@@ -45,7 +45,7 @@ public class SynonymCreator {
         }
 
         private void setTargetSpecies(){
-            TaxaSpecies targetSpecies = taxonomicOrderRepository.findBugsSpeciesByCode(BigDecimalDefinition.convertToSeadCode(synonym.getCODE()));
+            TaxaSpecies targetSpecies = taxonomicOrderRepository.findBugsSpeciesByCode(BigDecimalDefinition.convertToSeadCode(synonym.getCode()));
             if(targetSpecies == null){
                 seadData.addError("No species found for code");
                 return;

@@ -1,22 +1,29 @@
 package se.sead.bugsimport.speciessynonyms.bugsmodel;
 
+import se.sead.bugs.BugsColumn;
 import se.sead.bugs.TraceableBugsData;
 
 public class Synonym extends TraceableBugsData {
 
-    private Double CODE;
+    @BugsColumn("CODE")
+    private Double code;
+    @BugsColumn("SynGenus")
     private String synGenus;
+    @BugsColumn("SynSpecies")
     private String synSpecies;
+    @BugsColumn("SynAuthority")
     private String synAuthority;
+    @BugsColumn("Ref")
     private String reference;
+    @BugsColumn("Notes")
     private String notes;
 
-    public Double getCODE() {
-        return CODE;
+    public Double getCode() {
+        return code;
     }
 
-    public void setCODE(Double CODE) {
-        this.CODE = CODE;
+    public void setCode(Double code) {
+        this.code = code;
     }
 
     public String getSynGenus() {
@@ -62,7 +69,7 @@ public class Synonym extends TraceableBugsData {
     @Override
     public String compressToString() {
         return "{" +
-                CODE + ',' +
+                code + ',' +
                 synGenus + ',' +
                 synSpecies + ',' +
                 synAuthority + ',' +
@@ -82,7 +89,7 @@ public class Synonym extends TraceableBugsData {
 
         Synonym synonym = (Synonym) o;
 
-        if (CODE != null ? !CODE.equals(synonym.CODE) : synonym.CODE != null) return false;
+        if (code != null ? !code.equals(synonym.code) : synonym.code != null) return false;
         if (synGenus != null ? !synGenus.equals(synonym.synGenus) : synonym.synGenus != null) return false;
         if (synSpecies != null ? !synSpecies.equals(synonym.synSpecies) : synonym.synSpecies != null) return false;
         if (synAuthority != null ? !synAuthority.equals(synonym.synAuthority) : synonym.synAuthority != null)
@@ -94,7 +101,7 @@ public class Synonym extends TraceableBugsData {
 
     @Override
     public int hashCode() {
-        int result = CODE != null ? CODE.hashCode() : 0;
+        int result = code != null ? code.hashCode() : 0;
         result = 31 * result + (synGenus != null ? synGenus.hashCode() : 0);
         result = 31 * result + (synSpecies != null ? synSpecies.hashCode() : 0);
         result = 31 * result + (synAuthority != null ? synAuthority.hashCode() : 0);
@@ -106,7 +113,7 @@ public class Synonym extends TraceableBugsData {
     @Override
     public String toString() {
         return "Synonym{" +
-                "CODE=" + CODE +
+                "code=" + code +
                 ", synGenus='" + synGenus + '\'' +
                 ", synSpecies='" + synSpecies + '\'' +
                 ", synAuthority='" + synAuthority + '\'' +

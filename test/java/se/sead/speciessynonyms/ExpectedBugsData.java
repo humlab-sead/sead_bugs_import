@@ -27,7 +27,7 @@ class ExpectedBugsData {
             String notes
     ){
         Synonym synonym = new Synonym();
-        synonym.setCODE(code);
+        synonym.setCode(code);
         synonym.setSynGenus(synGenus);
         synonym.setSynSpecies(synSpecies);
         synonym.setSynAuthority(synAuthority);

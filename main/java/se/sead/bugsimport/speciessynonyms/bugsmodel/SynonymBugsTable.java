@@ -14,7 +14,7 @@ public class SynonymBugsTable extends BugsTable<Synonym> {
     @Override
     public Synonym createItem(Row accessRow) {
         Synonym synonym = new Synonym();
-        synonym.setCODE(accessRow.getDouble("CODE"));
+        synonym.setCode(accessRow.getDouble("CODE"));
         synonym.setSynGenus(accessRow.getString("SynGenus"));
         synonym.setSynSpecies(accessRow.getString("SynSpecies"));
         synonym.setSynAuthority(accessRow.getString("SynAuthority"));
