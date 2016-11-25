@@ -9,8 +9,13 @@ import se.sead.bugsimport.locations.seadmodel.Location;
 import se.sead.repositories.LocationRepository;
 import se.sead.repositories.LocationTypeRepository;
 
+import java.util.Date;
+
 @Component
 public class CountryRowConverter implements BugsTableRowConverter<Country, Location> {
+
+    @Autowired
+    private CountryImportTraceHelper traceHelper;
 
     @Autowired
     private LocationRepository locationRepository;
@@ -23,15 +28,30 @@ public class CountryRowConverter implements BugsTableRowConverter<Country, Locat
 
     @Override
     public Location convertForDataRow(Country bugsData) {
+        Location fromLastTrace = traceHelper.getFromLastTrace(bugsData.getBugsIdentifier());
+        if(fromLastTrace == null){
+            return create(bugsData);
+        }
+        return fromLastTrace;
+    }
+
+    private Location create(Country bugsData){
         Location countryByName = locationRepository.findCountryByName(bugsData.getCountry());
         if(countryByName == null){
             return createNewCountry(bugsData);
+        } else {
+            associateImportWithExistingLocationThroughLog(countryByName);
         }
         return countryByName;
     }
 
     private Location createNewCountry(Country bugsData) {
         return countryCreator.create(bugsData.getCountry());
+    }
+
+    private void associateImportWithExistingLocationThroughLog(Location countryByName) {
+        countryByName.setDateUpdated(new Date());
+        countryByName.setUpdated(true);
     }
 
 }

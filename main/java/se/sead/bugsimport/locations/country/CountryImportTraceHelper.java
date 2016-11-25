@@ -12,6 +12,6 @@ public class CountryImportTraceHelper extends SeadDataFromTraceHelper<Country, L
 
     @Autowired
     public CountryImportTraceHelper(LocationRepository locationRepository){
-        super("Country", false, locationRepository);
+        super("TCountry", false, locationRepository);
     }
 }

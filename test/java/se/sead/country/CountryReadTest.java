@@ -14,9 +14,9 @@ public class CountryReadTest extends AccessReaderTest<Country>{
     @Test
     public void read(){
         readTableFromDefaultFolder(
-                CountryExpectedTestDefinition.MDB_FILE,
+                "countries.mdb",
                 new CountryBugsTable(),
-                CountryExpectedTestDefinition.EXPECTED_COUNTRIES
+                ExpectedBugsData.EXPECTED_COUNTRIES
         );
     }
 

@@ -48,15 +48,23 @@ public class Country extends TraceableBugsData {
 
         Country country1 = (Country) o;
 
-        if (!countryCode.equals(country1.countryCode)) return false;
-        return country.equals(country1.country);
-
+        if (countryCode != null ? !countryCode.equals(country1.countryCode) : country1.countryCode != null)
+            return false;
+        return country != null ? country.equals(country1.country) : country1.country == null;
     }
 
     @Override
     public int hashCode() {
-        int result = countryCode.hashCode();
-        result = 31 * result + country.hashCode();
+        int result = countryCode != null ? countryCode.hashCode() : 0;
+        result = 31 * result + (country != null ? country.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Country{" +
+                "countryCode='" + countryCode + '\'' +
+                ", country='" + country + '\'' +
+                '}';
     }
 }
