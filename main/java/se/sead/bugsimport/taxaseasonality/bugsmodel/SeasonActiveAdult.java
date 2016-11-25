@@ -1,13 +1,17 @@
 package se.sead.bugsimport.taxaseasonality.bugsmodel;
 
+import se.sead.bugs.BugsColumn;
 import se.sead.bugs.TraceableBugsData;
 
 import java.util.Locale;
 
 public class SeasonActiveAdult extends TraceableBugsData{
 
+    @BugsColumn("CODE")
     private Double code;
+    @BugsColumn("HSeason")
     private String season;
+    @BugsColumn("CountryCode")
     private String countryCode;
 
     public Double getCode() {
