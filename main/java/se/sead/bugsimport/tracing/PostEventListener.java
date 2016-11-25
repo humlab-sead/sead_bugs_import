@@ -1,4 +1,4 @@
-package se.sead.repositories.impl;
+package se.sead.bugsimport.tracing;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import se.sead.Application;
@@ -9,9 +9,6 @@ import se.sead.sead.model.LoggableEntity;
 import javax.persistence.*;
 import java.util.Date;
 
-/**
- * Created by erer0001 on 2016-05-12.
- */
 public class PostEventListener {
 
     @Autowired

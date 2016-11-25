@@ -1,6 +1,6 @@
 package se.sead.sead.model;
 
-import se.sead.repositories.impl.PostEventListener;
+import se.sead.bugsimport.tracing.PostEventListener;
 
 import javax.persistence.*;
 import java.util.ArrayList;
