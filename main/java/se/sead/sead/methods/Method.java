@@ -131,4 +131,13 @@ public class Method extends LoggableEntity {
         result = 31 * result + (unit != null ? unit.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "Method{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", abbreviation='" + abbreviation + '\'' +
+                '}';
+    }
 }

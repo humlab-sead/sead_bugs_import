@@ -76,8 +76,13 @@ public abstract class BaseRelativeDateUpdater{
     protected abstract boolean setRelativeAge();
 
     private boolean setDatingMethod(){
+        if(!original.isErrorFree()){
+            return false;
+        } else if(original.getRelativeAge() == null){
+            throw new NullPointerException("Must set relative age before adding dating method to relative dates");
+        }
         Method originalDatingMethod = original.getDatingMethod();
-        Method relativeDateMethod = datingMethodManager.getRelativeDateMethod(getBugsDatingMethod());
+        Method relativeDateMethod = datingMethodManager.getRelativeDateMethod(getBugsDatingMethod(), original.getRelativeAge());
         original.setDatingMethod(relativeDateMethod);
         if(relativeDateMethod != null) {
             ErrorCopier.copyPotentialErrors(original, relativeDateMethod);

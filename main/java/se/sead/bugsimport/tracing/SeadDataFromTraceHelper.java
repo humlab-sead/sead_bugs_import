@@ -16,7 +16,7 @@ public abstract class SeadDataFromTraceHelper<BugsType extends TraceableBugsData
     public static final String SEAD_DATA_HAS_BEEN_UPDATED_SINCE_LAST_BUGS_IMPORT = "Sead data has been updated since last bugs import";
 
     @Autowired
-    private BugsTraceRepository traceRepository;
+    protected BugsTraceRepository traceRepository;
     private CreateAndReadRepository<SeadType, Integer> accessRepository;
     private String bugsTableName;
 

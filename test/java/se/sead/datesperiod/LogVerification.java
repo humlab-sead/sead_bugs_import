@@ -46,24 +46,26 @@ class LogVerification implements BugsTracesAndErrorsVerification.LogVerification
                 break;
             case "PERI000007":
             case "PERI000009":
+            case "PERI000014":
+            case "PERI000015":
                 assertHelper.assertSize(traces, 1);
                 assertHelper.assertInserts(traces, 1);
                 assertHelper.assertEmpty(errors);
                 break;
             case "PERI000011":
                 assertHelper.assertSize(traces, 1);
-                assertHelper.assertPrestoredTrace(traces, 5);
+                assertHelper.assertPrestoredTrace(traces, 7);
                 assertHelper.assertEmpty(errors);
                 break;
             case "PERI000012":
                 assertHelper.assertSize(traces, 2);
-                assertHelper.assertPrestoredTrace(traces, 6);
+                assertHelper.assertPrestoredTrace(traces, 8);
                 assertHelper.assertUpdates(traces, 1);
                 assertHelper.assertEmpty(errors);
                 break;
             case "PERI000013":
                 assertHelper.assertSize(traces, 1);
-                assertHelper.assertPrestoredTrace(traces, 7);
+                assertHelper.assertPrestoredTrace(traces, 9);
                 assertHelper.assertContainsError(errors, SeadDataFromTraceHelper.SEAD_DATA_HAS_BEEN_UPDATED_SINCE_LAST_BUGS_IMPORT);
                 break;
         }

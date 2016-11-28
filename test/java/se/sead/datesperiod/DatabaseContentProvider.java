@@ -19,9 +19,12 @@ class DatabaseContentProvider implements DatabaseContentVerification.DatabaseCon
     private RelativeDateRepository relativeDateRepository;
     private Sample defaultSample;
     private DatingUncertainty greaterThanUncertainty;
-    private Method geolPerMethod;
-    private Method archPerMethod;
+    private Method geolPerC14Method;
+    private Method geolPerRadioMethod;
+    private Method archPerCalMethod;
     private RelativeAge existingAge;
+    private RelativeAge calPer;
+    private RelativeAge radio;
 
     public DatabaseContentProvider(
             SampleRepository sampleRepository,
@@ -32,9 +35,12 @@ class DatabaseContentProvider implements DatabaseContentVerification.DatabaseCon
     ){
         defaultSample = sampleRepository.findOne(1);
         greaterThanUncertainty = datingUncertaintyRepository.findOne(1);
-        geolPerMethod = methodRepository.findOne(4);
-        archPerMethod = methodRepository.findOne(3);
+        geolPerC14Method = methodRepository.findOne(4);
+        archPerCalMethod = methodRepository.findOne(3);
+        geolPerRadioMethod = methodRepository.findOne(5);
         existingAge = relativeAgeRepository.findOne(1);
+        calPer = relativeAgeRepository.findOne(2);
+        radio = relativeAgeRepository.findOne(3);
         this.relativeDateRepository = relativeDateRepository;
     }
 
@@ -47,7 +53,7 @@ class DatabaseContentProvider implements DatabaseContentVerification.DatabaseCon
                                 defaultSample,
                                 null,
                                 existingAge,
-                                geolPerMethod,
+                                geolPerC14Method,
                                 "Already stored"
                         ),
                         TestRelativeDate.create(
@@ -55,7 +61,7 @@ class DatabaseContentProvider implements DatabaseContentVerification.DatabaseCon
                                 defaultSample,
                                 null,
                                 existingAge,
-                                geolPerMethod,
+                                geolPerC14Method,
                                 "Update"
                         ),
                         TestRelativeDate.create(
@@ -63,7 +69,7 @@ class DatabaseContentProvider implements DatabaseContentVerification.DatabaseCon
                                 defaultSample,
                                 greaterThanUncertainty,
                                 existingAge,
-                                archPerMethod,
+                                archPerCalMethod,
                                 "Sead changed data after import"
                         ),
                         TestRelativeDate.create(
@@ -79,8 +85,24 @@ class DatabaseContentProvider implements DatabaseContentVerification.DatabaseCon
                                 defaultSample,
                                 null,
                                 existingAge,
-                                geolPerMethod,
+                                geolPerC14Method,
                                 "uncertainty is null, is ok -insert"
+                        ),
+                        TestRelativeDate.create(
+                                null,
+                                defaultSample,
+                                null,
+                                calPer,
+                                archPerCalMethod,
+                                "ArchPer version calendar"
+                        ),
+                        TestRelativeDate.create(
+                                null,
+                                defaultSample,
+                                null,
+                                radio,
+                                geolPerRadioMethod,
+                                "GeolPer version radiometric"
                         )
                 );
     }

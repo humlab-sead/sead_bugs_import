@@ -27,9 +27,11 @@ values (2, 2, 'Depth from datum', 'Depth from datum');
 insert into tbl_method_groups (method_group_id, group_name, description)
 values (3, 'Dating to period', 'Dating to period');
 insert into tbl_methods (method_id, method_group_id, method_name, method_abbrev_or_alt_name)
-values (3, 3, 'ArchPer', 'ArchPer');
+values (3, 3, 'ArchPerCal', 'ArchPerCal');
 insert into tbl_methods (method_id, method_group_id, method_name, method_abbrev_or_alt_name)
-values (4, 3, 'GeolPer', 'GeolPer');
+values (4, 3, 'GeolPerC14', 'GeolPerC14');
+insert into tbl_methods (method_id, method_group_id, method_name, method_abbrev_or_alt_name)
+values (5, 3, 'GeolPerRadio', 'GeolPerRadio');
 
 insert into tbl_dimensions (dimension_id, method_group_id, dimension_name) values (1, 2, 'Upper boundary depth from unknown reference');
 insert into tbl_dimensions (dimension_id, method_group_id, dimension_name) values (2, 2, 'Lower boundary depth from unknown reference');
@@ -51,23 +53,34 @@ insert into tbl_dating_uncertainty (dating_uncertainty_id, uncertainty) values (
 insert into tbl_dating_uncertainty (dating_uncertainty_id, uncertainty) values (2, '?');
 
 insert into tbl_relative_age_types (relative_age_type_id, age_type) values (1, 'Geological');
+insert into tbl_relative_age_types (relative_age_type_id, age_type) values (2, 'Archaeological');
 
 insert into tbl_relative_ages (relative_age_id, relative_age_type_id, relative_age_name, abbreviation, description, c14_age_older, c14_age_younger, location_id)
 values (1, 1, 'A period', 'EXISTING', 'A geographic period', 0, 0, 1);
 insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
-values (4, 'TPeriods', '{}', 'EXISTING', 'tbl_relative_ages', 1);
+values (4, 'TPeriods', '{EXISTING,A Period,Geological,A geographic period,,Country,0,BP,0,BP,C14}', 'EXISTING', 'tbl_relative_ages', 1);
+
+insert into tbl_relative_ages (relative_age_id, relative_age_type_id, relative_age_name, abbreviation, description, cal_age_older, cal_age_younger, location_id)
+values (2, 2, 'Calendar period', 'CALPER', 'A geographic calendar period', 0, 0, 1);
+insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
+values (5, 'TPeriods', '{CALPER,A Period,Geological,A geographic calendar period,,Country,0,AD,0,BC,Calendar}', 'CALPER', 'tbl_relative_ages', 2);
+
+insert into tbl_relative_ages (relative_age_id, relative_age_type_id, relative_age_name, abbreviation, description, c14_age_older, c14_age_younger, location_id)
+values (3, 1, 'A Radiometric Period', 'RADIO', 'A radiometric period', 0, 0, 1);
+insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
+values (6, 'TPeriods', '{RADIO,A Radiometric Period,Geological,A radiometric period,,Country,0,BP,0,BP,Radiometric}', 'RADIO', 'tbl_relative_ages', 3);
 
 insert into tbl_relative_dates (relative_date_id, relative_age_id, physical_sample_id, method_id, dating_uncertainty_id, notes)
     values (1, 1, 1, 4, null, 'Already stored');
 insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
-    values (5, 'TDatesPeriod', '{}', 'PERI000011', 'tbl_relative_dates', 1);
+    values (7, 'TDatesPeriod', '{}', 'PERI000011', 'tbl_relative_dates', 1);
 
 insert into tbl_relative_dates (relative_date_id, relative_age_id, physical_sample_id, method_id, dating_uncertainty_id, notes)
     values (2, 1, 1, 3, null, 'Update this');
 insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
-    values (6, 'TDatesPeriod', '{}', 'PERI000012', 'tbl_relative_dates', 2);
+    values (8, 'TDatesPeriod', '{}', 'PERI000012', 'tbl_relative_dates', 2);
 
 insert into tbl_relative_dates (relative_date_id, relative_age_id, physical_sample_id, method_id, dating_uncertainty_id, notes, date_updated )
     values (3, 1, 1, 3, 1, 'Sead changed data after import', '2016-01-01');
 insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id, change_date)
-    values (7, 'TDatesPeriod', '{}', 'PERI000013', 'tbl_relative_dates', 3, '2015-01-01');
+    values (9, 'TDatesPeriod', '{}', 'PERI000013', 'tbl_relative_dates', 3, '2015-01-01');

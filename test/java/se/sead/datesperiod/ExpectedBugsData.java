@@ -19,7 +19,9 @@ class ExpectedBugsData {
                     create("PERI000009", "SAMP000001", null, "EXISTING", "GeolPer", "uncertainty is null, is ok -insert"),
                     create("PERI000011", "SAMP000001", null, "EXISTING", "GeolPer", "Already stored"),
                     create("PERI000012", "SAMP000001", null, "EXISTING", "GeolPer", "Update"),
-                    create("PERI000013", "SAMP000001", ">", "EXISTING", "GeolPer", "Try update on sead changed data")
+                    create("PERI000013", "SAMP000001", ">", "EXISTING", "GeolPer", "Try update on sead changed data"),
+                    create("PERI000014", "SAMP000001", null, "CALPER", "ArchPer", "ArchPer version calendar"),
+                    create("PERI000015", "SAMP000001", null, "RADIO", "GeolPer", "GeolPer verion radiometric")
             );
 
     private static DatesPeriod create(
