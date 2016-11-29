@@ -21,7 +21,7 @@ class ExpectedBugsData {
                     create("PERI000012", "SAMP000001", null, "EXISTING", "GeolPer", "Update"),
                     create("PERI000013", "SAMP000001", ">", "EXISTING", "GeolPer", "Try update on sead changed data"),
                     create("PERI000014", "SAMP000001", null, "CALPER", "ArchPer", "ArchPer version calendar"),
-                    create("PERI000015", "SAMP000001", null, "RADIO", "GeolPer", "GeolPer verion radiometric")
+                    create("PERI000015", "SAMP000001", null, "RADIO", "GeolPer", "GeolPer version radiometric")
             );
 
     private static DatesPeriod create(
