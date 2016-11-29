@@ -17,7 +17,15 @@ import java.util.List;
 @Component
 public class PeriodTraceHelper extends SeadDataFromTraceHelper<Period, RelativeAge> {
 
-    public static final Period NO_PERIOD_FOUND = new Period();
+    public static final Period NO_PERIOD_FOUND;
+
+    static {
+        NO_PERIOD_FOUND = new Period();
+        NO_PERIOD_FOUND.setPeriodCode("-1");
+        NO_PERIOD_FOUND.setName("Error");
+        NO_PERIOD_FOUND.setDesc("");
+        NO_PERIOD_FOUND.setYearsType("");
+    }
 
     @Autowired
     public PeriodTraceHelper(RelativeAgeRepository repository){
