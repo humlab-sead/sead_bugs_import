@@ -3,8 +3,8 @@ package se.sead.bugsimport.translations.model;
 import javax.persistence.*;
 
 @Entity
-@Table(name="id_based_translation", schema="bugs_import")
-@SequenceGenerator(name = "bugs_id_based_translation_id_seq", sequenceName = "id_based_translation_id_based_translation_id_seq", schema="bugs_import")
+@Table(name="id_based_translations", schema="bugs_import")
+@SequenceGenerator(name = "bugs_id_based_translation_id_seq", sequenceName = "id_based_translations_id_based_translation_id_seq", schema="bugs_import")
 public class IdBasedTranslation {
 
     @Id

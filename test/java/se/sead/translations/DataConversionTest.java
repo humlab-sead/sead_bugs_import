@@ -4,42 +4,34 @@ package se.sead.translations;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 import se.sead.Application;
-import se.sead.DataSourceFactory;
 import se.sead.bugs.TraceableBugsData;
 import se.sead.bugsimport.translations.BugsValueTranslationService;
 import se.sead.bugsimport.translations.model.IdBasedTranslation;
 import se.sead.bugsimport.translations.model.TypeTranslation;
 import se.sead.repositories.IdBasedTranslationRepository;
 import se.sead.repositories.TypeTranslationRepository;
+import se.sead.testutils.NoAccessFileOnlyDataModelConfig;
 
-import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration({Application.class, DataConversionTest.Config.class})
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = {Application.class, DataConversionTest.Config.class})
 @ActiveProfiles("test")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class DataConversionTest {
 
-    @Configuration
-    public static class Config {
-        @Bean
-        public DataSource createDataSource() {
-            return DataSourceFactory.createDefault();
-        }
+    @TestConfiguration
+    public static class Config extends NoAccessFileOnlyDataModelConfig{
     }
 
     @Autowired
