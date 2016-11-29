@@ -11,11 +11,11 @@ insert into tbl_locations (location_id, location_name, location_type_id) values 
 insert into tbl_locations (location_id, location_name, location_type_id) values (2, 'International', 1);
 insert into tbl_locations (location_id, location_name, location_type_id) values (3, 'Sweden', 1);
 insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
-values (8, 'Country', '', 'UK', 'tbl_locations', 1);
+values (8, 'TCountry', '', 'UK', 'tbl_locations', 1);
 insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
-values (10, 'Country', '', 'Swe', 'tbl_locations', 3);
+values (10, 'TCountry', '', 'Swe', 'tbl_locations', 3);
 insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
-values (12, 'Country', '', 'Int', 'tbl_locations', 2);
+values (12, 'TCountry', '', 'Int', 'tbl_locations', 2);
 
 INSERT INTO tbl_rdb_systems (rdb_system_id, biblio_id, location_id, rdb_first_published, rdb_system,rdb_system_date, rdb_version)
   VALUES (1, 1, 1, null, 'UKRDB',null, null);
