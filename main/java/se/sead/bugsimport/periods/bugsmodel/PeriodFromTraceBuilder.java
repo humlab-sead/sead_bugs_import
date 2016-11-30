@@ -40,7 +40,7 @@ public class PeriodFromTraceBuilder {
     }
 
     private Integer convertToInteger(String part) {
-        if(part == null || part.isEmpty()){
+        if(part == null || part.isEmpty() || "null".equals(part)){
             return null;
         } else {
             return Integer.parseInt(part);

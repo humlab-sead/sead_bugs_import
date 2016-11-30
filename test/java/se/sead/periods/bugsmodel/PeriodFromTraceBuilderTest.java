@@ -55,4 +55,25 @@ public class PeriodFromTraceBuilderTest {
         Period periodFromTrace = builder.createPeriodFromTrace();
         assertEquals(period, periodFromTrace);
     }
+
+    @Test
+    public void radionPeriodFromTraceWithNullStart(){
+        Period period = new Period();
+        period.setPeriodCode("Anglian");
+        period.setName("Anglian");
+        period.setType("Geological");
+        period.setDesc("=MIS-12;Cold");
+        period.setRef("Bowen 1999");
+        period.setGeography("UK");
+        period.setBegin(null);
+        period.setBeginBCad("BP");
+        period.setEnd(423000);
+        period.setEndBCad("BP");
+        period.setYearsType("Radiometric");
+        BugsTrace trace = new BugsTrace();
+        trace.setBugsData(period);
+        PeriodFromTraceBuilder builder = new PeriodFromTraceBuilder(trace);
+        Period periodFromTrace = builder.createPeriodFromTrace();
+        assertEquals(period, periodFromTrace);
+    }
 }
