@@ -1,5 +1,5 @@
 insert into tbl_location_types (location_type_id, location_type) values (1, 'Country');
-insert into tbl_locations (location_id, location_name, location_type_id) values (1, 'United kingdom', 1);
+insert into tbl_locations (location_id, location_name, location_type_id) values (1, 'United Kingdom', 1);
 insert into tbl_locations (location_id, location_name, location_type_id) values (2, 'Sweden', 1);
 insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
 values (1, 'Country', '', 'UK', 'tbl_locations', 1);

@@ -19,7 +19,7 @@ public class Rdb extends LoggableEntity{
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "rdb_code_id")
     private RdbCode rdbCode;
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne
     @JoinColumn(name = "location_id")
     private Location country;
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
