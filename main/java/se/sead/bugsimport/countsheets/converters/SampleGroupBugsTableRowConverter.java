@@ -9,7 +9,6 @@ import se.sead.bugsimport.site.helper.SiteFromCodeDisallowDeletedSite;
 import se.sead.bugsimport.site.seadmodel.SeadSite;
 import se.sead.repositories.SampleGroupRepository;
 import se.sead.repositories.SamplingContextRepository;
-import se.sead.sead.methods.MethodManager;
 import se.sead.sead.model.SamplingContext;
 
 import java.util.List;

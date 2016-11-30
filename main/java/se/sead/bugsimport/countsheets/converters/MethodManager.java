@@ -1,10 +1,12 @@
-package se.sead.sead.methods;
+package se.sead.bugsimport.countsheets.converters;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import se.sead.repositories.MethodGroupRepository;
 import se.sead.repositories.MethodRepository;
+import se.sead.sead.methods.Method;
+import se.sead.sead.methods.MethodGroup;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,24 +24,17 @@ public class MethodManager {
     @Autowired
     private MethodGroupRepository methodGroupRepository;
 
-    private Map<String, Method> methodCache;
-
-    public MethodManager(){
-        methodCache = new HashMap<>();
-    }
+    private Method samplingMethod;
 
     public Method getSamplingMethodName(){
-        Method importSamplingMethod = methodCache.get(samplingMethodName);
-        if(importSamplingMethod == null) {
+        if(samplingMethod == null) {
             MethodGroup group = methodGroupRepository.findByName(samplingMethodGroup);
-            importSamplingMethod = methodRepository.getByNameAndGroup(samplingMethodName, group);
-            if (importSamplingMethod == null) {
+            samplingMethod = methodRepository.getByNameAndGroup(samplingMethodName, group);
+            if (samplingMethod == null) {
                 throw new IllegalStateException("No sampling method found with name: " + samplingMethodName);
-            } else {
-                methodCache.put(samplingMethodName, importSamplingMethod);
             }
         }
-        return importSamplingMethod;
+        return samplingMethod;
     }
 
 }
