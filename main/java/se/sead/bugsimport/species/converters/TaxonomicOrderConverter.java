@@ -9,9 +9,6 @@ import se.sead.utils.BigDecimalDefinition;
 
 import java.math.BigDecimal;
 
-/**
- * Created by erer0001 on 2016-04-27.
- */
 @Component
 public class TaxonomicOrderConverter {
 

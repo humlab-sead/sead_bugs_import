@@ -7,6 +7,7 @@ import se.sead.bugsimport.species.seadmodel.TaxonomicOrderSystem;
 import se.sead.utils.BigDecimalDefinition;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * Created by erer0001 on 2016-04-22.
@@ -32,4 +33,6 @@ public interface TaxonomicOrderRepository extends CreateAndReadRepository<Taxono
         }
         return findBugsSpeciesByCode(BigDecimalDefinition.convertToSeadCode(bugsCode));
     }
+
+    List<TaxonomicOrder> findAll();
 }

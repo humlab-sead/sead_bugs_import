@@ -79,16 +79,21 @@ public class TaxaSpecies extends LoggableEntity {
 
     @Override
     public String toString() {
+        String species = "";
+        TaxaGenus genus = getGenus();
+        if(genus != null){
+            TaxaFamily family = genus.getTaxaFamily();
+            if (family != null) {
+                species = family.getFamilyName();
+            }
+            species += " " + genus.getGenusName();
+        }
+        species += " " + speciesName;
         return
                 "Species{" +
                         (getId() != null ? getId() : "") +
                         "," +
-                        getGenus().getTaxaFamily().getFamilyName() +
-                        " " +
-                        getGenus().getGenusName() +
-                        " " +
-                        speciesName +
-                        " " +
+                        species + " " +
                         (getTaxaAuthor() != null ? getTaxaAuthor().getAuthorName() : "") +
                         "}";
     }

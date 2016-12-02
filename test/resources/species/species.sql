@@ -1,17 +1,11 @@
-insert into tbl_taxa_tree_authors (author_id, author_name) values (1, 'L.');
-insert into tbl_taxa_tree_authors (author_id, author_name) values (2, 'Dej.');
-insert into tbl_taxa_tree_orders (order_id, order_name) values(1, 'ORDER PENDING CLASSIFICATION');
-insert into tbl_taxa_tree_families (family_id, family_name, order_id) values (1, 'CARABIDAE', 1);
-insert into tbl_taxa_tree_genera (genus_id, genus_name, family_id) values (1, 'Carabidae', 1);
-insert into tbl_taxa_tree_genera (genus_id, genus_name, family_id) values (2, 'Cicindela', 1);
-insert into tbl_taxa_tree_master (taxon_id, species, genus_id) values (1, 'indet.', 1);
-insert into tbl_taxa_tree_master (taxon_id, species, genus_id, author_id) values (2, 'sylvatica', 2, 1);
-insert into tbl_taxa_tree_master (taxon_id, species, genus_id, author_id) values (3, 'hybrida', 2, 1);
-insert into tbl_taxa_tree_master (taxon_id, species, genus_id, author_id) values (4, 'maritima', 2, 2);
-insert into tbl_taxa_tree_master (taxon_id, species, genus_id, author_id) values (5, 'sp.', 2, null);
 insert into tbl_taxonomic_order_systems (taxonomic_order_system_id, system_name) values (1, 'BugsCEP taxonomic order');
-insert into tbl_taxonomic_order (taxonomic_order_id, taxon_id, taxonomic_code, taxonomic_order_system_id) values (1, 1, 1.0010001, 1);
-insert into tbl_taxonomic_order (taxonomic_order_id, taxon_id, taxonomic_code, taxonomic_order_system_id) values (2, 2, 1.0010020, 1);
-insert into tbl_taxonomic_order (taxonomic_order_id, taxon_id, taxonomic_code, taxonomic_order_system_id) values (3, 3, 1.0010050, 1);
-insert into tbl_taxonomic_order (taxonomic_order_id, taxon_id, taxonomic_code, taxonomic_order_system_id) values (4, 4, 1.0010060, 1);
-insert into tbl_taxonomic_order (taxonomic_order_id, taxon_id, taxonomic_code, taxonomic_order_system_id) values (5, 5, 1.0010122, 1);
+insert into tbl_taxa_tree_orders (order_id, order_name) values(1, 'ORDER PENDING CLASSIFICATION');
+insert into tbl_taxa_tree_authors (author_id, author_name) values (1, 'Author');
+
+insert into tbl_taxa_tree_families (family_id, family_name, order_id) values (1, 'Family', 1);
+insert into tbl_taxa_tree_genera (genus_id, genus_name, family_id) values (1, 'Genus', 1);
+insert into tbl_taxa_tree_master (taxon_id, species, genus_id) values (1, 'indet.', 1);
+insert into tbl_taxonomic_order (taxonomic_order_id, taxon_id, taxonomic_code, taxonomic_order_system_id) values (1, 1, 1.0, 1);
+
+insert into tbl_taxa_tree_master (taxon_id, species, genus_id) values (2, 'createTaxonomicOrder', 1);
+insert into tbl_taxa_tree_master (taxon_id, species, genus_id, author_id) values (3, 'createTaxonomicOrder', 1, 1);

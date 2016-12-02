@@ -8,10 +8,8 @@ import se.sead.bugsimport.species.converters.TaxaSpeciesConverter;
 import se.sead.bugsimport.species.converters.TaxonomicOrderConverter;
 import se.sead.bugsimport.species.seadmodel.TaxaSpecies;
 import se.sead.bugsimport.species.seadmodel.TaxonomicOrder;
+import se.sead.utils.ErrorCopier;
 
-/**
- * Created by erer0001 on 2016-04-27.
- */
 @Component
 public class INDEXtoTaxonomicOrderRowConverter implements BugsTableRowConverter<INDEX, TaxonomicOrder> {
 
@@ -40,5 +38,6 @@ public class INDEXtoTaxonomicOrderRowConverter implements BugsTableRowConverter<
     private void addSpecies(TaxonomicOrder taxonomicOrder, INDEX bugsData) {
         TaxaSpecies species = taxaConverter.convertToSeadType(bugsData);
         taxonomicOrder.setSpecies(species);
+        ErrorCopier.copyPotentialErrors(taxonomicOrder, species);
     }
 }

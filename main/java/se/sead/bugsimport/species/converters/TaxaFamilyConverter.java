@@ -20,11 +20,20 @@ public class TaxaFamilyConverter {
     }
 
     public TaxaFamily convertToSeadType(String bugsData) {
+        if(bugsData == null || bugsData.isEmpty()){
+            return createErrorFamily();
+        }
         TaxaFamily bugsFamily = familyRepository.findByFamilyNameAndOrderId(bugsData, taxaOrderCarrier.getDefaultTaxaOrder());
         if(bugsFamily == null){
             return createFamily(bugsData);
         }
         return bugsFamily;
+    }
+
+    private TaxaFamily createErrorFamily(){
+        TaxaFamily error = new TaxaFamily();
+        error.addError("No family specified");
+        return error;
     }
 
     private TaxaFamily createFamily(String bugsData) {
