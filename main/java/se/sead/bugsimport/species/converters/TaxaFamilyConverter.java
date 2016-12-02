@@ -23,7 +23,7 @@ public class TaxaFamilyConverter {
         if(bugsData == null || bugsData.isEmpty()){
             return createErrorFamily();
         }
-        TaxaFamily bugsFamily = familyRepository.findByFamilyNameAndOrderId(bugsData, taxaOrderCarrier.getDefaultTaxaOrder());
+        TaxaFamily bugsFamily = familyRepository.findByFamilyNameAndOrder(bugsData, taxaOrderCarrier.getDefaultTaxaOrder());
         if(bugsFamily == null){
             return createFamily(bugsData);
         }
@@ -39,7 +39,7 @@ public class TaxaFamilyConverter {
     private TaxaFamily createFamily(String bugsData) {
         TaxaFamily family = new TaxaFamily();
         family.setFamilyName(bugsData);
-        family.setOrderId(taxaOrderCarrier.getDefaultTaxaOrder());
+        family.setOrder(taxaOrderCarrier.getDefaultTaxaOrder());
         return family;
     }
 

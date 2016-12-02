@@ -24,4 +24,10 @@ public abstract class TraceableBugsData {
         }
         return compressedStringBeforeTranslation;
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() +
+                compressToString();
+    }
 }

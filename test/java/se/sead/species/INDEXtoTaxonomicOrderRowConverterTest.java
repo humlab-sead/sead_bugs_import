@@ -114,7 +114,7 @@ public class INDEXtoTaxonomicOrderRowConverterTest {
         assertNewObject(taxonomicOrder);
         assertNewObject(taxonomicOrder.getSpecies());
         assertNewObject(taxonomicOrder.getSpecies().getGenus());
-        assertExistingObject(taxonomicOrder.getSpecies().getGenus().getTaxaFamily(), 1);
+        assertExistingObject(taxonomicOrder.getSpecies().getGenus().getFamily(), 1);
     }
 
     @Test
@@ -125,6 +125,15 @@ public class INDEXtoTaxonomicOrderRowConverterTest {
         assertNewObject(taxonomicOrder);
         assertNewObject(taxonomicOrder.getSpecies());
         assertNewObject(taxonomicOrder.getSpecies().getGenus());
-        assertNewObject(taxonomicOrder.getSpecies().getGenus().getTaxaFamily());
+        assertNewObject(taxonomicOrder.getSpecies().getGenus().getFamily());
+    }
+
+    @Test
+    public void createTaxonomicOrderFromNoDataINDEX(){
+        INDEX rowData = createRowData(9999d, "None", "No data", "No data");
+        TaxonomicOrder taxonomicOrder = rowConverter.convertForDataRow(rowData);
+        assertEquals(BigDecimalDefinition.convertToSeadCode(9999d), taxonomicOrder.getCode());
+        assertNewObject(taxonomicOrder);
+        assertExistingObject(taxonomicOrder.getSpecies(), 4);
     }
 }

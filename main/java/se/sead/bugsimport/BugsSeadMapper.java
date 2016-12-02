@@ -38,9 +38,14 @@ public abstract class BugsSeadMapper<BugsType extends TraceableBugsData, SeadTyp
         for (BugsType readItem :
                 readItems) {
             if(logger.isDebugEnabled()){
-                logger.debug("mapping row item: ", readItem);
+                logger.debug("mapping row item: {}", readItem);
             }
-            resultContainer.add(readItem, getConvertedValue(readItem));
+            try {
+                resultContainer.add(readItem, getConvertedValue(readItem));
+            } catch (Throwable t){
+                logger.error("Throwing error for : {}", readItem);
+                throw t;
+            }
         }
         return resultContainer;
     }

@@ -3,7 +3,6 @@ package se.sead.bugsimport.species.converters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import se.sead.bugsimport.species.bugsmodel.INDEX;
-import se.sead.bugsimport.species.seadmodel.TaxaFamily;
 import se.sead.bugsimport.species.seadmodel.TaxaGenus;
 import se.sead.bugsimport.species.seadmodel.TaxaSpecies;
 import se.sead.repositories.SpeciesRepository;
@@ -18,12 +17,16 @@ public class TaxaSpeciesConverter {
     private TaxaGenusConverter genusConverter;
     @Autowired
     private TaxaAuthorConverter authorConverter;
+    @Autowired
+    private NoDataSpeciesConverter noDataSpeciesConverter;
 
     public TaxaSpecies convertToSeadType(INDEX bugsData) {
         if(bugsData.getSpecies() == null || bugsData.getSpecies().isEmpty()){
             return createErrorSpecies();
+        } else if(noDataSpeciesConverter.isNoDataSpecies(bugsData)){
+            return noDataSpeciesConverter.getNoDataSpecies();
         }
-        TaxaSpecies foundSpecies = speciesRepository.findBySpeciesNameAndGenusGenusNameAndTaxaAuthorAuthorName(bugsData.getSpecies(), bugsData.getGenus(), bugsData.getAuthority());
+        TaxaSpecies foundSpecies = speciesRepository.findBySpeciesNameAndGenusGenusNameAndAuthorAuthorName(bugsData.getSpecies(), bugsData.getGenus(), bugsData.getAuthority());
         if(foundSpecies == null){
             return createSpecies(bugsData);
         }
@@ -41,7 +44,7 @@ public class TaxaSpeciesConverter {
         TaxaSpecies species = new TaxaSpecies();
         species.setSpeciesName(bugsData.getSpecies());
         species.setGenus(taxaGenus);
-        species.setTaxaAuthor(authorConverter.convertToSeadType(bugsData.getAuthority()));
+        species.setAuthor(authorConverter.convertToSeadType(bugsData.getAuthority()));
         ErrorCopier.copyPotentialErrors(species, taxaGenus);
         return species;
     }

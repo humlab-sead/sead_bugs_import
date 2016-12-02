@@ -79,7 +79,7 @@ public class SynonymPersister extends Persister<Synonym, SpeciesAssociation> {
                     return persistedSpecies.get(key);
                 } else {
                     species.setGenus(genusPersister.save(species.getGenus()));
-                    species.setTaxaAuthor(authorPersister.save(species.getTaxaAuthor()));
+                    species.setAuthor(authorPersister.save(species.getAuthor()));
                     TaxaSpecies savedSpecies = speciesRepository.saveOrUpdate(species);
                     persistedSpecies.put(key, savedSpecies);
                     return savedSpecies;
@@ -90,7 +90,7 @@ public class SynonymPersister extends Persister<Synonym, SpeciesAssociation> {
         private String createKey(TaxaSpecies species){
             return species.getSpeciesName() +
                     species.getGenus().getGenusName() +
-                    (species.getTaxaAuthor() != null ? species.getTaxaAuthor().getAuthorName() : "");
+                    (species.getAuthor() != null ? species.getAuthor().getAuthorName() : "");
         }
     }
 
@@ -124,7 +124,7 @@ public class SynonymPersister extends Persister<Synonym, SpeciesAssociation> {
         }
 
         private String createKey(TaxaGenus genus){
-            return genus.getTaxaFamily().getFamilyName() +
+            return genus.getFamily().getFamilyName() +
                     genus.getGenusName();
         }
     }

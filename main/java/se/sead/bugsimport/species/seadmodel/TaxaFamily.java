@@ -17,7 +17,7 @@ public class TaxaFamily extends LoggableEntity {
     private String familyName;
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name="order_id")
-    private TaxaOrder orderId;
+    private TaxaOrder order;
 
     public TaxaFamily(){}
 
@@ -37,12 +37,12 @@ public class TaxaFamily extends LoggableEntity {
         this.familyName = familyName;
     }
 
-    public TaxaOrder getOrderId() {
-        return orderId;
+    public TaxaOrder getOrder() {
+        return order;
     }
 
-    public void setOrderId(TaxaOrder orderId) {
-        this.orderId = orderId;
+    public void setOrder(TaxaOrder order) {
+        this.order = order;
     }
 
     @Override
@@ -54,7 +54,7 @@ public class TaxaFamily extends LoggableEntity {
 
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
         if (!familyName.equals(that.familyName)) return false;
-        return orderId.equals(that.orderId);
+        return order.equals(that.order);
 
     }
 
@@ -62,7 +62,7 @@ public class TaxaFamily extends LoggableEntity {
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + familyName.hashCode();
-        result = 31 * result + orderId.hashCode();
+        result = 31 * result + order.hashCode();
         return result;
     }
 }

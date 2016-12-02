@@ -106,7 +106,7 @@ public class DatabaseContentProvider implements DatabaseContentVerification.Data
                                 TestTaxaGenus.create(
                                         null,
                                         "Syn genus 2",
-                                        code03.getGenus().getTaxaFamily()
+                                        code03.getGenus().getFamily()
                                 ),
                                 synAuthor
                         ),

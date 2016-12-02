@@ -9,3 +9,7 @@ insert into tbl_taxonomic_order (taxonomic_order_id, taxon_id, taxonomic_code, t
 
 insert into tbl_taxa_tree_master (taxon_id, species, genus_id) values (2, 'createTaxonomicOrder', 1);
 insert into tbl_taxa_tree_master (taxon_id, species, genus_id, author_id) values (3, 'createTaxonomicOrder', 1, 1);
+
+insert into tbl_taxa_tree_families (family_id, family_name, order_id) values (2, 'No data', 1);
+insert into tbl_taxa_tree_genera (genus_id, genus_name, family_id) values (2, 'No data', 2);
+insert into tbl_taxa_tree_master (taxon_id, species, genus_id) values (4, 'No data', 2);

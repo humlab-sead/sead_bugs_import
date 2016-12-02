@@ -101,4 +101,15 @@ public class INDEX extends TraceableBugsData {
     public String getBugsIdentifier() {
         return code.toString();
     }
+
+    @Override
+    public String toString() {
+        return "INDEX{" +
+                "code=" + code +
+                ", family='" + family + '\'' +
+                ", genus='" + genus + '\'' +
+                ", species='" + species + '\'' +
+                ", authority='" + authority + '\'' +
+                '}';
+    }
 }

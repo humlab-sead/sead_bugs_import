@@ -8,9 +8,6 @@ import se.sead.bugsimport.species.seadmodel.TaxaGenus;
 import se.sead.repositories.TaxaGenusRepository;
 import se.sead.utils.ErrorCopier;
 
-/**
- * Created by erer0001 on 2016-04-27.
- */
 @Component
 public class TaxaGenusConverter{
 
@@ -40,7 +37,7 @@ public class TaxaGenusConverter{
         if(family.isNewItem() || !family.isErrorFree()){
             return null;
         }
-        return genusRepository.findByGenusNameAndTaxaFamily(bugsData.getGenus(), family);
+        return genusRepository.findByGenusNameAndFamily(bugsData.getGenus(), family);
     }
 
     private boolean isNewFamily(TaxaFamily family) {
@@ -50,7 +47,7 @@ public class TaxaGenusConverter{
     private TaxaGenus createGenus(INDEX bugsData, TaxaFamily family) {
         TaxaGenus genus = new TaxaGenus();
         genus.setGenusName(bugsData.getGenus());
-        genus.setTaxaFamily(family);
+        genus.setFamily(family);
         return genus;
     }
 }

@@ -17,7 +17,7 @@ public class TaxaGenus extends LoggableEntity {
     private String genusName;
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name="family_id")
-    private TaxaFamily taxaFamily;
+    private TaxaFamily family;
 
     public Integer getId() {
         return id;
@@ -34,12 +34,12 @@ public class TaxaGenus extends LoggableEntity {
         this.genusName = genusName;
     }
 
-    public TaxaFamily getTaxaFamily() {
-        return taxaFamily;
+    public TaxaFamily getFamily() {
+        return family;
     }
 
-    public void setTaxaFamily(TaxaFamily taxaFamily) {
-        this.taxaFamily = taxaFamily;
+    public void setFamily(TaxaFamily family) {
+        this.family = family;
     }
 
     @Override
@@ -51,7 +51,7 @@ public class TaxaGenus extends LoggableEntity {
 
         if (id != null ? !id.equals(taxaGenus.id) : taxaGenus.id != null) return false;
         if (!genusName.equals(taxaGenus.genusName)) return false;
-        return taxaFamily.equals(taxaGenus.taxaFamily);
+        return family.equals(taxaGenus.family);
 
     }
 
@@ -59,7 +59,7 @@ public class TaxaGenus extends LoggableEntity {
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + genusName.hashCode();
-        result = 31 * result + taxaFamily.hashCode();
+        result = 31 * result + family.hashCode();
         return result;
     }
 }

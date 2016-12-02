@@ -111,6 +111,12 @@ class DatabaseContentProvider implements DatabaseContentVerification.DatabaseCon
                         ),
                         BigDecimalDefinition.convertToSeadCode(9d),
                         bugsSystem
+                ),
+                TestTaxonomyOrder.create(
+                        null,
+                        speciesRepository.findOne(4),
+                        BigDecimalDefinition.convertToSeadCode(9999d),
+                        bugsSystem
                 )
         );
     }

@@ -17,7 +17,7 @@ public class TestTaxaSpecies extends TaxaSpecies {
         TestTaxaSpecies species = new TestTaxaSpecies(testId);
         species.setSpeciesName(speciesName);
         species.setGenus(testGenus);
-        species.setTaxaAuthor(author);
+        species.setAuthor(author);
         return species;
     }
 }

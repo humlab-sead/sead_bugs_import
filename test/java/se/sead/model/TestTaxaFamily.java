@@ -15,7 +15,7 @@ public class TestTaxaFamily extends TaxaFamily{
     public static TestTaxaFamily create(Integer testId, String familyName, TaxaOrder order){
         TestTaxaFamily testTaxaFamily = new TestTaxaFamily(testId);
         testTaxaFamily.setFamilyName(familyName);
-        testTaxaFamily.setOrderId(order);
+        testTaxaFamily.setOrder(order);
         return testTaxaFamily;
     }
 }

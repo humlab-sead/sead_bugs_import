@@ -15,7 +15,7 @@ public class TestTaxaGenus extends TaxaGenus{
     public static TestTaxaGenus create(Integer testId, String genusName, TaxaFamily family){
         TestTaxaGenus testTaxaGenus = new TestTaxaGenus(testId);
         testTaxaGenus.setGenusName(genusName);
-        testTaxaGenus.setTaxaFamily(family);
+        testTaxaGenus.setFamily(family);
         return testTaxaGenus;
     }
 }

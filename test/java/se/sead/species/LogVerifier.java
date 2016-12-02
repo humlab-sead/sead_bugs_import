@@ -32,6 +32,7 @@ class LogVerifier implements BugsTracesAndErrorsVerification.LogVerificationCall
                 break;
             case "2.0":
             case "3.0":
+            case "9999":
                 taxonomicOrderAssertHelper.assertSize(traces,1);
                 taxonomicOrderAssertHelper.assertInserts(traces, 1);
                 speciesAssertHelper.assertInserts(traces, 0);

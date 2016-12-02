@@ -57,7 +57,7 @@ public class SynonymSpeciesManager {
             if(synonym.getSynGenus() == null){
                 return NO_GENUS_SPECIFIED;
             }
-            return genusManager.getOrCreateGenus(targetSpecies.getGenus().getTaxaFamily(), synonym.getSynGenus());
+            return genusManager.getOrCreateGenus(targetSpecies.getGenus().getFamily(), synonym.getSynGenus());
         }
 
         private TaxaSpecies getOrCreateFromSynonymGenus(TaxaGenus synonymGenus){
@@ -97,7 +97,7 @@ public class SynonymSpeciesManager {
         }
 
         private TaxaGenus getOrCreate(TaxaFamily targetFamily, String genusName){
-            TaxaGenus synonymGenus = genusRepository.findByGenusNameAndTaxaFamily(genusName, targetFamily);
+            TaxaGenus synonymGenus = genusRepository.findByGenusNameAndFamily(genusName, targetFamily);
             if(synonymGenus == null){
                 return createGenus(genusName, targetFamily);
             } else {
@@ -108,7 +108,7 @@ public class SynonymSpeciesManager {
         private TaxaGenus createGenus(String synonymName, TaxaFamily targetFamily){
             TaxaGenus synonymGenus = new TaxaGenus();
             synonymGenus.setGenusName(synonymName);
-            synonymGenus.setTaxaFamily(targetFamily);
+            synonymGenus.setFamily(targetFamily);
             return synonymGenus;
         }
     }
@@ -144,8 +144,8 @@ public class SynonymSpeciesManager {
 
         private TaxaSpecies getOrCreate(TaxaGenus synonymGenus, Synonym synonym, TaxaSpecies targetSpecies){
             String name = synonym.getSynSpecies() != null ? synonym.getSynSpecies() : targetSpecies.getSpeciesName();
-            String authorName = targetSpecies.getTaxaAuthor() != null ? targetSpecies.getTaxaAuthor().getAuthorName() : null;
-            TaxaSpecies found = speciesRepository.findBySpeciesNameAndGenusGenusNameAndTaxaAuthorAuthorName(name, synonymGenus.getGenusName(), authorName);
+            String authorName = targetSpecies.getAuthor() != null ? targetSpecies.getAuthor().getAuthorName() : null;
+            TaxaSpecies found = speciesRepository.findBySpeciesNameAndGenusGenusNameAndAuthorAuthorName(name, synonymGenus.getGenusName(), authorName);
             if(found == null || !authorityManager.authorityMatches(found, targetSpecies)){
                 return createBaseSynonymSpecies(synonymGenus, synonym, targetSpecies);
             } else {
@@ -178,7 +178,7 @@ public class SynonymSpeciesManager {
         }
 
         boolean authorityMatches(TaxaSpecies dbBackedSynonym, TaxaSpecies targetSpecies){
-            return Objects.equals(dbBackedSynonym.getTaxaAuthor(), targetSpecies.getTaxaAuthor());
+            return Objects.equals(dbBackedSynonym.getAuthor(), targetSpecies.getAuthor());
         }
 
         void update(TaxaSpecies synonymSpecies, Synonym synonym){
@@ -191,7 +191,7 @@ public class SynonymSpeciesManager {
                 cachedAuthor = getOrCreate(synonym);
                 cache.put(key, cachedAuthor);
             }
-            synonymSpecies.setTaxaAuthor(cachedAuthor);
+            synonymSpecies.setAuthor(cachedAuthor);
         }
 
         private String createKey(Synonym synonym) {

@@ -20,7 +20,7 @@ public class TaxaSpecies extends LoggableEntity {
     private TaxaGenus genus;
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "author_id")
-    private TaxaAuthor taxaAuthor;
+    private TaxaAuthor author;
 
     public Integer getId() {
         return id;
@@ -46,12 +46,12 @@ public class TaxaSpecies extends LoggableEntity {
         this.genus = genus;
     }
 
-    public TaxaAuthor getTaxaAuthor() {
-        return taxaAuthor;
+    public TaxaAuthor getAuthor() {
+        return author;
     }
 
-    public void setTaxaAuthor(TaxaAuthor taxaAuthor) {
-        this.taxaAuthor = taxaAuthor;
+    public void setAuthor(TaxaAuthor author) {
+        this.author = author;
     }
 
     @Override
@@ -64,7 +64,7 @@ public class TaxaSpecies extends LoggableEntity {
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
         if (!speciesName.equals(that.speciesName)) return false;
         if (!genus.equals(that.genus)) return false;
-        return taxaAuthor != null ? taxaAuthor.equals(that.taxaAuthor) : that.taxaAuthor == null;
+        return author != null ? author.equals(that.author) : that.author == null;
 
     }
 
@@ -73,7 +73,7 @@ public class TaxaSpecies extends LoggableEntity {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + speciesName.hashCode();
         result = 31 * result + genus.hashCode();
-        result = 31 * result + (taxaAuthor != null ? taxaAuthor.hashCode() : 0);
+        result = 31 * result + (author != null ? author.hashCode() : 0);
         return result;
     }
 
@@ -82,7 +82,7 @@ public class TaxaSpecies extends LoggableEntity {
         String species = "";
         TaxaGenus genus = getGenus();
         if(genus != null){
-            TaxaFamily family = genus.getTaxaFamily();
+            TaxaFamily family = genus.getFamily();
             if (family != null) {
                 species = family.getFamilyName();
             }
@@ -94,7 +94,7 @@ public class TaxaSpecies extends LoggableEntity {
                         (getId() != null ? getId() : "") +
                         "," +
                         species + " " +
-                        (getTaxaAuthor() != null ? getTaxaAuthor().getAuthorName() : "") +
+                        (getAuthor() != null ? getAuthor().getAuthorName() : "") +
                         "}";
     }
 }
