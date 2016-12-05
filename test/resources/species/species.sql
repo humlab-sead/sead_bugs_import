@@ -1,5 +1,6 @@
 insert into tbl_taxonomic_order_systems (taxonomic_order_system_id, system_name) values (1, 'BugsCEP taxonomic order');
 insert into tbl_taxa_tree_orders (order_id, order_name) values(1, 'ORDER PENDING CLASSIFICATION');
+insert into tbl_taxa_tree_orders (order_id, order_name) values(2, 'Other Order');
 insert into tbl_taxa_tree_authors (author_id, author_name) values (1, 'Author');
 
 insert into tbl_taxa_tree_families (family_id, family_name, order_id) values (1, 'Family', 1);
@@ -13,3 +14,7 @@ insert into tbl_taxa_tree_master (taxon_id, species, genus_id, author_id) values
 insert into tbl_taxa_tree_families (family_id, family_name, order_id) values (2, 'No data', 1);
 insert into tbl_taxa_tree_genera (genus_id, genus_name, family_id) values (2, 'No data', 2);
 insert into tbl_taxa_tree_master (taxon_id, species, genus_id) values (4, 'No data', 2);
+
+insert into tbl_taxa_tree_families (family_id, family_name, order_id) values (3, 'No data', 2);
+insert into tbl_taxa_tree_genera (genus_id, genus_name, family_id) values (3, 'No data', 3);
+insert into tbl_taxa_tree_master (taxon_id, species, genus_id) values (5, 'No data', 3);

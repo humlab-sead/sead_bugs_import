@@ -130,9 +130,9 @@ public class INDEXtoTaxonomicOrderRowConverterTest {
 
     @Test
     public void createTaxonomicOrderFromNoDataINDEX(){
-        INDEX rowData = createRowData(9999d, "None", "No data", "No data");
+        INDEX rowData = createRowData(9999.0000001d, "None", "No data", "No data");
         TaxonomicOrder taxonomicOrder = rowConverter.convertForDataRow(rowData);
-        assertEquals(BigDecimalDefinition.convertToSeadCode(9999d), taxonomicOrder.getCode());
+        assertEquals(BigDecimalDefinition.convertToSeadCode(9999.0000001d), taxonomicOrder.getCode());
         assertNewObject(taxonomicOrder);
         assertExistingObject(taxonomicOrder.getSpecies(), 4);
     }

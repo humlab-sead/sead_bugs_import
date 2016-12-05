@@ -115,7 +115,7 @@ class DatabaseContentProvider implements DatabaseContentVerification.DatabaseCon
                 TestTaxonomyOrder.create(
                         null,
                         speciesRepository.findOne(4),
-                        BigDecimalDefinition.convertToSeadCode(9999d),
+                        BigDecimalDefinition.convertToSeadCode(9999.0000001d),
                         bugsSystem
                 )
         );

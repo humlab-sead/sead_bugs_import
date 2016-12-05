@@ -1,6 +1,8 @@
 package se.sead.bugsimport.species.converters;
 
+import com.sun.org.apache.xerces.internal.impl.dv.dtd.NOTATIONDatatypeValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import se.sead.bugsimport.species.bugsmodel.INDEX;
 import se.sead.bugsimport.species.seadmodel.TaxaSpecies;
@@ -9,7 +11,8 @@ import se.sead.repositories.SpeciesRepository;
 @Component
 public class NoDataSpeciesConverter {
 
-    private static final Double NO_DATA_CODE = new Double(9999d);
+    @Value("${no.data.code:9999.0000001}")
+    private Double NO_DATA_CODE;
 
     @Autowired
     private SpeciesRepository repository;
