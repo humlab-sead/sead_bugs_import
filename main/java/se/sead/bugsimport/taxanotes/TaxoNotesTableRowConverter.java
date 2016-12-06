@@ -74,20 +74,27 @@ public class TaxoNotesTableRowConverter implements BugsTableRowConverter<TaxoNot
         }
 
         private void setSpecies() {
-            if(species == null){
-                seadVersion.addError("No species found for taxanote: " + bugsData.getCode());
+            if(bugsData.getCode() == null){
+                seadVersion.addError("No species provided");
+            } else if(species == null){
+                seadVersion.addError("Species does not exist");
             }
             seadVersion.setSpecies(species);
         }
 
         private void setReference() {
-            if(reference == null){
-                seadVersion.addError("No biblio item from reference: " + bugsData.getReference());
+            if(bugsData.getReference() == null || bugsData.getReference().isEmpty()){
+                seadVersion.addError("No reference provided");
+            } else if(reference == null){
+                seadVersion.addError("Reference does not exist");
             }
             seadVersion.setReference(reference);
         }
 
         private void setNote() {
+            if(bugsData.getData() == null || bugsData.getData().isEmpty()){
+                seadVersion.addError("No note provided");
+            }
             seadVersion.setNotes(bugsData.getData());
         }
     }

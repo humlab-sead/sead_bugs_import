@@ -56,15 +56,14 @@ public class TaxoNotes extends TraceableBugsData {
 
         TaxoNotes taxoNotes = (TaxoNotes) o;
 
-        if (!code.equals(taxoNotes.code)) return false;
+        if (code != null ? !code.equals(taxoNotes.code) : taxoNotes.code != null) return false;
         if (reference != null ? !reference.equals(taxoNotes.reference) : taxoNotes.reference != null) return false;
         return data != null ? data.equals(taxoNotes.data) : taxoNotes.data == null;
-
     }
 
     @Override
     public int hashCode() {
-        int result = code.hashCode();
+        int result = code != null ? code.hashCode() : 0;
         result = 31 * result + (reference != null ? reference.hashCode() : 0);
         result = 31 * result + (data != null ? data.hashCode() : 0);
         return result;

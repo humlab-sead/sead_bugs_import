@@ -11,4 +11,6 @@ public interface TaxonomicNotesRepository extends CreateAndReadRepository<Taxono
     TaxonomicNotes findByNotesAndSpeciesAndReference(String note, TaxaSpecies species, Biblio reference);
 
     List<TaxonomicNotes> findBySpecies(TaxaSpecies species);
+
+    List<TaxonomicNotes> findAll();
 }
