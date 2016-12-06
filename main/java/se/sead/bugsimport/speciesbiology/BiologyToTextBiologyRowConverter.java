@@ -75,27 +75,27 @@ public class BiologyToTextBiologyRowConverter implements BugsTableRowConverter<B
             if(bugsText != null && !bugsText.isEmpty()){
                 createdBiology.setText(bugsText);
             } else {
-                createdBiology.addError("No text provided for code: " + getBugsCode());
+                createdBiology.addError("No data provided");
             }
-        }
-
-        private Double getBugsCode(){
-            return bugsData.getCode();
         }
 
         private void setSpecies(){
             if(species != null){
                 createdBiology.setSpecies(species);
+            } else if(bugsData.getCode() != null){
+                createdBiology.addError("Species does not exist");
             } else {
-                createdBiology.addError("No species found for code: " + getBugsCode());
+                createdBiology.addError("No species provided");
             }
         }
 
         private void setReference(){
             if(reference != null){
                 createdBiology.setReference(reference);
+            } else if(bugsData.getRef() != null && !bugsData.getRef().isEmpty()){
+                createdBiology.addError("Reference does not exist");
             } else {
-                createdBiology.addError("No reference found for reference: " + bugsData.getRef());
+                createdBiology.addError("No reference provided");
             }
         }
     }

@@ -56,17 +56,16 @@ public class Biology extends TraceableBugsData {
 
         Biology biology = (Biology) o;
 
-        if (!code.equals(biology.code)) return false;
+        if (code != null ? !code.equals(biology.code) : biology.code != null) return false;
         if (ref != null ? !ref.equals(biology.ref) : biology.ref != null) return false;
-        return data.equals(biology.data);
-
+        return data != null ? data.equals(biology.data) : biology.data == null;
     }
 
     @Override
     public int hashCode() {
-        int result = code.hashCode();
+        int result = code != null ? code.hashCode() : 0;
         result = 31 * result + (ref != null ? ref.hashCode() : 0);
-        result = 31 * result + data.hashCode();
+        result = 31 * result + (data != null ? data.hashCode() : 0);
         return result;
     }
 }
