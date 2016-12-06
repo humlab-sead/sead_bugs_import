@@ -10,6 +10,7 @@ import se.sead.bugsimport.translations.model.TypeTranslation;
 import se.sead.repositories.TypeTranslationRepository;
 
 import java.util.List;
+import java.util.Objects;
 
 public class TypeTranslationEngine implements BugsValueTranslationService.TranslationEngine {
 
@@ -59,16 +60,20 @@ public class TypeTranslationEngine implements BugsValueTranslationService.Transl
             if(!translation.getBugsTable().equals(sourceObject.bugsTable())){
                 return false;
             }
-            Object currentSourceColumnValue = getColumnValueFor(translation.getBugsColumn(), sourceObject);
-            return TranslationHelper
-                    .convertToType(
-                            currentSourceColumnValue, translation.getTriggeringColumnValue())
-                    .equals(currentSourceColumnValue);
+            ReflectionHelper sourceColumnReflectionHelper = getReflectionHelper(sourceObject);
+            Object currentSourceColumnValue = sourceColumnReflectionHelper.invokeOnTarget();
+            Object convertedValue;
+            if(currentSourceColumnValue == null){
+                Class targetColumnType = sourceColumnReflectionHelper.getTargetColumnType();
+                convertedValue = TranslationHelper.convertToType(targetColumnType, translation.getTriggeringColumnValue());
+            } else {
+                convertedValue = TranslationHelper.convertToType(currentSourceColumnValue, translation.getTriggeringColumnValue());
+            }
+            return Objects.equals(convertedValue, currentSourceColumnValue);
         }
 
-        private Object getColumnValueFor(String column, TraceableBugsData sourceObject){
-            ReflectionHelper sourceColumnReflectionHelper = ReflectionHelperBuilder.build(sourceObject, column, ReflectionHelper.MethodType.GET);
-            return sourceColumnReflectionHelper.invokeOnTarget();
+        private ReflectionHelper getReflectionHelper(TraceableBugsData sourceObject) {
+            return ReflectionHelperBuilder.build(sourceObject, translation.getBugsColumn(), ReflectionHelper.MethodType.GET);
         }
     }
 }

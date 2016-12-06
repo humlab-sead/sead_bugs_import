@@ -7,9 +7,6 @@ import se.sead.bugsimport.mcr.bugsmodel.BirmBeetleDatBugsTable;
 
 import java.util.Comparator;
 
-/**
- * Created by erer0001 on 2016-05-12.
- */
 public class BirmBeetleDatAccessReaderTest extends AccessReaderTest<BirmBeetleDat> {
 
     public BirmBeetleDatAccessReaderTest(){
