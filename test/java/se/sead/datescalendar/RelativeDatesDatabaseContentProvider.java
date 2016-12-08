@@ -20,10 +20,10 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-class DatabaseContentProvider implements DatabaseContentVerification.DatabaseContentTestDataProvider<RelativeDate> {
+class RelativeDatesDatabaseContentProvider implements DatabaseContentVerification.DatabaseContentTestDataProvider<RelativeDate> {
 
-    private static final MathContext SEAD_AGE_CONTEXT = new MathContext(20, RoundingMode.HALF_DOWN);
-    private static final int SEAD_AGE_SCALE = 5;
+    static final MathContext SEAD_AGE_CONTEXT = new MathContext(20, RoundingMode.HALF_DOWN);
+    static final int SEAD_AGE_SCALE = 5;
 
     private RelativeDateRepository relativeDateRepository;
     private Sample defaultSample;
@@ -38,7 +38,7 @@ class DatabaseContentProvider implements DatabaseContentVerification.DatabaseCon
     private RelativeAgeType calendarDateTyp;
     private RelativeAgeType calendarDateRange;
 
-    DatabaseContentProvider(
+    RelativeDatesDatabaseContentProvider(
             SampleRepository sampleRepository,
             DatingUncertaintyRepository datingUncertaintyRepository,
             MethodRepository methodRepository,
@@ -170,7 +170,7 @@ class DatabaseContentProvider implements DatabaseContentVerification.DatabaseCon
         );
     }
 
-    private BigDecimal createSeadValue(Integer date) {
+    static BigDecimal createSeadValue(Integer date) {
         BigDecimal calValue = new BigDecimal(date, SEAD_AGE_CONTEXT);
         calValue.setScale(SEAD_AGE_SCALE);
         return calValue;

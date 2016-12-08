@@ -6,6 +6,7 @@ import se.sead.bugsimport.datescalendar.bugsmodel.DatesCalendar;
 import se.sead.bugsimport.datescalendar.converters.AbstractPeriodForRelativeAgeCreator;
 import se.sead.bugsimport.datescalendar.converters.RelativeAgeTypeManager;
 import se.sead.bugsimport.periods.bugsmodel.Period;
+import se.sead.bugsimport.periods.converters.RelativeAgeCache;
 import se.sead.bugsimport.periods.converters.RelativeAgeUpdater;
 import se.sead.bugsimport.periods.seadmodel.RelativeAge;
 import se.sead.repositories.RelativeAgeRepository;
@@ -21,15 +22,21 @@ public class RelativeRangeAgeManager {
     private RelativeAgeUpdater updater;
     @Autowired
     private RelativeAgeTypeManager typeManager;
+    @Autowired
+    private RelativeAgeCache relativeAgeCache;
 
     public RelativeAge createOrGet(DatesCalendar fromData, DatesCalendar toData){
         String abbreviation = createAbbreviation(fromData.getDate(), toData.getDate(), fromData.getBcadbp());
-        RelativeAge byAbbreviation = relativeAgeRepository.findByAbbreviation(abbreviation);
-        if(byAbbreviation == null){
-            return create(fromData, abbreviation, fromData.getDate(), toData.getDate());
-        } else {
-            return byAbbreviation;
+        RelativeAge relativeAge = relativeAgeCache.get(abbreviation);
+        if(relativeAge != null){
+            return relativeAge;
         }
+        relativeAge = relativeAgeRepository.findByAbbreviation(abbreviation);
+        if(relativeAge == null){
+            relativeAge = create(fromData, abbreviation, fromData.getDate(), toData.getDate());
+        }
+        relativeAgeCache.put(relativeAge);
+        return relativeAge;
     }
 
     private String createAbbreviation(Integer start, Integer stop, String bcadbp){

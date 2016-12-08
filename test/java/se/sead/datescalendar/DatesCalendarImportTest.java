@@ -11,6 +11,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import se.sead.bugsimport.datescalendar.DatesCalendarImporter;
 import se.sead.bugsimport.datescalendar.bugsmodel.DatesCalendar;
 import se.sead.bugsimport.datesperiod.seadmodel.RelativeDate;
+import se.sead.bugsimport.periods.seadmodel.RelativeAge;
 import se.sead.repositories.*;
 import se.sead.testutils.BugsTracesAndErrorsVerification;
 import se.sead.testutils.DatabaseContentVerification;
@@ -52,15 +53,17 @@ public class DatesCalendarImportTest {
 
     @Test
     public void run(){
-        DatabaseContentVerification<RelativeDate> databaseContentVerifier = createDatabaseContentVerifier();
+        DatabaseContentVerification<RelativeDate> relativeDatesDatabaseContentVerifier = createDatabaseContentVerifier();
+        DatabaseContentVerification<RelativeAge> ageDatabaseContentVerifier = createAgeDatabaseContentVerifier();
         BugsTracesAndErrorsVerification<DatesCalendar> logVerifier = createLogVerifier();
         importer.run();
-        databaseContentVerifier.verifyDatabaseContent();
+        relativeDatesDatabaseContentVerifier.verifyDatabaseContent();
+        ageDatabaseContentVerifier.verifyDatabaseContent();
         logVerifier.verifyTraceContent();
     }
 
     private DatabaseContentVerification<RelativeDate> createDatabaseContentVerifier(){
-        return new DatabaseContentVerification<>(new DatabaseContentProvider(
+        return new DatabaseContentVerification<>(new RelativeDatesDatabaseContentProvider(
                 sampleRepository,
                 datingUncertaintyRepository,
                 methodRepository,
@@ -68,6 +71,12 @@ public class DatesCalendarImportTest {
                 relativeAgeTypeRepository,
                 relativeDateRepository
         ));
+    }
+
+    private DatabaseContentVerification<RelativeAge> createAgeDatabaseContentVerifier(){
+        return new DatabaseContentVerification<>(
+                new RelativeAgesDatabaseContentProvider(relativeAgeTypeRepository, relativeAgeRepository)
+        );
     }
 
     private BugsTracesAndErrorsVerification<DatesCalendar> createLogVerifier(){
