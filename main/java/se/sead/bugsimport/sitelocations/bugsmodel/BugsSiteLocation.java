@@ -1,11 +1,15 @@
 package se.sead.bugsimport.sitelocations.bugsmodel;
 
+import se.sead.bugs.BugsColumn;
 import se.sead.bugs.TraceableBugsData;
 
 public class BugsSiteLocation extends TraceableBugsData {
 
+    @BugsColumn("SiteCODE")
     private String siteCode;
+    @BugsColumn("Country")
     private String country;
+    @BugsColumn("Region")
     private String region;
 
     public String getSiteCode() {
@@ -37,6 +41,11 @@ public class BugsSiteLocation extends TraceableBugsData {
         return "{" +
                 siteCode +
                 '}';
+    }
+
+    @Override
+    public String getBugsIdentifier() {
+        return siteCode;
     }
 
     @Override

@@ -15,6 +15,8 @@ import se.sead.repositories.IdBasedTranslationRepository;
 import se.sead.testutils.NoAccessFileOnlyDataModelConfig;
 import se.sead.translations.utils.IdTranslationBuilder;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.IntStream;
 
 import static org.junit.Assert.assertEquals;
@@ -70,10 +72,11 @@ public class BirmBeetleIdTranslationTest {
         assertEquals(new Short("2"), source.getRow());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void changeFieldX(){
         createAndSaveIdTranslation(createIdentifier(), "Field1", "1");
         BirmBeetleDat source = createDefaultSource();
-        translationService.translateValues(source);
+        String fieldValues = source.compressFieldValues();
+        assertEquals("000000000000000000000000000000000000000000000000000000000000", fieldValues);
     }
 }

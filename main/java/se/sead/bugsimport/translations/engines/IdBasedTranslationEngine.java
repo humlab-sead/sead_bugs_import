@@ -2,7 +2,7 @@ package se.sead.bugsimport.translations.engines;
 
 import se.sead.bugs.TraceableBugsData;
 import se.sead.bugsimport.translations.BugsValueTranslationService;
-import se.sead.bugsimport.translations.engines.reflection.ReflectionTranslationApplicator;
+import se.sead.bugsimport.translations.engines.reflection.*;
 import se.sead.bugsimport.translations.model.IdBasedTranslation;
 import se.sead.repositories.IdBasedTranslationRepository;
 
@@ -58,7 +58,16 @@ public class IdBasedTranslationEngine implements BugsValueTranslationService.Tra
 
         @Override
         public boolean shouldDoTranslation(TraceableBugsData sourceObject) {
-            return true;
+            return sourceObjectContainTargetColmn(sourceObject);
+        }
+
+        private boolean sourceObjectContainTargetColmn(TraceableBugsData sourceObject){
+            try {
+                ReflectionHelper helper = ReflectionHelperBuilder.build(sourceObject, translation.getTargetColumn(), ReflectionHelper.MethodType.GET);
+                return true;
+            } catch (NoFieldWithNameException nfwne){
+                return false;
+            }
         }
     }
 }

@@ -14,7 +14,7 @@ public class BugsColumnAnnotationFieldExtractor implements ReflectionHelper.Fiel
                 return field;
             }
         }
-        throw new IllegalArgumentException("no field named " +
+        throw new NoFieldWithNameException("no field named " +
                 fieldName + " for type " +
                 sourceClass);
     }
