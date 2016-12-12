@@ -62,4 +62,13 @@ public class TaxaGenus extends LoggableEntity {
         result = 31 * result + family.hashCode();
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "TaxaGenus{" +
+                "id=" + id +
+                ", genusName='" + genusName + '\'' +
+                ", family=" + family.getFamilyName() +
+                '}';
+    }
 }

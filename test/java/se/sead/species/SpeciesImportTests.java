@@ -11,17 +11,11 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import se.sead.bugsimport.species.IndexImporter;
 import se.sead.bugsimport.species.bugsmodel.INDEX;
-import se.sead.bugsimport.species.seadmodel.TaxonomicOrder;
-import se.sead.bugsimport.tracing.seadmodel.BugsTrace;
+import se.sead.bugsimport.species.seadmodel.*;
 import se.sead.repositories.*;
 import se.sead.testutils.BugsTracesAndErrorsVerification;
 import se.sead.testutils.DatabaseContentVerification;
 import se.sead.testutils.DefaultConfig;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -55,20 +49,53 @@ public class SpeciesImportTests {
     private TaxaGenusRepository genusRepository;
     @Autowired
     private TaxaFamilyRepository familyRepository;
+    @Autowired
+    private TaxaAuthorRepository authorRepository;
 
-    private DatabaseContentVerification<TaxonomicOrder> databaseContentVerification;
+    private DatabaseContentVerification<TaxonomicOrder> taxonomicOrderDatabaseContentVerification;
+    private DatabaseContentVerification<TaxaFamily> familyDatabaseContentVerification;
+    private DatabaseContentVerification<TaxaGenus> genusDatabaseContentVerification;
+    private DatabaseContentVerification<TaxaSpecies> speciesDatabaseContentVerification;
+    private DatabaseContentVerification<TaxaAuthor> authorDatabaseContentVerification;
     private BugsTracesAndErrorsVerification<INDEX> logVerifier;
 
     @Before
     public void setup(){
-        databaseContentVerification = new DatabaseContentVerification<>(
-                new DatabaseContentProvider(
+        taxonomicOrderDatabaseContentVerification = new DatabaseContentVerification<>(
+                new TaxonomicOrderDatabaseContentProvider(
                         speciesRepository,
                         genusRepository,
                         familyRepository,
                         orderRepository,
                         taxonomicOrderRepository,
                         taxonomicOrderSystemRepository
+                )
+        );
+        familyDatabaseContentVerification = new DatabaseContentVerification<>(
+                new FamilyDatabaseContentProvider(
+                        familyRepository,
+                        orderRepository
+                )
+        );
+        genusDatabaseContentVerification = new DatabaseContentVerification<>(
+                new GenusDatabaseContentProvider(
+                        familyRepository,
+                        genusRepository,
+                        orderRepository
+                )
+        );
+        speciesDatabaseContentVerification = new DatabaseContentVerification<>(
+                new SpeciesDatabaseContentProvider(
+                        speciesRepository,
+                        genusRepository,
+                        familyRepository,
+                        orderRepository,
+                        authorRepository
+                )
+        );
+        authorDatabaseContentVerification = new DatabaseContentVerification<>(
+                new AuthorDatabaseContentProvider(
+                        authorRepository
                 )
         );
         logVerifier = new BugsTracesAndErrorsVerification.ByIdentity<>(
@@ -82,7 +109,11 @@ public class SpeciesImportTests {
     @Test
     public void INDEXimport(){
         importer.run();
-        databaseContentVerification.verifyDatabaseContent();
+        taxonomicOrderDatabaseContentVerification.verifyDatabaseContent();
+        familyDatabaseContentVerification.verifyDatabaseContent();
+        genusDatabaseContentVerification.verifyDatabaseContent();
+        speciesDatabaseContentVerification.verifyDatabaseContent();
+        authorDatabaseContentVerification.verifyDatabaseContent();
         logVerifier.verifyTraceContent();
     }
 }

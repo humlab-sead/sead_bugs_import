@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-class DatabaseContentProvider implements DatabaseContentVerification.DatabaseContentTestDataProvider<TaxonomicOrder> {
+class TaxonomicOrderDatabaseContentProvider implements DatabaseContentVerification.DatabaseContentTestDataProvider<TaxonomicOrder> {
 
     private SpeciesRepository speciesRepository;
     private TaxaGenusRepository genusRepository;
@@ -20,7 +20,7 @@ class DatabaseContentProvider implements DatabaseContentVerification.DatabaseCon
 
     private TaxonomicOrderSystem bugsSystem;
 
-    public DatabaseContentProvider(
+    public TaxonomicOrderDatabaseContentProvider(
             SpeciesRepository speciesRepository,
             TaxaGenusRepository genusRepository,
             TaxaFamilyRepository familyRepository,
@@ -116,6 +116,28 @@ class DatabaseContentProvider implements DatabaseContentVerification.DatabaseCon
                         null,
                         speciesRepository.findOne(4),
                         BigDecimalDefinition.convertToSeadCode(9999.0000001d),
+                        bugsSystem
+                ),
+                TestTaxonomyOrder.create(
+                        null,
+                        TestTaxaSpecies.create(
+                                null,
+                                "someSpecies",
+                                TestTaxaGenus.create(
+                                        null,
+                                        "SomeGenus",
+                                        TestTaxaFamily.create(
+                                                null,
+                                                "NewFamily",
+                                                orderRepository.getImportOrder()
+                                        )
+                                ),
+                                TestTaxaAuthor.create(
+                                        null,
+                                        "NewAuthor"
+                                )
+                        ),
+                        BigDecimalDefinition.convertToSeadCode(11d),
                         bugsSystem
                 )
         );

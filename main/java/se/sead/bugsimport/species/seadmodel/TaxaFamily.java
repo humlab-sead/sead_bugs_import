@@ -65,4 +65,13 @@ public class TaxaFamily extends LoggableEntity {
         result = 31 * result + order.hashCode();
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "TaxaFamily{" +
+                "id=" + id +
+                ", familyName='" + familyName + '\'' +
+                ", order=" + order.getOrderName() +
+                '}';
+    }
 }

@@ -24,4 +24,11 @@ public class NoDataSpeciesConverter {
     public TaxaSpecies getNoDataSpecies(){
         return repository.getBugsNoDataSpecies();
     }
+
+    public boolean isNoDataSpecies(TaxaSpecies species){
+        if(species.getId() != null){
+            return getNoDataSpecies().getId().equals(species.getId());
+        }
+        return false;
+    }
 }

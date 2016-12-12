@@ -119,6 +119,7 @@ public class TestEqualityHelper<T> {
                         TestEqualityHelper helper = new TestEqualityHelper(configuration);
                         if(!helper.equalsWithoutBlackListedMethods(entity1Result, entity2Result)) {
                             System.err.println("reporting false for method: " + getterMethod.getName());
+                            System.err.println(entity1Result + " :~: " + entity2Result);
                             return false;
                         }
                     } catch (IllegalAccessException | InvocationTargetException e) {

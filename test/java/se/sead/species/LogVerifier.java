@@ -48,9 +48,8 @@ class LogVerifier implements BugsTracesAndErrorsVerification.LogVerificationCall
             case "5.0":
                 taxonomicOrderAssertHelper.assertInserts(traces, 1);
                 speciesAssertHelper.assertInserts(traces, 1);
-                genusAssertHelper.assertInserts(traces, 1);
                 authorityAssertHelper.assertInserts(traces, 1);
-                taxonomicOrderAssertHelper.assertSize(traces, 4);
+                taxonomicOrderAssertHelper.assertSize(traces, 3);
                 taxonomicOrderAssertHelper.assertEmpty(errors);
                 break;
             case "8.0":
@@ -71,6 +70,11 @@ class LogVerifier implements BugsTracesAndErrorsVerification.LogVerificationCall
                 taxonomicOrderAssertHelper.assertEmpty(traces);
                 taxonomicOrderAssertHelper.assertContainsError(errors, "No Species name provided");
                 break;
+            case "11.0":
+                taxonomicOrderAssertHelper.assertSize(traces, 2);
+                taxonomicOrderAssertHelper.assertInserts(traces, 1);
+                speciesAssertHelper.assertInserts(traces, 1);
+                taxonomicOrderAssertHelper.assertEmpty(errors);
         }
     }
 }

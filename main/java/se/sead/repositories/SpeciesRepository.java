@@ -4,6 +4,8 @@ import org.springframework.data.jpa.repository.Query;
 import se.sead.bugsimport.species.seadmodel.TaxaGenus;
 import se.sead.bugsimport.species.seadmodel.TaxaSpecies;
 
+import java.util.List;
+
 public interface SpeciesRepository extends CreateAndReadRepository<TaxaSpecies, Integer> {
     @Query("select species from TaxaSpecies species " +
             "where lower(species.speciesName) = lower(?1) " +
@@ -17,4 +19,6 @@ public interface SpeciesRepository extends CreateAndReadRepository<TaxaSpecies, 
             "species.genus.genusName = 'No data' and " +
             "species.genus.family.order.orderName = 'ORDER PENDING CLASSIFICATION'")
     TaxaSpecies getBugsNoDataSpecies();
+
+    List<TaxaSpecies> findAll();
 }
