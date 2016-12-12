@@ -1,7 +1,6 @@
 package se.sead.repositories;
 
 import org.springframework.data.jpa.repository.Query;
-import se.sead.bugsimport.species.seadmodel.TaxaGenus;
 import se.sead.bugsimport.species.seadmodel.TaxaSpecies;
 
 import java.util.List;

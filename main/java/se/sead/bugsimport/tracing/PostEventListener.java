@@ -2,7 +2,6 @@ package se.sead.bugsimport.tracing;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import se.sead.Application;
-import se.sead.bugsimport.tracing.TraceEventManager;
 import se.sead.bugsimport.tracing.seadmodel.BugsTraceType;
 import se.sead.sead.model.LoggableEntity;
 

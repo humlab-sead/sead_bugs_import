@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import se.sead.bugsimport.Persister;
 import se.sead.bugsimport.datescalendar.bugsmodel.DatesCalendar;
-import se.sead.bugsimport.datescalendar.converters.RelativeAgeManager;
 import se.sead.bugsimport.datesperiod.seadmodel.RelativeDate;
 import se.sead.bugsimport.periods.converters.RelativeAgeCache;
 import se.sead.bugsimport.periods.seadmodel.RelativeAge;

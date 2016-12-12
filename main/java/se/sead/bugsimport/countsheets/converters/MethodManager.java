@@ -8,9 +8,6 @@ import se.sead.repositories.MethodRepository;
 import se.sead.sead.methods.Method;
 import se.sead.sead.methods.MethodGroup;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Service
 public class MethodManager {
 

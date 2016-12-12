@@ -6,8 +6,6 @@ import se.sead.bugs.TraceableBugsData;
 import se.sead.bugsimport.tracing.TracePersister;
 import se.sead.sead.model.LoggableEntity;
 
-import javax.persistence.PersistenceException;
-
 public abstract class Persister<BugsType extends TraceableBugsData, SeadType extends LoggableEntity> {
 
     @Autowired

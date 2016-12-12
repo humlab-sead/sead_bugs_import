@@ -3,8 +3,6 @@ package se.sead.bugsimport.speciesassociation.bugsmodel;
 import se.sead.bugs.BugsColumn;
 import se.sead.bugs.TraceableBugsData;
 
-import java.lang.annotation.Native;
-
 public class BugsSpeciesAssociation extends TraceableBugsData {
 
     private Integer speciesAssociationID;

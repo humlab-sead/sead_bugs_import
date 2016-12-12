@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import se.sead.bugsimport.datesradio.seadmodel.DatingUncertainty;
-import se.sead.bugsimport.periods.seadmodel.RelativeAge;
 import se.sead.repositories.DatingUncertaintyRepository;
 
 @Component

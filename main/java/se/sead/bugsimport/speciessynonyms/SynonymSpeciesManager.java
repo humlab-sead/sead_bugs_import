@@ -12,7 +12,9 @@ import se.sead.repositories.TaxaAuthorRepository;
 import se.sead.repositories.TaxaGenusRepository;
 import se.sead.utils.ErrorCopier;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 @Component
 public class SynonymSpeciesManager {

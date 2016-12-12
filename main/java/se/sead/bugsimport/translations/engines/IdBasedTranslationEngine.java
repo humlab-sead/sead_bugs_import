@@ -2,7 +2,10 @@ package se.sead.bugsimport.translations.engines;
 
 import se.sead.bugs.TraceableBugsData;
 import se.sead.bugsimport.translations.BugsValueTranslationService;
-import se.sead.bugsimport.translations.engines.reflection.*;
+import se.sead.bugsimport.translations.engines.reflection.NoFieldWithNameException;
+import se.sead.bugsimport.translations.engines.reflection.ReflectionHelper;
+import se.sead.bugsimport.translations.engines.reflection.ReflectionHelperBuilder;
+import se.sead.bugsimport.translations.engines.reflection.ReflectionTranslationApplicator;
 import se.sead.bugsimport.translations.model.IdBasedTranslation;
 import se.sead.repositories.IdBasedTranslationRepository;
 

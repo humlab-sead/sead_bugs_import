@@ -2,7 +2,6 @@ package se.sead.bugsimport.datescalendar.converters;
 
 import se.sead.bugsimport.datescalendar.bugsmodel.DatesCalendar;
 import se.sead.bugsimport.periods.bugsmodel.Period;
-import se.sead.bugsimport.periods.seadmodel.RelativeAge;
 
 public abstract class AbstractPeriodForRelativeAgeCreator {
 

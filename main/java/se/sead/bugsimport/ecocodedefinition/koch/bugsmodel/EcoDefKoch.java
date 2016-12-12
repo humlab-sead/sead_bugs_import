@@ -2,7 +2,6 @@ package se.sead.bugsimport.ecocodedefinition.koch.bugsmodel;
 
 import se.sead.bugs.BugsColumn;
 import se.sead.bugs.TraceableBugsData;
-import se.sead.bugsimport.ecocodedefinitiongroups.bugsmodel.EcoDefGroupsBugsTable;
 
 public class EcoDefKoch extends TraceableBugsData{
 

@@ -2,7 +2,6 @@ package se.sead.repositories;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
-import se.sead.sead.methods.MethodGroup;
 import se.sead.sead.model.Dimension;
 
 public interface DimensionRepository extends Repository<Dimension, Integer>{

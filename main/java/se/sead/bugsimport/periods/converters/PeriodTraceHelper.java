@@ -1,6 +1,5 @@
 package se.sead.bugsimport.periods.converters;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import se.sead.bugsimport.periods.bugsmodel.Period;
