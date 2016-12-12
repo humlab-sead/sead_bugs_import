@@ -18,7 +18,7 @@ public class ExpectedBugsData {
                     createRowData(9d, "NewFamily", "SomeGenus", "someSpecies", null),
                     createRowData(10d, "Family", "Genus", null, null),
                     createRowData(9999.0000001d, "None", "No data", "No data", null),
-                    createRowData(9d, "NewFamily", "SomeGenus", "someSpecies", "NewAuthor")
+                    createRowData(11d, "NewFamily", "SomeGenus", "someSpecies", "NewAuthor")
             );
 
     private static INDEX createRowData(Double code, String family, String genus, String species, String author) {
