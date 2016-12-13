@@ -15,10 +15,10 @@ public class TaxaSpecies extends LoggableEntity {
     private Integer id;
     @Column(name = "species")
     private String speciesName;
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne(cascade = {CascadeType.MERGE})
     @JoinColumn(name = "genus_id")
     private TaxaGenus genus;
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne(cascade = {CascadeType.MERGE})
     @JoinColumn(name = "author_id")
     private TaxaAuthor author;
 

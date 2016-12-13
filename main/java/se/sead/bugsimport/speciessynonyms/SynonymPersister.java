@@ -145,15 +145,18 @@ public class SynonymPersister extends Persister<Synonym, SpeciesAssociation> {
         }
 
         TaxaAuthor save(TaxaAuthor sourceAuthor){
-            if(sourceAuthor == null || !sourceAuthor.isNewItem()){
+            if(sourceAuthor == null){
                 return sourceAuthor;
             } else {
                 if(persistedAuthors.containsKey(sourceAuthor.getAuthorName())){
                     return persistedAuthors.get(sourceAuthor.getAuthorName());
                 } else {
-                    TaxaAuthor persistedAuthor = repository.saveOrUpdate(sourceAuthor);
-                    persistedAuthors.put(sourceAuthor.getAuthorName(), persistedAuthor);
-                    return persistedAuthor;
+                    TaxaAuthor byAuthorName = repository.findByAuthorName(sourceAuthor.getAuthorName());
+                    if(byAuthorName == null){
+                        byAuthorName = repository.saveOrUpdate(sourceAuthor);
+                    }
+                    persistedAuthors.put(sourceAuthor.getAuthorName(), byAuthorName);
+                    return byAuthorName;
                 }
             }
         }

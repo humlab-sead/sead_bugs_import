@@ -9,6 +9,7 @@ import se.sead.bugsimport.speciesassociation.seadmodel.SpeciesAssociationType;
 import se.sead.model.*;
 import se.sead.repositories.*;
 import se.sead.sead.model.Biblio;
+import se.sead.species.SpeciesComparator;
 import se.sead.testutils.DatabaseContentVerification;
 
 import java.util.Arrays;
@@ -134,17 +135,20 @@ public class DatabaseContentProvider implements DatabaseContentVerification.Data
 
     private static class SpeciesAssociationComparator implements Comparator<SpeciesAssociation> {
 
+        private SpeciesComparator speciesComparator = new SpeciesComparator();
+
         @Override
         public int compare(SpeciesAssociation o1, SpeciesAssociation o2) {
-            if(o1.isErrorFree() && !o2.isErrorFree()){
-                return -1;
-            } else if(!o1.isErrorFree() && o2.isErrorFree()){
-                return 1;
-            } else if(o1.isErrorFree() && o2.isErrorFree()){
-                return compareProperies(o1,o2);
-            } else {
-                return compare(o1.getErrors(), o2.getErrors());
+
+            int sourceDifferences = speciesComparator.compare(o1.getSourceSpecies(), o2.getSourceSpecies());
+            if(sourceDifferences == 0){
+                int targetDifferences = speciesComparator.compare(o1.getTargetSpecies(), o2.getTargetSpecies());
+                if(targetDifferences == 0){
+                    return compare(o1.getErrors(), o2.getErrors());
+                }
+                return targetDifferences;
             }
+            return sourceDifferences;
         }
 
         private int compare(List<String> o1Errors, List<String> o2Errors) {

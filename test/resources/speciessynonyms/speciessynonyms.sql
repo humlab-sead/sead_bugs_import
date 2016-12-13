@@ -15,7 +15,6 @@ insert into tbl_taxonomic_order (taxonomic_order_id, taxon_id, taxonomic_code, t
 insert into tbl_taxonomic_order (taxonomic_order_id, taxon_id, taxonomic_code, taxonomic_order_system_id) values (3, 3, 3.0000000, 1);
 
 insert into tbl_biblio (biblio_id, bugs_author, bugs_reference, bugs_title) values (1, 'Ref 1', 'Ref 1', 'Ref 1');
---insert into tbl_biblio (biblio_id, bugs_author, bugs_reference, bugs_title) values (2, 'Ref 3', 'Ref 3', 'Ref 3');
 
 insert into tbl_species_association_types (association_type_id, association_type_name) values (1, 'synonym of');
 
@@ -23,3 +22,7 @@ insert into tbl_species_associations (species_association_id, taxon_id, associat
     values (1, 4, 1, 1, 1);
 insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
   values (1, 'TSynonym', '{1.0,Off genus,syn species,A stored authority,Ref 1,exists}', null, 'tbl_species_associations', 1);
+
+insert into tbl_taxa_tree_families (family_id, family_name, order_id) values (2, 'No data', 1);
+insert into tbl_taxa_tree_genera (genus_id, genus_name, family_id) values (2, 'No data', 2);
+insert into tbl_taxa_tree_master (taxon_id, species, genus_id) values (5, 'No data', 2);
