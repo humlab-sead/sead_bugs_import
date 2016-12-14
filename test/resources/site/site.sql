@@ -2,14 +2,14 @@ INSERT INTO tbl_location_types (location_type_id, date_updated, description, loc
 INSERT INTO tbl_location_types (location_type_id, date_updated, description, location_type) VALUES (2, '2012-09-21 18:51:47.967181+02', 'Administrative units such as county, parish, län, socken. Country specific terms. Includes historical or non-active regions.', 'Sub-country administrative region');
 INSERT INTO tbl_location_types (location_type_id, date_updated, description, location_type) VALUES (7, '2012-09-21 18:51:47.967181+02', 'Geographical areas which are not necessarily defined as single administrative units. E.g. part of a continent: Central Europe, Southern Scandinavia; Geomorphological regions: Eastern Alps; An island: Andoya, Holmön. The terms may coincide with administrative units.', 'Aggregate/non-admin geographical region');
 
-INSERT INTO tbl_locations (location_id, location_name, location_type_id, default_lat_dd, default_long_dd, date_updated) VALUES (105, 'Ireland', 1, NULL, NULL, '2012-09-21 18:51:47.967181+02');
-INSERT INTO tbl_locations (location_id, location_name, location_type_id, default_lat_dd, default_long_dd, date_updated) VALUES (205, 'Sweden', 1, NULL, NULL, '2012-09-21 18:51:47.967181+02');
-INSERT INTO tbl_locations (location_id, location_name, location_type_id, default_lat_dd, default_long_dd, date_updated) VALUES (240, 'England', 1, NULL, NULL, '2012-09-21 18:51:47.967181+02');
-INSERT INTO tbl_locations (location_id, location_name, location_type_id, default_lat_dd, default_long_dd, date_updated) VALUES (590, 'Antrim', 2, NULL, NULL, '2012-09-21 18:51:47.967181+02');
-INSERT INTO tbl_locations (location_id, location_name, location_type_id, default_lat_dd, default_long_dd, date_updated) VALUES (747, 'Oxfordshire', 2, NULL, NULL, '2012-09-21 18:51:47.967181+02');
-INSERT INTO tbl_locations (location_id, location_name, location_type_id, default_lat_dd, default_long_dd, date_updated) VALUES (770, 'Santorini', 7, NULL, NULL, '2012-09-21 18:51:47.967181+02');
-INSERT INTO tbl_locations (location_id, location_name, location_type_id, default_lat_dd, default_long_dd, date_updated) VALUES (780, 'Skåne', 2, NULL, NULL, '2012-09-21 18:51:47.967181+02');
-INSERT INTO tbl_locations (location_id, location_name, location_type_id, default_lat_dd, default_long_dd, date_updated) VALUES (777, 'Greece', 1, NULL, NULL, '2012-09-21 18:51:47.967181+02');
+INSERT INTO tbl_locations (location_id, location_name, location_type_id) VALUES (105, 'Ireland', 1);
+INSERT INTO tbl_locations (location_id, location_name, location_type_id) VALUES (205, 'Sweden', 1);
+INSERT INTO tbl_locations (location_id, location_name, location_type_id) VALUES (240, 'England', 1);
+INSERT INTO tbl_locations (location_id, location_name, location_type_id) VALUES (590, 'Antrim', 2);
+INSERT INTO tbl_locations (location_id, location_name, location_type_id) VALUES (747, 'Oxfordshire', 2);
+INSERT INTO tbl_locations (location_id, location_name, location_type_id) VALUES (770, 'Santorini', 7);
+INSERT INTO tbl_locations (location_id, location_name, location_type_id) VALUES (780, 'Skåne', 2);
+INSERT INTO tbl_locations (location_id, location_name, location_type_id) VALUES (777, 'Greece', 1);
 
 insert into tbl_sites (site_id, site_name, national_site_identifier, latitude_dd, longitude_dd, altitude, site_description)
 values (1, 'Normal: prestored site', 'SU 498973', 51.672222, -1.2811111, 60, '15th-16th C well/pit with a few calcified remains of Porcellio dilatatus, cf. Fannia sp and Sphaeroceridae.

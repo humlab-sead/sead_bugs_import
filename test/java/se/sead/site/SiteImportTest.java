@@ -10,6 +10,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import se.sead.Application;
 import se.sead.bugsimport.locations.seadmodel.Location;
+import se.sead.bugsimport.locations.seadmodel.LocationType;
 import se.sead.bugsimport.site.SiteImporter;
 import se.sead.bugsimport.site.bugsmodel.BugsSite;
 import se.sead.bugsimport.site.seadmodel.SeadSite;
@@ -44,15 +45,15 @@ public abstract class SiteImportTest {
     @Autowired
     private SiteImporter importer;
     @Autowired
-    private LocationTypeRepository typeRepository;
+    private LocationRepository locationRepository;
+    @Autowired
+    private LocationTypeRepository locationTypeRepository;
     @Autowired
     private SiteRepository siteRepository;
     @Autowired
     private BugsTraceRepository traceRepository;
     @Autowired
     private BugsErrorRepository errorRepository;
-    @Autowired
-    private TypeTranslationRepository typeTranslationRepository;
     @Value("${allow.create.country}")
     private Boolean canCreateCountry;
     @Value("${allow.site.updates}")
@@ -83,6 +84,7 @@ public abstract class SiteImportTest {
                 throw ae;
             }
         }
+        new SiteLocationTestMaterial(locationRepository, locationTypeRepository).assertNoLocationsCreated();
     }
 
     private void assertEachField(SeadSite expected, SeadSite actual){
