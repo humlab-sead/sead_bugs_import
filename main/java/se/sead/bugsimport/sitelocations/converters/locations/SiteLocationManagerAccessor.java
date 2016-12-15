@@ -13,11 +13,14 @@ import se.sead.bugsimport.sitelocations.seadmodel.SiteLocation;
 import se.sead.repositories.SiteLocationRepository;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public abstract class SiteLocationManagerAccessor {
 
     private List<SearchStrategies> searchStrategies;
+    private Map<String, Location> cache;
 
     protected SiteLocationManagerAccessor(
             SiteLocationRepository siteLocationRepository,
@@ -28,6 +31,19 @@ public abstract class SiteLocationManagerAccessor {
             new TraceSearchStrategy(traceHelper),
             new BySiteSearchStrategy(siteLocationRepository, siteTraceHelper, nameAndTypeFilter)
         );
+        cache = new HashMap<>();
+    }
+
+    public void clear(){
+           cache.clear();
+    }
+
+    public Location getCachedValue(String locationName){
+        return cache.get(locationName);
+    }
+
+    public void updateCache(String name, Location location){
+        cache.put(name, location);
     }
 
     public SiteLocation getOrCreate(SeadSite site, BugsSiteLocation bugsSiteLocation){

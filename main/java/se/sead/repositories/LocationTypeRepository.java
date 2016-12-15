@@ -14,4 +14,7 @@ public interface LocationTypeRepository extends Repository<LocationType, Integer
 
     @Query("select type from LocationType type where type.name = 'Aggregate/non-admin geographical region'")
     LocationType getAggregateNonAdministrativeRegionType();
+
+    @Query("select type from LocationType type where type.name= 'Unprocessed Bugs Transfer'")
+    LocationType getBugsUnprocessedBugsTransfer();
 }

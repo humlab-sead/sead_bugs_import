@@ -1,19 +1,20 @@
 INSERT INTO tbl_location_types (location_type_id, date_updated, description, location_type) VALUES (1, '2012-09-21 18:51:47.967181+02', 'Country or other nation state. For practical purposes territories such as England and Wales are considered countries (due to common usage)', 'Country');
 INSERT INTO tbl_location_types (location_type_id, date_updated, description, location_type) VALUES (2, '2012-09-21 18:51:47.967181+02', 'Administrative units such as county, parish, län, socken. Country specific terms. Includes historical or non-active regions.', 'Sub-country administrative region');
 INSERT INTO tbl_location_types (location_type_id, date_updated, description, location_type) VALUES (7, '2012-09-21 18:51:47.967181+02', 'Geographical areas which are not necessarily defined as single administrative units. E.g. part of a continent: Central Europe, Southern Scandinavia; Geomorphological regions: Eastern Alps; An island: Andoya, Holmön. The terms may coincide with administrative units.', 'Aggregate/non-admin geographical region');
+INSERT INTO tbl_location_types (location_type_id, date_updated, description, location_type) VALUES (20, '2014-04-17 07:56:03.101+02', 'Undetermined location type from a Bugs transfer, needs processing.','Unprocessed Bugs Transfer');
 
 insert into tbl_locations (location_id, location_name, location_type_id)
     values (1, 'Country', 1);
 insert into tbl_locations (location_id, location_name, location_type_id)
     values (2, 'Other country', 1);
 insert into tbl_locations (location_id, location_name, location_type_id)
-    values (3, 'Region', 2);
+    values (3, 'Region', 20);
 insert into tbl_locations (location_id, location_name, location_type_id)
-    values (4, 'Other region', 2);
+    values (4, 'Other region', 20);
 insert into tbl_locations (location_id, location_name, location_type_id)
-    values (5, 'Region type', 2);
+    values (5, 'Region type', 20);
 insert into tbl_locations (location_id, location_name, location_type_id)
-    values (6, 'Møn', 2);
+    values (6, 'Møn', 20);
 insert into tbl_locations (location_id, location_name, location_type_id)
     values (7, 'Skåne', 1);
 insert into tbl_locations (location_id, location_name, location_type_id)
@@ -111,3 +112,8 @@ insert into tbl_sites (site_id, site_name)
     values (16, 'Site deleted');
 insert into bugs_import.bugs_trace (bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id, manipulation_type)
     values ('TSite', 'Site deleted', 'SITE000016', 'tbl_sites', 16, 'DELETE');
+
+insert into tbl_sites (site_id, site_name)
+values (17, 'Site with new but same country as previously');
+insert into bugs_import.bugs_trace (bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
+values ('TSite', 'Site with new but same country as previously', 'SITE000017', 'tbl_sites', 17);

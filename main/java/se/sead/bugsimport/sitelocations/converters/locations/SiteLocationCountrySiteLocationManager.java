@@ -15,7 +15,9 @@ import se.sead.repositories.LocationRepository;
 import se.sead.repositories.LocationTypeRepository;
 import se.sead.repositories.SiteLocationRepository;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Component
@@ -40,7 +42,16 @@ public class SiteLocationCountrySiteLocationManager extends SiteLocationManagerA
 
     @Override
     protected Location searchDatabase(BugsSiteLocation bugsSiteLocation) {
-        return locationRepository.findCountryByName(bugsSiteLocation.getCountry());
+        String country = bugsSiteLocation.getCountry();
+        Location cachedValue = getCachedValue(country);
+        if(cachedValue != null){
+            return cachedValue;
+        }
+        Location countryByName = locationRepository.findCountryByName(country);
+        if(countryByName != null){
+            updateCache(country, countryByName);
+        }
+        return countryByName;
     }
 
     @Override
@@ -48,7 +59,11 @@ public class SiteLocationCountrySiteLocationManager extends SiteLocationManagerA
         if(locationCreator == null){
             locationCreator = new CountryCreator(locationTypeRepository, canCreateCountries);
         }
-        return locationCreator.create(bugsSiteLocation.getCountry());
+        Location createdVersion = locationCreator.create(bugsSiteLocation.getCountry());
+        if(createdVersion.isErrorFree()) {
+            updateCache(bugsSiteLocation.getCountry(), createdVersion);
+        }
+        return createdVersion;
     }
 
     private static class CountryNameAndTypeFilter implements NameAndTypeFilter {

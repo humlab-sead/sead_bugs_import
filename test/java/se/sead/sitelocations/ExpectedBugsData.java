@@ -24,7 +24,8 @@ public class ExpectedBugsData {
                     createSiteLocation("SITE000016", "Country", "Region"),
                     createSiteLocation("SITE000013", null, "Region"),
                     createSiteLocation("SITE000014", "Country", null),
-                    createSiteLocation("SITE000015", "Country", "Region")
+                    createSiteLocation("SITE000015", "Country", "Region"),
+                    createSiteLocation("SITE000017", "Nonexisting", "Region")
             );
 
     private static BugsSiteLocation createSiteLocation(

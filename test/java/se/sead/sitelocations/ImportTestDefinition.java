@@ -17,13 +17,13 @@ public class ImportTestDefinition {
 
     private Map<String, SeadSite> sites;
     private Map<String, Location> locations;
-    private LocationType administrativeLocationType;
+    private LocationType unprocessedBugsImport;
     private LocationType countryType;
 
     ImportTestDefinition(SiteRepository siteRepository, LocationRepository locationRepository, LocationTypeRepository locationTypeRepository){
         setupSites(siteRepository);
         setupLocations(locationRepository);
-        administrativeLocationType = locationTypeRepository.getAdministrativeRegionType();
+        unprocessedBugsImport = locationTypeRepository.getBugsUnprocessedBugsTransfer();
         countryType = locationTypeRepository.getCountryType();
     }
 
@@ -43,6 +43,7 @@ public class ImportTestDefinition {
         sites.put("Region does not exist", siteRepository.findOne(12));
         sites.put("Empty country", siteRepository.findOne(13));
         sites.put("Empty region", siteRepository.findOne(14));
+        sites.put("Site with new but same country as previously", siteRepository.findOne(17));
         sites.put("New site", createNewSite());
     }
 
@@ -78,7 +79,7 @@ public class ImportTestDefinition {
         expectedData.addAll(getRegionDoesNotExistLocations());
         expectedData.addAll(getEmptyRegionLocations());
         expectedData.addAll(getNewSiteLocations());
-
+        expectedData.addAll(getSiteWithNewButSameCountryAsPreviously(canCreateCountry));
         return expectedData;
     }
 
@@ -177,7 +178,7 @@ public class ImportTestDefinition {
         SeadSite site = sites.get("Region does not exist");
         return Arrays.asList(
                 TestSiteLocation.create(null, locations.get("Country"), site),
-                TestSiteLocation.create(null, TestLocation.create(null, "Nonexisting", administrativeLocationType), site)
+                TestSiteLocation.create(null, TestLocation.create(null, "Nonexisting", unprocessedBugsImport), site)
         );
     }
 
@@ -193,6 +194,17 @@ public class ImportTestDefinition {
                 TestSiteLocation.create(null, locations.get("Country"), site),
                 TestSiteLocation.create(null, locations.get("Region"), site)
         );
+    }
+
+    private List<? extends SiteLocation> getSiteWithNewButSameCountryAsPreviously(boolean canCreateCountry){
+        SeadSite site = sites.get("Site with new but same country as previously");
+        if(canCreateCountry) {
+            return Arrays.asList(
+                    TestSiteLocation.create(null, TestLocation.create(null, "Nonexisting", countryType), site),
+                    TestSiteLocation.create(null, locations.get("Region"), site)
+            );
+        }
+        return Collections.EMPTY_LIST;
     }
 
 }

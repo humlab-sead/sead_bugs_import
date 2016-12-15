@@ -21,7 +21,7 @@ public class SiteLocationRegionLocationManager extends SiteLocationManagerAccess
     @Autowired
     private LocationRepository locationRepository;
     private LocationCreator locationCreator;
-    private LocationType administrativeRegionType;
+    private LocationType bugsUnprocessedImport;
 
     @Autowired
     public SiteLocationRegionLocationManager(
@@ -33,19 +33,25 @@ public class SiteLocationRegionLocationManager extends SiteLocationManagerAccess
                 siteLocationRepository,
                 traceHelper,
                 siteTraceHelper,
-                new RegionNameAndTypeFilter(locationTypeRepository.getAdministrativeRegionType())
+                new RegionNameAndTypeFilter(locationTypeRepository.getBugsUnprocessedBugsTransfer())
         );
-        this.administrativeRegionType = locationTypeRepository.getAdministrativeRegionType();
-        this.locationCreator = new LocationCreator(administrativeRegionType);
+        this.bugsUnprocessedImport = locationTypeRepository.getBugsUnprocessedBugsTransfer();
+        this.locationCreator = new LocationCreator(bugsUnprocessedImport);
     }
 
     @Override
     protected Location searchDatabase(BugsSiteLocation bugsSiteLocation) {
+        Location cachedValue = getCachedValue(bugsSiteLocation.getRegion());
+        if(cachedValue != null){
+            return cachedValue;
+        }
         List<Location> potentialLocations = locationRepository.findAllByName(bugsSiteLocation.getRegion());
         if(!potentialLocations.isEmpty()){
             Optional<Location> administrativeRegionLocation = findAdministrativeLocation(potentialLocations);
             if(administrativeRegionLocation.isPresent()){
-                return administrativeRegionLocation.get();
+                Location databaseBackedLocation = administrativeRegionLocation.get();
+                updateCache(bugsSiteLocation.getRegion(), databaseBackedLocation);
+                return databaseBackedLocation;
             }
         }
         return null;
@@ -53,13 +59,17 @@ public class SiteLocationRegionLocationManager extends SiteLocationManagerAccess
 
     private Optional<Location> findAdministrativeLocation(List<Location> potentialLocations){
         return  potentialLocations.stream()
-                .filter(location -> location.getType().equals(administrativeRegionType))
+                .filter(location -> location.getType().equals(bugsUnprocessedImport))
                 .findFirst();
     }
 
     @Override
     protected Location create(BugsSiteLocation bugsSiteLocation) {
-        return locationCreator.create(bugsSiteLocation.getRegion());
+        Location createdLocation = locationCreator.create(bugsSiteLocation.getRegion());
+        if(createdLocation.isErrorFree()) {
+            updateCache(bugsSiteLocation.getRegion(), createdLocation);
+        }
+        return createdLocation;
     }
 
     private static class RegionNameAndTypeFilter implements NameAndTypeFilter {
