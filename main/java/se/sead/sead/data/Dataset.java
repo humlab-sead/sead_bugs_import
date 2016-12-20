@@ -4,6 +4,7 @@ import se.sead.sead.methods.Method;
 import se.sead.sead.model.LoggableEntity;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "tbl_datasets")
@@ -25,6 +26,8 @@ public class Dataset extends LoggableEntity {
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "method_id")
     private Method method;
+    @OneToMany(cascade = {CascadeType.MERGE})
+    private List<DatasetContact> contacts;
 
     @Override
     public Integer getId() {
@@ -65,6 +68,14 @@ public class Dataset extends LoggableEntity {
 
     public void setMethod(Method method) {
         this.method = method;
+    }
+
+    public List<DatasetContact> getContacts() {
+        return contacts;
+    }
+
+    public void setContacts(List<DatasetContact> contacts) {
+        this.contacts = contacts;
     }
 
     @Override
