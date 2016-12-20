@@ -518,7 +518,7 @@ CREATE TABLE tbl_contacts
   first_name varchar(50),
   last_name varchar(100),
   phone_number varchar(50),
-  url text,
+  url longvarchar,
   date_updated timestamp DEFAULT current_timestamp(),
   CONSTRAINT pk_contacts PRIMARY KEY (contact_id)
 );
@@ -624,7 +624,7 @@ CREATE TABLE tbl_dataset_masters
   biblio_id integer, -- primary reference for master dataset if available, e.g. buckland & buckland 2006 for bugscep
   master_name varchar(100), -- identification of master dataset, e.g. mal, bugscep, dendrolab
   master_notes longvarchar, -- description of master dataset, its form (e.g. database, lab) and any other relevant information for tracing it.
-  url text, -- website or other url for master dataset, be it a project, lab or... other
+  url longvarchar, -- website or other url for master dataset, be it a project, lab or... other
   date_updated timestamp DEFAULT current_timestamp(),
   CONSTRAINT pk_dataset_masters PRIMARY KEY (master_set_id),
   CONSTRAINT fk_dataset_masters_biblio_id FOREIGN KEY (biblio_id)
