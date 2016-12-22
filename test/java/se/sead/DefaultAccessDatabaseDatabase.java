@@ -1,6 +1,6 @@
 package se.sead;
 
-import se.sead.bugs.AccessReader;
+import se.sead.bugs.AccessDatabase;
 import se.sead.bugs.AccessDatabaseProvider;
 
 /**
@@ -8,18 +8,18 @@ import se.sead.bugs.AccessDatabaseProvider;
  */
 public class DefaultAccessDatabaseDatabase implements AccessDatabaseProvider {
 
-    private AccessReader accessReader;
+    private AccessDatabase accessDatabase;
 
-    public DefaultAccessDatabaseDatabase(AccessReader accessReader){
-        this.accessReader = accessReader;
+    public DefaultAccessDatabaseDatabase(AccessDatabase accessDatabase){
+        this.accessDatabase = accessDatabase;
     }
 
     public DefaultAccessDatabaseDatabase(String mdbFileFullPath){
-        this(new AccessReader(mdbFileFullPath));
+        this(new AccessDatabase(mdbFileFullPath));
     }
 
     @Override
-    public AccessReader getReader() {
-        return accessReader;
+    public AccessDatabase getReader() {
+        return accessDatabase;
     }
 }

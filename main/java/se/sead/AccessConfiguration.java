@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.stereotype.Component;
 import se.sead.bugs.AccessDatabaseProvider;
-import se.sead.bugs.AccessReader;
+import se.sead.bugs.AccessDatabase;
 
 import java.io.File;
 import java.util.Collections;
@@ -39,11 +39,11 @@ public class AccessConfiguration implements AccessDatabaseProvider {
     }
 
     @Override
-    public AccessReader getReader() {
+    public AccessDatabase getReader() {
         if( ! fileExists()){
             throw new IllegalArgumentException("No mdb file specified");
         }
-        return new AccessReader(accessDatabaseFile);
+        return new AccessDatabase(accessDatabaseFile);
     }
 
     private boolean fileExists() {

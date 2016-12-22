@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import se.sead.bugs.AccessReader;
+import se.sead.bugs.AccessDatabase;
 import se.sead.bugs.AccessDatabaseProvider;
 import se.sead.bugs.BugsTable;
 import se.sead.bugs.TraceableBugsData;
@@ -54,7 +54,7 @@ public abstract class BugsSeadMapper<BugsType extends TraceableBugsData, SeadTyp
         return new MappingResult<>();
     }
 
-    private AccessReader getAccessReader() {
+    private AccessDatabase getAccessReader() {
         return accessDatabaseProvider.getReader();
     }
 

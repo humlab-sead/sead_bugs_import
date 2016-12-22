@@ -5,5 +5,5 @@ package se.sead.bugs;
  */
 public interface AccessDatabaseProvider {
 
-    public AccessReader getReader();
+    public AccessDatabase getReader();
 }

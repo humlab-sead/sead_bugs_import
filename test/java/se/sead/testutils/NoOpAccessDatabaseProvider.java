@@ -1,11 +1,11 @@
 package se.sead.testutils;
 
-import se.sead.bugs.AccessReader;
+import se.sead.bugs.AccessDatabase;
 import se.sead.bugs.AccessDatabaseProvider;
 
 public class NoOpAccessDatabaseProvider implements AccessDatabaseProvider {
     @Override
-    public AccessReader getReader() {
+    public AccessDatabase getReader() {
         return null;
     }
 }

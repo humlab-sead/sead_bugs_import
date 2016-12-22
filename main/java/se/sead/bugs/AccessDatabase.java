@@ -8,10 +8,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Created by erer0001 on 2016-04-22.
- */
-public class AccessReader {
+public class AccessDatabase {
 
     public static final List<Database.FileFormat> SUPPORTED_FORMATS =
             Arrays.asList(
@@ -23,7 +20,7 @@ public class AccessReader {
 
     private Database accessDatabase;
 
-    public AccessReader(String fileName){
+    public AccessDatabase(String fileName){
         try {
             accessDatabase = DatabaseBuilder.open(new File(fileName));
             checkFileFormat(accessDatabase);
@@ -41,5 +38,9 @@ public class AccessReader {
     public <T> List<T> read(BugsTable<T> bugsTable){
         TableReader reader = new TableReader(accessDatabase);
         return reader.read(bugsTable);
+    }
+
+    public Database getAccessDatabase(){
+        return accessDatabase;
     }
 }

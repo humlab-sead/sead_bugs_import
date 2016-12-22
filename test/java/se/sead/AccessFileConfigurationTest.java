@@ -3,7 +3,7 @@ package se.sead;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.boot.ApplicationArguments;
-import se.sead.bugs.AccessReader;
+import se.sead.bugs.AccessDatabase;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -23,7 +23,7 @@ public class AccessFileConfigurationTest {
     @Test
     public void fallbackProperty(){
         AccessConfiguration configuration = new AccessConfiguration(EXISTING_MDB, new MockApplicationArguments("", false));
-        AccessReader reader = configuration.getReader();
+        AccessDatabase reader = configuration.getReader();
         Assert.assertNotNull(reader);
     }
 
