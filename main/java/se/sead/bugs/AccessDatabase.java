@@ -35,11 +35,6 @@ public class AccessDatabase {
         }
     }
 
-    public <T> List<T> read(BugsTable<T> bugsTable){
-        TableReader reader = new TableReader(accessDatabase);
-        return reader.read(bugsTable);
-    }
-
     public Database getAccessDatabase(){
         return accessDatabase;
     }

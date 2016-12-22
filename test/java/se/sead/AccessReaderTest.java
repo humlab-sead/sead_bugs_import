@@ -1,6 +1,7 @@
 package se.sead;
 
 import se.sead.bugs.AccessDatabase;
+import se.sead.bugs.AccessReader;
 import se.sead.bugs.BugsTable;
 import se.sead.bugs.TraceableBugsData;
 
@@ -29,8 +30,8 @@ public abstract class AccessReaderTest<T extends TraceableBugsData> {
         this.baseDirectory = baseDirectory;
     }
 
-    private void readTable(AccessDatabase reader, BugsTable<T> bugsTable, List<T> expectedResults, Comparator<T> resultSorter){
-        List<T> readItems = reader.read(bugsTable);
+    private void readTable(AccessDatabase accessDatabase, BugsTable<T> bugsTable, List<T> expectedResults, Comparator<T> resultSorter){
+        List<T> readItems = readItems(accessDatabase, bugsTable);
         if(resultSorter != null){
             Collections.sort(expectedResults, resultSorter);
             Collections.sort(readItems, resultSorter);
@@ -41,6 +42,11 @@ public abstract class AccessReaderTest<T extends TraceableBugsData> {
             logData(expectedResults, readItems);
             throw ae;
         }
+    }
+
+    private List<T> readItems(AccessDatabase accessDatabase, BugsTable<T> bugsTable){
+        AccessReader reader = new AccessReader(accessDatabase);
+        return reader.read(bugsTable);
     }
 
     private void logData(List<T> expectedResults, List<T> readItems) {
