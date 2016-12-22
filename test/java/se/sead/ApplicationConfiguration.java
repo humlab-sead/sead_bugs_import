@@ -1,10 +1,10 @@
 package se.sead;
 
-import se.sead.bugs.AccessReaderProvider;
+import se.sead.bugs.AccessDatabaseProvider;
 
 import javax.sql.DataSource;
 
 public interface ApplicationConfiguration {
-    AccessReaderProvider getDatabaseReader();
+    AccessDatabaseProvider getDatabaseReader();
     DataSource createDataSource();
 }

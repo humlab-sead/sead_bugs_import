@@ -4,20 +4,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.stereotype.Component;
+import se.sead.bugs.AccessDatabaseProvider;
 import se.sead.bugs.AccessReader;
-import se.sead.bugs.AccessReaderProvider;
 
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
 @Component
-public class AccessFileConfiguration implements AccessReaderProvider{
+public class AccessConfiguration implements AccessDatabaseProvider {
 
     private String accessDatabaseFile;
 
     @Autowired
-    public AccessFileConfiguration(
+    public AccessConfiguration(
             @Value("${file:}")
             String accessDatabaseFile,
             ApplicationArguments arguments){

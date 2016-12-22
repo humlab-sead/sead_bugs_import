@@ -83,8 +83,9 @@ class LogVerification implements BugsTracesAndErrorsVerification.LogVerification
                 listAsserter.assertEmpty(errors);
                 break;
             case "FOSI000012":
-                listAsserter.assertSize(traces, 1);
+                listAsserter.assertSize(traces, 2);
                 abundanceAssertHelper.assertInserts(traces, 1);
+                datasetHelper.assertUpdates(traces, 1);
                 listAsserter.assertEmpty(errors);
                 break;
         }

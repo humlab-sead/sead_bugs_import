@@ -1,20 +1,20 @@
 package se.sead;
 
 import se.sead.bugs.AccessReader;
-import se.sead.bugs.AccessReaderProvider;
+import se.sead.bugs.AccessDatabaseProvider;
 
 /**
  * Created by erer0001 on 2016-05-12.
  */
-public class DefaultAccessDatabaseReader implements AccessReaderProvider {
+public class DefaultAccessDatabaseDatabase implements AccessDatabaseProvider {
 
     private AccessReader accessReader;
 
-    public DefaultAccessDatabaseReader(AccessReader accessReader){
+    public DefaultAccessDatabaseDatabase(AccessReader accessReader){
         this.accessReader = accessReader;
     }
 
-    public DefaultAccessDatabaseReader(String mdbFileFullPath){
+    public DefaultAccessDatabaseDatabase(String mdbFileFullPath){
         this(new AccessReader(mdbFileFullPath));
     }
 

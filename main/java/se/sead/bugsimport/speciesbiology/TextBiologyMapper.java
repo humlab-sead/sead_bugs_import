@@ -2,7 +2,7 @@ package se.sead.bugsimport.speciesbiology;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import se.sead.bugs.AccessReaderProvider;
+import se.sead.bugs.AccessDatabaseProvider;
 import se.sead.bugsimport.BugsSeadMapper;
 import se.sead.bugsimport.speciesbiology.bugsmodel.Biology;
 import se.sead.bugsimport.speciesbiology.bugsmodel.BiologyBugsTable;
@@ -17,7 +17,7 @@ public class TextBiologyMapper extends BugsSeadMapper<Biology, TextBiology> {
 
     @Autowired
     public TextBiologyMapper(
-            AccessReaderProvider accessReaderProvider,
+            AccessDatabaseProvider accessDatabaseProvider,
             BiologyToTextBiologyRowConverter rowConverter,
             BugsValueTranslationService dataTranslationService) {
         super(new BiologyBugsTable(), rowConverter);

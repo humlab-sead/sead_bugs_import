@@ -2,7 +2,7 @@ package se.sead.bugsimport.sitereferences;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import se.sead.bugs.AccessReaderProvider;
+import se.sead.bugs.AccessDatabaseProvider;
 import se.sead.bugsimport.BugsSeadMapper;
 import se.sead.bugsimport.sitereferences.bugsmodel.BugsSiteRef;
 import se.sead.bugsimport.sitereferences.bugsmodel.SiteRefBugsTable;
@@ -15,7 +15,7 @@ public class SiteReferenceBugsSeadMapper extends BugsSeadMapper<BugsSiteRef, Sit
 
     @Autowired
     public SiteReferenceBugsSeadMapper(
-            AccessReaderProvider accessReaderProvider,
+            AccessDatabaseProvider accessDatabaseProvider,
             SiteReferenceBugsTableRowConverter singleBugsTableRowConverterForMapper,
             BugsValueTranslationService dataTranslationService) {
         super(

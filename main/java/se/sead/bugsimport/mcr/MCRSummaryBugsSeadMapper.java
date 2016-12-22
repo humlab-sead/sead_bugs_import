@@ -2,7 +2,7 @@ package se.sead.bugsimport.mcr;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import se.sead.bugs.AccessReaderProvider;
+import se.sead.bugs.AccessDatabaseProvider;
 import se.sead.bugsimport.BugsSeadMapper;
 import se.sead.bugsimport.mcr.bugsmodel.MCRSummaryBugsTable;
 import se.sead.bugsimport.mcr.bugsmodel.MCRSummaryData;
@@ -14,7 +14,7 @@ public class MCRSummaryBugsSeadMapper extends BugsSeadMapper<MCRSummaryData, MCR
 
     @Autowired
     public MCRSummaryBugsSeadMapper(
-            AccessReaderProvider accessReaderProvider,
+            AccessDatabaseProvider accessDatabaseProvider,
             MCRSummaryTableRowConverter singleBugsTableRowConverterForMapper,
             BugsValueTranslationService dataTranslationService) {
         super(

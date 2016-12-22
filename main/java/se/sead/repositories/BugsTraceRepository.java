@@ -13,7 +13,7 @@ public interface BugsTraceRepository extends Repository<BugsTrace, Integer> {
 
     List<BugsTrace> findByBugsTableAndSeadTableAndCompressedBugsData(String bugsTable, String seadTable, String compressedBugsData);
     List<BugsTrace> findByBugsTableAndSeadTableAndCompressedBugsDataOrderByChangeDate(String bugsTable, String seadTable, String compressedBugsData);
-    List<BugsTrace> findByBugsTableAndSeadTableAndBugsIdentifierOrderByChangeDate(String bugsTable, String seadTable, String compressedBugsData);
+    List<BugsTrace> findByBugsTableAndSeadTableAndBugsIdentifierOrderByChangeDate(String bugsTable, String seadTable, String bugsIdentifier);
 
     List<BugsTrace> findBySeadTableAndSeadIdOrderByChangeDate(String seadTable, Integer seadId);
 }

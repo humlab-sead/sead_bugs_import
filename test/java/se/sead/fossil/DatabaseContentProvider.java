@@ -146,6 +146,7 @@ class DatabaseContentProvider implements DatabaseContentVerification.DatabaseCon
     public TestEqualityHelper<Abundance> getEqualityHelper() {
         TestEqualityHelper<Abundance> equalityHelper = new TestEqualityHelper<>();
         equalityHelper.addMethodInformation(new TestEqualityHelper.ClassMethodInformation(SeadSite.class, "getSiteLocations"));
+        equalityHelper.addMethodInformation(new TestEqualityHelper.ClassMethodInformation(Dataset.class, "getContacts"));
         return equalityHelper;
     }
 

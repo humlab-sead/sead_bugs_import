@@ -3,7 +3,7 @@ package se.sead.testutils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import se.sead.*;
-import se.sead.bugs.AccessReaderProvider;
+import se.sead.bugs.AccessDatabaseProvider;
 
 import javax.sql.DataSource;
 
@@ -45,12 +45,12 @@ public abstract class DefaultConfig implements ApplicationConfiguration{
     @Override
     @Bean
     @Primary
-    public AccessReaderProvider getDatabaseReader() {
+    public AccessDatabaseProvider getDatabaseReader() {
         String mdbFile = getMdbFile();
         if(mdbFile == null || mdbFile.isEmpty()){
-            return new NoOpAccessReaderProvider();
+            return new NoOpAccessDatabaseProvider();
         }
-        return new DefaultAccessDatabaseReader(mdbFile);
+        return new DefaultAccessDatabaseDatabase(mdbFile);
     }
 
     @Override

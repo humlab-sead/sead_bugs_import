@@ -6,15 +6,9 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-import se.sead.Application;
-import se.sead.DataSourceFactory;
-import se.sead.DefaultAccessDatabaseReader;
-import se.sead.bugs.AccessReaderProvider;
 import se.sead.bugsimport.mcrnames.McrNamesImporter;
 import se.sead.bugsimport.mcrnames.bugsmodel.BugsMCRNames;
 import se.sead.bugsimport.mcrnames.seadmodel.MCRName;
@@ -24,8 +18,6 @@ import se.sead.repositories.McrNamesRepository;
 import se.sead.testutils.BugsTracesAndErrorsVerification;
 import se.sead.testutils.DatabaseContentVerification;
 import se.sead.testutils.DefaultConfig;
-
-import javax.sql.DataSource;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest

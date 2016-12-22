@@ -2,7 +2,7 @@ package se.sead.bugsimport.mcr;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import se.sead.bugs.AccessReaderProvider;
+import se.sead.bugs.AccessDatabaseProvider;
 import se.sead.bugsimport.BugsSeadMapper;
 import se.sead.bugsimport.mcr.bugsmodel.BirmBeetleDat;
 import se.sead.bugsimport.mcr.bugsmodel.BirmBeetleDatBugsTable;
@@ -17,7 +17,7 @@ public class BirmBeetleToMCRMapper extends BugsSeadMapper<BirmBeetleDat, BirmBee
 
     @Autowired
     public BirmBeetleToMCRMapper(
-            AccessReaderProvider readerProvider,
+            AccessDatabaseProvider readerProvider,
             BirmBeetleDatToBirmBeetleRowConverter rowConverter,
             BugsValueTranslationService dataTranslationService){
         super(new BirmBeetleDatBugsTable(), rowConverter);

@@ -16,32 +16,32 @@ public class AccessFileConfigurationTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void noFileDefined(){
-        AccessFileConfiguration configuration = new AccessFileConfiguration("", new MockApplicationArguments("", false));
+        AccessConfiguration configuration = new AccessConfiguration("", new MockApplicationArguments("", false));
         configuration.getReader();
     }
 
     @Test
     public void fallbackProperty(){
-        AccessFileConfiguration configuration = new AccessFileConfiguration(EXISTING_MDB, new MockApplicationArguments("", false));
+        AccessConfiguration configuration = new AccessConfiguration(EXISTING_MDB, new MockApplicationArguments("", false));
         AccessReader reader = configuration.getReader();
         Assert.assertNotNull(reader);
     }
 
     @Test
     public void fromNamedCommandLineOption(){
-        AccessFileConfiguration configuration = new AccessFileConfiguration("", new MockApplicationArguments(EXISTING_MDB, true));
+        AccessConfiguration configuration = new AccessConfiguration("", new MockApplicationArguments(EXISTING_MDB, true));
         Assert.assertNotNull(configuration.getReader());
     }
 
     @Test
     public void fromNonNamedCommandLineOption(){
-        AccessFileConfiguration configuration = new AccessFileConfiguration("", new MockApplicationArguments(EXISTING_MDB, false));
+        AccessConfiguration configuration = new AccessConfiguration("", new MockApplicationArguments(EXISTING_MDB, false));
         Assert.assertNotNull(configuration.getReader());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void fileNotFound(){
-        AccessFileConfiguration configuration = new AccessFileConfiguration(EXISTING_MDB + ".sql", new MockApplicationArguments("", false));
+        AccessConfiguration configuration = new AccessConfiguration(EXISTING_MDB + ".sql", new MockApplicationArguments("", false));
         configuration.getReader();
     }
 

@@ -3,6 +3,9 @@ package se.sead.bugsimport.fossil.converters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import se.sead.bugsimport.countsheets.seadmodel.SampleGroup;
+import se.sead.bugsimport.fossil.converters.dataset.AbstractDatasetManager;
+import se.sead.bugsimport.fossil.converters.dataset.AbundanceMethodManager;
+import se.sead.bugsimport.fossil.converters.dataset.DatasetData;
 import se.sead.bugsimport.tracing.seadmodel.BugsTrace;
 import se.sead.repositories.BugsTraceRepository;
 import se.sead.repositories.DataTypeRepository;
@@ -15,26 +18,33 @@ import se.sead.sead.data.DatasetMaster;
 import java.util.List;
 
 @Component
-public class DatasetManager {
+public class DatasetManagerWithCreation extends AbstractDatasetManager{
 
     private final Dataset NO_DATA_TYPE_DATASET;
 
-    @Autowired
     private BugsTraceRepository traceRepository;
-    @Autowired
-    private DataTypeRepository dataTypeRepository;
-    @Autowired
-    private DatasetRepository datasetRepository;
-    @Autowired
     private AbundanceMethodManager methodManager;
-
-    private DatasetMaster bugsMasterSet;
+    private DatasetMasterRepository datasetMasterRepository;
 
     @Autowired
-    public DatasetManager(DatasetMasterRepository datasetMasterRepository){
+    public DatasetManagerWithCreation(
+            DataTypeRepository dataTypeRepository,
+            DatasetRepository datasetRepository,
+            AbundanceMethodManager methodManager,
+            DatasetMasterRepository datasetMasterRepository,
+            BugsTraceRepository traceRepository
+    ){
+        super(
+                dataTypeRepository,
+                datasetRepository,
+                methodManager,
+                datasetMasterRepository
+        );
+        this.traceRepository = traceRepository;
+        this.methodManager = methodManager;
         NO_DATA_TYPE_DATASET = new Dataset();
         NO_DATA_TYPE_DATASET.addError("Unsupported countsheet data type");
-        bugsMasterSet = datasetMasterRepository.findBugsMasterSet();
+        this.datasetMasterRepository = datasetMasterRepository;
     }
 
     public Dataset getOrCreateFor(SampleGroup sampleGroup){
@@ -43,7 +53,7 @@ public class DatasetManager {
             throw new IllegalStateException("No sample group imported for supplied sample");
         }
         BugsTrace sampleGroupTrace = sampleGroupTraces.get(0);
-        DatasetData valueCarrier = new DatasetData(sampleGroupTrace);
+        DatasetData valueCarrier = build(sampleGroupTrace);
         if(valueCarrier.getDataType() == null){
             return NO_DATA_TYPE_DATASET;
         }
@@ -54,41 +64,12 @@ public class DatasetManager {
         return dataset;
     }
 
-    private Dataset findDataset(DatasetData valueCarrier){
-        return datasetRepository.findByNameAndDataTypeAndMethodAndMasterDataset(
-                valueCarrier.getCountSheetCode(),
-                valueCarrier.getDataType(),
-                methodManager.getPalaeoentomology(),
-                bugsMasterSet);
-    }
-
     private Dataset createFor(DatasetData valueCarrier){
         Dataset dataset = new Dataset();
         dataset.setName(valueCarrier.getCountSheetCode());
         dataset.setDataType(valueCarrier.getDataType());
         dataset.setMethod(methodManager.getPalaeoentomology());
-        dataset.setMasterDataset(bugsMasterSet);
+        dataset.setMasterDataset(datasetMasterRepository.findBugsMasterSet());
         return dataset;
-    }
-
-    private class DatasetData {
-        private String countSheetCode;
-        private DataType dataType;
-
-        DatasetData(BugsTrace sampleGroupTrace){
-            String bugsData = sampleGroupTrace.getCompressedBugsData().replace("{", "").replace("}", "");
-            String[] components = bugsData.split(",");
-            countSheetCode = components[0];
-            String countSheetType = components[4];
-            dataType = dataTypeRepository.findByName(countSheetType);
-        }
-
-        public String getCountSheetCode() {
-            return countSheetCode;
-        }
-
-        public DataType getDataType() {
-            return dataType;
-        }
     }
 }

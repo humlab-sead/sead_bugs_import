@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import se.sead.bugs.AccessReader;
-import se.sead.bugs.AccessReaderProvider;
+import se.sead.bugs.AccessDatabaseProvider;
 import se.sead.bugs.BugsTable;
 import se.sead.bugs.TraceableBugsData;
 import se.sead.bugsimport.translations.BugsValueTranslationService;
@@ -23,7 +23,7 @@ public abstract class BugsSeadMapper<BugsType extends TraceableBugsData, SeadTyp
     @Autowired
     private BugsValueTranslationService dataTranslationService;
     @Autowired
-    private AccessReaderProvider accessReaderProvider;
+    private AccessDatabaseProvider accessDatabaseProvider;
 
     public BugsSeadMapper(
             BugsTable<BugsType> bugsTable,
@@ -55,7 +55,7 @@ public abstract class BugsSeadMapper<BugsType extends TraceableBugsData, SeadTyp
     }
 
     private AccessReader getAccessReader() {
-        return accessReaderProvider.getReader();
+        return accessDatabaseProvider.getReader();
     }
 
     private List<SeadType> getConvertedValue(BugsType readItem) {

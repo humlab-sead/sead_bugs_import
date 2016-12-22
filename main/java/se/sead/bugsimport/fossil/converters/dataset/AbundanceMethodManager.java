@@ -1,4 +1,4 @@
-package se.sead.bugsimport.fossil.converters;
+package se.sead.bugsimport.fossil.converters.dataset;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

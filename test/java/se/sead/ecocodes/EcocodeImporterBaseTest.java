@@ -4,25 +4,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-import se.sead.Application;
-import se.sead.DataSourceFactory;
-import se.sead.DefaultAccessDatabaseReader;
-import se.sead.bugs.AccessReaderProvider;
 import se.sead.bugs.TraceableBugsData;
 import se.sead.bugsimport.Importer;
 import se.sead.bugsimport.ecocodes.seadmodel.Ecocode;
 import se.sead.repositories.*;
 import se.sead.testutils.BugsTracesAndErrorsVerification;
 import se.sead.testutils.DatabaseContentVerification;
-import se.sead.testutils.DefaultConfig;
 
-import javax.sql.DataSource;
 import java.util.List;
 
 @RunWith(SpringRunner.class)

@@ -2,7 +2,7 @@ package se.sead.bugsimport.countsheets;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import se.sead.bugs.AccessReaderProvider;
+import se.sead.bugs.AccessDatabaseProvider;
 import se.sead.bugsimport.BugsSeadMapper;
 import se.sead.bugsimport.countsheets.bugsmodel.Countsheet;
 import se.sead.bugsimport.countsheets.bugsmodel.CountsheetBugsTable;
@@ -15,7 +15,7 @@ public class SampleGroupBugsSeadMapper extends BugsSeadMapper<Countsheet, Sample
 
     @Autowired
     public SampleGroupBugsSeadMapper(
-            AccessReaderProvider accessReaderProvider,
+            AccessDatabaseProvider accessDatabaseProvider,
             SampleGroupBugsTableRowConverter singleBugsTableRowConverterForMapper,
             BugsValueTranslationService dataTranslationService) {
         super(

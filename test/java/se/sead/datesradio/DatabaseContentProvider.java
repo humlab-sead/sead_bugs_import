@@ -12,6 +12,7 @@ import se.sead.model.TestGeochronology;
 import se.sead.repositories.*;
 import se.sead.sead.data.AnalysisEntity;
 import se.sead.sead.data.DataType;
+import se.sead.sead.data.Dataset;
 import se.sead.sead.data.DatasetMaster;
 import se.sead.sead.methods.Method;
 import se.sead.testutils.DatabaseContentVerification;
@@ -172,6 +173,7 @@ public class DatabaseContentProvider implements DatabaseContentVerification.Data
     public TestEqualityHelper<Geochronology> getEqualityHelper() {
         TestEqualityHelper<Geochronology> equalityHelper = new TestEqualityHelper<>(true);
         equalityHelper.addMethodInformation(new TestEqualityHelper.ClassMethodInformation(SeadSite.class, "getSiteLocations"));
+        equalityHelper.addMethodInformation(new TestEqualityHelper.ClassMethodInformation(Dataset.class, "getContacts"));
         return equalityHelper;
     }
 

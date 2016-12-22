@@ -2,7 +2,7 @@ package se.sead.bugsimport.species;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import se.sead.bugs.AccessReaderProvider;
+import se.sead.bugs.AccessDatabaseProvider;
 import se.sead.bugsimport.BugsSeadMapper;
 import se.sead.bugsimport.species.bugsmodel.INDEX;
 import se.sead.bugsimport.species.bugsmodel.INDEXBugsTable;
@@ -17,7 +17,7 @@ public class TaxonomicOrderIndexMapper extends BugsSeadMapper<INDEX, TaxonomicOr
 
     @Autowired
     public TaxonomicOrderIndexMapper(
-            AccessReaderProvider databaseReader,
+            AccessDatabaseProvider databaseReader,
             INDEXtoTaxonomicOrderRowConverter indexToTaxonomicOrderMappings,
             BugsValueTranslationService dataTranslationService){
         super(new INDEXBugsTable(), indexToTaxonomicOrderMappings);

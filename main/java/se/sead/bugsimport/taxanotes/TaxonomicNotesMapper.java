@@ -2,7 +2,7 @@ package se.sead.bugsimport.taxanotes;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import se.sead.bugs.AccessReaderProvider;
+import se.sead.bugs.AccessDatabaseProvider;
 import se.sead.bugsimport.BugsSeadMapper;
 import se.sead.bugsimport.taxanotes.bugsmodel.TaxoNotes;
 import se.sead.bugsimport.taxanotes.bugsmodel.TaxoNotesBugsTable;
@@ -14,7 +14,7 @@ public class TaxonomicNotesMapper extends BugsSeadMapper<TaxoNotes, TaxonomicNot
 
     @Autowired
     public TaxonomicNotesMapper(
-            AccessReaderProvider accessReaderProvider,
+            AccessDatabaseProvider accessDatabaseProvider,
             TaxoNotesTableRowConverter singleBugsTableRowConverterForMapper,
             BugsValueTranslationService dataTranslationService) {
         super(

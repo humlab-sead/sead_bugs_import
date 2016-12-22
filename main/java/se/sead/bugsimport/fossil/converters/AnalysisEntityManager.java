@@ -23,7 +23,7 @@ public class AnalysisEntityManager {
     @Autowired
     private AnalysisEntityRepository aeRepository;
     @Autowired
-    private DatasetManager datasetManager;
+    private DatasetManagerWithCreation datasetManagerWithCreation;
 
     private AnalysisEntityCache cache = new AnalysisEntityCache();
 
@@ -43,7 +43,7 @@ public class AnalysisEntityManager {
         }
 
         SampleGroup sampleGroup = fromLastTrace.getGroup();
-        Dataset dataset = datasetManager.getOrCreateFor(sampleGroup);
+        Dataset dataset = datasetManagerWithCreation.getOrCreateFor(sampleGroup);
 
         if(!dataset.isErrorFree()){
             ErrorCopier.copyPotentialErrors(originalAbundance, dataset);
