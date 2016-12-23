@@ -13,17 +13,19 @@ import java.util.Optional;
 public class AccessSearcher<BugsType extends TraceableBugsData> {
 
     private AccessDatabase accessDatabase;
+    private BugsTable<BugsType> bugsTable;
 
-    public AccessSearcher(AccessDatabase accessDatabase) {
+    public AccessSearcher(AccessDatabase accessDatabase, BugsTable<BugsType> bugsTable) {
         this.accessDatabase = accessDatabase;
+        this.bugsTable = bugsTable;
     }
 
-    public <ColumnType> Optional<BugsType> search(BugsTable<BugsType> bugsTable, SearchCriteria<ColumnType> columnCriteria){
+    public <ColumnType> Optional<BugsType> search(SearchCriteria<ColumnType> columnCriteria){
         try {
-            Table table = getTable(bugsTable);
+            Table table = getTable();
             Row row = findRow(columnCriteria, table);
             if(row != null){
-                return Optional.of(getRowValue(row, bugsTable));
+                return Optional.of(getRowValue(row));
             } else {
                 return Optional.empty();
             }
@@ -32,7 +34,7 @@ public class AccessSearcher<BugsType extends TraceableBugsData> {
         }
     }
 
-    private Table getTable(BugsTable<BugsType> bugsTable) throws IOException {
+    private Table getTable() throws IOException {
         return accessDatabase.getAccessDatabase().getTable(bugsTable.getTableName());
     }
 
@@ -58,7 +60,7 @@ public class AccessSearcher<BugsType extends TraceableBugsData> {
         return criteria;
     }
 
-    private BugsType getRowValue(Row row, BugsTable<BugsType> bugsTable) {
+    private BugsType getRowValue(Row row) {
         return  bugsTable.createItem(row);
     }
 

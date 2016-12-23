@@ -37,7 +37,6 @@ public class AccessSearchTest {
 
     @Autowired
     private AccessDatabaseProvider databaseProvider;
-    private BugsTable<BugsSite> siteTable = new BugsSiteBugsTable();
     private AccessSearcher<BugsSite> siteSearcher;
 
     private BugsSite expectedSite01;
@@ -46,7 +45,7 @@ public class AccessSearchTest {
 
     @Before
     public void setup(){
-        siteSearcher = new AccessSearcher<>(databaseProvider.getDatabase());
+        siteSearcher = new AccessSearcher<>(databaseProvider.getDatabase(), new BugsSiteBugsTable());
         expectedSite01 = createBugsSite("SITE000001", "Site name", null, null);
         expectedSite02 = createBugsSite("SITE000002", "Abydos mummies", 26.145428f, 86.0f);
         expectedSite03 = createBugsSite("SITE000003", null, null, null);
@@ -64,7 +63,7 @@ public class AccessSearchTest {
     @Test
     public void searchForStringValue(){
         AccessSearcher.SearchCriteria<String> criteria = new AccessSearcher.SearchCriteria<>("SiteCODE", "SITE000001");
-        Optional<BugsSite> result = siteSearcher.search(siteTable, criteria);
+        Optional<BugsSite> result = siteSearcher.search(criteria);
         assertTrue(result.isPresent());
         assertEquals(expectedSite01, result.get());
     }
@@ -72,7 +71,7 @@ public class AccessSearchTest {
     @Test
     public void searchForFloatValue(){
         AccessSearcher.SearchCriteria<Float> criteria = new AccessSearcher.SearchCriteria<>("LatDD", 26.145428f);
-        Optional<BugsSite> result = siteSearcher.search(siteTable, criteria);
+        Optional<BugsSite> result = siteSearcher.search(criteria);
         assertTrue(result.isPresent());
         assertEquals(expectedSite02, result.get());
     }
@@ -80,7 +79,7 @@ public class AccessSearchTest {
     @Test
     public void searchForNullValue(){
         AccessSearcher.SearchCriteria<String> criteria = new AccessSearcher.SearchCriteria<>("SiteName", null);
-        Optional<BugsSite> result = siteSearcher.search(siteTable, criteria);
+        Optional<BugsSite> result = siteSearcher.search(criteria);
         assertTrue(result.isPresent());
         assertEquals(expectedSite03, result.get());
     }
@@ -88,13 +87,13 @@ public class AccessSearchTest {
     @Test(expected = AccessSearcher.MultipleResultException.class)
     public void multipleFindsGetFirst(){
         AccessSearcher.SearchCriteria<String> criteria = new AccessSearcher.SearchCriteria<>("Region", null);
-        Optional<BugsSite> result = siteSearcher.search(siteTable, criteria);
+        Optional<BugsSite> result = siteSearcher.search(criteria);
     }
 
     @Test
     public void noResults(){
         AccessSearcher.SearchCriteria<String> criteria = new AccessSearcher.SearchCriteria<>("SiteName", "Wrong name");
-        Optional<BugsSite> result = siteSearcher.search(siteTable, criteria);
+        Optional<BugsSite> result = siteSearcher.search(criteria);
         assertFalse(result.isPresent());
     }
 }
