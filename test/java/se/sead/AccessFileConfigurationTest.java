@@ -17,32 +17,32 @@ public class AccessFileConfigurationTest {
     @Test(expected = IllegalArgumentException.class)
     public void noFileDefined(){
         AccessConfiguration configuration = new AccessConfiguration("", new MockApplicationArguments("", false));
-        configuration.getReader();
+        configuration.getDatabase();
     }
 
     @Test
     public void fallbackProperty(){
         AccessConfiguration configuration = new AccessConfiguration(EXISTING_MDB, new MockApplicationArguments("", false));
-        AccessDatabase reader = configuration.getReader();
+        AccessDatabase reader = configuration.getDatabase();
         Assert.assertNotNull(reader);
     }
 
     @Test
     public void fromNamedCommandLineOption(){
         AccessConfiguration configuration = new AccessConfiguration("", new MockApplicationArguments(EXISTING_MDB, true));
-        Assert.assertNotNull(configuration.getReader());
+        Assert.assertNotNull(configuration.getDatabase());
     }
 
     @Test
     public void fromNonNamedCommandLineOption(){
         AccessConfiguration configuration = new AccessConfiguration("", new MockApplicationArguments(EXISTING_MDB, false));
-        Assert.assertNotNull(configuration.getReader());
+        Assert.assertNotNull(configuration.getDatabase());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void fileNotFound(){
         AccessConfiguration configuration = new AccessConfiguration(EXISTING_MDB + ".sql", new MockApplicationArguments("", false));
-        configuration.getReader();
+        configuration.getDatabase();
     }
 
     private static class MockApplicationArguments implements ApplicationArguments {

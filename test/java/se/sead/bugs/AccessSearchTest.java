@@ -46,7 +46,7 @@ public class AccessSearchTest {
 
     @Before
     public void setup(){
-        siteSearcher = new AccessSearcher<>(databaseProvider.getReader());
+        siteSearcher = new AccessSearcher<>(databaseProvider.getDatabase());
         expectedSite01 = createBugsSite("SITE000001", "Site name", null, null);
         expectedSite02 = createBugsSite("SITE000002", "Abydos mummies", 26.145428f, 86.0f);
         expectedSite03 = createBugsSite("SITE000003", null, null, null);

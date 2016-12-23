@@ -39,7 +39,7 @@ public class AccessConfiguration implements AccessDatabaseProvider {
     }
 
     @Override
-    public AccessDatabase getReader() {
+    public AccessDatabase getDatabase() {
         if( ! fileExists()){
             throw new IllegalArgumentException("No mdb file specified");
         }

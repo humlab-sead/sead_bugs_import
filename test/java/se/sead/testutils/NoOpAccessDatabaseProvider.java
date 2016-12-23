@@ -5,7 +5,7 @@ import se.sead.bugs.AccessDatabaseProvider;
 
 public class NoOpAccessDatabaseProvider implements AccessDatabaseProvider {
     @Override
-    public AccessDatabase getReader() {
+    public AccessDatabase getDatabase() {
         return null;
     }
 }

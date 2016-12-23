@@ -19,7 +19,7 @@ public class DefaultAccessDatabaseDatabase implements AccessDatabaseProvider {
     }
 
     @Override
-    public AccessDatabase getReader() {
+    public AccessDatabase getDatabase() {
         return accessDatabase;
     }
 }

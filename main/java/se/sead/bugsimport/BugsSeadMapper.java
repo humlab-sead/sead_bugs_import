@@ -57,7 +57,7 @@ public abstract class BugsSeadMapper<BugsType extends TraceableBugsData, SeadTyp
     }
 
     private AccessDatabase getAccessReader() {
-        return accessDatabaseProvider.getReader();
+        return accessDatabaseProvider.getDatabase();
     }
 
     private List<SeadType> getConvertedValue(BugsType readItem) {
