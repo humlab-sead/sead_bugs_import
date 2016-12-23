@@ -42,19 +42,19 @@ insert into tbl_taxonomic_order (taxonomic_order_id, taxon_id, taxonomic_code, t
 
 insert into tbl_sites (site_id, site_name) values (1, 'No contacts');
 insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
-values (1, 'TSite', '{SITE000001,No contacts,r,c,n,la,lo,a,,interp,}', 'SITE000001', 'tbl_sites', 1);
+values (1, 'TSite', '{SITE000001,No contacts,,,,,,,,interp,}', 'SITE000001', 'tbl_sites', 1);
 insert into tbl_sites (site_id, site_name) values (2, 'Two contacts');
 insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
-values (2, 'TSite', '{SITE000002,Two contacts,r,c,n,la,lo,a,Archer,interp,University of Carpatia}', 'SITE000002', 'tbl_sites', 2);
+values (2, 'TSite', '{SITE000002,Two contacts,,,,,,,Archer,interp,University of Carpatia}', 'SITE000002', 'tbl_sites', 2);
 insert into tbl_sites (site_id, site_name) values (3, 'One contact exists');
 insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
-values (3, 'TSite', '{SITE000003,One contact exists,r,c,n,la,lo,a,A new person,interp,University of Ottawa}', 'SITE000003', 'tbl_sites', 3);
+values (3, 'TSite', '{SITE000003,One contact exists,,,,,,,A new person,interp,University of Ottawa}', 'SITE000003', 'tbl_sites', 3);
 insert into tbl_sites (site_id, site_name) values (4, 'Two contacts exist');
 insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
-values (4, 'TSite', '{SITE000004,Two contacts exist,r,c,n,la,lo,a,First;Second,interp,University of Bolivia}', 'SITE000004', 'tbl_sites', 4);
+values (4, 'TSite', '{SITE000004,Two contacts exist,,,,,,,First;Second,interp,University of Bolivia}', 'SITE000004', 'tbl_sites', 4);
 insert into tbl_sites (site_id, site_name) values (5, 'Contact should only be created once');
 insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
-values (5, 'TSite', '{SITE000005,Contact should only be created once,r,c,n,la,lo,a,,interp,University of Carpatia}', 'SITE000005', 'tbl_sites', 5);
+values (5, 'TSite', '{SITE000005,Contact should only be created once,,,,,,,,interp,University of Carpatia}', 'SITE000005', 'tbl_sites', 5);
 
 insert into tbl_sample_groups (sample_group_id, site_id, sampling_context_id, method_id, sample_group_name)
 values (1, 1, 1, 1, 'Sheet for site 1');
