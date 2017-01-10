@@ -6,6 +6,8 @@ import se.sead.bugs.TraceableBugsData;
 import se.sead.bugsimport.tracing.TracePersister;
 import se.sead.sead.model.LoggableEntity;
 
+import java.util.ArrayList;
+
 public abstract class Persister<BugsType extends TraceableBugsData, SeadType extends LoggableEntity> {
 
     @Autowired
@@ -23,8 +25,9 @@ public abstract class Persister<BugsType extends TraceableBugsData, SeadType ext
     }
 
     private void doSave(MappingResult.BugsListSeadMapping<BugsType, SeadType> mappedData){
+        ArrayList<SeadType> stuff = new ArrayList<>(mappedData.getSeadData());
         for (SeadType seadData:
-                mappedData.getSeadData()) {
+                stuff) {
             try {
                 SeadType savedItem = save(seadData);
                 mappedData.setSavedData(seadData, savedItem);
@@ -34,6 +37,7 @@ public abstract class Persister<BugsType extends TraceableBugsData, SeadType ext
                 insertErrorLog(mappedData);
             }
         }
+        mappedData.resyncStoredItems();
     }
 
     protected abstract SeadType save(SeadType seadValue);

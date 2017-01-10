@@ -1,11 +1,14 @@
 package se.sead.bugsimport;
 
+import javafx.collections.ObservableList;
 import se.sead.bugs.TraceableBugsData;
 import se.sead.sead.model.LoggableEntity;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
+import java.util.stream.Stream;
 
 public class MappingResult<BugsType extends TraceableBugsData, SeadType extends LoggableEntity> {
 
@@ -32,6 +35,7 @@ public class MappingResult<BugsType extends TraceableBugsData, SeadType extends 
         private Boolean cachedIsErrorFree = null;
         private Boolean cachedIsNewData = null;
         private Boolean cachedIsUpdated = null;
+        private List<SeadType> storedSeadData;
 
         public BugsListSeadMapping(BugsType bugsData, List<SeadType> seadData){
             this.bugsData = bugsData;
@@ -73,13 +77,19 @@ public class MappingResult<BugsType extends TraceableBugsData, SeadType extends 
 
         public List<String> getErrorMessages(){
             List<String> errors = new ArrayList<>();
-            seadData.stream().forEach(seadType -> errors.addAll(seadType.getErrors()));
+            seadData.forEach(seadType -> errors.addAll(seadType.getErrors()));
             return errors;
         }
 
         public void setSavedData(SeadType preStoredVersion, SeadType postStoredVersion){
-            int positionOfPreStoredVersion = seadData.indexOf(preStoredVersion);
-            seadData.set(positionOfPreStoredVersion, postStoredVersion);
+            if(storedSeadData == null){
+                storedSeadData = new ArrayList<>(seadData.size());
+            }
+            storedSeadData.add(postStoredVersion);
+        }
+
+        public void resyncStoredItems() {
+            seadData = storedSeadData;
         }
     }
 }

@@ -46,7 +46,7 @@ class ContactDatabaseContentProvider implements DatabaseContentVerification.Data
         return new TestEqualityHelper<>();
     }
 
-    private static class ContactComparator implements Comparator<Contact>{
+    static class ContactComparator implements Comparator<Contact>{
         @Override
         public int compare(Contact o1, Contact o2) {
             String o1String = getName(o1);

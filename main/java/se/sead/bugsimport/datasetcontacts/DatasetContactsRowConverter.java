@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import se.sead.bugsimport.BugsTableRowConverter;
 import se.sead.bugsimport.countsheets.bugsmodel.Countsheet;
+import se.sead.bugsimport.datasetcontacts.updater.DatasetContactUpdater;
 import se.sead.sead.data.Dataset;
 import se.sead.sead.data.DatasetContact;
 
@@ -15,6 +16,8 @@ public class DatasetContactsRowConverter implements BugsTableRowConverter<Counts
 
     @Autowired
     private DatasetManagerNoCreation datasetManager;
+    @Autowired
+    private DatasetContactUpdater updater;
 
     @Override
     public List<DatasetContact> convertListForDataRow(Countsheet bugsData) {
@@ -22,7 +25,8 @@ public class DatasetContactsRowConverter implements BugsTableRowConverter<Counts
         if(dataset == null){
             return createWithError("No dataset for count sheet code found");
         } else {
-            throw new UnsupportedOperationException();
+            updater.update(dataset, bugsData.getSiteCode());
+            return dataset.getContacts();
         }
     }
 

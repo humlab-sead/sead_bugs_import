@@ -3,12 +3,15 @@ package se.sead.datasetcontacts;
 import se.sead.model.TestContact;
 import se.sead.model.TestDataset;
 import se.sead.model.TestDatasetContact;
+import se.sead.model.TestEqualityHelper;
 import se.sead.repositories.*;
+import se.sead.sead.data.Dataset;
 import se.sead.sead.data.DatasetContact;
 import se.sead.sead.data.DatasetMaster;
 import se.sead.testutils.DatabaseContentVerification;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 class DatasetContactDatabaseContentProvider implements DatabaseContentVerification.DatabaseContentTestDataProvider<DatasetContact>{
@@ -89,5 +92,35 @@ class DatasetContactDatabaseContentProvider implements DatabaseContentVerificati
     @Override
     public List<DatasetContact> getActualData() {
         return datasetContactRepository.findAll();
+    }
+
+    @Override
+    public Comparator<DatasetContact> getSorter() {
+        return new DatasetContactComparator();
+    }
+
+    @Override
+    public TestEqualityHelper<DatasetContact> getEqualityHelper() {
+        return new TestEqualityHelper<>();
+    }
+
+    private static class DatasetContactComparator implements Comparator<DatasetContact> {
+        private ContactDatabaseContentProvider.ContactComparator contactComparator = new ContactDatabaseContentProvider.ContactComparator();
+        @Override
+        public int compare(DatasetContact o1, DatasetContact o2) {
+            if(o1.getDataset().equals(o2.getDataset())) {
+                if (o1.getType().equals(o2.getType())) {
+                    return contactComparator.compare(o1.getContact(), o2.getContact());
+                } else {
+                    return o1.getType().getName().compareTo(o2.getType().getName());
+                }
+            } else {
+                return compareDatasets(o1.getDataset(), o2.getDataset());
+            }
+        }
+
+        private int compareDatasets(Dataset o1, Dataset o2){
+            return o1.getId().compareTo(o2.getId());
+        }
     }
 }

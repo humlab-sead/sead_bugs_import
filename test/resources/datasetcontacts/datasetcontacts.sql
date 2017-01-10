@@ -30,7 +30,7 @@ insert into tbl_sample_types (sample_type_id, type_name) values (1, 'Unspecified
 insert into tbl_data_type_groups (data_type_group_id, data_type_group_name) values (1, 'Presence only');
 insert into tbl_data_types (data_type_id, data_type_group_id, data_type_name) values (1, 1, 'Presence/Absence');
 insert into tbl_dataset_masters (master_set_id, master_name) values (1, 'Bugs database');
-insert into tbl_contact_types (contact_type_id, contact_type_name) values (1, 'Identifications by');
+insert into tbl_contact_types (contact_type_id, contact_type_name) values (1, 'Identified by');
 insert into tbl_contact_types (contact_type_id, contact_type_name) values (2, 'Specimen repository');
 
 insert into tbl_taxa_tree_orders (order_id, order_name) values(1, 'ORDER PENDING CLASSIFICATION');
@@ -142,9 +142,9 @@ values (27, 'TFossil', '{FOSS000001,1.0,SAMP000001,1}', 'FOSS000001', 'tbl_abund
 insert into tbl_contacts (contact_id, first_name) values (2, 'University of Bolivia');
 insert into tbl_dataset_contacts (dataset_contact_id, contact_id, contact_type_id, dataset_id) values (2, 2, 2, 4);
 insert into tbl_contacts (contact_id, last_name) values (3, 'First');
-insert into tbl_dataset_contacts (dataset_contact_id, contact_id, contact_type_id, dataset_id) values (3, 3, 2, 4);
+insert into tbl_dataset_contacts (dataset_contact_id, contact_id, contact_type_id, dataset_id) values (3, 3, 1, 4);
 insert into tbl_contacts (contact_id, last_name) values (4, 'Second');
-insert into tbl_dataset_contacts (dataset_contact_id, contact_id, contact_type_id, dataset_id) values (3, 4, 2, 4);
+insert into tbl_dataset_contacts (dataset_contact_id, contact_id, contact_type_id, dataset_id) values (4, 4, 1, 4);
 
 insert into tbl_datasets (dataset_id, master_set_id, method_id, data_type_id, dataset_name) values (5, 1, 3, 1, 'COUN000005');
 insert into tbl_analysis_entities (analysis_entity_id, physical_sample_id, dataset_id) values (5, 5, 5);

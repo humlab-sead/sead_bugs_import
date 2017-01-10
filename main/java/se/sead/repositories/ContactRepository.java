@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface ContactRepository extends Repository<Contact, Integer> {
     List<Contact> findAll();
+
+    Contact getByFirstNameAndLastName(String firstName, String lastName);
 }

@@ -72,8 +72,8 @@ public class DatasetContactImportTest {
 
     @Test
     public void run(){
-//        importer.run();
-//        datasetContactDatabaseContentVerification.verifyDatabaseContent();
-//        contactDatabaseContentVerification.verifyDatabaseContent();
+        importer.run();
+        datasetContactDatabaseContentVerification.verifyDatabaseContent();
+        contactDatabaseContentVerification.verifyDatabaseContent();
     }
 }
