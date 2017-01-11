@@ -3,6 +3,7 @@ package se.sead.bugsimport.datasetcontacts.updater;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import se.sead.repositories.ContactTypeRepository;
+import se.sead.repositories.DatasetContactRepository;
 import se.sead.sead.data.Dataset;
 import se.sead.sead.data.DatasetContact;
 
@@ -15,9 +16,15 @@ public class DatasetContactUpdater {
     @Autowired
     private SiteContactReader siteContactReader;
     private SiteContactToDatasetContactParser parser;
+    private DatasetContactRepository datasetContactRepository;
 
     @Autowired
-    public DatasetContactUpdater(ContactTypeRepository contactTypeRepository, ContactCacheAndRepositoryAccessor contactCacheAndRepositoryAccessor) {
+    public DatasetContactUpdater(
+            ContactTypeRepository contactTypeRepository,
+            ContactCacheAndRepositoryAccessor contactCacheAndRepositoryAccessor,
+            DatasetContactRepository datasetContactRepository
+    ) {
+        this.datasetContactRepository = datasetContactRepository;
         this.parser = new SiteContactToDatasetContactParser(contactTypeRepository, contactCacheAndRepositoryAccessor);
     }
 
@@ -32,15 +39,17 @@ public class DatasetContactUpdater {
     }
 
     private void update(Dataset dataset, List<DatasetContact> contactsFromTSite){
-        if(dataset.getContacts() == null || dataset.getContacts().isEmpty()){
-            dataset.setContacts(contactsFromTSite);
+        List<DatasetContact> originals = datasetContactRepository.findByDataset(dataset);
+        if(originals == null || originals.isEmpty()){
+            originals = contactsFromTSite;
         } else if(!contactsFromTSite.isEmpty()){
             contactsFromTSite.removeIf(
                     datasetContact -> existIn(datasetContact, dataset.getContacts())
             );
-            dataset.getContacts().addAll(contactsFromTSite);
+            originals.addAll(contactsFromTSite);
         }
-        dataset.getContacts().forEach(datasetContact -> datasetContact.setDataset(dataset));
+        originals.forEach(datasetContact -> datasetContact.setDataset(dataset));
+        dataset.setContacts(originals);
     }
 
     private boolean existIn(DatasetContact queriedDatasetContact, List<DatasetContact> collection){
