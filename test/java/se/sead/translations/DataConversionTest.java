@@ -201,4 +201,14 @@ public class DataConversionTest {
         assertEquals(BigDecimal.ONE, nullCarrier.getNumericValue());
         assertEquals("NonEmptyValue", nullCarrier.getColumnValue());
     }
+
+    @Test
+    public void typeTranslationCheckCompressedValueBeforeAndAfterTranslation(){
+        TypeTranslation typeTranslation = createTypeTranslation(TraceableBugsDataImpl.TEST_IMPLEMENTATION_BUGS_TABLE_NAME, "columnValue", null, "columnValue", "NonEmptyValue");
+        typeTranslationRepository.saveOrUpdate(typeTranslation);
+        TraceableBugsDataImpl traceableBugsData = createTraceableBugsData(1, null, BigDecimal.ONE);
+        translationEngine.translateValues(traceableBugsData);
+        assertEquals("{1,null,1}", traceableBugsData.getCompressedStringBeforeTranslation());
+        assertEquals("{1,NonEmptyValue,1}", traceableBugsData.compressToString());
+    }
 }

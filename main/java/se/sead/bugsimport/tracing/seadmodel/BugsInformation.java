@@ -20,6 +20,8 @@ public abstract class BugsInformation {
     @Column(name="change_date", insertable = false)
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date changeDate;
+    @Column(name = "translated_compressed_data")
+    private String translatedCompressedData;
 
     public final String getBugsTable() {
         return bugsTable;
@@ -39,13 +41,18 @@ public abstract class BugsInformation {
         this.changeDate = changeDate;
     }
 
+    public String getTranslatedCompressedData() {
+        return translatedCompressedData;
+    }
+
     public void setBugsData(TraceableBugsData bugsData){
         bugsTable = bugsData.bugsTable();
         compressedBugsData = bugsData.getCompressedStringBeforeTranslation();
-        bugsIdentifier = bugsData.getBugsIdentifier();
+        translatedCompressedData = bugsData.compressToString();
         if(compressedBugsData == null) {
-            compressedBugsData = bugsData.compressToString();
+            compressedBugsData = translatedCompressedData;
         }
+        bugsIdentifier = bugsData.getBugsIdentifier();
     }
 
     @Override
