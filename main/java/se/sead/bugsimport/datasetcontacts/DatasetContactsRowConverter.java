@@ -21,8 +21,11 @@ public class DatasetContactsRowConverter implements BugsTableRowConverter<Counts
 
     @Override
     public List<DatasetContact> convertListForDataRow(Countsheet bugsData) {
+        if(bugsData == null || bugsData.getCode() == null || bugsData.getCode().isEmpty()){
+            return createWithError("No dataset can be found for empty countsheet code");
+        }
         Dataset dataset = datasetManager.find(bugsData.getCode());
-        if(!dataset.isErrorFree()){
+        if(dataset == null || !dataset.isErrorFree()){
             return createWithError("No dataset for count sheet code found");
         } else {
             updater.update(dataset, bugsData.getSiteCode());

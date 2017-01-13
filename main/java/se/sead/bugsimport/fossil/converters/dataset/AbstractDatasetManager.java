@@ -37,7 +37,7 @@ public class AbstractDatasetManager {
     }
 
     protected DatasetData build(BugsTrace sampleGroupTrace){
-        String bugsData = sampleGroupTrace.getCompressedBugsData().replace("{", "").replace("}", "");
+        String bugsData = sampleGroupTrace.getTranslatedCompressedData().replace("{", "").replace("}", "");
         String[] components = bugsData.split(",");
         String countSheetCode = components[0];
         String countSheetType = components[4];
