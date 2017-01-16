@@ -11,9 +11,7 @@ import se.sead.repositories.BugsTraceRepository;
 import se.sead.repositories.DataTypeRepository;
 import se.sead.repositories.DatasetMasterRepository;
 import se.sead.repositories.DatasetRepository;
-import se.sead.sead.data.DataType;
 import se.sead.sead.data.Dataset;
-import se.sead.sead.data.DatasetMaster;
 
 import java.util.List;
 
@@ -25,6 +23,7 @@ public class DatasetManagerWithCreation extends AbstractDatasetManager{
     private BugsTraceRepository traceRepository;
     private AbundanceMethodManager methodManager;
     private DatasetMasterRepository datasetMasterRepository;
+    private DatasetCache datasetCache;
 
     @Autowired
     public DatasetManagerWithCreation(
@@ -32,7 +31,8 @@ public class DatasetManagerWithCreation extends AbstractDatasetManager{
             DatasetRepository datasetRepository,
             AbundanceMethodManager methodManager,
             DatasetMasterRepository datasetMasterRepository,
-            BugsTraceRepository traceRepository
+            BugsTraceRepository traceRepository,
+            DatasetCache datasetCache
     ){
         super(
                 dataTypeRepository,
@@ -42,6 +42,7 @@ public class DatasetManagerWithCreation extends AbstractDatasetManager{
         );
         this.traceRepository = traceRepository;
         this.methodManager = methodManager;
+        this.datasetCache = datasetCache;
         NO_DATA_TYPE_DATASET = new Dataset();
         NO_DATA_TYPE_DATASET.addError("Unsupported countsheet data type");
         this.datasetMasterRepository = datasetMasterRepository;
@@ -59,9 +60,19 @@ public class DatasetManagerWithCreation extends AbstractDatasetManager{
         }
         Dataset dataset = findDataset(valueCarrier);
         if(dataset == null){
-            return createFor(valueCarrier);
+            dataset = createFor(valueCarrier);
+            datasetCache.put(dataset);
         }
         return dataset;
+    }
+
+    @Override
+    protected Dataset findDataset(DatasetData valueCarrier) {
+        Dataset dataset = datasetCache.get(valueCarrier.getCountSheetCode());
+        if(dataset != null){
+            return dataset;
+        }
+        return super.findDataset(valueCarrier);
     }
 
     private Dataset createFor(DatasetData valueCarrier){
@@ -72,4 +83,5 @@ public class DatasetManagerWithCreation extends AbstractDatasetManager{
         dataset.setMasterDataset(datasetMasterRepository.findBugsMasterSet());
         return dataset;
     }
+
 }

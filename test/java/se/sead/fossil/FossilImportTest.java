@@ -1,5 +1,6 @@
 package se.sead.fossil;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,8 @@ import se.sead.bugsimport.fossil.FossilImporter;
 import se.sead.bugsimport.fossil.bugsmodel.Fossil;
 import se.sead.bugsimport.fossil.seadmodel.Abundance;
 import se.sead.repositories.*;
+import se.sead.sead.data.AnalysisEntity;
+import se.sead.sead.data.Dataset;
 import se.sead.testutils.BugsTracesAndErrorsVerification;
 import se.sead.testutils.DatabaseContentVerification;
 import se.sead.testutils.DefaultConfig;
@@ -45,40 +48,64 @@ public class FossilImportTest {
     private BugsTraceRepository traceRepository;
     @Autowired
     private BugsErrorRepository errorRepository;
+    @Autowired
+    private DatasetRepository datasetRepository;
+    @Autowired
+    private AnalysisEntityRepository analysisEntityRepository;
 
     @Autowired
     private FossilImporter importer;
 
-    @Test
-    public void run(){
-        DatabaseContentVerification<Abundance> databaseContentVerifier = createDatabaseContentVerifier();
-        BugsTracesAndErrorsVerification<Fossil> logVerification = createLogVerification();
-        importer.run();
-        databaseContentVerifier.verifyDatabaseContent();
-        logVerification.verifyTraceContent();
-    }
+    private DatabaseContentVerification<Abundance> abundanceDatabaseContentVerifier;
+    private DatabaseContentVerification<Dataset> datasetDatabaseContentVerifier;
+    private DatabaseContentVerification<AnalysisEntity> analysisEntityDatabaseContentVerifier;
+    private BugsTracesAndErrorsVerification<Fossil> abundanceLogVerification;
 
-    private DatabaseContentVerification<Abundance> createDatabaseContentVerifier(){
-        return new DatabaseContentVerification<>(
-              new DatabaseContentProvider(
-                      sampleRepository,
-                      speciesRepository,
-                      dataTypeRepository,
-                      methodRepository,
-                      datasetMasterRepository,
-                      abundanceRepository
+    @Before
+    public void setup(){
+        abundanceDatabaseContentVerifier = new DatabaseContentVerification<>(
+                new AbundanceDatabaseContentProvider(
+                        sampleRepository,
+                        speciesRepository,
+                        dataTypeRepository,
+                        methodRepository,
+                        datasetMasterRepository,
+                        abundanceRepository
                 )
         );
-    }
-
-    private BugsTracesAndErrorsVerification<Fossil> createLogVerification(){
-        return new BugsTracesAndErrorsVerification.ByIdentity<>(
+        datasetDatabaseContentVerifier = new DatabaseContentVerification<>(
+                new DatasetDatabaseContentProvider(
+                    dataTypeRepository,
+                        methodRepository,
+                        datasetMasterRepository,
+                        datasetRepository
+                )
+        );
+        analysisEntityDatabaseContentVerifier = new DatabaseContentVerification<>(
+                new AnalysisEntityDatabaseContentProvider(
+                        sampleRepository,
+                        datasetMasterRepository,
+                        dataTypeRepository,
+                        methodRepository,
+                        analysisEntityRepository
+                )
+        );
+        abundanceLogVerification = new BugsTracesAndErrorsVerification.ByIdentity<>(
                 traceRepository,
                 errorRepository,
                 new LogVerification(),
                 () -> ExpectedBugsData.EXPECTED_DATA
         );
+
     }
 
+    @Test
+    public void run(){
+        importer.run();
+        abundanceDatabaseContentVerifier.verifyDatabaseContent();
+        analysisEntityDatabaseContentVerifier.verifyDatabaseContent();
+        datasetDatabaseContentVerifier.verifyDatabaseContent();
+        abundanceLogVerification.verifyTraceContent();
+    }
 
 }

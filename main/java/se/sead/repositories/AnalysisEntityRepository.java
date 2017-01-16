@@ -10,4 +10,6 @@ import java.util.List;
 public interface AnalysisEntityRepository extends Repository<AnalysisEntity, Integer> {
 
     List<AnalysisEntity> findBySampleAndDataset(Sample sample, Dataset dataset);
+
+    List<AnalysisEntity> findAll();
 }

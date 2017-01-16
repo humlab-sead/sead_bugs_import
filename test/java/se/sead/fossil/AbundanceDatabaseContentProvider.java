@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-class DatabaseContentProvider implements DatabaseContentVerification.DatabaseContentTestDataProvider<Abundance>{
+class AbundanceDatabaseContentProvider implements DatabaseContentVerification.DatabaseContentTestDataProvider<Abundance>{
 
     private SampleRepository sampleRepository;
     private SpeciesRepository speciesRepository;
@@ -30,7 +30,7 @@ class DatabaseContentProvider implements DatabaseContentVerification.DatabaseCon
     private DatasetMaster bugsDataset;
     private AbundanceRepository abundanceRepository;
 
-    DatabaseContentProvider(
+    AbundanceDatabaseContentProvider(
             SampleRepository sampleRepository,
             SpeciesRepository speciesRepository,
             DataTypeRepository dataTypeRepository,
