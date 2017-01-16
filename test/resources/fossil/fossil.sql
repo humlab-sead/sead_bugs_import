@@ -43,18 +43,18 @@ values (4, 3, 'C14 Std', 'C14 Std');
 
 insert into tbl_sample_groups (sample_group_id, site_id, sampling_context_id, method_id, sample_group_name)
 values (1, 1, 1, 1, 'Testsheet 1');
-insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
-values (2, 'TCountsheet', '{COUN000001,Testsheet 1,SITE000001,Archaeological contexts,Presence/Absence}', 'COUN000001', 'tbl_sample_groups', 1);
+insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, translated_compressed_data, bugs_identifier, sead_table, sead_reference_id)
+values (2, 'TCountsheet', '{COUN000001,Testsheet 1,SITE000001,Archaeological contexts,Presence/Absence}', '{COUN000001,Testsheet 1,SITE000001,Archaeological contexts,Presence/Absence}', 'COUN000001', 'tbl_sample_groups', 1);
 
 insert into tbl_sample_groups (sample_group_id, site_id, sampling_context_id, method_id, sample_group_name)
 values (2, 1, 1, 1, 'No sheet type match');
-insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
-values (3, 'TCountsheet', '{COUN000002,No sheet type match,SITE000001,Archaeological contexts,NMI}', 'COUN000002', 'tbl_sample_groups', 2);
+insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, translated_compressed_data, bugs_identifier, sead_table, sead_reference_id)
+values (3, 'TCountsheet', '{COUN000002,No sheet type match,SITE000001,Archaeological contexts,NMI}', '{COUN000002,No sheet type match,SITE000001,Archaeological contexts,NMI}', 'COUN000002', 'tbl_sample_groups', 2);
 
 insert into tbl_sample_groups (sample_group_id, site_id, sampling_context_id, method_id, sample_group_name)
 values (3, 1, 1, 1, 'New data sheet');
-insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
-values (4, 'TCountsheet', '{COUN000003,New data sheet,SITE000001,Archaeological contexts,Presence/Absence}', 'COUN000003', 'tbl_sample_groups', 3);
+insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, translated_compressed_data, bugs_identifier, sead_table, sead_reference_id)
+values (4, 'TCountsheet', '{COUN000003,New data sheet,SITE000001,Archaeological contexts,Presence/Absence}', '{COUN000003,New data sheet,SITE000001,Archaeological contexts,Presence/Absence}', 'COUN000003', 'tbl_sample_groups', 3);
 
 insert into tbl_alt_ref_types (alt_ref_type_id, alt_ref_type) values (1, 'Other alternative sample name');
 insert into tbl_sample_types (sample_type_id, type_name) values (1, 'Unspecified');

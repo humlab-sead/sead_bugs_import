@@ -58,24 +58,24 @@ values (5, 'TSite', '{SITE000005,Contact should only be created once,,,,,,,,inte
 
 insert into tbl_sample_groups (sample_group_id, site_id, sampling_context_id, method_id, sample_group_name)
 values (1, 1, 1, 1, 'Sheet for site 1');
-insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
-values (6, 'TCountsheet', '{COUN000001,Sheet for site 1,SITE000001,Archaeological contexts,Presence/Absence}', 'COUN000001', 'tbl_sample_groups', 1);
+insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, translated_compressed_data, bugs_identifier, sead_table, sead_reference_id)
+values (6, 'TCountsheet', '{COUN000001,Sheet for site 1,SITE000001,Archaeological contexts,Presence/Absence}', '{COUN000001,Sheet for site 1,SITE000001,Archaeological contexts,Presence/Absence}', 'COUN000001', 'tbl_sample_groups', 1);
 insert into tbl_sample_groups (sample_group_id, site_id, sampling_context_id, method_id, sample_group_name)
 values (2, 2, 1, 1, 'Sheet for site 2');
-insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
-values (7, 'TCountsheet', '{COUN000002,Sheet for site 2,SITE000002,Archaeological contexts,Presence/Absence}', 'COUN000002', 'tbl_sample_groups', 2);
+insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, translated_compressed_data, bugs_identifier, sead_table, sead_reference_id)
+values (7, 'TCountsheet', '{COUN000002,Sheet for site 2,SITE000002,Archaeological contexts,Presence/Absence}', '{COUN000002,Sheet for site 2,SITE000002,Archaeological contexts,Presence/Absence}', 'COUN000002', 'tbl_sample_groups', 2);
 insert into tbl_sample_groups (sample_group_id, site_id, sampling_context_id, method_id, sample_group_name)
 values (3, 3, 1, 1, 'Sheet for site 3');
-insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
-values (8, 'TCountsheet', '{COUN000003,Sheet for site 3,SITE000003,Archaeological contexts,Presence/Absence}', 'COUN000003', 'tbl_sample_groups', 3);
+insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, translated_compressed_data, bugs_identifier, sead_table, sead_reference_id)
+values (8, 'TCountsheet', '{COUN000003,Sheet for site 3,SITE000003,Archaeological contexts,Presence/Absence}','{COUN000003,Sheet for site 3,SITE000003,Archaeological contexts,Presence/Absence}', 'COUN000003', 'tbl_sample_groups', 3);
 insert into tbl_sample_groups (sample_group_id, site_id, sampling_context_id, method_id, sample_group_name)
 values (4, 4, 1, 1, 'Sheet for site 4');
-insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
-values (9, 'TCountsheet', '{COUN000004,Sheet for site 4,SITE000004,Archaeological contexts,Presence/Absence}', 'COUN000004', 'tbl_sample_groups', 4);
+insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, translated_compressed_data, bugs_identifier, sead_table, sead_reference_id)
+values (9, 'TCountsheet', '{COUN000004,Sheet for site 4,SITE000004,Archaeological contexts,Presence/Absence}', '{COUN000004,Sheet for site 4,SITE000004,Archaeological contexts,Presence/Absence}', 'COUN000004', 'tbl_sample_groups', 4);
 insert into tbl_sample_groups (sample_group_id, site_id, sampling_context_id, method_id, sample_group_name)
 values (5, 5, 1, 1, 'Sheet for site 5');
-insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
-values (10, 'TCountsheet', '{COUN000005,Sheet for site 5,SITE000005,Archaeological contexts,Presence/Absence}', 'COUN000005', 'tbl_sample_groups', 5);
+insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, translated_compressed_data, bugs_identifier, sead_table, sead_reference_id)
+values (10, 'TCountsheet', '{COUN000005,Sheet for site 5,SITE000005,Archaeological contexts,Presence/Absence}', '{COUN000005,Sheet for site 5,SITE000005,Archaeological contexts,Presence/Absence}', 'COUN000005', 'tbl_sample_groups', 5);
 
 insert into tbl_physical_samples (physical_sample_id, sample_group_id, alt_ref_type_id, sample_type_id, sample_name)
 values (1, 1, 1, 1, 'Sample for sample group 1');
