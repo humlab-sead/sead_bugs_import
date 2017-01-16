@@ -14,7 +14,7 @@ public abstract class BugsInformation {
     @Column(name="bugs_table", nullable = false)
     private String bugsTable;
     @Column(name="bugs_data", nullable = false)
-    private String compressedBugsData;
+    private String accessInformationData;
     @Column(name="bugs_identifier")
     private String bugsIdentifier;
     @Column(name="change_date", insertable = false)
@@ -27,8 +27,8 @@ public abstract class BugsInformation {
         return bugsTable;
     }
 
-    public final String getCompressedBugsData() {
-        return compressedBugsData;
+    public final String getAccessInformationData() {
+        return accessInformationData;
     }
 
     public final String getBugsIdentifier(){ return bugsIdentifier;}
@@ -47,10 +47,10 @@ public abstract class BugsInformation {
 
     public void setBugsData(TraceableBugsData bugsData){
         bugsTable = bugsData.bugsTable();
-        compressedBugsData = bugsData.getCompressedStringBeforeTranslation();
+        accessInformationData = bugsData.getCompressedStringBeforeTranslation();
         translatedCompressedData = bugsData.compressToString();
-        if(compressedBugsData == null) {
-            compressedBugsData = translatedCompressedData;
+        if(accessInformationData == null) {
+            accessInformationData = translatedCompressedData;
         }
         bugsIdentifier = bugsData.getBugsIdentifier();
     }
@@ -59,7 +59,7 @@ public abstract class BugsInformation {
     public String toString() {
         return "BugsInformation{" +
                 "bugsTable='" + bugsTable + '\'' +
-                ", compressedBugsData='" + compressedBugsData + '\'' +
+                ", accessInformationData='" + accessInformationData + '\'' +
                 ", bugsIdentifier='" + bugsIdentifier + '\'' +
                 '}';
     }

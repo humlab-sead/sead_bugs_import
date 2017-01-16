@@ -7,7 +7,7 @@ public class PeriodFromTraceBuilder {
     private String originalData;
 
     public PeriodFromTraceBuilder(BugsTrace trace){
-        originalData = trace.getCompressedBugsData();
+        originalData = trace.getAccessInformationData();
         if(originalData == null || originalData.isEmpty()){
             throw new NullPointerException("No compressed data for original Period");
         }
