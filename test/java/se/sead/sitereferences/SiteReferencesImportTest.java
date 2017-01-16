@@ -102,8 +102,8 @@ public class SiteReferencesImportTest {
         LogDataManager tracesAndErrors = new LogDataManager();
         for (BugsSiteRef bugsData :
                 ExpectedBugsSiteRefData.EXPECTED_BUGS_DATA) {
-            List<BugsTrace> traces = traceRepository.findByBugsTableAndCompressedBugsData("TSiteRef", bugsData.compressToString());
-            List<BugsError> errors = errorRepository.findByBugsTableAndCompressedBugsData("TSiteRef", bugsData.compressToString());
+            List<BugsTrace> traces = traceRepository.findByBugsTableAndAccessInformationData("TSiteRef", bugsData.compressToString());
+            List<BugsError> errors = errorRepository.findByBugsTableAndAccessInformationData("TSiteRef", bugsData.compressToString());
             tracesAndErrors.addTraces(bugsData.getSiteCode(), traces);
             tracesAndErrors.addErrors(bugsData.getSiteCode(), errors);
         }

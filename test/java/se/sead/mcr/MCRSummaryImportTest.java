@@ -97,7 +97,7 @@ public class MCRSummaryImportTest {
     private void verifyTraces() {
         for (MCRSummaryData bugsData :
                 MCRSummarTestDefinition.EXPECTED_BUGS_DATA) {
-            List<BugsTrace> traces = traceRepository.findByBugsTableAndCompressedBugsData("TMCRSummaryData", bugsData.getCompressedStringBeforeTranslation());
+            List<BugsTrace> traces = traceRepository.findByBugsTableAndAccessInformationData("TMCRSummaryData", bugsData.getCompressedStringBeforeTranslation());
             testDefinition.assertTraces(traces, bugsData);
         }
     }
@@ -105,7 +105,7 @@ public class MCRSummaryImportTest {
     private void verifyErrors() {
         for (MCRSummaryData bugsData:
                 MCRSummarTestDefinition.EXPECTED_BUGS_DATA){
-            List<BugsError> errors = errorRepository.findByBugsTableAndCompressedBugsData("TMCRSummaryData", bugsData.getCompressedStringBeforeTranslation());
+            List<BugsError> errors = errorRepository.findByBugsTableAndAccessInformationData("TMCRSummaryData", bugsData.getCompressedStringBeforeTranslation());
             testDefinition.assertErrors(errors, bugsData);
         }
     }

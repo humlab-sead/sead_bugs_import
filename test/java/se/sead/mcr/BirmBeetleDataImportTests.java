@@ -8,7 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
 import se.sead.bugsimport.mcr.BirmBeetleDataImporter;
 import se.sead.bugsimport.mcr.bugsmodel.BirmBeetleDat;
@@ -104,7 +103,7 @@ public class BirmBeetleDataImportTests {
     private void verifyTraces(){
         for (BirmBeetleDat bugsData:
                 (List<BirmBeetleDat>) BirmBeetleTestDefinition.EXPECTED_ROW_DATA) {
-            List<BugsTrace> traces = traceRepository.findByBugsTableAndCompressedBugsData("TbirmBEETLEdat", bugsData.getCompressedStringBeforeTranslation());
+            List<BugsTrace> traces = traceRepository.findByBugsTableAndAccessInformationData("TbirmBEETLEdat", bugsData.getCompressedStringBeforeTranslation());
             if(bugsData.getBugsCode() == 1.0010070d) {
                 List<String> addedTableReferences = traces.stream()
                         .map(trace -> trace.getSeadTable())
@@ -121,7 +120,7 @@ public class BirmBeetleDataImportTests {
     }
 
     private void checkErrorLogs(BirmBeetleDat bugsData){
-        List<BugsError> errors = errorRepository.findByBugsTableAndCompressedBugsData("TbirmBEETLEdat", bugsData.getCompressedStringBeforeTranslation());
+        List<BugsError> errors = errorRepository.findByBugsTableAndAccessInformationData("TbirmBEETLEdat", bugsData.getCompressedStringBeforeTranslation());
         assertEquals(1, errors.size());
         BugsError bugsError = errors.get(0);
         assertEquals("Species not found in SEAD, not imported? bugs_code = 2,0000000", bugsError.getMessage());

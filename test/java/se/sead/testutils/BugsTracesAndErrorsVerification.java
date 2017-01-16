@@ -86,12 +86,12 @@ public abstract class BugsTracesAndErrorsVerification<BugsType extends Traceable
 
         @Override
         protected List<BugsTrace> getTraces(BugsType bugsData) {
-            return traceRepository.findByBugsTableAndCompressedBugsData(bugsData.bugsTable(), bugsData.getCompressedStringBeforeTranslation());
+            return traceRepository.findByBugsTableAndAccessInformationData(bugsData.bugsTable(), bugsData.getCompressedStringBeforeTranslation());
         }
 
         @Override
         protected List<BugsError> getErrors(BugsType bugsData) {
-            return errorRepository.findByBugsTableAndCompressedBugsData(bugsData.bugsTable(), bugsData.getCompressedStringBeforeTranslation());
+            return errorRepository.findByBugsTableAndAccessInformationData(bugsData.bugsTable(), bugsData.getCompressedStringBeforeTranslation());
         }
     }
 }

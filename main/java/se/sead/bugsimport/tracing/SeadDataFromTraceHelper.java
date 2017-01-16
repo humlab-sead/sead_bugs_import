@@ -59,9 +59,9 @@ public abstract class SeadDataFromTraceHelper<BugsType extends TraceableBugsData
     private List<BugsTrace> getBugsTraces(String traceIdentifier) {
         List<BugsTrace> traces;
         if(useCompressedDataForIdentification && seadTableName != null) {
-            traces = traceRepository.findByBugsTableAndSeadTableAndCompressedBugsDataOrderByChangeDate(getBugsTableName(), getSeadTableName(), traceIdentifier);
+            traces = traceRepository.findByBugsTableAndSeadTableAndAccessInformationDataOrderByChangeDate(getBugsTableName(), getSeadTableName(), traceIdentifier);
         } else if(useCompressedDataForIdentification && seadTableName == null){
-            traces = traceRepository.findByBugsTableAndCompressedBugsDataOrderByChangeDate(getBugsTableName(), traceIdentifier);
+            traces = traceRepository.findByBugsTableAndAccessInformationDataOrderByChangeDate(getBugsTableName(), traceIdentifier);
         } else if(!useCompressedDataForIdentification && seadTableName != null) {
             traces = traceRepository.findByBugsTableAndSeadTableAndBugsIdentifierOrderByChangeDate(getBugsTableName(), getSeadTableName(), traceIdentifier);
         } else {

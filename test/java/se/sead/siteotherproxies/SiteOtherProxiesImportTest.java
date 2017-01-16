@@ -114,8 +114,8 @@ public class SiteOtherProxiesImportTest {
     private void verifyTraceContent(){
         for (SiteOtherProxies bugsData :
                 SiteOtherProxiesExpectedBugsTableData.EXPECTED_DATA) {
-            List<BugsTrace> traces = traceRepository.findByBugsTableAndCompressedBugsData(bugsData.bugsTable(), bugsData.compressToString());
-            List<BugsError> errors = errorRepository.findByBugsTableAndCompressedBugsData(bugsData.bugsTable(), bugsData.compressToString());
+            List<BugsTrace> traces = traceRepository.findByBugsTableAndAccessInformationData(bugsData.bugsTable(), bugsData.compressToString());
+            List<BugsError> errors = errorRepository.findByBugsTableAndAccessInformationData(bugsData.bugsTable(), bugsData.compressToString());
             testDefinition.logCheck(bugsData, traces, errors);
         }
 
