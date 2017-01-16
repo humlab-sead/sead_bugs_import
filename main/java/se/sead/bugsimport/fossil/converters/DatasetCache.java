@@ -26,4 +26,8 @@ public class DatasetCache {
     public void put(Dataset dataset){
         cache.put(dataset.getName(), dataset);
     }
+
+    public void clear() {
+        cache.clear();
+    }
 }

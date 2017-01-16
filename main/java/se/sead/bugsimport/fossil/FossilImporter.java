@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import se.sead.bugsimport.Importer;
 import se.sead.bugsimport.fossil.bugsmodel.Fossil;
 import se.sead.bugsimport.fossil.converters.AnalysisEntityManager;
+import se.sead.bugsimport.fossil.converters.DatasetCache;
 import se.sead.bugsimport.fossil.seadmodel.Abundance;
 import se.sead.bugsimport.sample.SampleImporter;
 import se.sead.bugsimport.species.IndexImporter;
@@ -14,6 +15,8 @@ public class FossilImporter extends Importer<Fossil, Abundance> {
 
     @Autowired
     private AnalysisEntityManager analysisEntityManager;
+    @Autowired
+    private DatasetCache datasetCache;
 
     @Autowired
     public FossilImporter(
@@ -29,5 +32,6 @@ public class FossilImporter extends Importer<Fossil, Abundance> {
         analysisEntityManager.initCache();
         super.run();
         analysisEntityManager.initCache();
+        datasetCache.clear();
     }
 }
