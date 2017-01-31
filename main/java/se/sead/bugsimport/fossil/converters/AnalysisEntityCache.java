@@ -46,7 +46,15 @@ public class AnalysisEntityCache {
     }
 
     public List<Abundance> getAbundances(AnalysisEntity analysisEntity){
-        return entityMapper.get(analysisEntity);
+        List<Abundance> abundances = entityMapper.get(analysisEntity);
+        if(abundances == null){
+            return Collections.EMPTY_LIST;
+        }
+        return abundances;
+    }
+
+    public void resetAbundances(AnalysisEntity newAnalysisEntity, List<Abundance> abundances) {
+        entityMapper.put(newAnalysisEntity, abundances);
     }
 
     private static class AnalysisEntityCacheKey {

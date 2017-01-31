@@ -81,4 +81,8 @@ public class AnalysisEntityManager {
     public List<Abundance> getAbundancesFor(AnalysisEntity analysisEntity){
         return cache.getAbundances(analysisEntity);
     }
+
+    public void reassociateAbundances(AnalysisEntity newAnalysisEntity, List<Abundance> abundances){
+        cache.resetAbundances(newAnalysisEntity, abundances);
+    }
 }
