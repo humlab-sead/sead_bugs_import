@@ -95,7 +95,7 @@ public class ImportTestDefinition {
             case "SITE000012":
                 assertTrue(traces.isEmpty());
                 assertEquals(1, errors.size());
-                assertEquals("Missing reference: Girling (1986a)", errors.get(0).getMessage());
+                assertEquals("No reference found for ref: Girling (1986a)", errors.get(0).getMessage());
                 break;
             case "SITE000013":
                 assertTrue(traces.isEmpty());

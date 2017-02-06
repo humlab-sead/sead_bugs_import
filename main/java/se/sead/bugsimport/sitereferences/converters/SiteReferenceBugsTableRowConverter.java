@@ -54,7 +54,7 @@ public class SiteReferenceBugsTableRowConverter implements BugsTableRowConverter
     }
 
     private SiteReference createMissingBibliographyError(BugsSiteRef bugsData) {
-        return createError("Missing reference: " + bugsData.getRef());
+        return createError("No reference found for ref: " + bugsData.getRef());
     }
 
     private SiteReference createOrUpdate(SeadSite seadSite, Biblio reference) {
