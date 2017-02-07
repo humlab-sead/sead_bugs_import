@@ -30,7 +30,7 @@ public class DatasetContactsRowConverter implements BugsTableRowConverter<Counts
         } else {
             updater.update(dataset, bugsData.getSiteCode());
             return dataset.getContacts();
-        }
+    }
     }
 
     private List<DatasetContact> createWithError(String error){

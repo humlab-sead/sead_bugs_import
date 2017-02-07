@@ -34,7 +34,7 @@ class LogVerifier implements BugsTracesAndErrorsVerification.LogVerificationCall
             case "1.0010122Error, no reference":
             case "1.0040342Error, references does not exist. Not added.":
                 assertHelper.assertEmpty(traces);
-                assertHelper.assertContainsError(errors, "No reference found for: " + bugsData.getRef());
+                assertHelper.assertContainsError(errors, "No reference found for ref: " + bugsData.getRef());
                 break;
             case "9999.000001Error, species does not exist. Not added.":
                 assertHelper.assertEmpty(traces);

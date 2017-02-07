@@ -34,7 +34,6 @@ public class RelativeDateMethodManager {
     public Method getRelativeDateMethod(String bugsMethodName, RelativeAge relativeAge){
         assert relativeDateMethodGroup != null;
         if(bugsMethodName == null || bugsMethodName.trim().isEmpty()){
-            // add space sensitivity
             return null;
         }
         String seadMethodName = buildMethodName(bugsMethodName, relativeAge);

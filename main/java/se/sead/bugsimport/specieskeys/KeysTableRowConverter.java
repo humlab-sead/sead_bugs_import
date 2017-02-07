@@ -81,7 +81,7 @@ public class KeysTableRowConverter implements BugsTableRowConverter<Keys, TextId
 
         private void setReference() {
             if(reference == null){
-                seadData.addError("No reference found for: " + bugsData.getRef());
+                seadData.addError("No reference found for ref: " + bugsData.getRef());
             }
             seadData.setReference(reference);
         }
