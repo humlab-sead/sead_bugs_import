@@ -24,7 +24,7 @@ import java.util.Optional;
 import static org.junit.Assert.*;
 import static se.sead.bugsimport.periods.PeriodCreator.PeriodBuilder.*;
 
-public class RelativeAgeUpdaterC14Test {
+public class RelativeAgeUpdaterTest {
 
     private RelativeAgeUpdater updater;
     private GeographicExtentUpdater geographicExtentUpdater;
@@ -55,13 +55,13 @@ public class RelativeAgeUpdaterC14Test {
         RelativeAge relativeAge = new RelativeAge();
         updater.update(relativeAge, c14Period);
         assertEquals(DEFAULT_DESCRIPTION, relativeAge.getDescription());
+        assertEquals(DEFAULT_PERIOD_CODE, relativeAge.getAbbreviation());
+        assertEquals(DEFAULT_GEOGRAPHY, relativeAge.getGeographicExtent().getName());
+        assertEquals(DEFAULT_TYPE, relativeAge.getType().getType());
         assertEquals(convertToSeadType(DEFAULT_AGE), relativeAge.getC14AgeOlder());
         assertEquals(convertToSeadType(DEFAULT_AGE), relativeAge.getC14AgeYounger());
         assertNull(relativeAge.getCalAgeOlder());
         assertNull(relativeAge.getCalAgeYounger());
-        assertEquals(DEFAULT_GEOGRAPHY, relativeAge.getGeographicExtent().getName());
-        assertEquals(DEFAULT_TYPE, relativeAge.getType().getType());
-        assertEquals(DEFAULT_PERIOD_CODE, relativeAge.getAbbreviation());
         assertTrue(relativeAge.isNewItem());
         assertTrue(relativeAge.isUpdated());
         assertTrue(relativeAge.isErrorFree());
@@ -82,11 +82,11 @@ public class RelativeAgeUpdaterC14Test {
                 .setEnd(1)
                 .asC14()
                 .done();
-        RelativeAge relativeAge = createDefaultRelativeAge(0);
+        RelativeAge relativeAge = createDefaultC14RelativeAge(0);
         updater.update(relativeAge, period);
         assertEquals(DEFAULT_DESCRIPTION, relativeAge.getDescription());
-        assertEquals(DEFAULT_GEOGRAPHY, relativeAge.getGeographicExtent().getName());
         assertEquals(DEFAULT_PERIOD_CODE, relativeAge.getAbbreviation());
+        assertEquals(DEFAULT_GEOGRAPHY, relativeAge.getGeographicExtent().getName());
         assertEquals(DEFAULT_TYPE, relativeAge.getType().getType());
         assertEquals(convertToSeadType(DEFAULT_AGE), relativeAge.getC14AgeOlder());
         assertEquals(convertToSeadType(DEFAULT_AGE), relativeAge.getC14AgeYounger());
@@ -98,13 +98,20 @@ public class RelativeAgeUpdaterC14Test {
         assertFalse(relativeAge.isMarkedForDeletion());
     }
 
-    private RelativeAge createDefaultRelativeAge(Integer age){
+    private RelativeAge createDefaultC14RelativeAge(Integer age){
+        RelativeAge defaultRelativeAge = createDefaultRelativeAge();
+        defaultRelativeAge.setC14AgeOlder(convertToSeadType(age));
+        defaultRelativeAge.setC14AgeYounger(convertToSeadType(age));
+        return defaultRelativeAge;
+    }
+
+    private RelativeAge createDefaultRelativeAge(){
         return TestRelativeAge
                 .create(1,
                         DEFAULT_PERIOD_CODE,
                         DEFAULT_PERIOD_NAME,
-                        convertToSeadType(age),
-                        convertToSeadType(age),
+                        null,
+                        null,
                         null,
                         null,
                         DEFAULT_DESCRIPTION,
@@ -130,10 +137,63 @@ public class RelativeAgeUpdaterC14Test {
                 .asC14()
                 .setGeography(null)
                 .done();
-        RelativeAge relativeAge = createDefaultRelativeAge(DEFAULT_AGE);
+        RelativeAge relativeAge = createDefaultC14RelativeAge(DEFAULT_AGE);
         updater.update(relativeAge, period);
         assertFalse(relativeAge.isNewItem());
         assertFalse(relativeAge.isUpdated());
+    }
+
+    @Test
+    public void updateADCalendarPeriodFromNew(){
+        Period period = PeriodCreator.createBuilder()
+                .setBeginBCAD(AD_AGE_RELATION_SPECIFICATION)
+                .setEndBCAD(AD_AGE_RELATION_SPECIFICATION)
+                .asCalendar()
+                .done();
+        RelativeAge relativeAge = new RelativeAge();
+        updater.update(relativeAge, period);
+        assertEquals(DEFAULT_DESCRIPTION, relativeAge.getDescription());
+        assertEquals(DEFAULT_GEOGRAPHY, relativeAge.getGeographicExtent().getName());
+        assertEquals(DEFAULT_TYPE, relativeAge.getType().getType());
+        assertEquals(DEFAULT_PERIOD_CODE, relativeAge.getAbbreviation());
+        assertEquals(convertToSeadType(1949), relativeAge.getCalAgeYounger());
+        assertEquals(convertToSeadType(1949), relativeAge.getCalAgeOlder());
+        assertNull(relativeAge.getC14AgeOlder());
+        assertNull(relativeAge.getC14AgeYounger());
+        assertTrue(relativeAge.isErrorFree());
+        assertTrue(relativeAge.isNewItem());
+        assertTrue(relativeAge.isUpdated());
+        assertFalse(relativeAge.isMarkedForDeletion());
+    }
+
+    private RelativeAge createDefaultCalendarRelativeAge(Integer begin, Integer end){
+        RelativeAge defaultRelativeAge = createDefaultRelativeAge();
+        defaultRelativeAge.setCalAgeOlder(convertToSeadType(begin));
+        defaultRelativeAge.setCalAgeYounger(convertToSeadType(end));
+        return defaultRelativeAge;
+    }
+
+    @Test
+    public void updateADCalendarPeriodFromExisting(){
+        Period period = PeriodCreator.createBuilder()
+                .setBeginBCAD(AD_AGE_RELATION_SPECIFICATION)
+                .setEndBCAD(AD_AGE_RELATION_SPECIFICATION)
+                .asCalendar()
+                .done();
+        RelativeAge relativeAge = createDefaultCalendarRelativeAge(2,2);
+        updater.update(relativeAge, period);
+        assertEquals(DEFAULT_DESCRIPTION, relativeAge.getDescription());
+        assertEquals(DEFAULT_GEOGRAPHY, relativeAge.getGeographicExtent().getName());
+        assertEquals(DEFAULT_TYPE, relativeAge.getType().getType());
+        assertEquals(DEFAULT_PERIOD_CODE, relativeAge.getAbbreviation());
+        assertEquals(convertToSeadType(1949), relativeAge.getCalAgeYounger());
+        assertEquals(convertToSeadType(1949), relativeAge.getCalAgeOlder());
+        assertNull(relativeAge.getC14AgeOlder());
+        assertNull(relativeAge.getC14AgeYounger());
+        assertTrue(relativeAge.isErrorFree());
+        assertFalse(relativeAge.isNewItem());
+        assertTrue(relativeAge.isUpdated());
+        assertFalse(relativeAge.isMarkedForDeletion());
     }
 
     private static class MockGeographicExtentUpdater extends GeographicExtentUpdater {
