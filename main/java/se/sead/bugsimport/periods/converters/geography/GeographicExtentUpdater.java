@@ -10,10 +10,19 @@ import java.util.List;
 @Component
 public class GeographicExtentUpdater {
 
-    @Autowired
+    public static final Location NO_OP_LOCATION = new Location();
+
     private List<GeographicExtentSearch> searches;
 
+    @Autowired
+    public GeographicExtentUpdater(List<GeographicExtentSearch> searches) {
+        this.searches = searches;
+    }
+
     public Location getLocation(Period period){
+        if(isEmpty(period.getGeography())){
+            return NO_OP_LOCATION;
+        }
         Location found = GeographicExtentSearch.NO_LOCATION;
         for (GeographicExtentSearch search :
                 searches) {
@@ -23,6 +32,11 @@ public class GeographicExtentUpdater {
             }
         }
         return found;
+    }
+
+    private boolean isEmpty(String geographyName){
+        return geographyName == null ||
+                geographyName.trim().isEmpty();
     }
 
 }

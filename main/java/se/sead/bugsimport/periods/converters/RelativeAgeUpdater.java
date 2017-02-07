@@ -19,14 +19,22 @@ import java.util.Objects;
 @Component
 public class RelativeAgeUpdater {
 
-    @Autowired
     private GeographicExtentUpdater geographicExtentUpdater;
-    @Autowired
     private RelativeAgeTypeRepository relativeAgeTypeRepository;
-    @Autowired
     private C14AgeConverter c14AgeConverter;
-    @Autowired
     private CalendarAgeConverter calendarAgeConverter;
+
+    @Autowired
+    public RelativeAgeUpdater(
+            GeographicExtentUpdater geographicExtentUpdater,
+            RelativeAgeTypeRepository relativeAgeTypeRepository,
+            C14AgeConverter c14AgeConverter,
+            CalendarAgeConverter calendarAgeConverter){
+        this.geographicExtentUpdater = geographicExtentUpdater;
+        this.relativeAgeTypeRepository = relativeAgeTypeRepository;
+        this.c14AgeConverter = c14AgeConverter;
+        this.calendarAgeConverter = calendarAgeConverter;
+    }
 
     public void update(RelativeAge original, Period bugsData){new Updater(original, bugsData).update();
     }
@@ -95,6 +103,9 @@ public class RelativeAgeUpdater {
             if(!location.isErrorFree()){
                 ErrorCopier.copyPotentialErrors(original, location);
                 return false;
+            }
+            if(location == GeographicExtentUpdater.NO_OP_LOCATION){
+                location = null;
             }
             original.setGeographicExtent(location);
             return !Objects.equals(originalGeographicExtent, location);
