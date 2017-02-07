@@ -15,22 +15,26 @@ import se.sead.sead.methods.MethodGroup;
 public class RelativeDateMethodManager {
 
     private MethodGroup relativeDateMethodGroup;
-    @Autowired
     private MethodRepository methodRepository;
-    @Autowired
     private PeriodTraceHelper periodTraceHelper;
 
+    @Autowired
     public RelativeDateMethodManager(
             @Value("${relative.date.method.group.name:Dating to period}")
-            String methodGroupName,
-            MethodGroupRepository methodGroupRepository
-    ){
+                    String methodGroupName,
+            MethodGroupRepository methodGroupRepository,
+            MethodRepository methodRepository,
+            PeriodTraceHelper periodTraceHelper){
+        this.methodRepository = methodRepository;
+        this.periodTraceHelper = periodTraceHelper;
         relativeDateMethodGroup = methodGroupRepository.findByName(methodGroupName);
+        throw new IllegalArgumentException("Must provide support for other groups.");
     }
 
     public Method getRelativeDateMethod(String bugsMethodName, RelativeAge relativeAge){
         assert relativeDateMethodGroup != null;
-        if(bugsMethodName == null || bugsMethodName.isEmpty()){
+        if(bugsMethodName == null || bugsMethodName.trim().isEmpty()){
+            // add space sensitivity
             return null;
         }
         String seadMethodName = buildMethodName(bugsMethodName, relativeAge);
