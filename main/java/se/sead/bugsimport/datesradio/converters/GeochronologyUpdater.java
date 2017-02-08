@@ -70,6 +70,8 @@ public class GeochronologyUpdater {
             DatingLab originalDatingLaboratory = original.getDatingLaboratory();
             DatingLab fromLastTrace = datingLabTraceHelper.getFromLastTrace(bugsData.getLabId());
             if(fromLastTrace == null){
+
+                // must be ok, but only if field is empty in bugs
                 original.addError("No lab found");
             }
             original.setDatingLaboratory(fromLastTrace);
@@ -132,7 +134,7 @@ public class GeochronologyUpdater {
         private boolean setUncertainty() {
             DatingUncertainty originalUncertainty = original.getUncertainty();
             DatingUncertainty uncertainty = datingUncertaintyRepository.findByName(bugsData.getUncertainty());
-            if(bugsDataContainUncertaintyButMatchisNotFoundInSead(uncertainty)){
+            if(bugsDataContainUncertaintyButMatchIsNotFoundInSead(uncertainty)){
                 original.addError("Unknown uncertainty symbol");
                 return false;
             }
@@ -140,8 +142,8 @@ public class GeochronologyUpdater {
             return !Objects.equals(originalUncertainty, uncertainty);
         }
 
-        private boolean bugsDataContainUncertaintyButMatchisNotFoundInSead(DatingUncertainty uncertainty) {
-            return bugsData.getUncertainty() != null && !bugsData.getUncertainty().isEmpty() && uncertainty == null;
+        private boolean bugsDataContainUncertaintyButMatchIsNotFoundInSead(DatingUncertainty uncertainty) {
+            return bugsData.getUncertainty() != null && !bugsData.getUncertainty().trim().isEmpty() && uncertainty == null;
         }
 
     }
