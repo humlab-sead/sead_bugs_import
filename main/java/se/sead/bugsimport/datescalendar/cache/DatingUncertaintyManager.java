@@ -9,25 +9,39 @@ import se.sead.repositories.DatingUncertaintyRepository;
 @Component
 public class DatingUncertaintyManager {
 
-    @Value("${dating.uncertainty.from.name:From}")
     private String datingUncertaintyFromName;
-    @Value("${dating.uncertainty.to.name:To}")
     private String datingUncertaintyToName;
-    @Value("${dating.uncertainty.ca.name:Ca.}")
     private String datingUncertaintyCaName;
-    @Value("${dating.uncertainty.fromca.name:From ca.}")
     private String datingUncertaintyFromCaName;
-    @Value("${dating.uncertainty.toca.name:To ca.}")
     private String datingUncertaintyToCaName;
-
-    @Autowired
     private DatingUncertaintyRepository datingUncertaintyRepository;
 
-    private DatingUncertainty fromUncertainty;
-    private DatingUncertainty toUncertainty;
-    private DatingUncertainty caUncertainty;
-    private DatingUncertainty fromCaUncertainty;
-    private DatingUncertainty toCaUncertainty;
+    protected DatingUncertainty fromUncertainty;
+    protected DatingUncertainty toUncertainty;
+    protected DatingUncertainty caUncertainty;
+    protected DatingUncertainty fromCaUncertainty;
+    protected DatingUncertainty toCaUncertainty;
+
+    @Autowired
+    public DatingUncertaintyManager(
+            @Value("${dating.uncertainty.from.name:From}")
+            String datingUncertaintyFromName,
+            @Value("${dating.uncertainty.to.name:To}")
+            String datingUncertaintyToName,
+            @Value("${dating.uncertainty.ca.name:Ca.}")
+            String datingUncertaintyCaName,
+            @Value("${dating.uncertainty.fromca.name:From ca.}")
+            String datingUncertaintyFromCaName,
+            @Value("${dating.uncertainty.toca.name:To ca.}")
+            String datingUncertaintyToCaName,
+            DatingUncertaintyRepository datingUncertaintyRepository){
+        this.datingUncertaintyFromCaName = datingUncertaintyFromCaName;
+        this.datingUncertaintyFromName = datingUncertaintyFromName;
+        this.datingUncertaintyToName = datingUncertaintyToName;
+        this.datingUncertaintyCaName = datingUncertaintyCaName;
+        this.datingUncertaintyToCaName = datingUncertaintyToCaName;
+        this.datingUncertaintyRepository = datingUncertaintyRepository;
+    }
 
     DatingUncertainty getOpposite(DatingUncertainty currentUncertainty){
         if(currentUncertainty == null){
@@ -75,6 +89,10 @@ public class DatingUncertaintyManager {
         return isFromUncertainty(uncertainty) || isFromCaUncertainty(uncertainty);
     }
 
+    boolean isToOrFromUncertiantyWithoutCaValidation(DatingUncertainty uncertainty){
+        return isToUncertaintyWithoutCaValidation(uncertainty) || isFromUncertaintyWithoutCaValidation(uncertainty);
+    }
+
     private void initUncertainties(){
         if(fromUncertainty == null){
             fromUncertainty = datingUncertaintyRepository.findByName(datingUncertaintyFromName);
@@ -100,7 +118,7 @@ public class DatingUncertaintyManager {
         }
     }
 
-    private boolean isCaUncertainty(DatingUncertainty uncertainty){
+    boolean isCaUncertainty(DatingUncertainty uncertainty){
         return fromCaUncertainty.equals(uncertainty) ||
                 toCaUncertainty.equals(uncertainty) ||
                 caUncertainty.equals(uncertainty);

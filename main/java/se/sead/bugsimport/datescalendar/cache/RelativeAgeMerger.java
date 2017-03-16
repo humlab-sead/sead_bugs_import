@@ -6,48 +6,72 @@ import se.sead.bugsimport.MappingResult;
 import se.sead.bugsimport.datescalendar.bugsmodel.DatesCalendar;
 import se.sead.bugsimport.datesperiod.seadmodel.RelativeDate;
 import se.sead.bugsimport.datesradio.seadmodel.DatingUncertainty;
-import se.sead.bugsimport.periods.seadmodel.RelativeAge;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
 public class RelativeAgeMerger {
 
-    @Autowired
-    private RelativeRangeAgeManager relativeAgeManager;
-    @Autowired
     private DatingUncertaintyManager uncertaintyManager;
 
-    RelativeAge createRange(List<MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate>> carriers){
-        MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate> fromCarrier = getFromCarrier(carriers);
-        MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate> toCarrier = getToCarrier(carriers);
-        return relativeAgeManager.createOrGet(fromCarrier.getBugsData(), toCarrier.getBugsData());
+    @Autowired
+    public RelativeAgeMerger(
+            DatingUncertaintyManager uncertaintyManager
+    ) {
+        this.uncertaintyManager = uncertaintyManager;
     }
 
-    private MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate> getFromCarrier(List<MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate>> carriers){
-        for (MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate> carrier:
-                carriers){
-            RelativeDate relativeDate = carrier.getSeadData().get(0);
-            if(uncertaintyManager.isFromUncertaintyWithoutCaValidation(relativeDate.getUncertainty())){
-                return carrier;
-            }
+    List<UncertaintyDatesCalendarContainer> createRanges(List<MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate>> carriersForSample) {
+        UncertaintyDatesCalendarContainer caDates = getCaCarriers(carriersForSample);
+        UncertaintyDatesCalendarContainer nonCaDates = getNonCaDatesCalendar(carriersForSample);
+        List<UncertaintyDatesCalendarContainer> results = new ArrayList<>();
+        if (caDates.rangeShouldBeIncluded()) {
+            results.add(caDates);
         }
-        throw new IllegalStateException("No From type found in list of probable range date calendars");
-    }
-
-    private MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate> getToCarrier(List<MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate>> carriers){
-        for (MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate> carrier:
-                carriers){
-            RelativeDate relativeDate = carrier.getSeadData().get(0);
-            if(uncertaintyManager.isToUncertaintyWithoutCaValidation(relativeDate.getUncertainty())){
-                return carrier;
-            }
+        if (nonCaDates.rangeShouldBeIncluded()) {
+            results.add(nonCaDates);
         }
-        throw new IllegalStateException("No To type found in list of probable range date calendars");
+        return results;
     }
 
-    void updateUncertaintyIfNeeded(RelativeDate originalRelativeDate){
-        DatingUncertainty newDatingUncertainty = uncertaintyManager.convertUncertainty(originalRelativeDate.getUncertainty());
-        originalRelativeDate.setUncertainty(newDatingUncertainty);
+    private UncertaintyDatesCalendarContainer getCaCarriers(List<MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate>> carriersForSample) {
+        return new Extractor(
+                new UncertaintyExtractor.FromCaUncertaintyExtractor(uncertaintyManager),
+                new UncertaintyExtractor.ToCaUncertaintyExtractor(uncertaintyManager))
+                .extractFrom(carriersForSample);
+    }
+
+    private UncertaintyDatesCalendarContainer getNonCaDatesCalendar(List<MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate>> carriersForSample) {
+        return new Extractor(
+                new UncertaintyExtractor.FromUncertaintyExtractor(uncertaintyManager),
+                new UncertaintyExtractor.ToUncertaintyExtractor(uncertaintyManager))
+                .extractFrom(carriersForSample);
+    }
+
+    void updateUncertaintyIfNeeded(RelativeDate originalRelativeDate, boolean isClosedRange) {
+        DatingUncertainty uncertainty = originalRelativeDate.getUncertainty();
+        if(uncertaintyManager.isCaUncertainty(uncertainty)){
+            uncertainty = uncertaintyManager.convertUncertainty(uncertainty);
+        } else if(isClosedRange){
+            uncertainty = null;
+        }
+        originalRelativeDate.setUncertainty(uncertainty);
+    }
+
+    private static class Extractor {
+        private UncertaintyExtractor fromExtractor;
+        private UncertaintyExtractor toExtractor;
+
+        Extractor(UncertaintyExtractor fromExtractor, UncertaintyExtractor toExtractor) {
+            this.fromExtractor = fromExtractor;
+            this.toExtractor = toExtractor;
+        }
+
+        UncertaintyDatesCalendarContainer extractFrom(List<MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate>> carriersForSample) {
+            MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate> from = fromExtractor.getForUncertainty(carriersForSample);
+            MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate> to = toExtractor.getForUncertainty(carriersForSample);
+            return new UncertaintyDatesCalendarContainer(from, to);
+        }
     }
 }

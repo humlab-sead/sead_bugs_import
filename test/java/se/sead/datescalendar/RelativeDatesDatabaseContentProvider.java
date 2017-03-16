@@ -6,10 +6,11 @@ import se.sead.bugsimport.periods.seadmodel.RelativeAge;
 import se.sead.bugsimport.periods.seadmodel.RelativeAgeType;
 import se.sead.bugsimport.sample.seadmodel.Sample;
 import se.sead.bugsimport.site.seadmodel.SeadSite;
-import se.sead.model.TestEqualityHelper;
-import se.sead.model.TestRelativeAge;
-import se.sead.model.TestRelativeDate;
+import se.sead.model.*;
 import se.sead.repositories.*;
+import se.sead.sead.data.DataType;
+import se.sead.sead.data.Dataset;
+import se.sead.sead.data.DatasetMaster;
 import se.sead.sead.methods.Method;
 import se.sead.testutils.DatabaseContentVerification;
 
@@ -31,12 +32,17 @@ class RelativeDatesDatabaseContentProvider implements DatabaseContentVerificatio
     private Sample sample3;
     private DatingUncertainty fromUncertainty;
     private DatingUncertainty caUncertainty;
+    private DatingUncertainty toUncertainty;
     private RelativeAge cal100AD;
     private RelativeAge cal120AD;
     private Method archPer;
     private Method geolPer;
+    private Method histCal;
+    private Method unknownCal;
+    private DataType calendarDate;
     private RelativeAgeType calendarDateTyp;
     private RelativeAgeType calendarDateRange;
+    private DatasetMaster bugsMaster;
 
     RelativeDatesDatabaseContentProvider(
             SampleRepository sampleRepository,
@@ -44,20 +50,27 @@ class RelativeDatesDatabaseContentProvider implements DatabaseContentVerificatio
             MethodRepository methodRepository,
             RelativeAgeRepository relativeAgeRepository,
             RelativeAgeTypeRepository relativeAgeTypeRepository,
-            RelativeDateRepository relativeDateRepository
+            RelativeDateRepository relativeDateRepository,
+            DatasetMasterRepository datasetMasterRepository,
+            DataTypeRepository dataTypeRepository
     ){
         defaultSample = sampleRepository.findOne(1);
         sample2 = sampleRepository.findOne(2);
         sample3 = sampleRepository.findOne(3);
         fromUncertainty = datingUncertaintyRepository.findOne(3);
         caUncertainty = datingUncertaintyRepository.findOne(5);
+        toUncertainty = datingUncertaintyRepository.findOne(4);
         cal100AD = relativeAgeRepository.findOne(1);
         cal120AD = relativeAgeRepository.findOne(2);
         archPer = methodRepository.findOne(3);
         geolPer = methodRepository.findOne(4);
+        histCal = methodRepository.findOne(5);
+        unknownCal = methodRepository.findOne(6);
         calendarDateTyp = relativeAgeTypeRepository.findOne(2);
         calendarDateRange = relativeAgeTypeRepository.findOne(3);
         this.relativeDateRepository = relativeDateRepository;
+        bugsMaster = datasetMasterRepository.findBugsMasterSet();
+        calendarDate = dataTypeRepository.findOne(1);
     }
 
     @Override
@@ -65,91 +78,158 @@ class RelativeDatesDatabaseContentProvider implements DatabaseContentVerificatio
         return Arrays.asList(
                 TestRelativeDate.create(
                         1,
-                        defaultSample,
-                        fromUncertainty,
+                        null,
                         cal100AD,
-                        archPer,
-                        "Already stored"
+                        "Already stored",
+                        TestAnalysisEntity.create(
+                                1,
+                                TestDataset.create(1, "CALE000015", archPer,bugsMaster, calendarDate),
+                                defaultSample
+                        )
                 ),
                 TestRelativeDate.create(
                         2,
-                        defaultSample,
-                        fromUncertainty,
+                        null,
                         cal120AD,
-                        archPer,
-                        "update change uncertainty"
+                        "update change uncertainty",
+                        TestAnalysisEntity.create(
+                                2,
+                                TestDataset.create(2,"CALE000011", archPer, bugsMaster, calendarDate),
+                                defaultSample
+                        )
                 ),
                 TestRelativeDate.create(
                         3,
-                        defaultSample,
                         fromUncertainty,
                         cal100AD,
-                        archPer,
-                        "sead data changed since import"
+                        "sead data changed since import",
+                        TestAnalysisEntity.create(
+                                3,
+                                TestDataset.create(3, "CALE000012", archPer, bugsMaster, calendarDate),
+                                defaultSample
+                        )
                 ),
                 TestRelativeDate.create(
                         4,
-                        defaultSample,
-                        fromUncertainty,
+                        null,
                         cal120AD,
-                        archPer,
-                        "update change date"
+                        "update change date",
+                        TestAnalysisEntity.create(
+                                4,
+                                TestDataset.create(4, "CALE000016", archPer, bugsMaster, calendarDate),
+                                defaultSample
+                        )
+
                 ),
                 TestRelativeDate.create(
                         null,
-                        defaultSample,
-                        fromUncertainty,
+                        null,
                         cal120AD,
-                        archPer,
-                        "Insert"
+                        "Insert",
+                        TestAnalysisEntity.create(
+                                null,
+                                TestDataset.create(null, "CALE000010", archPer, bugsMaster, calendarDate),
+                                defaultSample
+                        )
                 ),
                 TestRelativeDate.create(
                         null,
-                        defaultSample,
-                        fromUncertainty,
-                        cal100AD,
-                        null,
-                        "No method is ok -insert"
-                ),
-                TestRelativeDate.create(
-                        null,
-                        defaultSample,
                         null,
                         cal100AD,
-                        archPer,
-                        "No uncertainty is ok -insert"
+                        "No method is ok -insert",
+                        TestAnalysisEntity.create(
+                                null,
+                                TestDataset.create(null, "CALE000013", unknownCal, bugsMaster, calendarDate),
+                                defaultSample
+                        )
                 ),
                 TestRelativeDate.create(
                         null,
-                        defaultSample,
-                        fromUncertainty,
+                        null,
+                        cal100AD,
+                        "No uncertainty is ok -insert",
+                        TestAnalysisEntity.create(
+                                null,
+                                TestDataset.create(null, "CALE000014", archPer, bugsMaster, calendarDate),
+                                defaultSample
+                        )
+                ),
+                TestRelativeDate.create(
+                        null,
+                        null,
                         createCalenderRelativeAge("CAL_" + 100 + "_BC", 2050, calendarDateTyp),
-                        archPer,
-                        "insert bc version"
+                        "insert bc version",
+                        TestAnalysisEntity.create(
+                                null,
+                                TestDataset.create(null, "CALE000017", archPer, bugsMaster, calendarDate),
+                                defaultSample
+                        )
                 ),
                 TestRelativeDate.create(
                         null,
-                        defaultSample,
-                        fromUncertainty,
+                        null,
                         createC14RelativeAge(100, "BP", calendarDateTyp),
-                        geolPer,
-                        "insert bp version"
+                        "insert bp version",
+                        TestAnalysisEntity.create(
+                                null,
+                                TestDataset.create(null, "CALE000018", geolPer, bugsMaster, calendarDate),
+                                defaultSample
+                        )
                 ),
                 TestRelativeDate.create(
                         null,
-                        sample2,
                         null,
                         createCalendarRelativeAge("CAL_" + 100 + "-" + 200 + "_AD", 1850, 1750, calendarDateRange),
-                        archPer,
-                        "range"
+                        "range",
+                        TestAnalysisEntity.create(
+                                null,
+                                TestDataset.create(null, "CALE000019", archPer, bugsMaster, calendarDate),
+                                sample2
+                        )
                 ),
                 TestRelativeDate.create(
                         null,
-                        sample3,
                         caUncertainty,
                         createCalendarRelativeAge("CAL_" + 100 + "-" + 200 + "_AD", 1850, 1750, calendarDateRange),
-                        archPer,
-                        "existing calendar range but with uncertainty"
+                        "existing calendar range but with uncertainty",
+                        TestAnalysisEntity.create(
+                                null,
+                                TestDataset.create(null, "CALE000021", archPer, bugsMaster, calendarDate),
+                                sample3
+                        )
+                ),
+                TestRelativeDate.create(
+                        null,
+                        fromUncertainty,
+                        createCalendarRelativeAge("CAL_" + 100 + "_AD-", 1850, null, calendarDateRange),
+                        "Add with open-ended period code",
+                        TestAnalysisEntity.create(
+                                null,
+                                TestDataset.create(null, "CALE000023", archPer, bugsMaster, calendarDate),
+                                sample3
+                        )
+                ),
+                TestRelativeDate.create(
+                        null,
+                        toUncertainty,
+                        createCalendarRelativeAge("CAL_-" + 200 + "_AD", null, 1750, calendarDateRange),
+                        "Add with open-started period code",
+                        TestAnalysisEntity.create(
+                                null,
+                                TestDataset.create(null, "CALE000024", archPer, bugsMaster, calendarDate),
+                                defaultSample
+                        )
+                ),
+                TestRelativeDate.create(
+                        null,
+                        null,
+                        cal100AD,
+                        "A method from another group",
+                        TestAnalysisEntity.create(
+                                null,
+                                TestDataset.create(null, "CALE000025", histCal, bugsMaster, calendarDate),
+                                sample3
+                        )
                 )
         );
     }
@@ -193,8 +273,8 @@ class RelativeDatesDatabaseContentProvider implements DatabaseContentVerificatio
     }
 
     private RelativeAge createCalendarRelativeAge(String abbrev, Integer start, Integer stop, RelativeAgeType type){
-        BigDecimal startValue = createSeadValue(start);
-        BigDecimal stopValue = createSeadValue(stop);
+        BigDecimal startValue = start != null ? createSeadValue(start) : null;
+        BigDecimal stopValue = stop != null ? createSeadValue(stop) : null;
         return TestRelativeAge.create(
                 null,
                 abbrev,
@@ -223,6 +303,7 @@ class RelativeDatesDatabaseContentProvider implements DatabaseContentVerificatio
     public TestEqualityHelper<RelativeDate> getEqualityHelper() {
         TestEqualityHelper<RelativeDate> equalityHelper = new TestEqualityHelper<>(true);
         equalityHelper.addMethodInformation(new TestEqualityHelper.ClassMethodInformation(SeadSite.class, "getSiteLocations"));
+        equalityHelper.addMethodInformation(new TestEqualityHelper.ClassMethodInformation(Dataset.class, "getContacts"));
         return equalityHelper;
     }
 

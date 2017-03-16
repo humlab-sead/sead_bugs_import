@@ -63,7 +63,7 @@ public class DatesCalendarRangeMerger {
 
     private void setFoundMatchingRelativeDate(RelativeDate currentDate){
         DatingUncertainty oppositeUncertainty = uncertaintyManager.getOpposite(currentDate.getUncertainty());
-        Method currentMethod = currentDate.getDatingMethod();
+        Method currentMethod = getDatingMethod(currentDate);
         Optional<MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate>> foundItem = previouslyMappedRelativeDatesForSample.stream()
                 .filter(relativeDate -> matchRelativeDateOnUncertaintyAndDatingMethod(extractRelativeDate(relativeDate), oppositeUncertainty, currentMethod))
                 .findFirst();
@@ -72,12 +72,21 @@ public class DatesCalendarRangeMerger {
         }
     }
 
+    private static Method getDatingMethod(RelativeDate relativeDate){
+        return relativeDate.getAnalysisEntity() != null ?
+                relativeDate.getAnalysisEntity().getDataset() != null ?
+                        relativeDate.getAnalysisEntity().getDataset().getMethod() :
+                        null :
+                null;
+    }
+
     private static boolean matchRelativeDateOnUncertaintyAndDatingMethod(RelativeDate relativeDate, DatingUncertainty uncertainty, Method method){
+        Method relativeDateMethod = getDatingMethod(relativeDate);
         return (relativeDate.getUncertainty() != null ?
                 relativeDate.getUncertainty().equals(uncertainty) : uncertainty == null )
                 &&
-                (relativeDate.getDatingMethod() != null ?
-                relativeDate.getDatingMethod().equals(method) : method == null);
+                (relativeDateMethod != null ?
+                relativeDateMethod.equals(method) : method == null);
     }
 
     void doMerge(MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate> mapping){
@@ -86,10 +95,10 @@ public class DatesCalendarRangeMerger {
         }
         RelativeDate currentRelativeDate = extractRelativeDate(mapping);
 
-        RelativeAge range = ageMerger.createRange(Arrays.asList(foundMatchingRelativeDate, mapping));
-        extractRelativeDate(foundMatchingRelativeDate).setRelativeAge(range);
-        ageMerger.updateUncertaintyIfNeeded(extractRelativeDate(foundMatchingRelativeDate));
-        mergeNotes(currentRelativeDate);
+        //RelativeAge range = ageMerger.createRange(Arrays.asList(foundMatchingRelativeDate, mapping));
+//        extractRelativeDate(foundMatchingRelativeDate).setRelativeAge(range);
+//        ageMerger.updateUncertaintyIfNeeded(extractRelativeDate(foundMatchingRelativeDate));
+//        mergeNotes(currentRelativeDate);
     }
 
     private void mergeNotes(RelativeDate currentDate){

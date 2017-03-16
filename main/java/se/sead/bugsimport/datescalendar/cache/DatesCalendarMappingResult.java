@@ -1,5 +1,6 @@
 package se.sead.bugsimport.datescalendar.cache;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import se.sead.bugsimport.MappingResult;
 import se.sead.bugsimport.datescalendar.bugsmodel.DatesCalendar;
 import se.sead.bugsimport.datesperiod.seadmodel.RelativeDate;
@@ -11,43 +12,32 @@ import java.util.Map;
 
 public class DatesCalendarMappingResult extends MappingResult<DatesCalendar, RelativeDate> {
 
-    private DatingUncertaintyManager uncertaintyManager;
-    private RelativeAgeMerger relativeAgeMerger;
+    private RelativeDateMerger dateMerger;
+    private RelativeDatesMappingCache mappingCache;
 
-    private Map<String, List<BugsListSeadMapping<DatesCalendar, RelativeDate>>> datesBySample;
-
+    @Autowired
     public DatesCalendarMappingResult(
             DatingUncertaintyManager uncertaintyManager,
-            RelativeAgeMerger relativeAgeMerger) {
-        this.uncertaintyManager = uncertaintyManager;
-        this.relativeAgeMerger = relativeAgeMerger;
-        datesBySample = new HashMap<>();
+            RelativeDateMerger dateMerger) {
+        mappingCache = new RelativeDatesMappingCache(uncertaintyManager);
+        this.dateMerger = dateMerger;
     }
 
     @Override
     public void add(DatesCalendar bugsData, List<RelativeDate> seadItems) {
         BugsListSeadMapping<DatesCalendar, RelativeDate> mapping = new BugsListSeadMapping<>(bugsData, seadItems);
-        DatesCalendarRangeMerger rangeMerger = new DatesCalendarRangeMerger(
-                uncertaintyManager,
-                relativeAgeMerger,
-                datesBySample.get(bugsData.getSample()));
-        if(rangeMerger.shouldMerge(mapping)){
-            rangeMerger.doMerge(mapping);
-        } else {
-            super.add(mapping);
-            addToCache(mapping);
-        }
+        mappingCache.add(mapping);
     }
 
-    private void addToCache(BugsListSeadMapping<DatesCalendar, RelativeDate> mapping){
-        if(mapping.isErrorFree() && mapping.getSeadData() != null && !mapping.getSeadData().isEmpty()){
-            String sampleCODE = mapping.getBugsData().getSample();
-            List<BugsListSeadMapping<DatesCalendar, RelativeDate>> storedDates = datesBySample.get(sampleCODE);
-            if(storedDates == null){
-                storedDates = new ArrayList<>();
-                datesBySample.put(sampleCODE, storedDates);
-            }
-            storedDates.add(mapping);
+    @Override
+    public List<BugsListSeadMapping<DatesCalendar, RelativeDate>> getData() {
+        List<BugsListSeadMapping<DatesCalendar, RelativeDate>> allMappings = new ArrayList<>();
+        for (String sampleCode :
+                mappingCache.getStoredSampleCodes()) {
+            List<BugsListSeadMapping<DatesCalendar, RelativeDate>> mergeablePeriodDates = mappingCache.getMergeablePeriodDates(sampleCode);
+            allMappings.addAll(dateMerger.mergeItems(mergeablePeriodDates));
+            allMappings.addAll(mappingCache.getNonMergeablePeriodDates(sampleCode));
         }
+        return allMappings;
     }
 }

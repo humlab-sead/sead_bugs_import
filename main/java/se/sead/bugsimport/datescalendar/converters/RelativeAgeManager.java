@@ -55,13 +55,11 @@ public class RelativeAgeManager {
         }
 
         @Override
-        protected Integer getStart(){
-            return datesCalendar.getDate();
-        }
-
-        @Override
-        protected Integer getStop(){
-            return datesCalendar.getDate();
+        protected void setAgePeriodData(Period period) {
+            period.setBegin(datesCalendar.getDate());
+            period.setEnd(datesCalendar.getDate());
+            period.setBeginBCad(datesCalendar.getBcadbp());
+            period.setEndBCad(datesCalendar.getBcadbp());
         }
 
         @Override

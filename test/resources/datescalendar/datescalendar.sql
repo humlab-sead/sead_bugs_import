@@ -26,10 +26,16 @@ values (2, 2, 'Depth from datum', 'Depth from datum');
 
 insert into tbl_method_groups (method_group_id, group_name, description)
 values (3, 'Dating to period', 'Dating to period');
+insert into tbl_method_groups (method_group_id, group_name, description)
+values (4, 'Dating to calendar year(s)', 'Other dating method group');
 insert into tbl_methods (method_id, method_group_id, method_name, method_abbrev_or_alt_name)
 values (3, 3, 'ArchPer', 'ArchCal');
 insert into tbl_methods (method_id, method_group_id, method_name, method_abbrev_or_alt_name)
 values (4, 3, 'GeolPer', 'GeolCal');
+insert into tbl_methods (method_id, method_group_id, method_name, method_abbrev_or_alt_name)
+values (5, 4, 'CalendarType', 'HistCal');
+insert into tbl_methods (method_id, method_group_id, method_name, method_abbrev_or_alt_name)
+    values (6, 4, 'unknown calendar dating', 'UnknownCal');
 
 insert into tbl_dimensions (dimension_id, method_group_id, dimension_name) values (1, 2, 'Upper boundary depth from unknown reference');
 insert into tbl_dimensions (dimension_id, method_group_id, dimension_name) values (2, 2, 'Lower boundary depth from unknown reference');
@@ -58,27 +64,47 @@ insert into tbl_dating_uncertainty (dating_uncertainty_id, uncertainty) values (
 insert into tbl_relative_age_types (relative_age_type_id, age_type) values (2, 'Calendar date');
 insert into tbl_relative_age_types (relative_age_type_id, age_type) values (3, 'Calendar date range');
 
+insert into tbl_dataset_masters (master_set_id, master_name) values (1, 'Bugs database');
+insert into tbl_data_type_groups (data_type_group_id, data_type_group_name) values (1, 'Dating types');
+insert into tbl_data_types (data_type_id, data_type_group_id, data_type_name) values (1, 1, 'Calendar date');
+
 insert into tbl_relative_ages (relative_age_id, relative_age_type_id, relative_age_name, abbreviation, description, cal_age_older, cal_age_younger, location_id)
   values (1, 2, null, 'CAL_100_AD', 'Autocreated from bugs import', 1850, 1850, null);
-insert into tbl_relative_dates (relative_date_id, relative_age_id, physical_sample_id, method_id, dating_uncertainty_id, notes)
-    values (1, 1, 1, 3, 3, 'Already stored');
+insert into tbl_datasets (dataset_id, master_set_id, method_id, data_type_id, dataset_name)
+    values (1, 1, 3, 1, 'CALE000015');
+insert into tbl_analysis_entities (analysis_entity_id, physical_sample_id, dataset_id)
+    values (1, 1, 1);
+insert into tbl_relative_dates (relative_date_id, relative_age_id, analysis_entity_id, dating_uncertainty_id, notes)
+    values (1, 1, 1, null, 'Already stored');
 insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
     values (4, 'TDatesCalendar', '{}', 'CALE000015', 'tbl_relative_dates', 1);
 
 insert into tbl_relative_ages (relative_age_id, relative_age_type_id, relative_age_name, abbreviation, description, cal_age_older, cal_age_younger, location_id)
   values (2, 2, null, 'CAL_120_AD', 'Autocreated from bugs import', 1830, 1830, null);
-insert into tbl_relative_dates (relative_date_id, relative_age_id, physical_sample_id, method_id, dating_uncertainty_id, notes)
-    values (2, 2, 1, 3, 2, 'update change uncertainty');
+insert into tbl_datasets (dataset_id, master_set_id, method_id, data_type_id, dataset_name)
+    values (2, 1, 3, 1, 'CALE000011');
+insert into tbl_analysis_entities (analysis_entity_id, physical_sample_id, dataset_id)
+    values (2, 1, 2);
+insert into tbl_relative_dates (relative_date_id, relative_age_id, analysis_entity_id, dating_uncertainty_id, notes)
+    values (2, 2, 2, 2, 'update change uncertainty');
 insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
     values (5, 'TDatesCalendar', '{}', 'CALE000011', 'tbl_relative_dates', 2);
 
-insert into tbl_relative_dates (relative_date_id, relative_age_id, physical_sample_id, method_id, dating_uncertainty_id, notes, date_updated)
-    values (3, 1, 1, 3, 3, 'sead data changed since import', '2016-01-01');
+insert into tbl_datasets (dataset_id, master_set_id, method_id, data_type_id, dataset_name)
+    values (3, 1, 3, 1, 'CALE000012');
+insert into tbl_analysis_entities (analysis_entity_id, physical_sample_id, dataset_id)
+    values (3, 1, 3);
+insert into tbl_relative_dates (relative_date_id, relative_age_id, analysis_entity_id, dating_uncertainty_id, notes, date_updated)
+    values (3, 1, 3, 3, 'sead data changed since import', '2016-01-01');
 insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id, change_date)
     values (6, 'TDatesCalendar', '{}', 'CALE000012', 'tbl_relative_dates', 3, '2015-01-01');
 
-insert into tbl_relative_dates (relative_date_id, relative_age_id, physical_sample_id, method_id, dating_uncertainty_id, notes)
-    values (4, 1, 1, 3, 3, 'update change date');
+insert into tbl_datasets (dataset_id, master_set_id, method_id, data_type_id, dataset_name)
+  values (4, 1, 3, 1, 'CALE000016');
+insert into tbl_analysis_entities (analysis_entity_id, physical_sample_id, dataset_id)
+  values (4, 1, 4);
+insert into tbl_relative_dates (relative_date_id, relative_age_id, analysis_entity_id, dating_uncertainty_id, notes)
+    values (4, 1, 4, 3, 'update change date');
 insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
     values (7, 'TDatesCalendar', '{}', 'CALE000016', 'tbl_relative_dates', 4);
 

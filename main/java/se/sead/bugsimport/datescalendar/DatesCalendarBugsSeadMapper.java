@@ -9,6 +9,7 @@ import se.sead.bugsimport.datescalendar.bugsmodel.DatesCalendarBugsTable;
 import se.sead.bugsimport.datescalendar.cache.DatesCalendarMappingResult;
 import se.sead.bugsimport.datescalendar.cache.DatingUncertaintyManager;
 import se.sead.bugsimport.datescalendar.cache.RelativeAgeMerger;
+import se.sead.bugsimport.datescalendar.cache.RelativeDateMerger;
 import se.sead.bugsimport.datesperiod.seadmodel.RelativeDate;
 
 @Component
@@ -17,7 +18,7 @@ public class DatesCalendarBugsSeadMapper extends BugsSeadMapper<DatesCalendar, R
     @Autowired
     private DatingUncertaintyManager uncertaintyManager;
     @Autowired
-    private RelativeAgeMerger ageMerger;
+    private RelativeDateMerger dateMerger;
 
     @Autowired
     public DatesCalendarBugsSeadMapper(DatesCalendarRowConverter singleBugsTableRowConverterForMapper) {
@@ -26,6 +27,6 @@ public class DatesCalendarBugsSeadMapper extends BugsSeadMapper<DatesCalendar, R
 
     @Override
     protected MappingResult<DatesCalendar, RelativeDate> initMapperResultContainer() {
-        return new DatesCalendarMappingResult(uncertaintyManager, ageMerger);
+        return new DatesCalendarMappingResult(uncertaintyManager, dateMerger);
     }
 }

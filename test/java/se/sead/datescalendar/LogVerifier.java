@@ -14,11 +14,15 @@ public class LogVerifier implements BugsTracesAndErrorsVerification.LogVerificat
     private AssertHelper listHelper;
     private AssertHelper relativeAgeAssertHelper;
     private AssertHelper relativeDatesAssertHelper;
+    private AssertHelper datasetAssertHelper;
+    private AssertHelper analysisEntityHelper;
 
     LogVerifier(){
         listHelper = new AssertHelper("");
         relativeAgeAssertHelper = new AssertHelper("tbl_relative_ages");
         relativeDatesAssertHelper = new AssertHelper("tbl_relative_dates");
+        datasetAssertHelper = new AssertHelper("tbl_datasets");
+        analysisEntityHelper = new AssertHelper("tbl_analysis_entities");
     }
 
     @Override
@@ -45,8 +49,14 @@ public class LogVerifier implements BugsTracesAndErrorsVerification.LogVerificat
                 listHelper.assertContainsError(errors, "No uncertainty found for definition");
                 break;
             case "CALE000010":
-                listHelper.assertSize(traces, 1);
+            case "CALE000013":
+            case "CALE000014":
+            case "CALE000025":
+            case "CALE000021":
+                listHelper.assertSize(traces, 3);
                 relativeDatesAssertHelper.assertInserts(traces, 1);
+                datasetAssertHelper.assertInserts(traces, 1);
+                analysisEntityHelper.assertInserts(traces, 1);
                 listHelper.assertEmpty(errors);
                 break;
             case "CALE000011":
@@ -59,12 +69,6 @@ public class LogVerifier implements BugsTracesAndErrorsVerification.LogVerificat
                 listHelper.assertSize(traces, 1);
                 relativeDatesAssertHelper.assertPrestoredTrace(traces, 6);
                 listHelper.assertContainsError(errors, SeadDataFromTraceHelper.SEAD_DATA_HAS_BEEN_UPDATED_SINCE_LAST_BUGS_IMPORT);
-                break;
-            case "CALE000013":
-            case "CALE000014":
-                listHelper.assertSize(traces, 1);
-                relativeDatesAssertHelper.assertInserts(traces, 1);
-                listHelper.assertEmpty(errors);
                 break;
             case "CALE000015":
                 listHelper.assertSize(traces, 1);
@@ -79,9 +83,19 @@ public class LogVerifier implements BugsTracesAndErrorsVerification.LogVerificat
                 break;
             case "CALE000017":
             case "CALE000018":
-                listHelper.assertSize(traces, 2);
+            case "CALE000019":
+            case "CALE000023":
+            case "CALE000024":
+                listHelper.assertSize(traces, 4);
                 relativeDatesAssertHelper.assertInserts(traces, 1);
                 relativeAgeAssertHelper.assertInserts(traces, 1);
+                datasetAssertHelper.assertInserts(traces, 1);
+                analysisEntityHelper.assertInserts(traces, 1);
+                listHelper.assertEmpty(errors);
+                break;
+            case "CALE000020":
+            case "CALE000022":
+                listHelper.assertEmpty(traces);
                 listHelper.assertEmpty(errors);
                 break;
         }

@@ -47,6 +47,10 @@ public class DatesCalendarImportTest {
     private BugsTraceRepository traceRepository;
     @Autowired
     private BugsErrorRepository errorRepository;
+    @Autowired
+    private DatasetMasterRepository datasetMasterRepository;
+    @Autowired
+    private DataTypeRepository dataTypeRepository;
 
     @Autowired
     private DatesCalendarImporter importer;
@@ -69,7 +73,9 @@ public class DatesCalendarImportTest {
                 methodRepository,
                 relativeAgeRepository,
                 relativeAgeTypeRepository,
-                relativeDateRepository
+                relativeDateRepository,
+                datasetMasterRepository,
+                dataTypeRepository
         ));
     }
 

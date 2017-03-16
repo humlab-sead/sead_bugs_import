@@ -17,19 +17,14 @@ public abstract class AbstractPeriodForRelativeAgeCreator {
 
     public Period create(){
         Period period = new Period();
-        period.setBegin(getStart());
-        period.setEnd(getStop());
-        period.setBeginBCad(datesCalendar.getBcadbp());
-        period.setEndBCad(datesCalendar.getBcadbp());
+        setAgePeriodData(period);
         period.setType(getType());
         period.setDesc(STANDARD_NOTES);
         period.setPeriodCode(computedAbbreviation);
         return period;
     }
 
-    protected abstract Integer getStart();
-
-    protected abstract Integer getStop();
+    protected abstract void setAgePeriodData(Period period);
 
     protected abstract String getType();
 }

@@ -3,27 +3,21 @@ package se.sead.bugsimport.datescalendar.converters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import se.sead.bugsimport.periods.seadmodel.RelativeAgeType;
-import se.sead.repositories.RelativeAgeTypeRepository;
 
 @Component
 public class RelativeAgeTypeManager {
 
-    @Value("${relative.date.range.type:Calendar date range}")
     private String calendarRangeType;
-
-    @Value("${relative.date.type:Calendar date}")
     private String calendarType;
 
     @Autowired
-    private RelativeAgeTypeRepository repository;
-
-    public RelativeAgeType getCalendarRangeType(){
-        RelativeAgeType rangeType = repository.findByType(calendarRangeType);
-        if(rangeType == null){
-            throw new IllegalStateException("No range type matching provided name.");
-        }
-        return rangeType;
+    public RelativeAgeTypeManager(
+            @Value("${relative.date.range.type:Calendar date range}")
+            String calendarRangeType,
+            @Value("${relative.date.type:Calendar date}")
+            String calendarType){
+        this.calendarRangeType = calendarRangeType;
+        this.calendarType = calendarType;
     }
 
     public String getCalendarRangeTypeName(){

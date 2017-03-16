@@ -84,7 +84,32 @@ class RelativeAgesDatabaseContentProvider implements DatabaseContentVerification
                         "Autocreated from bugs import",
                         typeRepository.findOne(3),
                         null
+                ),
+                TestRelativeAge.create(
+                        null,
+                        "CAL_100_AD-",
+                        null,
+                        null,
+                        null,
+                        RelativeDatesDatabaseContentProvider.createSeadValue(1850),
+                        null,
+                        "Autocreated from bugs import",
+                        typeRepository.findOne(3),
+                        null
+                ),
+                TestRelativeAge.create(
+                        null,
+                        "CAL_-200_AD",
+                        null,
+                        null,
+                        null,
+                        null,
+                        RelativeDatesDatabaseContentProvider.createSeadValue(1750),
+                        "Autocreated from bugs import",
+                        typeRepository.findOne(3),
+                        null
                 )
+
         );
     }
 
