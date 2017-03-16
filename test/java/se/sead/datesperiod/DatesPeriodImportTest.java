@@ -40,6 +40,10 @@ public class DatesPeriodImportTest {
     @Autowired
     private RelativeDateRepository relativeDateRepository;
     @Autowired
+    private DatasetMasterRepository datasetMasterRepository;
+    @Autowired
+    private DataTypeRepository dataTypeRepository;
+    @Autowired
     private BugsTraceRepository traceRepository;
     @Autowired
     private BugsErrorRepository errorRepository;
@@ -63,7 +67,9 @@ public class DatesPeriodImportTest {
                 datingUncertaintyRepository,
                 methodRepository,
                 relativeAgeRepository,
-                relativeDateRepository
+                relativeDateRepository,
+                datasetMasterRepository,
+                dataTypeRepository
         ));
     }
 

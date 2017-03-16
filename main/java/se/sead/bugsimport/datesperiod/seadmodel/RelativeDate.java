@@ -3,6 +3,7 @@ package se.sead.bugsimport.datesperiod.seadmodel;
 import se.sead.bugsimport.datesradio.seadmodel.DatingUncertainty;
 import se.sead.bugsimport.periods.seadmodel.RelativeAge;
 import se.sead.bugsimport.sample.seadmodel.Sample;
+import se.sead.sead.data.AnalysisEntity;
 import se.sead.sead.methods.Method;
 import se.sead.sead.model.LoggableEntity;
 
@@ -23,14 +24,11 @@ public class RelativeDate extends LoggableEntity {
     @JoinColumn(name = "relative_age_id")
     private RelativeAge relativeAge;
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinColumn(name = "method_id")
-    private Method datingMethod;
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "dating_uncertainty_id")
     private DatingUncertainty uncertainty;
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinColumn(name = "physical_sample_id")
-    private Sample sample;
+    @JoinColumn(name = "analysis_entity_id")
+    private AnalysisEntity analysisEntity;
 
     @Override
     public Integer getId() {
@@ -57,14 +55,6 @@ public class RelativeDate extends LoggableEntity {
         this.relativeAge = relativeAge;
     }
 
-    public Method getDatingMethod() {
-        return datingMethod;
-    }
-
-    public void setDatingMethod(Method datingMethod) {
-        this.datingMethod = datingMethod;
-    }
-
     public DatingUncertainty getUncertainty() {
         return uncertainty;
     }
@@ -73,12 +63,12 @@ public class RelativeDate extends LoggableEntity {
         this.uncertainty = uncertainty;
     }
 
-    public Sample getSample() {
-        return sample;
+    public AnalysisEntity getAnalysisEntity() {
+        return analysisEntity;
     }
 
-    public void setSample(Sample sample) {
-        this.sample = sample;
+    public void setAnalysisEntity(AnalysisEntity analysisEntity) {
+        this.analysisEntity = analysisEntity;
     }
 
     @Override
@@ -91,9 +81,8 @@ public class RelativeDate extends LoggableEntity {
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
         if (notes != null ? !notes.equals(that.notes) : that.notes != null) return false;
         if (relativeAge != null ? !relativeAge.equals(that.relativeAge) : that.relativeAge != null) return false;
-        if (datingMethod != null ? !datingMethod.equals(that.datingMethod) : that.datingMethod != null) return false;
         if (uncertainty != null ? !uncertainty.equals(that.uncertainty) : that.uncertainty != null) return false;
-        return sample != null ? sample.equals(that.sample) : that.sample == null;
+        return analysisEntity != null ? analysisEntity.equals(that.analysisEntity) : that.analysisEntity == null;
 
     }
 
@@ -102,9 +91,8 @@ public class RelativeDate extends LoggableEntity {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (notes != null ? notes.hashCode() : 0);
         result = 31 * result + (relativeAge != null ? relativeAge.hashCode() : 0);
-        result = 31 * result + (datingMethod != null ? datingMethod.hashCode() : 0);
         result = 31 * result + (uncertainty != null ? uncertainty.hashCode() : 0);
-        result = 31 * result + (sample != null ? sample.hashCode() : 0);
+        result = 31 * result + (analysisEntity != null ? analysisEntity.hashCode() : 0);
         return result;
     }
 
@@ -114,9 +102,8 @@ public class RelativeDate extends LoggableEntity {
                 "id=" + id +
                 ", notes='" + notes + '\'' +
                 ", relativeAge=" + relativeAge +
-                ", datingMethod=" + datingMethod +
                 ", uncertainty=" + uncertainty +
-                ", sample=" + sample +
+                ", sample=" + analysisEntity +
                 '}';
     }
 }

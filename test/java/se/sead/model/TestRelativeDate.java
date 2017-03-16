@@ -4,6 +4,7 @@ import se.sead.bugsimport.datesperiod.seadmodel.RelativeDate;
 import se.sead.bugsimport.datesradio.seadmodel.DatingUncertainty;
 import se.sead.bugsimport.periods.seadmodel.RelativeAge;
 import se.sead.bugsimport.sample.seadmodel.Sample;
+import se.sead.sead.data.AnalysisEntity;
 import se.sead.sead.methods.Method;
 
 public class TestRelativeDate extends RelativeDate {
@@ -14,18 +15,16 @@ public class TestRelativeDate extends RelativeDate {
 
     public static RelativeDate create(
             Integer id,
-            Sample sample,
             DatingUncertainty uncertainty,
             RelativeAge relativeAge,
-            Method datingMethod,
-            String notes
+            String notes,
+            AnalysisEntity analysisEntity
     ){
         RelativeDate relativeDate = new TestRelativeDate(id);
-        relativeDate.setSample(sample);
         relativeDate.setUncertainty(uncertainty);
         relativeDate.setRelativeAge(relativeAge);
-        relativeDate.setDatingMethod(datingMethod);
         relativeDate.setNotes(notes);
+        relativeDate.setAnalysisEntity(analysisEntity);
         return relativeDate;
     }
 }

@@ -11,62 +11,69 @@ import java.util.List;
 
 class LogVerification implements BugsTracesAndErrorsVerification.LogVerificationCallback<DatesPeriod> {
 
-    private AssertHelper assertHelper;
+    private AssertHelper relativeDatesAssertHelper;
+    private AssertHelper datasetAssertHelper;
+    private AssertHelper analysisAssertHelper;
 
     LogVerification(){
-        assertHelper = new AssertHelper("tbl_relative_dates");
+        relativeDatesAssertHelper = new AssertHelper("tbl_relative_dates");
+        datasetAssertHelper = new AssertHelper("tbl_datasets");
+        analysisAssertHelper = new AssertHelper("tbl_analysis_entities");
     }
 
     @Override
     public void verifyLogData(DatesPeriod bugsData, List<BugsTrace> traces, List<BugsError> errors) {
         switch(bugsData.getPeriodDateCode()){
             case "PERI000001":
-                assertHelper.assertEmpty(traces);
-                assertHelper.assertContainsError(errors, "No dating method found");
+                relativeDatesAssertHelper.assertEmpty(traces);
+                relativeDatesAssertHelper.assertContainsError(errors, "No dating method found");
                 break;
             case "PERI000002":
-                assertHelper.assertEmpty(traces);
-                assertHelper.assertContainsError(errors, "No period code");
+                relativeDatesAssertHelper.assertEmpty(traces);
+                relativeDatesAssertHelper.assertContainsError(errors, "No period code");
                 break;
             case "PERI000003":
-                assertHelper.assertEmpty(traces);
-                assertHelper.assertContainsError(errors, "No period found for code");
+                relativeDatesAssertHelper.assertEmpty(traces);
+                relativeDatesAssertHelper.assertContainsError(errors, "No period found for code");
                 break;
             case "PERI000004":
-                assertHelper.assertEmpty(traces);
-                assertHelper.assertContainsError(errors, "No sample specified");
+                relativeDatesAssertHelper.assertEmpty(traces);
+                relativeDatesAssertHelper.assertContainsError(errors, "No sample specified");
                 break;
             case "PERI000005":
-                assertHelper.assertEmpty(traces);
-                assertHelper.assertContainsError(errors, "No sample found for code");
+                relativeDatesAssertHelper.assertEmpty(traces);
+                relativeDatesAssertHelper.assertContainsError(errors, "No sample found for code");
                 break;
             case "PERI000006":
-                assertHelper.assertEmpty(traces);
-                assertHelper.assertContainsError(errors, "No uncertainty found for definition");
+                relativeDatesAssertHelper.assertEmpty(traces);
+                relativeDatesAssertHelper.assertContainsError(errors, "No uncertainty found for definition");
                 break;
             case "PERI000007":
             case "PERI000009":
             case "PERI000014":
             case "PERI000015":
-                assertHelper.assertSize(traces, 1);
-                assertHelper.assertInserts(traces, 1);
-                assertHelper.assertEmpty(errors);
+                relativeDatesAssertHelper.assertSize(traces, 3);
+                relativeDatesAssertHelper.assertInserts(traces, 1);
+                analysisAssertHelper.assertInserts(traces, 1);
+                datasetAssertHelper.assertInserts(traces, 1);
+                relativeDatesAssertHelper.assertEmpty(errors);
                 break;
             case "PERI000011":
-                assertHelper.assertSize(traces, 1);
-                assertHelper.assertPrestoredTrace(traces, 7);
-                assertHelper.assertEmpty(errors);
+                relativeDatesAssertHelper.assertSize(traces, 1);
+                relativeDatesAssertHelper.assertPrestoredTrace(traces, 7);
+                relativeDatesAssertHelper.assertEmpty(errors);
                 break;
             case "PERI000012":
-                assertHelper.assertSize(traces, 2);
-                assertHelper.assertPrestoredTrace(traces, 8);
-                assertHelper.assertUpdates(traces, 1);
-                assertHelper.assertEmpty(errors);
+                relativeDatesAssertHelper.assertSize(traces, 3);
+                relativeDatesAssertHelper.assertPrestoredTrace(traces, 8);
+                relativeDatesAssertHelper.assertUpdates(traces, 1);
+                datasetAssertHelper.assertUpdates(traces, 1);
+                relativeDatesAssertHelper.assertEmpty(errors);
                 break;
             case "PERI000013":
-                assertHelper.assertSize(traces, 1);
-                assertHelper.assertPrestoredTrace(traces, 9);
-                assertHelper.assertContainsError(errors, SeadDataFromTraceHelper.SEAD_DATA_HAS_BEEN_UPDATED_SINCE_LAST_BUGS_IMPORT);
+                relativeDatesAssertHelper.assertSize(traces, 1);
+                relativeDatesAssertHelper.assertPrestoredTrace(traces, 9);
+                relativeDatesAssertHelper.assertContainsError(errors, SeadDataFromTraceHelper.SEAD_DATA_HAS_BEEN_UPDATED_SINCE_LAST_BUGS_IMPORT);
                 break;
         }
     }

@@ -7,7 +7,10 @@ import se.sead.bugsimport.datesperiod.seadmodel.RelativeDate;
 import se.sead.bugsimport.periods.converters.PeriodTraceHelper;
 import se.sead.bugsimport.periods.seadmodel.RelativeAge;
 import se.sead.bugsimport.sample.converters.SampleTracerHelper;
+import se.sead.repositories.DataTypeRepository;
+import se.sead.repositories.DatasetMasterRepository;
 import se.sead.repositories.DatingUncertaintyRepository;
+import se.sead.sead.data.DataType;
 
 import java.util.Objects;
 
@@ -16,6 +19,10 @@ public class RelativeDatesUpdaterForPeriod extends BaseRelativeDatesUpdater<Date
 
     @Autowired
     private PeriodTraceHelper periodTraceHelper;
+    @Autowired
+    private DatasetMasterRepository datasetMasterRepository;
+    @Autowired
+    private DataTypeRepository dataTypeRepository;
 
     @Override
     protected BaseRelativeDateUpdater createUpdater(RelativeDate original, DatesPeriod bugsData){
@@ -23,6 +30,7 @@ public class RelativeDatesUpdaterForPeriod extends BaseRelativeDatesUpdater<Date
                 sampleTracerHelper,
                 uncertaintyRepository,
                 datingMethodManager,
+                dataTypeRepository,
                 original,
                 bugsData
         );
@@ -30,11 +38,19 @@ public class RelativeDatesUpdaterForPeriod extends BaseRelativeDatesUpdater<Date
 
     private class Updater extends BaseRelativeDateUpdater {
 
+        private DataTypeRepository dataTypeRepository;
         private DatesPeriod bugsData;
 
-        public Updater(SampleTracerHelper sampleTracerHelper, DatingUncertaintyRepository uncertaintyRepository, RelativeDateMethodManager datingMethodManager, RelativeDate original, DatesPeriod bugsData) {
-            super(sampleTracerHelper, uncertaintyRepository, datingMethodManager, original);
+        public Updater(
+                SampleTracerHelper sampleTracerHelper,
+                DatingUncertaintyRepository uncertaintyRepository,
+                RelativeDateMethodManager datingMethodManager,
+                DataTypeRepository dataTypeRepository,
+                RelativeDate original,
+                DatesPeriod bugsData) {
+            super(uncertaintyRepository, datasetMasterRepository, sampleTracerHelper, datingMethodManager, original);
             this.bugsData = bugsData;
+            this.dataTypeRepository = dataTypeRepository;
         }
 
         @Override
@@ -61,6 +77,16 @@ public class RelativeDatesUpdaterForPeriod extends BaseRelativeDatesUpdater<Date
         @Override
         protected String getBugsUncertainty() {
             return bugsData.getUncertainty();
+        }
+
+        @Override
+        protected DataType getDataType() {
+            return dataTypeRepository.findByName("Uncalibrated dates");
+        }
+
+        @Override
+        protected String getBugsDatesId() {
+            return bugsData.getPeriodDateCode();
         }
 
         @Override

@@ -4,9 +4,14 @@ import se.sead.bugsimport.datesperiod.seadmodel.RelativeDate;
 import se.sead.bugsimport.datesradio.seadmodel.DatingUncertainty;
 import se.sead.bugsimport.periods.seadmodel.RelativeAge;
 import se.sead.bugsimport.sample.seadmodel.Sample;
+import se.sead.model.TestAnalysisEntity;
+import se.sead.model.TestDataset;
 import se.sead.model.TestEqualityHelper;
 import se.sead.model.TestRelativeDate;
 import se.sead.repositories.*;
+import se.sead.sead.data.DataType;
+import se.sead.sead.data.Dataset;
+import se.sead.sead.data.DatasetMaster;
 import se.sead.sead.methods.Method;
 import se.sead.testutils.DatabaseContentVerification;
 
@@ -22,25 +27,35 @@ class DatabaseContentProvider implements DatabaseContentVerification.DatabaseCon
     private Method geolPerC14Method;
     private Method geolPerRadioMethod;
     private Method archPerCalMethod;
+    private Method unknownCalDating;
     private RelativeAge existingAge;
     private RelativeAge calPer;
     private RelativeAge radio;
+    private DatasetMaster bugsMaster;
+    private DataType countedDates;
+    private DataType uncalibratedDates;
 
     public DatabaseContentProvider(
             SampleRepository sampleRepository,
             DatingUncertaintyRepository datingUncertaintyRepository,
             MethodRepository methodRepository,
             RelativeAgeRepository relativeAgeRepository,
-            RelativeDateRepository relativeDateRepository
+            RelativeDateRepository relativeDateRepository,
+            DatasetMasterRepository datasetMasterRepository,
+            DataTypeRepository dataTypeRepository
     ){
         defaultSample = sampleRepository.findOne(1);
         greaterThanUncertainty = datingUncertaintyRepository.findOne(1);
         geolPerC14Method = methodRepository.findOne(4);
         archPerCalMethod = methodRepository.findOne(3);
         geolPerRadioMethod = methodRepository.findOne(5);
+        unknownCalDating = methodRepository.findOne(6);
         existingAge = relativeAgeRepository.findOne(1);
         calPer = relativeAgeRepository.findOne(2);
         radio = relativeAgeRepository.findOne(3);
+        bugsMaster = datasetMasterRepository.findOne(1);
+        uncalibratedDates = dataTypeRepository.findOne(1);
+        countedDates = dataTypeRepository.findOne(2);
         this.relativeDateRepository = relativeDateRepository;
     }
 
@@ -50,59 +65,66 @@ class DatabaseContentProvider implements DatabaseContentVerification.DatabaseCon
                 Arrays.asList(
                         TestRelativeDate.create(
                                 1,
-                                defaultSample,
                                 null,
                                 existingAge,
-                                geolPerC14Method,
-                                "Already stored"
+                                "Already stored",
+                                TestAnalysisEntity.create(1,
+                                        TestDataset.create(1, "PERI000011", geolPerC14Method, bugsMaster, uncalibratedDates),
+                                        defaultSample)
                         ),
                         TestRelativeDate.create(
                                 2,
-                                defaultSample,
                                 null,
                                 existingAge,
-                                geolPerC14Method,
-                                "Update"
+                                "Update",
+                                TestAnalysisEntity.create(2,
+                                        TestDataset.create(2, "PERI000012", geolPerC14Method, bugsMaster, uncalibratedDates),
+                                        defaultSample)
                         ),
                         TestRelativeDate.create(
                                 3,
-                                defaultSample,
+                                null,
+                                existingAge,
+                                "Sead changed data after import",
+                                TestAnalysisEntity.create(3,
+                                        TestDataset.create(3, "PERI000013", archPerCalMethod, bugsMaster, uncalibratedDates),
+                                        defaultSample)
+                        ),
+                        TestRelativeDate.create(
+                                null,
                                 greaterThanUncertainty,
                                 existingAge,
-                                archPerCalMethod,
-                                "Sead changed data after import"
+                                "No method is ok -insert",
+                                TestAnalysisEntity.create(null,
+                                        TestDataset.create(null, "PERI000007", unknownCalDating, bugsMaster, uncalibratedDates),
+                                        defaultSample)
                         ),
                         TestRelativeDate.create(
                                 null,
-                                defaultSample,
-                                greaterThanUncertainty,
-                                existingAge,
-                                null,
-                                "No method is ok -insert"
-                        ),
-                        TestRelativeDate.create(
-                                null,
-                                defaultSample,
                                 null,
                                 existingAge,
-                                geolPerC14Method,
-                                "uncertainty is null, is ok -insert"
+                                "uncertainty is null, is ok -insert",
+                                TestAnalysisEntity.create(null,
+                                        TestDataset.create(null, "PERI000009", geolPerC14Method, bugsMaster, uncalibratedDates),
+                                        defaultSample)
                         ),
                         TestRelativeDate.create(
                                 null,
-                                defaultSample,
                                 null,
                                 calPer,
-                                archPerCalMethod,
-                                "ArchPer version calendar"
+                                "ArchPer version calendar",
+                                TestAnalysisEntity.create(null,
+                                        TestDataset.create(null, "PERI000014", archPerCalMethod, bugsMaster, uncalibratedDates),
+                                        defaultSample)
                         ),
                         TestRelativeDate.create(
                                 null,
-                                defaultSample,
                                 null,
                                 radio,
-                                geolPerRadioMethod,
-                                "GeolPer version radiometric"
+                                "GeolPer version radiometric",
+                                TestAnalysisEntity.create(null,
+                                        TestDataset.create(null,"PERI000015", geolPerRadioMethod, bugsMaster, uncalibratedDates),
+                                        defaultSample)
                         )
                 );
     }
@@ -119,7 +141,11 @@ class DatabaseContentProvider implements DatabaseContentVerification.DatabaseCon
 
     @Override
     public TestEqualityHelper<RelativeDate> getEqualityHelper() {
-        return new TestEqualityHelper<>();
+        TestEqualityHelper<RelativeDate> relativeDateEqualityHelper = new TestEqualityHelper<>();
+        relativeDateEqualityHelper.addMethodInformation(
+                new TestEqualityHelper.ClassMethodInformation(Dataset.class, "getContacts")
+        );
+        return relativeDateEqualityHelper;
     }
 
     private static class RelativeDateComparator implements Comparator<RelativeDate> {

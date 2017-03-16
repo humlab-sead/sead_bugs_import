@@ -36,8 +36,7 @@ public class RelativeAgeUpdater {
         this.calendarAgeConverter = calendarAgeConverter;
     }
 
-    public void update(RelativeAge original, Period bugsData){new Updater(original, bugsData).update();
-    }
+    public void update(RelativeAge original, Period bugsData){new Updater(original, bugsData).update();}
 
     private class Updater {
         private RelativeAge original;

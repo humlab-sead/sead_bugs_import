@@ -8,6 +8,7 @@ import se.sead.sead.methods.MethodGroup;
 public interface MethodRepository extends Repository<Method, Integer> {
     Method getByNameAndGroup(String name, MethodGroup group);
     Method getByAbbreviationAndGroup(String abbreviation, MethodGroup group);
+    Method getByAbbreviation(String abbreviation);
     Method findOne(Integer id);
 
     @Query("select method from Method method " +

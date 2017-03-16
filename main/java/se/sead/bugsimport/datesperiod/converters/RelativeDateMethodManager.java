@@ -17,27 +17,30 @@ public class RelativeDateMethodManager {
     private MethodGroup relativeDateMethodGroup;
     private MethodRepository methodRepository;
     private PeriodTraceHelper periodTraceHelper;
+    private String defaultUnknownCalMethodName;
 
     @Autowired
     public RelativeDateMethodManager(
             @Value("${relative.date.method.group.name:Dating to period}")
                     String methodGroupName,
+            @Value("${relative.date.default.unknown.cal.method:UnknownCal}")
+                    String defaultUnknownCAlMethodName,
             MethodGroupRepository methodGroupRepository,
             MethodRepository methodRepository,
             PeriodTraceHelper periodTraceHelper){
+        this.defaultUnknownCalMethodName = defaultUnknownCAlMethodName;
         this.methodRepository = methodRepository;
         this.periodTraceHelper = periodTraceHelper;
         relativeDateMethodGroup = methodGroupRepository.findByName(methodGroupName);
-        throw new IllegalArgumentException("Must provide support for other groups.");
     }
 
     public Method getRelativeDateMethod(String bugsMethodName, RelativeAge relativeAge){
         assert relativeDateMethodGroup != null;
         if(bugsMethodName == null || bugsMethodName.trim().isEmpty()){
-            return null;
+            return methodRepository.getByAbbreviation(defaultUnknownCalMethodName);
         }
         String seadMethodName = buildMethodName(bugsMethodName, relativeAge);
-        Method method = methodRepository.getByAbbreviationAndGroup(seadMethodName, relativeDateMethodGroup);
+        Method method = methodRepository.getByAbbreviation(seadMethodName);
         if(method == null){
             return new NoMethodFound();
         }
