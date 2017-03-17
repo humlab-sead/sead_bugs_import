@@ -1,7 +1,7 @@
 package se.sead.bugsimport.specieskeys.seadmodel;
 
 import se.sead.bugsimport.species.seadmodel.TaxaSpecies;
-import se.sead.sead.model.Biblio;
+import se.sead.bugsimport.bibliography.seadmodel.Biblio;
 import se.sead.sead.model.LoggableEntity;
 
 import javax.persistence.*;

@@ -9,7 +9,7 @@ import se.sead.model.TestSeadSite;
 import se.sead.model.TestSiteReference;
 import se.sead.repositories.BiblioDataRepository;
 import se.sead.repositories.SiteRepository;
-import se.sead.sead.model.Biblio;
+import se.sead.bugsimport.bibliography.seadmodel.Biblio;
 import se.sead.utils.BigDecimalDefinition;
 
 import java.util.ArrayList;

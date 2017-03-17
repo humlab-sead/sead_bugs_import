@@ -3,7 +3,7 @@ package se.sead.model;
 import se.sead.bugsimport.species.seadmodel.TaxaSpecies;
 import se.sead.bugsimport.speciesassociation.seadmodel.SpeciesAssociation;
 import se.sead.bugsimport.speciesassociation.seadmodel.SpeciesAssociationType;
-import se.sead.sead.model.Biblio;
+import se.sead.bugsimport.bibliography.seadmodel.Biblio;
 
 public class TestSpeciesAssociation extends SpeciesAssociation {
 

@@ -2,7 +2,7 @@ package se.sead.model;
 
 import se.sead.bugsimport.species.seadmodel.TaxaSpecies;
 import se.sead.bugsimport.specieskeys.seadmodel.TextIdentificationKeys;
-import se.sead.sead.model.Biblio;
+import se.sead.bugsimport.bibliography.seadmodel.Biblio;
 
 public class TestTextIdentificationKeys extends TextIdentificationKeys {
 

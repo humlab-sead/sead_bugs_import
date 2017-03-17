@@ -1,7 +1,7 @@
 package se.sead.bugsimport.siteotherproxies.seadmodel;
 
 import se.sead.bugsimport.site.seadmodel.SeadSite;
-import se.sead.sead.model.Biblio;
+import se.sead.bugsimport.bibliography.seadmodel.Biblio;
 import se.sead.sead.model.LoggableEntity;
 import se.sead.sead.recordtypes.RecordType;
 

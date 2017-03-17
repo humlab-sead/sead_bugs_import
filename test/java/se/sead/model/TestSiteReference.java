@@ -2,7 +2,7 @@ package se.sead.model;
 
 import se.sead.bugsimport.site.seadmodel.SeadSite;
 import se.sead.bugsimport.sitereferences.seadmodel.SiteReference;
-import se.sead.sead.model.Biblio;
+import se.sead.bugsimport.bibliography.seadmodel.Biblio;
 
 public class TestSiteReference extends SiteReference {
 

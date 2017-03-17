@@ -2,7 +2,7 @@ package se.sead.model;
 
 import se.sead.bugsimport.species.seadmodel.TaxaSpecies;
 import se.sead.bugsimport.taxanotes.seadmodel.TaxonomicNotes;
-import se.sead.sead.model.Biblio;
+import se.sead.bugsimport.bibliography.seadmodel.Biblio;
 
 public class TestTaxonomicNotes extends TaxonomicNotes {
 

@@ -1,4 +1,6 @@
-package se.sead.sead.model;
+package se.sead.bugsimport.bibliography.seadmodel;
+
+import se.sead.sead.model.LoggableEntity;
 
 import javax.persistence.*;
 

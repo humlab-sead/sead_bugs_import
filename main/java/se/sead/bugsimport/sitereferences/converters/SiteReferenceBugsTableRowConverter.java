@@ -9,7 +9,7 @@ import se.sead.bugsimport.sitereferences.bugsmodel.BugsSiteRef;
 import se.sead.bugsimport.sitereferences.seadmodel.SiteReference;
 import se.sead.repositories.BiblioDataRepository;
 import se.sead.repositories.SiteReferenceRepository;
-import se.sead.sead.model.Biblio;
+import se.sead.bugsimport.bibliography.seadmodel.Biblio;
 
 import java.util.List;
 

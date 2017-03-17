@@ -9,7 +9,7 @@ import se.sead.bugsimport.speciesbiology.seadmodel.TextBiology;
 import se.sead.repositories.BiblioDataRepository;
 import se.sead.repositories.TaxonomicOrderRepository;
 import se.sead.repositories.TextBiologyDataRepository;
-import se.sead.sead.model.Biblio;
+import se.sead.bugsimport.bibliography.seadmodel.Biblio;
 
 @Component
 public class BiologyToTextBiologyRowConverter implements BugsTableRowConverter<Biology, TextBiology> {

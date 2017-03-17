@@ -1,6 +1,6 @@
 package se.sead.model;
 
-import se.sead.sead.model.Biblio;
+import se.sead.bugsimport.bibliography.seadmodel.Biblio;
 
 public class TestBiblio extends Biblio {
 

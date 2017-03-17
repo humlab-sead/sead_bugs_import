@@ -10,7 +10,7 @@ import se.sead.bugsimport.taxanotes.bugsmodel.TaxoNotes;
 import se.sead.bugsimport.taxanotes.seadmodel.TaxonomicNotes;
 import se.sead.repositories.BiblioDataRepository;
 import se.sead.repositories.TaxonomicNotesRepository;
-import se.sead.sead.model.Biblio;
+import se.sead.bugsimport.bibliography.seadmodel.Biblio;
 
 @Component
 public class TaxoNotesTableRowConverter implements BugsTableRowConverter<TaxoNotes, TaxonomicNotes> {

@@ -2,7 +2,7 @@ package se.sead.model;
 
 import se.sead.bugsimport.species.seadmodel.TaxaSpecies;
 import se.sead.bugsimport.speciesdistribution.seadmodel.TextDistribution;
-import se.sead.sead.model.Biblio;
+import se.sead.bugsimport.bibliography.seadmodel.Biblio;
 
 public class TestTextDistribution extends TextDistribution {
 

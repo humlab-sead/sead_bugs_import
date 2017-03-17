@@ -10,7 +10,7 @@ import se.sead.bugsimport.speciesdistribution.bugsmodel.Distrib;
 import se.sead.bugsimport.speciesdistribution.seadmodel.TextDistribution;
 import se.sead.repositories.BiblioDataRepository;
 import se.sead.repositories.TextDistributionRepository;
-import se.sead.sead.model.Biblio;
+import se.sead.bugsimport.bibliography.seadmodel.Biblio;
 
 @Component
 public class SpeciesDistributionTableRowConverter implements BugsTableRowConverter<Distrib, TextDistribution> {

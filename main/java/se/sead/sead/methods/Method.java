@@ -1,6 +1,6 @@
 package se.sead.sead.methods;
 
-import se.sead.sead.model.Biblio;
+import se.sead.bugsimport.bibliography.seadmodel.Biblio;
 import se.sead.sead.model.LoggableEntity;
 import se.sead.sead.model.Unit;
 import se.sead.sead.recordtypes.RecordType;

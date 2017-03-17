@@ -2,7 +2,7 @@ package se.sead.model;
 
 import se.sead.bugsimport.species.seadmodel.TaxaSpecies;
 import se.sead.bugsimport.speciesbiology.seadmodel.TextBiology;
-import se.sead.sead.model.Biblio;
+import se.sead.bugsimport.bibliography.seadmodel.Biblio;
 
 public class TestTextBiology extends TextBiology {
 

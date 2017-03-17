@@ -9,7 +9,7 @@ import se.sead.repositories.BiblioDataRepository;
 import se.sead.repositories.SpeciesAssociationRepository;
 import se.sead.repositories.SpeciesAssociationTypeRepository;
 import se.sead.repositories.SpeciesRepository;
-import se.sead.sead.model.Biblio;
+import se.sead.bugsimport.bibliography.seadmodel.Biblio;
 import se.sead.testutils.DatabaseContentVerification;
 
 import java.util.Arrays;

@@ -10,7 +10,7 @@ import se.sead.bugsimport.specieskeys.bugsmodel.Keys;
 import se.sead.bugsimport.specieskeys.seadmodel.TextIdentificationKeys;
 import se.sead.repositories.BiblioDataRepository;
 import se.sead.repositories.TextIdentificationKeysRepository;
-import se.sead.sead.model.Biblio;
+import se.sead.bugsimport.bibliography.seadmodel.Biblio;
 
 @Component
 public class KeysTableRowConverter implements BugsTableRowConverter<Keys, TextIdentificationKeys> {

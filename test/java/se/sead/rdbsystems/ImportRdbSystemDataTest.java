@@ -20,7 +20,7 @@ import se.sead.testutils.DefaultConfig;
 @SpringBootTest
 @ActiveProfiles("test")
 @DirtiesContext
-public class ImportDataTest {
+public class ImportRdbSystemDataTest {
 
     @TestConfiguration
     public static class Config extends DefaultConfig {

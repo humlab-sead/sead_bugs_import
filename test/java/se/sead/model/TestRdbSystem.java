@@ -2,7 +2,7 @@ package se.sead.model;
 
 import se.sead.bugsimport.locations.seadmodel.Location;
 import se.sead.bugsimport.rdbsystems.seadmodel.RdbSystem;
-import se.sead.sead.model.Biblio;
+import se.sead.bugsimport.bibliography.seadmodel.Biblio;
 
 public class TestRdbSystem extends RdbSystem {
 

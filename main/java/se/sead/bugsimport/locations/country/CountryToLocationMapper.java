@@ -14,9 +14,7 @@ public class CountryToLocationMapper extends BugsSeadMapper<Country, Location> {
 
     @Autowired
     public CountryToLocationMapper(
-            AccessDatabaseProvider readerProvider,
-            CountryRowConverter countryRowConverter,
-            BugsValueTranslationService dataTranslationService
+            CountryRowConverter countryRowConverter
     ){
         super(new CountryBugsTable(), countryRowConverter);
     }

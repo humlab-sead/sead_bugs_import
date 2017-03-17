@@ -6,7 +6,7 @@ import se.sead.bugsimport.locations.seadmodel.Location;
 import se.sead.bugsimport.rdbsystems.bugsmodel.BugsRDBSystem;
 import se.sead.bugsimport.rdbsystems.seadmodel.RdbSystem;
 import se.sead.repositories.BiblioDataRepository;
-import se.sead.sead.model.Biblio;
+import se.sead.bugsimport.bibliography.seadmodel.Biblio;
 import se.sead.utils.ErrorCopier;
 
 import java.util.Objects;

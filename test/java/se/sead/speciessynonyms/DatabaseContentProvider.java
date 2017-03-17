@@ -8,7 +8,7 @@ import se.sead.bugsimport.speciesassociation.seadmodel.SpeciesAssociation;
 import se.sead.bugsimport.speciesassociation.seadmodel.SpeciesAssociationType;
 import se.sead.model.*;
 import se.sead.repositories.*;
-import se.sead.sead.model.Biblio;
+import se.sead.bugsimport.bibliography.seadmodel.Biblio;
 import se.sead.species.SpeciesComparator;
 import se.sead.testutils.DatabaseContentVerification;
 

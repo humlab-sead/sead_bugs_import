@@ -9,7 +9,7 @@ import se.sead.bugsimport.speciesassociation.seadmodel.SpeciesAssociationType;
 import se.sead.repositories.BiblioDataRepository;
 import se.sead.repositories.SpeciesAssociationTypeRepository;
 import se.sead.repositories.TaxonomicOrderRepository;
-import se.sead.sead.model.Biblio;
+import se.sead.bugsimport.bibliography.seadmodel.Biblio;
 
 import java.util.Objects;
 

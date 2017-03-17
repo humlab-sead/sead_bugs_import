@@ -1,14 +1,12 @@
 package se.sead.specieskeys;
 
-import se.sead.bugsimport.species.seadmodel.TaxaSpecies;
 import se.sead.bugsimport.specieskeys.seadmodel.TextIdentificationKeys;
 import se.sead.model.TestBiblio;
 import se.sead.model.TestEqualityHelper;
 import se.sead.model.TestTextIdentificationKeys;
-import se.sead.repositories.SpeciesRepository;
 import se.sead.repositories.TaxaOrderRepository;
 import se.sead.repositories.TextIdentificationKeysRepository;
-import se.sead.sead.model.Biblio;
+import se.sead.bugsimport.bibliography.seadmodel.Biblio;
 import se.sead.testutils.DatabaseContentVerification;
 
 import java.util.ArrayList;

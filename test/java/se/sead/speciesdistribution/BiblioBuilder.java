@@ -1,7 +1,7 @@
 package se.sead.speciesdistribution;
 
 import se.sead.model.TestBiblio;
-import se.sead.sead.model.Biblio;
+import se.sead.bugsimport.bibliography.seadmodel.Biblio;
 
 import java.util.HashMap;
 import java.util.Map;

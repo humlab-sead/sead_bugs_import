@@ -1,7 +1,7 @@
 package se.sead.bugsimport.rdbsystems.seadmodel;
 
 import se.sead.bugsimport.locations.seadmodel.Location;
-import se.sead.sead.model.Biblio;
+import se.sead.bugsimport.bibliography.seadmodel.Biblio;
 import se.sead.sead.model.LoggableEntity;
 
 import javax.persistence.*;
