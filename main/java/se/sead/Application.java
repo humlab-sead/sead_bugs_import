@@ -11,9 +11,12 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.stereotype.Component;
+import se.sead.bugsimport.Importer;
+import se.sead.configuration.ApplicationArgumentManager;
 import se.sead.repositories.impl.CreateAndReadRepositoryImpl;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @SpringBootApplication
@@ -55,26 +58,24 @@ public class Application {
 	}
 
 	@Component
-	public static class DefaultImportRunner implements ApplicationRunner {
+	public static class DefaultRunner implements ApplicationRunner {
 
         @Autowired
-        private se.sead.DefaultImportRunner runner;
+        private ImportRunner runner;
+        private ApplicationArgumentManager argumentManager;
+        @Autowired
+		private List<Importer> importers;
 
         @Override
         public void run(ApplicationArguments applicationArguments) throws Exception {
-            if(shouldRun(applicationArguments)){
-                runner.run();
+        	argumentManager = new ApplicationArgumentManager(applicationArguments);
+            if(argumentManager.shouldRun()){
+                runner.run(getImporters());
             }
         }
 
-        private boolean shouldRun(ApplicationArguments applicationArguments){
-			boolean shouldNotRun = applicationArguments.getOptionNames().stream()
-					.anyMatch(
-							name ->
-							name.equals("no-run") ||
-							name.equals("validate-schema")
-					);
-			return !shouldNotRun;
+		private List<Importer> getImporters(){
+			return argumentManager.filter(importers);
 		}
     }
 }

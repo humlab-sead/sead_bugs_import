@@ -4,8 +4,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import se.sead.*;
 import se.sead.bugs.AccessDatabaseProvider;
+import se.sead.bugsimport.Importer;
 
 import javax.sql.DataSource;
+import java.util.List;
 
 public abstract class DefaultConfig implements ApplicationConfiguration{
 
@@ -67,10 +69,10 @@ public abstract class DefaultConfig implements ApplicationConfiguration{
 
     @Bean
     @Primary
-    public DefaultImportRunner getImportRunner(){
-        return new DefaultImportRunner(){
+    public ImportRunner getImportRunner(){
+        return new ImportRunner(){
             @Override
-            public void run() throws Exception {
+            public void run(List<Importer> importers) throws Exception {
             }
         };
     }

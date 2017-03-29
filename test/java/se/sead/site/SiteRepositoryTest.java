@@ -12,7 +12,8 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import se.sead.DataSourceFactory;
-import se.sead.DefaultImportRunner;
+import se.sead.ImportRunner;
+import se.sead.bugsimport.Importer;
 import se.sead.bugsimport.locations.seadmodel.Location;
 import se.sead.bugsimport.locations.seadmodel.LocationType;
 import se.sead.bugsimport.site.seadmodel.SeadSite;
@@ -45,10 +46,10 @@ public class SiteRepositoryTest {
         }
         @Bean
         @Primary
-        public DefaultImportRunner getImportRunner(){
-            return new DefaultImportRunner(){
+        public ImportRunner getImportRunner(){
+            return new ImportRunner(){
                 @Override
-                public void run() throws Exception {
+                public void run(List<Importer> importers) throws Exception {
                 }
             };
         }
