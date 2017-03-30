@@ -13,10 +13,10 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class RelativeAgeMergerTest {
+public class UncertaintyDatesCalendarContainerManagerTest {
 
     private DatingUncertaintyManager datingUncertaintyManager;
-    private RelativeAgeMerger ageMerger;
+    private UncertaintyDatesCalendarContainerManager ageMerger;
     private MappingCreator mappingCreator = new MappingCreator();
 
     @Before
@@ -29,7 +29,7 @@ public class RelativeAgeMergerTest {
                 "ToCa",
                 new MockDatingUncertaintyRepository()
         );
-        ageMerger = new RelativeAgeMerger(
+        ageMerger = new UncertaintyDatesCalendarContainerManager(
                 datingUncertaintyManager
         );
     }

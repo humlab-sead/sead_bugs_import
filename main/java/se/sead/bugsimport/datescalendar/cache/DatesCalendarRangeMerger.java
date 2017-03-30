@@ -5,27 +5,25 @@ import se.sead.bugsimport.MappingResult;
 import se.sead.bugsimport.datescalendar.bugsmodel.DatesCalendar;
 import se.sead.bugsimport.datesperiod.seadmodel.RelativeDate;
 import se.sead.bugsimport.datesradio.seadmodel.DatingUncertainty;
-import se.sead.bugsimport.periods.seadmodel.RelativeAge;
 import se.sead.sead.methods.Method;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 public class DatesCalendarRangeMerger {
 
     private DatingUncertaintyManager uncertaintyManager;
-    private RelativeAgeMerger ageMerger;
+    private UncertaintyDatesCalendarContainerManager ageMerger;
 
     private List<MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate>> previouslyMappedRelativeDatesForSample;
     private MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate> foundMatchingRelativeDate;
 
     DatesCalendarRangeMerger(
             DatingUncertaintyManager uncertaintyManager,
-            RelativeAgeMerger relativeAgeMerger,
+            UncertaintyDatesCalendarContainerManager uncertaintyDatesCalendarContainerManager,
             List<MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate>> previouslyMappedRelativeDatesForSample) {
         this.uncertaintyManager = uncertaintyManager;
-        this.ageMerger = relativeAgeMerger;
+        this.ageMerger = uncertaintyDatesCalendarContainerManager;
         this.previouslyMappedRelativeDatesForSample = previouslyMappedRelativeDatesForSample;
     }
 

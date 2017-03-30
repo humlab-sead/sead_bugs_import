@@ -11,12 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class RelativeAgeMerger {
+public class UncertaintyDatesCalendarContainerManager {
 
     private DatingUncertaintyManager uncertaintyManager;
 
     @Autowired
-    public RelativeAgeMerger(
+    public UncertaintyDatesCalendarContainerManager(
             DatingUncertaintyManager uncertaintyManager
     ) {
         this.uncertaintyManager = uncertaintyManager;

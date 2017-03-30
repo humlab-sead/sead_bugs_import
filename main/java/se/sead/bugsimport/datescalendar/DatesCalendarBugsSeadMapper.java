@@ -8,7 +8,6 @@ import se.sead.bugsimport.datescalendar.bugsmodel.DatesCalendar;
 import se.sead.bugsimport.datescalendar.bugsmodel.DatesCalendarBugsTable;
 import se.sead.bugsimport.datescalendar.cache.DatesCalendarMappingResult;
 import se.sead.bugsimport.datescalendar.cache.DatingUncertaintyManager;
-import se.sead.bugsimport.datescalendar.cache.RelativeAgeMerger;
 import se.sead.bugsimport.datescalendar.cache.RelativeDateMerger;
 import se.sead.bugsimport.datesperiod.seadmodel.RelativeDate;
 

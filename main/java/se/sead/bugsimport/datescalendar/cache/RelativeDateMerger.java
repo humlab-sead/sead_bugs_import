@@ -12,11 +12,11 @@ import java.util.List;
 @Component
 public class RelativeDateMerger {
 
-    private RelativeAgeMerger ageMerger;
+    private UncertaintyDatesCalendarContainerManager ageMerger;
     private RelativeRangeAgeManager ageManager;
 
     public RelativeDateMerger(
-            RelativeAgeMerger ageMerger,
+            UncertaintyDatesCalendarContainerManager ageMerger,
             RelativeRangeAgeManager ageManager) {
         this.ageMerger = ageMerger;
         this.ageManager = ageManager;
@@ -45,12 +45,12 @@ public class RelativeDateMerger {
 
     private static class InformationCopier {
 
-        private RelativeAgeMerger ageMerger;
+        private UncertaintyDatesCalendarContainerManager ageMerger;
         private UncertaintyDatesCalendarContainer container;
         private RelativeAge range;
         private boolean useFromAsDefault = true;
 
-        public InformationCopier(RelativeAgeMerger ageMerger, UncertaintyDatesCalendarContainer container, RelativeAge range) {
+        public InformationCopier(UncertaintyDatesCalendarContainerManager ageMerger, UncertaintyDatesCalendarContainer container, RelativeAge range) {
             this.ageMerger = ageMerger;
             this.container = container;
             this.range = range;
