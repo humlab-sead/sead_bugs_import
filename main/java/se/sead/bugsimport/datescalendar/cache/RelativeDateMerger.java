@@ -12,13 +12,13 @@ import java.util.List;
 @Component
 public class RelativeDateMerger {
 
-    private UncertaintyDatesCalendarContainerManager ageMerger;
+    private UncertaintyDatesCalendarContainerManager containerManager;
     private RelativeRangeAgeManager ageManager;
 
     public RelativeDateMerger(
-            UncertaintyDatesCalendarContainerManager ageMerger,
+            UncertaintyDatesCalendarContainerManager containerManager,
             RelativeRangeAgeManager ageManager) {
-        this.ageMerger = ageMerger;
+        this.containerManager = containerManager;
         this.ageManager = ageManager;
     }
 
@@ -26,7 +26,7 @@ public class RelativeDateMerger {
             List<MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate>> mergeableItems
     ) {
         List<MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate>> mergedItems = new ArrayList<>();
-        List<UncertaintyDatesCalendarContainer> ranges = ageMerger.createRanges(mergeableItems);
+        List<UncertaintyDatesCalendarContainer> ranges = containerManager.createRanges(mergeableItems);
         for (UncertaintyDatesCalendarContainer container:
                 ranges) {
             RelativeAge mergeRelativeAge = ageManager.createOrGet(container.getFromDate(), container.getToDate());
@@ -39,7 +39,7 @@ public class RelativeDateMerger {
             UncertaintyDatesCalendarContainer container,
             RelativeAge mergeRelativeAge
     ) {
-        InformationCopier copier = new InformationCopier(ageMerger, container, mergeRelativeAge);
+        InformationCopier copier = new InformationCopier(containerManager, container, mergeRelativeAge);
         return copier.updateMapping();
     }
 
