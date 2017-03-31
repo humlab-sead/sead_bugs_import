@@ -7,6 +7,8 @@ public class PeriodBugsTable extends BugsTable<Period> {
 
     public static final String TABLE_NAME = "TPeriods";
 
+    static final String BUGS_DATA_DELIMITER = "|";
+
     public PeriodBugsTable(){
         super(TABLE_NAME);
     }

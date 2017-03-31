@@ -15,7 +15,7 @@ public class PeriodFromTraceBuilder {
 
     public Period createPeriodFromTrace() {
         removeSurroundingCurlyBraces();
-        String[] parts = originalData.split(",");
+        String[] parts = originalData.split("\\" + PeriodBugsTable.BUGS_DATA_DELIMITER);
         return createPeriodFromTrace(parts);
     }
 

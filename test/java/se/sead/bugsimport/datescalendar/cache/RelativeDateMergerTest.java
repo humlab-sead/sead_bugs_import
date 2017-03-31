@@ -141,8 +141,6 @@ public class RelativeDateMergerTest {
         assertFalse(result.get(0).isErrorFree());
     }
 
-
-
     private static class MockRelativeRangeAgeManager extends RelativeRangeAgeManager {
 
         public MockRelativeRangeAgeManager() {

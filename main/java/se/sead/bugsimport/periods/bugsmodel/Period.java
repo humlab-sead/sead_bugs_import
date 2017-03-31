@@ -173,16 +173,16 @@ public class Period extends TraceableBugsData {
     @Override
     public String compressToString() {
         return "{" +
-                periodCode + ',' +
-                name + ',' +
-                type + ',' +
-                desc + ',' +
-                ref + ',' +
-                geography + ',' +
-                begin + ',' +
-                beginBCad + ',' +
-                end + ',' +
-                endBCad + ',' +
+                periodCode + PeriodBugsTable.BUGS_DATA_DELIMITER +
+                name + PeriodBugsTable.BUGS_DATA_DELIMITER +
+                type + PeriodBugsTable.BUGS_DATA_DELIMITER +
+                desc + PeriodBugsTable.BUGS_DATA_DELIMITER +
+                ref + PeriodBugsTable.BUGS_DATA_DELIMITER +
+                geography + PeriodBugsTable.BUGS_DATA_DELIMITER +
+                begin + PeriodBugsTable.BUGS_DATA_DELIMITER +
+                beginBCad + PeriodBugsTable.BUGS_DATA_DELIMITER +
+                end + PeriodBugsTable.BUGS_DATA_DELIMITER +
+                endBCad + PeriodBugsTable.BUGS_DATA_DELIMITER +
                 yearsType + '}';
     }
 

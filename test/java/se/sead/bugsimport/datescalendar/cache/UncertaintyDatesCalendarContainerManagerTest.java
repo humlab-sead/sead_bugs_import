@@ -95,7 +95,7 @@ public class UncertaintyDatesCalendarContainerManagerTest {
         assertEquals("To", ranges.get(0).getToDate().getUncertainty());
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = UncertaintyExtractor.TooManyUncertaintiesOfSameKindException.class)
     public void moreThanOneFromIsError(){
         List<MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate>> sampleData =
                 Arrays.asList(

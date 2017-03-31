@@ -17,7 +17,9 @@ abstract class UncertaintyExtractor {
         this.uncertaintyManager = manager;
     }
 
-    MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate> getForUncertainty(List<MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate>> carriers){
+    MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate> getForUncertainty(
+            List<MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate>> carriers)
+            throws TooManyUncertaintiesOfSameKindException {
         List<MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate>> foundDates = new ArrayList<>();
         for (MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate> carrier:
                 carriers){
@@ -29,7 +31,7 @@ abstract class UncertaintyExtractor {
         if(foundDates.isEmpty()){
             return NO_DATES_CALENDAR_FOR_UNCERTAINTY;
         } else if(foundDates.size() > 1){
-            throw new IllegalStateException("more than one uncertainty of same type for sample");
+            throw new TooManyUncertaintiesOfSameKindException(foundDates);
         }
         return foundDates.get(0);
     }
@@ -79,6 +81,19 @@ abstract class UncertaintyExtractor {
         @Override
         protected boolean isUncertainty(RelativeDate relativeDate) {
             return uncertaintyManager.isToCaUncertainty(relativeDate.getUncertainty());
+        }
+    }
+
+    static class TooManyUncertaintiesOfSameKindException extends RuntimeException {
+        private List<MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate>> foundMappingsWithSameKindOfUncertainty;
+        TooManyUncertaintiesOfSameKindException(
+                List<MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate>> foundMappingsWithSameKindOfUncertainty
+        ){
+            this.foundMappingsWithSameKindOfUncertainty = foundMappingsWithSameKindOfUncertainty;
+        }
+
+        List<MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate>> getFoundMappingsWithSameKindOfUncertainty() {
+            return foundMappingsWithSameKindOfUncertainty;
         }
     }
 }

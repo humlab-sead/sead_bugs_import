@@ -95,8 +95,15 @@ public class LogVerifier implements BugsTracesAndErrorsVerification.LogVerificat
                 break;
             case "CALE000020":
             case "CALE000022":
+            case "CALE000027":
+            case "CALE000028":
                 listHelper.assertEmpty(traces);
                 listHelper.assertEmpty(errors);
+                break;
+            case "CALE000026":
+                System.out.println("CALE00026");
+                listHelper.assertEmpty(traces);
+                listHelper.assertContainsError(errors, "Too many uncertainties of same type for a single sample.");
                 break;
         }
     }

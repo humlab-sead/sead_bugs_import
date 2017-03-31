@@ -117,3 +117,8 @@ insert into tbl_physical_samples (physical_sample_id, sample_group_id, alt_ref_t
 values (3, 1, 1, 1, 'SAMP 3');
 insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
 values (9, 'TSample', '', 'SAMP000003', 'tbl_physical_samples', 3);
+
+insert into tbl_physical_samples (physical_sample_id, sample_group_id, alt_ref_type_id, sample_type_id, sample_name)
+values (4, 1, 1, 1, 'SAMP 4');
+insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
+values (10, 'TSample', '', 'SAMP000004', 'tbl_physical_samples', 4);
