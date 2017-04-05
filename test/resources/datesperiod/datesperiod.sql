@@ -65,17 +65,17 @@ insert into tbl_data_types (data_type_id, data_type_group_id, data_type_name) va
 insert into tbl_relative_ages (relative_age_id, relative_age_type_id, relative_age_name, abbreviation, description, c14_age_older, c14_age_younger, location_id)
 values (1, 1, 'A period', 'EXISTING', 'A geographic period', 0, 0, 1);
 insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
-values (4, 'TPeriods', '{EXISTING,A Period,Geological,A geographic period,,Country,0,BP,0,BP,C14}', 'EXISTING', 'tbl_relative_ages', 1);
+values (4, 'TPeriods', '{EXISTING|A Period|Geological|A geographic period||Country|0|BP|0|BP|C14}', 'EXISTING', 'tbl_relative_ages', 1);
 
 insert into tbl_relative_ages (relative_age_id, relative_age_type_id, relative_age_name, abbreviation, description, cal_age_older, cal_age_younger, location_id)
 values (2, 2, 'Calendar period', 'CALPER', 'A geographic calendar period', 0, 0, 1);
 insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
-values (5, 'TPeriods', '{CALPER,A Period,Geological,A geographic calendar period,,Country,0,AD,0,BC,Calendar}', 'CALPER', 'tbl_relative_ages', 2);
+values (5, 'TPeriods', '{CALPER|A Period|Geological|A geographic calendar period||Country|0|AD|0|BC|Calendar}', 'CALPER', 'tbl_relative_ages', 2);
 
 insert into tbl_relative_ages (relative_age_id, relative_age_type_id, relative_age_name, abbreviation, description, c14_age_older, c14_age_younger, location_id)
 values (3, 1, 'A Radiometric Period', 'RADIO', 'A radiometric period', 0, 0, 1);
 insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
-values (6, 'TPeriods', '{RADIO,A Radiometric Period,Geological,A radiometric period,,Country,0,BP,0,BP,Radiometric}', 'RADIO', 'tbl_relative_ages', 3);
+values (6, 'TPeriods', '{RADIO|A Radiometric Period|Geological|A radiometric period||Country|0|BP|0|BP|Radiometric}', 'RADIO', 'tbl_relative_ages', 3);
 
 insert into tbl_datasets (dataset_id, method_id, data_type_id, master_set_id, dataset_name)
     values (1, 4, 1, 1, 'PERI000011');

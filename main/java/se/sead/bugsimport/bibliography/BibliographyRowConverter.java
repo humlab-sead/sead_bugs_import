@@ -13,25 +13,32 @@ import se.sead.repositories.BiblioDataRepository;
 public class BibliographyRowConverter implements BugsTableRowConverter<BugsBiblio, Biblio> {
 
     private BiblioTraceHelper traceHelper;
+    private BiblioDataRepository referenceRepository;
 
     @Autowired
-    public BibliographyRowConverter(BiblioTraceHelper traceHelper){
+    public BibliographyRowConverter(BiblioTraceHelper traceHelper, BiblioDataRepository referenceRepository){
         this.traceHelper = traceHelper;
+        this.referenceRepository = referenceRepository;
     }
 
     @Override
     public Biblio convertForDataRow(BugsBiblio bugsData) {
         Biblio fromLastTrace = traceHelper.getFromLastTrace(bugsData.getBugsIdentifier());
         if(fromLastTrace == null){
-            return create(bugsData);
+            return createOrReadFromBugsAuthor(bugsData);
         } else if(fromLastTrace.isErrorFree()){
             return update(fromLastTrace, bugsData);
         }
         return fromLastTrace;
     }
 
-    private Biblio create(BugsBiblio bugsData){
-        return update(new Biblio(), bugsData);
+    private Biblio createOrReadFromBugsAuthor(BugsBiblio bugsData){
+        Biblio fromSeadData = referenceRepository.getByBugsReferenceIgnoreCase(bugsData.getReference());
+        if(fromSeadData == null){
+            return update(new Biblio(), bugsData);
+        } else {
+            return update(fromSeadData, bugsData);
+        }
     }
 
     private Biblio update(Biblio biblio, BugsBiblio bugsBiblio){

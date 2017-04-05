@@ -35,6 +35,10 @@ public class LogVerifier implements BugsTracesAndErrorsVerification.LogVerificat
                 assertHelper.assertInserts(traces, 1);
                 assertHelper.assertEmpty(errors);
                 break;
+            case "Exists 2012":
+                assertHelper.assertEmpty(traces);
+                assertHelper.assertEmpty(errors);
+                break;
         }
     }
 }

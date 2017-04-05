@@ -10,7 +10,8 @@ public class ExpectedBugsData {
     static final List<BugsBiblio> EXPECTED_DATA = Arrays.asList(
             create("Exists 2000", "Exists, A.B (2000)", "An existing bibliography non-edited", null),
             create("NonExists 2000", "Exists, Not (2000)", "A non-existing bibliography entry.", null),
-            create("Exists 2001", "Exists, A.B (2001)", "A changed entry - do not handle", null)
+            create("Exists 2001", "Exists, A.B (2001)", "A changed entry - do not handle", null),
+            create("Exists 2012", "Exists, A.B (2012)", "A preinstalled bugs reference", null)
     );
 
     private static BugsBiblio create(String reference, String author, String title, String notes){

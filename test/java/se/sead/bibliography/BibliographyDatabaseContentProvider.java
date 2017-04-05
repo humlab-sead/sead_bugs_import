@@ -23,7 +23,8 @@ public class BibliographyDatabaseContentProvider implements DatabaseContentVerif
         return Arrays.asList(
                 TestBiblio.create(1,"Exists, A.B (2000)", "Exists 2000", "An existing bibliography non-edited"),
                 TestBiblio.create(2, "Exists, A.B (2001)", "Exists 2001", "A changed entry"),
-                TestBiblio.create(null, "Exists, Not (2000)", "NonExists 2000", "A non-existing bibliography entry.")
+                TestBiblio.create(null, "Exists, Not (2000)", "NonExists 2000", "A non-existing bibliography entry."),
+                TestBiblio.create(3, "Exists, A.B (2012)", "Exists 2012", "A preinstalled bugs reference")
         );
     }
 
