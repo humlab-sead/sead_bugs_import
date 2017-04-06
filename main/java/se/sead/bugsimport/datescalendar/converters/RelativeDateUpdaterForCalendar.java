@@ -1,6 +1,7 @@
 package se.sead.bugsimport.datescalendar.converters;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import se.sead.bugsimport.datescalendar.bugsmodel.DatesCalendar;
 import se.sead.bugsimport.datesperiod.converters.BaseRelativeDateUpdater;
@@ -19,34 +20,42 @@ import java.util.Objects;
 @Component
 public class RelativeDateUpdaterForCalendar extends BaseRelativeDatesUpdater<DatesCalendar> {
 
-    @Autowired
     private RelativeAgeManager relativeAgeManager;
-    @Autowired
     private DatasetMasterRepository datasetMasterRepository;
+    private DataType relativeDateType;
+
     @Autowired
-    private DataTypeRepository dataTypeRepository;
+    public RelativeDateUpdaterForCalendar(
+            RelativeAgeManager relativeAgeManager,
+            DatasetMasterRepository datasetMasterRepository,
+            DataTypeRepository dataTypeRepository,
+            @Value("@{relative.calendar.date.data.type=Calendar date}") String defaultCalendarDateDataType) {
+        this.relativeAgeManager = relativeAgeManager;
+        this.datasetMasterRepository = datasetMasterRepository;
+        relativeDateType = dataTypeRepository.findByName(defaultCalendarDateDataType);
+    }
 
     @Override
     protected BaseRelativeDateUpdater createUpdater(RelativeDate original, DatesCalendar bugsData) {
-        return new Updater(sampleTracerHelper, uncertaintyRepository, datasetMasterRepository, datingMethodManager, dataTypeRepository, original, bugsData);
+        return new Updater(sampleTracerHelper, uncertaintyRepository, datasetMasterRepository, datingMethodManager, relativeDateType, original, bugsData);
     }
 
     private class Updater extends BaseRelativeDateUpdater {
 
         private DatesCalendar bugsData;
-        private DataTypeRepository dataTypeRepository;
+        private DataType relativeDateDataType;
 
         public Updater(
                 SampleTracerHelper sampleTracerHelper,
                 DatingUncertaintyRepository uncertaintyRepository,
                 DatasetMasterRepository datasetMasterRepository,
                 RelativeDateMethodManager datingMethodManager,
-                DataTypeRepository dataTypeRepository,
+                DataType relativeDateDataType,
                 RelativeDate original,
                 DatesCalendar bugsData) {
             super(uncertaintyRepository, datasetMasterRepository, sampleTracerHelper, datingMethodManager, original);
-            this.dataTypeRepository = dataTypeRepository;
             this.bugsData = bugsData;
+            this.relativeDateDataType = relativeDateDataType;
         }
 
         @Override
@@ -66,7 +75,7 @@ public class RelativeDateUpdaterForCalendar extends BaseRelativeDatesUpdater<Dat
 
         @Override
         protected DataType getDataType() {
-            return dataTypeRepository.findByName("Calendar date");
+            return relativeDateDataType;
         }
 
         @Override
