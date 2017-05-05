@@ -29,7 +29,7 @@ public class RelativeDateUpdaterForCalendar extends BaseRelativeDatesUpdater<Dat
             RelativeAgeManager relativeAgeManager,
             DatasetMasterRepository datasetMasterRepository,
             DataTypeRepository dataTypeRepository,
-            @Value("@{relative.calendar.date.data.type=Calendar date}") String defaultCalendarDateDataType) {
+            @Value("${relative.calendar.date.data.type:Calendar date}") String defaultCalendarDateDataType) {
         this.relativeAgeManager = relativeAgeManager;
         this.datasetMasterRepository = datasetMasterRepository;
         relativeDateType = dataTypeRepository.findByName(defaultCalendarDateDataType);
