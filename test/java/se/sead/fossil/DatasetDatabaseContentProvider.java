@@ -12,6 +12,7 @@ import se.sead.sead.data.DatasetMaster;
 import se.sead.sead.methods.Method;
 import se.sead.testutils.DatabaseContentVerification;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -21,28 +22,34 @@ class DatasetDatabaseContentProvider implements DatabaseContentVerification.Data
     private DatasetMaster bugsDataset;
     private DatasetRepository datasetRepository;
     private DataType defaultDataType;
-    private DataType undefinedOther;
     private Method palaeoentomology;
-    private Method c14;
+    private boolean allowDatasetUpdates;
 
     DatasetDatabaseContentProvider(
             DataTypeRepository dataTypeRepository,
             MethodRepository methodRepository,
             DatasetMasterRepository datasetMasterRepository,
-            DatasetRepository datasetRepository
+            DatasetRepository datasetRepository,
+            boolean allowDatasetUpdates
     ){
         bugsDataset = datasetMasterRepository.findBugsMasterSet();
         defaultDataType = dataTypeRepository.findOne(1);
-        undefinedOther = dataTypeRepository.findOne(2);
         palaeoentomology = methodRepository.findOne(3);
-        c14 = methodRepository.findOne(4);
         this.datasetRepository = datasetRepository;
+        this.allowDatasetUpdates = allowDatasetUpdates;
     }
 
 
     @Override
     public List<Dataset> getExpectedData() {
-        return Arrays.asList(
+        Dataset baseCOUN00004Dataset = TestDataset.create(
+                3,
+                "COUN000004",
+                palaeoentomology,
+                bugsDataset,
+                defaultDataType
+        );
+        List<Dataset> expectedDatasets = Arrays.asList(
                 TestDataset.create(
                         1,
                         "COUN000001",
@@ -52,10 +59,10 @@ class DatasetDatabaseContentProvider implements DatabaseContentVerification.Data
                 ),
                 TestDataset.create(
                         2,
-                        "DATE000001",
-                        c14,
+                        "COUN000002",
+                        palaeoentomology,
                         bugsDataset,
-                        undefinedOther
+                        defaultDataType
                 ),
                 TestDataset.create(
                         null,
@@ -63,8 +70,21 @@ class DatasetDatabaseContentProvider implements DatabaseContentVerification.Data
                         palaeoentomology,
                         bugsDataset,
                         defaultDataType
-                )
+                ),
+                baseCOUN00004Dataset
         );
+        if(!allowDatasetUpdates){
+           expectedDatasets = new ArrayList<>(expectedDatasets);
+           expectedDatasets.add(TestDataset.create(
+                   null,
+                   "COUN000004",
+                   palaeoentomology,
+                   bugsDataset,
+                   defaultDataType,
+                   baseCOUN00004Dataset
+           ));
+        }
+        return expectedDatasets;
     }
 
     @Override
@@ -87,7 +107,17 @@ class DatasetDatabaseContentProvider implements DatabaseContentVerification.Data
     private static class DatasetComparator implements Comparator<Dataset> {
         @Override
         public int compare(Dataset o1, Dataset o2) {
+            if(o1.getName().equals(o2.getName())){
+                return checkForUpdatedDataset(o1,o2);
+            }
             return o1.getName().compareTo(o2.getName());
+        }
+
+        private int checkForUpdatedDataset(Dataset o1, Dataset o2){
+            if(o1.getUpdatedDataset() != null){
+                return 1;
+            }
+            return -1;
         }
     }
 }

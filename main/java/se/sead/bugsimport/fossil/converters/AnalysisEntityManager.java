@@ -1,6 +1,7 @@
 package se.sead.bugsimport.fossil.converters;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import se.sead.bugsimport.countsheets.seadmodel.SampleGroup;
 import se.sead.bugsimport.fossil.bugsmodel.Fossil;
@@ -18,31 +19,44 @@ import java.util.Objects;
 @Component
 public class AnalysisEntityManager {
 
-    @Autowired
     private SampleTracerHelper sampleTracerHelper;
-    @Autowired
     private AnalysisEntityRepository aeRepository;
-    @Autowired
     private DatasetManagerWithCreation datasetManagerWithCreation;
 
+    private boolean updateDatasetConfiguration;
+
     private AnalysisEntityCache cache = new AnalysisEntityCache();
+
+    @Autowired
+    public AnalysisEntityManager(
+            SampleTracerHelper sampleTracerHelper,
+            AnalysisEntityRepository aeRepository,
+            DatasetManagerWithCreation datasetManagerWithCreation,
+            @Value("${allow.dataset.updates:true}")
+            Boolean updateDatasetConfig
+    ){
+        this.sampleTracerHelper = sampleTracerHelper;
+        this.aeRepository = aeRepository;
+        this.datasetManagerWithCreation = datasetManagerWithCreation;
+        this.updateDatasetConfiguration = updateDatasetConfig;
+    }
 
     public void initCache(){
         cache.init();
     }
 
-    public boolean setAnalysisEntity(Abundance originalAbundance, Fossil bugsData){
+    public boolean setAnalysisEntity(Abundance originalAbundance, Fossil bugsData, boolean abundanceDataChanged){
         if(bugsData.getSampleCODE() == null || bugsData.getSampleCODE().isEmpty()){
             originalAbundance.addError("No sample specified");
             return true;
         }
-        Sample fromLastTrace = sampleTracerHelper.getFromLastTrace(bugsData.getSampleCODE());
-        if(fromLastTrace == null){
+        Sample sampleFromLastTrace = sampleTracerHelper.getFromLastTrace(bugsData.getSampleCODE());
+        if(sampleFromLastTrace == null){
             originalAbundance.addError("No sample found for code");
             return false;
         }
 
-        SampleGroup sampleGroup = fromLastTrace.getGroup();
+        SampleGroup sampleGroup = sampleFromLastTrace.getGroup();
         Dataset dataset = datasetManagerWithCreation.getOrCreateFor(sampleGroup);
 
         if(!dataset.isErrorFree()){
@@ -50,25 +64,34 @@ public class AnalysisEntityManager {
             return false;
         }
 
-        AnalysisEntity ae = cache.find(fromLastTrace, dataset);
+        if(shouldCreateNewDatasetWithOriginalAsLink(dataset) && abundanceDataChanged){
+            dataset = datasetManagerWithCreation.updateDataset(dataset);
+        }
+
+        AnalysisEntity ae = cache.find(sampleFromLastTrace, dataset);
         if(ae == null && dataset.isNewItem()){
-            ae = createAnalysisEntity(fromLastTrace, dataset);
+            ae = createAnalysisEntity(sampleFromLastTrace, dataset);
         } else if(ae == null){
-            List<AnalysisEntity> entitiesForSample = aeRepository.findBySampleAndDataset(fromLastTrace, dataset);
+            List<AnalysisEntity> entitiesForSample = aeRepository.findBySampleAndDataset(sampleFromLastTrace, dataset);
             if(entitiesForSample.isEmpty()){
-                ae = createAnalysisEntity(fromLastTrace, dataset);
+                ae = createAnalysisEntity(sampleFromLastTrace, dataset);
             } else if(entitiesForSample.size() == 1){
                 ae = entitiesForSample.get(0);
             } else {
                 originalAbundance.addError("More than one analysis entity found for same dataset and sample");
                 return false;
             }
-            cache.store(fromLastTrace, dataset, ae);
+            cache.store(sampleFromLastTrace, dataset, ae);
         }
         AnalysisEntity originalAbundanceAnalysisEntity = originalAbundance.getAnalysisEntity();
         originalAbundance.setAnalysisEntity(ae);
         cache.bind(ae, originalAbundance);
         return !Objects.equals(originalAbundanceAnalysisEntity, ae);
+    }
+
+    private boolean shouldCreateNewDatasetWithOriginalAsLink(Dataset dataset){
+        return !updateDatasetConfiguration &&
+                !dataset.isNewItem();
     }
 
     private AnalysisEntity createAnalysisEntity(Sample sample, Dataset dataset){

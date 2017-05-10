@@ -4,11 +4,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
+import se.sead.Application;
 import se.sead.bugsimport.fossil.FossilImporter;
 import se.sead.bugsimport.fossil.bugsmodel.Fossil;
 import se.sead.bugsimport.fossil.seadmodel.Abundance;
@@ -20,10 +24,10 @@ import se.sead.testutils.DatabaseContentVerification;
 import se.sead.testutils.DefaultConfig;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(classes={Application.class, FossilImportTest.Config.class})
 @ActiveProfiles("test")
 @DirtiesContext
-public class FossilImportTest {
+public abstract class FossilImportTest {
 
     @TestConfiguration
     public static class Config extends DefaultConfig {
@@ -52,6 +56,8 @@ public class FossilImportTest {
     private DatasetRepository datasetRepository;
     @Autowired
     private AnalysisEntityRepository analysisEntityRepository;
+    @Value("${allow.dataset.updates}")
+    private Boolean allowDatasetUpdates;
 
     @Autowired
     private FossilImporter importer;
@@ -62,7 +68,7 @@ public class FossilImportTest {
     private BugsTracesAndErrorsVerification<Fossil> abundanceLogVerification;
 
     @Before
-    public void setup(){
+    public final void setup(){
         abundanceDatabaseContentVerifier = new DatabaseContentVerification<>(
                 new AbundanceDatabaseContentProvider(
                         sampleRepository,
@@ -70,7 +76,8 @@ public class FossilImportTest {
                         dataTypeRepository,
                         methodRepository,
                         datasetMasterRepository,
-                        abundanceRepository
+                        abundanceRepository,
+                        allowDatasetUpdates
                 )
         );
         datasetDatabaseContentVerifier = new DatabaseContentVerification<>(
@@ -78,7 +85,8 @@ public class FossilImportTest {
                     dataTypeRepository,
                         methodRepository,
                         datasetMasterRepository,
-                        datasetRepository
+                        datasetRepository,
+                        allowDatasetUpdates
                 )
         );
         analysisEntityDatabaseContentVerifier = new DatabaseContentVerification<>(
@@ -87,20 +95,22 @@ public class FossilImportTest {
                         datasetMasterRepository,
                         dataTypeRepository,
                         methodRepository,
-                        analysisEntityRepository
+                        analysisEntityRepository,
+                        allowDatasetUpdates
                 )
         );
         abundanceLogVerification = new BugsTracesAndErrorsVerification.ByIdentity<>(
                 traceRepository,
                 errorRepository,
-                new LogVerification(),
+                new LogVerification(allowDatasetUpdates),
                 () -> ExpectedBugsData.EXPECTED_DATA
         );
 
     }
 
-    @Test
-    public void run(){
+    public abstract void test();
+
+    public final void run(){
         importer.run();
         abundanceDatabaseContentVerifier.verifyDatabaseContent();
         analysisEntityDatabaseContentVerifier.verifyDatabaseContent();

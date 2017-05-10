@@ -33,7 +33,7 @@ public class AbundanceUpdater {
 
         void update(){
             boolean updated = setAbundance();
-            updated = setAnalysisEntity() || updated;
+            updated = setAnalysisEntity(updated) || updated;
             updated = setSpecies() || updated;
             original.setUpdated(updated);
         }
@@ -44,8 +44,8 @@ public class AbundanceUpdater {
             return !Objects.equals(originalAbundance, bugsData.getAbundance());
         }
 
-        private boolean setAnalysisEntity(){
-            return analysisEntityManager.setAnalysisEntity(original, bugsData);
+        private boolean setAnalysisEntity(boolean abundancesChanged){
+            return analysisEntityManager.setAnalysisEntity(original, bugsData, abundancesChanged);
         }
 
         private boolean setSpecies(){

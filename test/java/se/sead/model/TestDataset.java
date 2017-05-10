@@ -25,4 +25,17 @@ public class TestDataset extends Dataset {
         dataset.setDataType(dataType);
         return dataset;
     }
+
+    public static Dataset create(
+            Integer id,
+            String name,
+            Method method,
+            DatasetMaster masterDataset,
+            DataType dataType,
+            Dataset updatedDataset
+    ){
+        Dataset dataset = create(id, name, method, masterDataset, dataType);
+        dataset.setUpdatedDataset(updatedDataset);
+        return dataset;
+    }
 }

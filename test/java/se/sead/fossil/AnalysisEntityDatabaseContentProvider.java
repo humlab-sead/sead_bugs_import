@@ -1,5 +1,6 @@
 package se.sead.fossil;
 
+import org.junit.Test;
 import se.sead.bugsimport.sample.seadmodel.Sample;
 import se.sead.model.TestAnalysisEntity;
 import se.sead.model.TestDataset;
@@ -12,6 +13,7 @@ import se.sead.sead.data.DatasetMaster;
 import se.sead.sead.methods.Method;
 import se.sead.testutils.DatabaseContentVerification;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -20,30 +22,30 @@ class AnalysisEntityDatabaseContentProvider implements DatabaseContentVerificati
 
     private SampleRepository sampleRepository;
     private Method palaeoentomology;
-    private Method c14;
     private DatasetMaster bugsDataset;
     private DataType defaultDataType;
-    private DataType undefinedOther;
     private AnalysisEntityRepository analysisEntityRepository;
+    private boolean allowDatasetUpdates;
 
     AnalysisEntityDatabaseContentProvider(
             SampleRepository sampleRepository,
             DatasetMasterRepository datasetMasterRepository,
             DataTypeRepository dataTypeRepository,
             MethodRepository methodRepository,
-            AnalysisEntityRepository analysisEntityRepository) {
+            AnalysisEntityRepository analysisEntityRepository,
+            boolean allowDatasetUpdates) {
         this.sampleRepository = sampleRepository;
         palaeoentomology = methodRepository.findOne(3);
-        c14 = methodRepository.findOne(4);
         bugsDataset = datasetMasterRepository.findOne(1);
         defaultDataType = dataTypeRepository.findOne(1);
-        undefinedOther = dataTypeRepository.findOne(2);
         this.analysisEntityRepository = analysisEntityRepository;
+        this.allowDatasetUpdates = allowDatasetUpdates;
     }
 
     @Override
     public List<AnalysisEntity> getExpectedData() {
-        return Arrays.asList(
+        Dataset dataset04 = createDataset(3, "COUN000004");
+        List<AnalysisEntity> expectedAnalysisEnteties = Arrays.asList(
                 TestAnalysisEntity.create(
                         1,
                         createDataset(1, "COUN000001"),
@@ -51,25 +53,35 @@ class AnalysisEntityDatabaseContentProvider implements DatabaseContentVerificati
                 ),
                 TestAnalysisEntity.create(
                         2,
-                        createDataset(2, "DATE000001", undefinedOther, c14),
-                        sampleRepository.findOne(3)
-                ),
-                TestAnalysisEntity.create(
-                        null,
-                        createDataset(1, "COUN000001"),
+                        createDataset(2, "COUN000002"),
                         sampleRepository.findOne(2)
                 ),
                 TestAnalysisEntity.create(
-                        null,
-                        createDataset(1, "COUN000001"),
-                        sampleRepository.findOne(3)
+                        3,
+                        dataset04,
+                        sampleRepository.findOne(4)
                 ),
                 TestAnalysisEntity.create(
                         null,
                         createDataset(null, "COUN000003"),
-                        sampleRepository.findOne(5)
+                        sampleRepository.findOne(3)
                 )
         );
+        if(!allowDatasetUpdates){
+            expectedAnalysisEnteties = new ArrayList<>(expectedAnalysisEnteties);
+            expectedAnalysisEnteties.add(TestAnalysisEntity.create(
+                    null,
+                    TestDataset.create(
+                            null,
+                            "COUN000004",
+                            palaeoentomology,
+                            bugsDataset,
+                            defaultDataType,
+                            dataset04),
+                    sampleRepository.findOne(4)
+            ));
+        }
+        return expectedAnalysisEnteties;
     }
 
     private Dataset createDataset(Integer datasetId, String datasetName){

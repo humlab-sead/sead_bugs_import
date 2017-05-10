@@ -26,8 +26,11 @@ public class Dataset extends LoggableEntity {
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "method_id")
     private Method method;
-    @OneToMany(mappedBy = "dataset", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "dataset"/*, fetch = FetchType.EAGER*/)
     private List<DatasetContact> contacts;
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JoinColumn(name="updated_dataset_id")
+    private Dataset updatedDataset;
 
     @Override
     public Integer getId() {
@@ -78,6 +81,14 @@ public class Dataset extends LoggableEntity {
         this.contacts = contacts;
     }
 
+    public Dataset getUpdatedDataset() {
+        return updatedDataset;
+    }
+
+    public void setUpdatedDataset(Dataset updatedDataset) {
+        this.updatedDataset = updatedDataset;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -90,8 +101,8 @@ public class Dataset extends LoggableEntity {
         if (dataType != null ? !dataType.equals(dataset.dataType) : dataset.dataType != null) return false;
         if (masterDataset != null ? !masterDataset.equals(dataset.masterDataset) : dataset.masterDataset != null)
             return false;
-        return method != null ? method.equals(dataset.method) : dataset.method == null;
-
+        if (method != null ? !method.equals(dataset.method) : dataset.method != null) return false;
+        return updatedDataset != null ? updatedDataset.equals(dataset.updatedDataset) : dataset.updatedDataset == null;
     }
 
     @Override
@@ -101,6 +112,7 @@ public class Dataset extends LoggableEntity {
         result = 31 * result + (dataType != null ? dataType.hashCode() : 0);
         result = 31 * result + (masterDataset != null ? masterDataset.hashCode() : 0);
         result = 31 * result + (method != null ? method.hashCode() : 0);
+        result = 31 * result + (updatedDataset != null ? updatedDataset.hashCode() : 0);
         return result;
     }
 
@@ -112,6 +124,7 @@ public class Dataset extends LoggableEntity {
                 ", dataType=" + dataType +
                 ", masterDataset=" + masterDataset +
                 ", method=" + method +
+                ", updated=" + updatedDataset +
                 '}';
     }
 }

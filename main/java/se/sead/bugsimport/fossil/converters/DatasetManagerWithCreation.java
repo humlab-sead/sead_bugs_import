@@ -84,4 +84,14 @@ public class DatasetManagerWithCreation extends AbstractDatasetManager{
         return dataset;
     }
 
+    public Dataset updateDataset(Dataset originalDataset){
+        Dataset updatedDataset = new Dataset();
+        updatedDataset.setUpdatedDataset(originalDataset);
+        updatedDataset.setDataType(originalDataset.getDataType());
+        updatedDataset.setMasterDataset(originalDataset.getMasterDataset());
+        updatedDataset.setName(originalDataset.getName());
+        updatedDataset.setMethod(originalDataset.getMethod());
+        return updatedDataset;
+    }
+
 }

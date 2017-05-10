@@ -17,6 +17,7 @@ import se.sead.sead.methods.Method;
 import se.sead.sead.model.LoggableEntity;
 import se.sead.testutils.DatabaseContentVerification;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -29,6 +30,7 @@ class AbundanceDatabaseContentProvider implements DatabaseContentVerification.Da
     private Method palaeoentomology;
     private DatasetMaster bugsDataset;
     private AbundanceRepository abundanceRepository;
+    private boolean allowDatasetUpdate;
 
     AbundanceDatabaseContentProvider(
             SampleRepository sampleRepository,
@@ -36,7 +38,8 @@ class AbundanceDatabaseContentProvider implements DatabaseContentVerification.Da
             DataTypeRepository dataTypeRepository,
             MethodRepository methodRepository,
             DatasetMasterRepository datasetMasterRepository,
-            AbundanceRepository abundanceRepository
+            AbundanceRepository abundanceRepository,
+            boolean allowDatasetUpdate
     ){
         this.sampleRepository = sampleRepository;
         this.speciesRepository = speciesRepository;
@@ -44,11 +47,13 @@ class AbundanceDatabaseContentProvider implements DatabaseContentVerification.Da
         palaeoentomology = methodRepository.findOne(3);
         bugsDataset = datasetMasterRepository.findOne(1);
         this.abundanceRepository = abundanceRepository;
+        this.allowDatasetUpdate = allowDatasetUpdate;
     }
 
     @Override
     public List<Abundance> getExpectedData() {
-        return Arrays.asList(
+        Dataset dataset04 = createDataset(3, "COUN000004");
+        List<Abundance> expectedAbundances = new ArrayList<>(Arrays.asList(
                 TestAbundance.create(
                         1,
                         speciesRepository.findOne(1),
@@ -61,65 +66,90 @@ class AbundanceDatabaseContentProvider implements DatabaseContentVerification.Da
                 ),
                 TestAbundance.create(
                         2,
-                        speciesRepository.findOne(2),
-                        TestAnalysisEntity.create(
-                                1,
-                                createDataset(1, "COUN000001"),
-                                sampleRepository.findOne(1)
-                        ),
-                        3
-                ),
-                TestAbundance.create(
-                        null,
                         speciesRepository.findOne(1),
                         TestAnalysisEntity.create(
-                                null,
-                                createDataset(1, "COUN000001"),
+                                2,
+                                createDataset(2, "COUN000002"),
                                 sampleRepository.findOne(2)
                         ),
                         1
                 ),
                 TestAbundance.create(
-                        null,
+                        3,
                         speciesRepository.findOne(2),
                         TestAnalysisEntity.create(
-                                null,
-                                createDataset(1, "COUN000001"),
+                                2,
+                                createDataset(2, "COUN000002"),
                                 sampleRepository.findOne(2)
                         ),
-                        5
+                        1
+                ),
+                TestAbundance.create(
+                        4,
+                        speciesRepository.findOne(1),
+                        TestAnalysisEntity.create(
+                                3,
+                                dataset04,
+                                sampleRepository.findOne(4)
+                        ),
+                        1
+                ),
+                TestAbundance.create(
+                        5,
+                        speciesRepository.findOne(2),
+                        TestAnalysisEntity.create(
+                                3,
+                                createDataset(3, "COUN000004"),
+                                sampleRepository.findOne(4)
+                        ),
+                        1
                 ),
                 TestAbundance.create(
                         null,
                         speciesRepository.findOne(1),
                         TestAnalysisEntity.create(
                                 null,
-                                createDataset(1, "COUN000001"),
+                                createDataset(null, "COUN000003"),
                                 sampleRepository.findOne(3)
                         ),
                         1
                 ),
                 TestAbundance.create(
                         null,
-                        speciesRepository.findOne(1),
-                        TestAnalysisEntity.create(
-                                null,
-                                createDataset(null, "COUN000003"),
-                                sampleRepository.findOne(5)
-                        ),
-                        1
-                ),
-                TestAbundance.create(
-                        null,
                         speciesRepository.findOne(2),
                         TestAnalysisEntity.create(
                                 null,
                                 createDataset(null, "COUN000003"),
-                                sampleRepository.findOne(5)
+                                sampleRepository.findOne(3)
                         ),
-                        2
+                        1
                 )
-        );
+        ));
+        Dataset dataset04PossiblyUpdated;
+        if(!allowDatasetUpdate){
+            dataset04PossiblyUpdated =
+                    TestDataset.create(
+                            null,
+                            "COUN000004",
+                            palaeoentomology,
+                            bugsDataset,
+                            defaultDataType,
+                            dataset04
+                    );
+        } else {
+            dataset04PossiblyUpdated = dataset04;
+        }
+        expectedAbundances.add(TestAbundance.create(
+                null,
+                speciesRepository.findOne(3),
+                TestAnalysisEntity.create(
+                        null,
+                        dataset04PossiblyUpdated,
+                        sampleRepository.findOne(4)
+                ),
+                1
+        ));
+        return expectedAbundances;
     }
 
     private Dataset createDataset(Integer datasetId, String datasetName){
@@ -148,6 +178,11 @@ class AbundanceDatabaseContentProvider implements DatabaseContentVerification.Da
         equalityHelper.addMethodInformation(new TestEqualityHelper.ClassMethodInformation(SeadSite.class, "getSiteLocations"));
         equalityHelper.addMethodInformation(new TestEqualityHelper.ClassMethodInformation(Dataset.class, "getContacts"));
         return equalityHelper;
+    }
+
+    @Override
+    public boolean useEqualityHelper(Abundance expected, Abundance actual) {
+        return true;
     }
 
     private abstract static class LoggableEntityComparator<SeadType extends LoggableEntity> implements Comparator<SeadType>{
