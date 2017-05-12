@@ -26,7 +26,7 @@ public class Dataset extends LoggableEntity {
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "method_id")
     private Method method;
-    @OneToMany(mappedBy = "dataset"/*, fetch = FetchType.EAGER*/)
+    @OneToMany(mappedBy = "dataset")
     private List<DatasetContact> contacts;
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name="updated_dataset_id")

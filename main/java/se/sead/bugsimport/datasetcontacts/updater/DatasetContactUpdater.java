@@ -43,13 +43,17 @@ public class DatasetContactUpdater {
         if(originals == null || originals.isEmpty()){
             originals = contactsFromTSite;
         } else if(!contactsFromTSite.isEmpty()){
-            contactsFromTSite.removeIf(
-                    datasetContact -> existIn(datasetContact, dataset.getContacts())
-            );
+            updateContactsFromTSite(contactsFromTSite, originals);
             originals.addAll(contactsFromTSite);
         }
         originals.forEach(datasetContact -> datasetContact.setDataset(dataset));
         dataset.setContacts(originals);
+    }
+
+    private void updateContactsFromTSite(List<DatasetContact> contactsFromTSite, List<DatasetContact> seadStoredDatasetContacts) {
+        contactsFromTSite.removeIf(
+                datasetContact -> existIn(datasetContact, seadStoredDatasetContacts)
+        );
     }
 
     private boolean existIn(DatasetContact queriedDatasetContact, List<DatasetContact> collection){
