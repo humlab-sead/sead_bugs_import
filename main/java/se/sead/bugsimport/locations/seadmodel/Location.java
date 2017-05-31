@@ -53,16 +53,15 @@ public class Location extends LoggableEntity implements Comparable<Location>{
         Location location = (Location) o;
 
         if (id != null ? !id.equals(location.id) : location.id != null) return false;
-        if (!name.equals(location.name)) return false;
-        return type.equals(location.type);
-
+        if (name != null ? !name.equals(location.name) : location.name != null) return false;
+        return type != null ? type.equals(location.type) : location.type == null;
     }
 
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + name.hashCode();
-        result = 31 * result + type.hashCode();
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (type != null ? type.hashCode() : 0);
         return result;
     }
 

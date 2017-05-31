@@ -15,22 +15,6 @@ import java.util.List;
 
 public class ImportTestDefinition {
 
-    /*
-        Ap
-        Au
-        De
-        Fe
-        Ja
-        Jn
-        Jy
-        Mr
-        My
-        No
-        Oc
-        Se
-        Sep
-     */
-
     static final List<SeasonActiveAdult> EXPECTED_BUGS_DATA =
             Arrays.asList(
                 create(1.0000001d, "Ja", "UK"),
@@ -61,6 +45,7 @@ public class ImportTestDefinition {
                 create(2.0000000d, "Au", "UK"),
                 create(1.0000020d, "Au", "Qq"),
                 create(1.0000021d, "We", "UK"),
+                create(1.0000022d, "Se", "UK"),
                 create(1.0000022d, "Se", "UK"),
                 create(1.0000023d, "Ja", "UK"),
                 create(1.0000024d, "Fe", "UK"),

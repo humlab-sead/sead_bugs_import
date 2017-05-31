@@ -62,17 +62,16 @@ public class TaxaSpecies extends LoggableEntity {
         TaxaSpecies that = (TaxaSpecies) o;
 
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        if (!speciesName.equals(that.speciesName)) return false;
-        if (!genus.equals(that.genus)) return false;
+        if (speciesName != null ? !speciesName.equals(that.speciesName) : that.speciesName != null) return false;
+        if (genus != null ? !genus.equals(that.genus) : that.genus != null) return false;
         return author != null ? author.equals(that.author) : that.author == null;
-
     }
 
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + speciesName.hashCode();
-        result = 31 * result + genus.hashCode();
+        result = 31 * result + (speciesName != null ? speciesName.hashCode() : 0);
+        result = 31 * result + (genus != null ? genus.hashCode() : 0);
         result = 31 * result + (author != null ? author.hashCode() : 0);
         return result;
     }
