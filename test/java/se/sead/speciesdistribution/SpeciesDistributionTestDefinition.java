@@ -48,6 +48,7 @@ public class SpeciesDistributionTestDefinition {
                 create(01.0010060, "Lindroth 1974", "England: N to Norfolk and Ches. Wales: N to Caernarvon. local."),
                 create(01.0010060, "Luff 1998", "England: N Devon, Norfolk. Gloucs (19th C). Wales. All coastal, but not exclusively so in Europe, where widespread but local."),
                 create(01.0010060, "Whitehead 1997a", "Wales: Glamorgan, Merthyr Mawr."),
+                create(01.0010060, "Whitehead 1997a", "Wales: Glamorgan, Merthyr Mawr."),
                     // no species found
                 create(01.0010070, "Berry 1985", "Orkney.")
             );
