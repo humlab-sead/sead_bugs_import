@@ -69,17 +69,16 @@ public class TextBiology extends LoggableEntity {
 
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
         if (reference != null ? !reference.equals(that.reference) : that.reference != null) return false;
-        if (!text.equals(that.text)) return false;
-        return species.equals(that.species);
-
+        if (text != null ? !text.equals(that.text) : that.text != null) return false;
+        return species != null ? species.equals(that.species) : that.species == null;
     }
 
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (reference != null ? reference.hashCode() : 0);
-        result = 31 * result + text.hashCode();
-        result = 31 * result + species.hashCode();
+        result = 31 * result + (text != null ? text.hashCode() : 0);
+        result = 31 * result + (species != null ? species.hashCode() : 0);
         return result;
     }
 

@@ -1,6 +1,6 @@
 package se.sead.bugsimport.datescalendar.cache;
 
-import se.sead.bugsimport.MappingResult;
+import se.sead.bugsimport.BugsListSeadMapping;
 import se.sead.bugsimport.datescalendar.bugsmodel.DatesCalendar;
 import se.sead.bugsimport.datesperiod.seadmodel.RelativeDate;
 
@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.List;
 
 abstract class UncertaintyExtractor {
-    static final MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate> NO_DATES_CALENDAR_FOR_UNCERTAINTY = new MappingResult.BugsListSeadMapping<>(new DatesCalendar(), Collections.EMPTY_LIST);
+    static final BugsListSeadMapping<DatesCalendar, RelativeDate> NO_DATES_CALENDAR_FOR_UNCERTAINTY = new BugsListSeadMapping<>(new DatesCalendar(), Collections.EMPTY_LIST);
 
     protected DatingUncertaintyManager uncertaintyManager;
 
@@ -17,11 +17,11 @@ abstract class UncertaintyExtractor {
         this.uncertaintyManager = manager;
     }
 
-    MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate> getForUncertainty(
-            List<MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate>> carriers)
+    BugsListSeadMapping<DatesCalendar, RelativeDate> getForUncertainty(
+            List<BugsListSeadMapping<DatesCalendar, RelativeDate>> carriers)
             throws TooManyUncertaintiesOfSameKindException {
-        List<MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate>> foundDates = new ArrayList<>();
-        for (MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate> carrier:
+        List<BugsListSeadMapping<DatesCalendar, RelativeDate>> foundDates = new ArrayList<>();
+        for (BugsListSeadMapping<DatesCalendar, RelativeDate> carrier:
                 carriers){
             RelativeDate relativeDate = carrier.getSeadData().get(0);
             if(isUncertainty(relativeDate)){
@@ -85,14 +85,14 @@ abstract class UncertaintyExtractor {
     }
 
     static class TooManyUncertaintiesOfSameKindException extends RuntimeException {
-        private List<MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate>> foundMappingsWithSameKindOfUncertainty;
+        private List<BugsListSeadMapping<DatesCalendar, RelativeDate>> foundMappingsWithSameKindOfUncertainty;
         TooManyUncertaintiesOfSameKindException(
-                List<MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate>> foundMappingsWithSameKindOfUncertainty
+                List<BugsListSeadMapping<DatesCalendar, RelativeDate>> foundMappingsWithSameKindOfUncertainty
         ){
             this.foundMappingsWithSameKindOfUncertainty = foundMappingsWithSameKindOfUncertainty;
         }
 
-        List<MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate>> getFoundMappingsWithSameKindOfUncertainty() {
+        List<BugsListSeadMapping<DatesCalendar, RelativeDate>> getFoundMappingsWithSameKindOfUncertainty() {
             return foundMappingsWithSameKindOfUncertainty;
         }
     }

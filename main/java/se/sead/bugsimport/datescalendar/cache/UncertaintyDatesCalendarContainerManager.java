@@ -2,7 +2,7 @@ package se.sead.bugsimport.datescalendar.cache;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import se.sead.bugsimport.MappingResult;
+import se.sead.bugsimport.BugsListSeadMapping;
 import se.sead.bugsimport.datescalendar.bugsmodel.DatesCalendar;
 import se.sead.bugsimport.datesperiod.seadmodel.RelativeDate;
 import se.sead.bugsimport.datesradio.seadmodel.DatingUncertainty;
@@ -22,7 +22,7 @@ public class UncertaintyDatesCalendarContainerManager {
         this.uncertaintyManager = uncertaintyManager;
     }
 
-    List<UncertaintyDatesCalendarContainer> createRanges(List<MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate>> carriersForSample) {
+    List<UncertaintyDatesCalendarContainer> createRanges(List<BugsListSeadMapping<DatesCalendar, RelativeDate>> carriersForSample) {
         UncertaintyDatesCalendarContainer caDates = getCaCarriers(carriersForSample);
         UncertaintyDatesCalendarContainer nonCaDates = getNonCaDatesCalendar(carriersForSample);
         List<UncertaintyDatesCalendarContainer> results = new ArrayList<>();
@@ -35,14 +35,14 @@ public class UncertaintyDatesCalendarContainerManager {
         return results;
     }
 
-    private UncertaintyDatesCalendarContainer getCaCarriers(List<MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate>> carriersForSample) {
+    private UncertaintyDatesCalendarContainer getCaCarriers(List<BugsListSeadMapping<DatesCalendar, RelativeDate>> carriersForSample) {
         return new Extractor(
                 new UncertaintyExtractor.FromCaUncertaintyExtractor(uncertaintyManager),
                 new UncertaintyExtractor.ToCaUncertaintyExtractor(uncertaintyManager))
                 .extractFrom(carriersForSample);
     }
 
-    private UncertaintyDatesCalendarContainer getNonCaDatesCalendar(List<MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate>> carriersForSample) {
+    private UncertaintyDatesCalendarContainer getNonCaDatesCalendar(List<BugsListSeadMapping<DatesCalendar, RelativeDate>> carriersForSample) {
         return new Extractor(
                 new UncertaintyExtractor.FromUncertaintyExtractor(uncertaintyManager),
                 new UncertaintyExtractor.ToUncertaintyExtractor(uncertaintyManager))
@@ -68,9 +68,9 @@ public class UncertaintyDatesCalendarContainerManager {
             this.toExtractor = toExtractor;
         }
 
-        UncertaintyDatesCalendarContainer extractFrom(List<MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate>> carriersForSample) {
-            MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate> from = fromExtractor.getForUncertainty(carriersForSample);
-            MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate> to = toExtractor.getForUncertainty(carriersForSample);
+        UncertaintyDatesCalendarContainer extractFrom(List<BugsListSeadMapping<DatesCalendar, RelativeDate>> carriersForSample) {
+            BugsListSeadMapping<DatesCalendar, RelativeDate> from = fromExtractor.getForUncertainty(carriersForSample);
+            BugsListSeadMapping<DatesCalendar, RelativeDate> to = toExtractor.getForUncertainty(carriersForSample);
             return new UncertaintyDatesCalendarContainer(from, to);
         }
     }

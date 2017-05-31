@@ -1,14 +1,14 @@
 package se.sead.bugsimport.datescalendar.cache;
 
-import se.sead.bugsimport.MappingResult;
+import se.sead.bugsimport.BugsListSeadMapping;
 import se.sead.bugsimport.datescalendar.bugsmodel.DatesCalendar;
 import se.sead.bugsimport.datesperiod.seadmodel.RelativeDate;
 
 class UncertaintyDatesCalendarContainer {
-    private MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate> from;
-    private MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate> to;
+    private BugsListSeadMapping<DatesCalendar, RelativeDate> from;
+    private BugsListSeadMapping<DatesCalendar, RelativeDate> to;
 
-    UncertaintyDatesCalendarContainer(MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate> from, MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate> to){
+    UncertaintyDatesCalendarContainer(BugsListSeadMapping<DatesCalendar, RelativeDate> from, BugsListSeadMapping<DatesCalendar, RelativeDate> to){
         this.from = from;
         this.to = to;
     }
@@ -26,11 +26,11 @@ class UncertaintyDatesCalendarContainer {
         return to.getBugsData();
     }
 
-    public MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate> getFromMapping(){
+    public BugsListSeadMapping<DatesCalendar, RelativeDate> getFromMapping(){
         return from;
     }
 
-    public MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate> getToMapping(){
+    public BugsListSeadMapping<DatesCalendar, RelativeDate> getToMapping(){
         return to;
     }
 

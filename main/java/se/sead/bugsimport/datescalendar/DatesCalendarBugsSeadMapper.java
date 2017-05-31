@@ -3,6 +3,7 @@ package se.sead.bugsimport.datescalendar;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import se.sead.bugsimport.BugsSeadMapper;
+import se.sead.bugsimport.ListMappingResult;
 import se.sead.bugsimport.MappingResult;
 import se.sead.bugsimport.datescalendar.bugsmodel.DatesCalendar;
 import se.sead.bugsimport.datescalendar.bugsmodel.DatesCalendarBugsTable;

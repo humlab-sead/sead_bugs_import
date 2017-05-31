@@ -1,7 +1,7 @@
 package se.sead.bugsimport.datescalendar.cache;
 
 import org.springframework.stereotype.Component;
-import se.sead.bugsimport.MappingResult;
+import se.sead.bugsimport.BugsListSeadMapping;
 import se.sead.bugsimport.datescalendar.bugsmodel.DatesCalendar;
 import se.sead.bugsimport.datesperiod.seadmodel.RelativeDate;
 import se.sead.bugsimport.periods.seadmodel.RelativeAge;
@@ -23,10 +23,10 @@ public class RelativeDateMerger {
         this.ageManager = ageManager;
     }
 
-    public List<MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate>> mergeItems(
-            List<MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate>> mergeableItems
+    public List<BugsListSeadMapping<DatesCalendar, RelativeDate>> mergeItems(
+            List<BugsListSeadMapping<DatesCalendar, RelativeDate>> mergeableItems
     ) {
-        List<MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate>> mergedItems = new ArrayList<>();
+        List<BugsListSeadMapping<DatesCalendar, RelativeDate>> mergedItems = new ArrayList<>();
         try {
             List<UncertaintyDatesCalendarContainer> ranges = containerManager.createRanges(mergeableItems);
             for (UncertaintyDatesCalendarContainer container :
@@ -40,7 +40,7 @@ public class RelativeDateMerger {
         return mergedItems;
     }
 
-    private MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate> updateAndExtractMapping(
+    private BugsListSeadMapping<DatesCalendar, RelativeDate> updateAndExtractMapping(
             UncertaintyDatesCalendarContainer container,
             RelativeAge mergeRelativeAge
     ) {
@@ -62,7 +62,7 @@ public class RelativeDateMerger {
             useFromAsDefault = container.getFromDate().getUncertainty() != null;
         }
 
-        MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate> updateMapping(){
+        BugsListSeadMapping<DatesCalendar, RelativeDate> updateMapping(){
             setRelativeAge();
             updateUncertainty();
             mergeNotes();
@@ -115,15 +115,15 @@ public class RelativeDateMerger {
     }
 
     private static class ErrorCreator {
-        private List<MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate>> problematicItems;
+        private List<BugsListSeadMapping<DatesCalendar, RelativeDate>> problematicItems;
 
-        ErrorCreator(List<MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate>> problematicItems){
+        ErrorCreator(List<BugsListSeadMapping<DatesCalendar, RelativeDate>> problematicItems){
             this.problematicItems = problematicItems;
         }
 
-        MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate> create(){
+        BugsListSeadMapping<DatesCalendar, RelativeDate> create(){
             return
-                    new MappingResult.BugsListSeadMapping<>(
+                    new BugsListSeadMapping<>(
                             getCompressedDatesCalendar(),
                             getAllSeadData()
                     );
@@ -131,7 +131,7 @@ public class RelativeDateMerger {
 
         private DatesCalendar getCompressedDatesCalendar(){
             List<DatesCalendar> collect = problematicItems.stream()
-                    .map(MappingResult.BugsListSeadMapping::getBugsData)
+                    .map(BugsListSeadMapping::getBugsData)
                     .distinct()
                     .collect(Collectors.toList());
             return collect.get(0);
@@ -139,7 +139,7 @@ public class RelativeDateMerger {
 
         private List<RelativeDate> getAllSeadData(){
             List<RelativeDate> allSeadData = problematicItems.stream()
-                    .map(MappingResult.BugsListSeadMapping::getSeadData)
+                    .map(BugsListSeadMapping::getSeadData)
                     .flatMap(List::stream)
                     .collect(Collectors.toList());
             allSeadData.forEach(seadValue -> seadValue.addError("Too many uncertainties of same type for a single sample."));

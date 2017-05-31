@@ -15,7 +15,8 @@ class ExpectedBugsData {
                     create(4d, "Ref 2", "Species does not exist"),
                     create(5d, "Ref 2", null),
                     create(null, "Ref 2", "No species defined"),
-                    create(6d, null, "No reference")
+                    create(6d, null, "No reference"),
+                    create(2d, "Ref 1", "Note to be inserted")
             );
 
     private static final Biology create(Double code, String reference, String data){

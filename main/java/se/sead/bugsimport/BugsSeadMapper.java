@@ -53,7 +53,7 @@ public abstract class BugsSeadMapper<BugsType extends TraceableBugsData, SeadTyp
     }
 
     protected MappingResult<BugsType, SeadType> initMapperResultContainer(){
-        return new MappingResult<>();
+        return new ListMappingResult<>();
     }
 
     private AccessDatabase getAccessReader() {

@@ -1,7 +1,7 @@
 package se.sead.bugsimport.datescalendar.cache;
 
 
-import se.sead.bugsimport.MappingResult;
+import se.sead.bugsimport.BugsListSeadMapping;
 import se.sead.bugsimport.datescalendar.bugsmodel.DatesCalendar;
 import se.sead.bugsimport.datesperiod.seadmodel.RelativeDate;
 import se.sead.bugsimport.datesradio.seadmodel.DatingUncertainty;
@@ -15,19 +15,19 @@ public class DatesCalendarRangeMerger {
     private DatingUncertaintyManager uncertaintyManager;
     private UncertaintyDatesCalendarContainerManager ageMerger;
 
-    private List<MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate>> previouslyMappedRelativeDatesForSample;
-    private MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate> foundMatchingRelativeDate;
+    private List<BugsListSeadMapping<DatesCalendar, RelativeDate>> previouslyMappedRelativeDatesForSample;
+    private BugsListSeadMapping<DatesCalendar, RelativeDate> foundMatchingRelativeDate;
 
     DatesCalendarRangeMerger(
             DatingUncertaintyManager uncertaintyManager,
             UncertaintyDatesCalendarContainerManager uncertaintyDatesCalendarContainerManager,
-            List<MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate>> previouslyMappedRelativeDatesForSample) {
+            List<BugsListSeadMapping<DatesCalendar, RelativeDate>> previouslyMappedRelativeDatesForSample) {
         this.uncertaintyManager = uncertaintyManager;
         this.ageMerger = uncertaintyDatesCalendarContainerManager;
         this.previouslyMappedRelativeDatesForSample = previouslyMappedRelativeDatesForSample;
     }
 
-    boolean shouldMerge(MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate> mapping){
+    boolean shouldMerge(BugsListSeadMapping<DatesCalendar, RelativeDate> mapping){
         return previouslyMappedDataIsNotEmpty() &&
                 mapping.isErrorFree() &&
                 mapping.isNewSeadData() &&
@@ -35,7 +35,7 @@ public class DatesCalendarRangeMerger {
                 previouslyMappedDataContainTargetRelativeDate(mapping);
     }
 
-    private boolean isTargetUncertainty(MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate> mapping){
+    private boolean isTargetUncertainty(BugsListSeadMapping<DatesCalendar, RelativeDate> mapping){
         DatingUncertainty uncertainty = extractRelativeDate(mapping).getUncertainty();
         if(uncertainty == null){
             return false;
@@ -50,19 +50,19 @@ public class DatesCalendarRangeMerger {
                 !previouslyMappedRelativeDatesForSample.isEmpty();
     }
 
-    private boolean previouslyMappedDataContainTargetRelativeDate(MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate> mapping){
+    private boolean previouslyMappedDataContainTargetRelativeDate(BugsListSeadMapping<DatesCalendar, RelativeDate> mapping){
         setFoundMatchingRelativeDate(extractRelativeDate(mapping));
         return foundMatchingRelativeDate != null;
     }
 
-    private RelativeDate extractRelativeDate(MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate> mapping) {
+    private RelativeDate extractRelativeDate(BugsListSeadMapping<DatesCalendar, RelativeDate> mapping) {
         return mapping.getSeadData().get(0);
     }
 
     private void setFoundMatchingRelativeDate(RelativeDate currentDate){
         DatingUncertainty oppositeUncertainty = uncertaintyManager.getOpposite(currentDate.getUncertainty());
         Method currentMethod = getDatingMethod(currentDate);
-        Optional<MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate>> foundItem = previouslyMappedRelativeDatesForSample.stream()
+        Optional<BugsListSeadMapping<DatesCalendar, RelativeDate>> foundItem = previouslyMappedRelativeDatesForSample.stream()
                 .filter(relativeDate -> matchRelativeDateOnUncertaintyAndDatingMethod(extractRelativeDate(relativeDate), oppositeUncertainty, currentMethod))
                 .findFirst();
         if(foundItem.isPresent()){
@@ -87,7 +87,7 @@ public class DatesCalendarRangeMerger {
                 relativeDateMethod.equals(method) : method == null);
     }
 
-    void doMerge(MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate> mapping){
+    void doMerge(BugsListSeadMapping<DatesCalendar, RelativeDate> mapping){
         if(foundMatchingRelativeDate == null){
             return;
         }

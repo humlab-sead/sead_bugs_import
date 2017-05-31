@@ -1,6 +1,6 @@
 package se.sead.bugsimport.datescalendar.cache;
 
-import se.sead.bugsimport.MappingResult;
+import se.sead.bugsimport.BugsListSeadMapping;
 import se.sead.bugsimport.datescalendar.bugsmodel.DatesCalendar;
 import se.sead.bugsimport.datesperiod.seadmodel.RelativeDate;
 import se.sead.bugsimport.datesradio.seadmodel.DatingUncertainty;
@@ -9,11 +9,11 @@ import java.util.Arrays;
 
 class MappingCreator {
 
-    MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate> createMapping(String sampleCode, String uncertainty){
+    BugsListSeadMapping<DatesCalendar, RelativeDate> createMapping(String sampleCode, String uncertainty){
         DatesCalendar datesCalendar = createDatesCalendar(sampleCode, uncertainty);
         DatingUncertainty datingUncertainty = createDatingUncertainty(uncertainty);
         RelativeDate relativeDate = createRelativeDate(datingUncertainty);
-        return new MappingResult.BugsListSeadMapping<>(datesCalendar, Arrays.asList(relativeDate));
+        return new BugsListSeadMapping<>(datesCalendar, Arrays.asList(relativeDate));
     }
 
     private DatesCalendar createDatesCalendar(String sampleCode, String uncertainty){

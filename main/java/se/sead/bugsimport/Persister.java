@@ -14,7 +14,7 @@ public abstract class Persister<BugsType extends TraceableBugsData, SeadType ext
     private TracePersister tracePersister;
 
     public void persist(MappingResult<BugsType, SeadType> mapperResult){
-        for (MappingResult.BugsListSeadMapping<BugsType, SeadType> dataMapping :
+        for (BugsListSeadMapping<BugsType, SeadType> dataMapping :
                 mapperResult.getData()) {
             if(!dataMapping.isErrorFree()){
                 insertErrorLog(dataMapping);
@@ -24,7 +24,7 @@ public abstract class Persister<BugsType extends TraceableBugsData, SeadType ext
         }
     }
 
-    private void doSave(MappingResult.BugsListSeadMapping<BugsType, SeadType> mappedData){
+    private void doSave(BugsListSeadMapping<BugsType, SeadType> mappedData){
         ArrayList<SeadType> stuff = new ArrayList<>(mappedData.getSeadData());
         for (SeadType seadData:
                 stuff) {
@@ -43,11 +43,11 @@ public abstract class Persister<BugsType extends TraceableBugsData, SeadType ext
     protected abstract SeadType save(SeadType seadValue);
 
 
-    private void insertTraceLog(MappingResult.BugsListSeadMapping<BugsType, SeadType> mappedData){
+    private void insertTraceLog(BugsListSeadMapping<BugsType, SeadType> mappedData){
         tracePersister.saveCurrentEventFor(mappedData.getBugsData());
     }
 
-    private void insertErrorLog(MappingResult.BugsListSeadMapping<BugsType, SeadType> dataContainer){
+    private void insertErrorLog(BugsListSeadMapping<BugsType, SeadType> dataContainer){
         tracePersister.saveErrorLog(dataContainer.getBugsData(), dataContainer.getErrorMessages());
     }
 

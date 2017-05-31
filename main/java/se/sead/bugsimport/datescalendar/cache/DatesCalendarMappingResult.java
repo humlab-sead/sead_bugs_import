@@ -1,16 +1,15 @@
 package se.sead.bugsimport.datescalendar.cache;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import se.sead.bugsimport.MappingResult;
+import se.sead.bugsimport.BugsListSeadMapping;
+import se.sead.bugsimport.ListMappingResult;
 import se.sead.bugsimport.datescalendar.bugsmodel.DatesCalendar;
 import se.sead.bugsimport.datesperiod.seadmodel.RelativeDate;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-public class DatesCalendarMappingResult extends MappingResult<DatesCalendar, RelativeDate> {
+public class DatesCalendarMappingResult extends ListMappingResult<DatesCalendar, RelativeDate> {
 
     private RelativeDateMerger dateMerger;
     private RelativeDatesMappingCache mappingCache;

@@ -2,24 +2,23 @@ package se.sead.bugsimport.speciesbiology;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import se.sead.bugs.AccessDatabaseProvider;
 import se.sead.bugsimport.BugsSeadMapper;
+import se.sead.bugsimport.MappingResult;
+import se.sead.bugsimport.SetMappingResult;
 import se.sead.bugsimport.speciesbiology.bugsmodel.Biology;
 import se.sead.bugsimport.speciesbiology.bugsmodel.BiologyBugsTable;
 import se.sead.bugsimport.speciesbiology.seadmodel.TextBiology;
-import se.sead.bugsimport.translations.BugsValueTranslationService;
 
-/**
- * Created by erer0001 on 2016-05-18.
- */
 @Component
 public class TextBiologyMapper extends BugsSeadMapper<Biology, TextBiology> {
 
     @Autowired
-    public TextBiologyMapper(
-            AccessDatabaseProvider accessDatabaseProvider,
-            BiologyToTextBiologyRowConverter rowConverter,
-            BugsValueTranslationService dataTranslationService) {
+    public TextBiologyMapper(BiologyToTextBiologyRowConverter rowConverter) {
         super(new BiologyBugsTable(), rowConverter);
+    }
+
+    @Override
+    protected MappingResult<Biology, TextBiology> initMapperResultContainer() {
+        return new SetMappingResult<>();
     }
 }

@@ -2,7 +2,7 @@ package se.sead.bugsimport.datescalendar.cache;
 
 import org.junit.Before;
 import org.junit.Test;
-import se.sead.bugsimport.MappingResult;
+import se.sead.bugsimport.BugsListSeadMapping;
 import se.sead.bugsimport.datescalendar.bugsmodel.DatesCalendar;
 import se.sead.bugsimport.datesperiod.seadmodel.RelativeDate;
 
@@ -29,7 +29,7 @@ public class RelativeDatesMappingCacheTest {
 
     @Test
     public void addFromIsStoredInMergeableList(){
-        MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate> mapping = mappingCreator.createMapping("SAMPLE", "From");
+        BugsListSeadMapping<DatesCalendar, RelativeDate> mapping = mappingCreator.createMapping("SAMPLE", "From");
         mappingCache.add(mapping);
         assertFalse(mappingCache.getMergeablePeriodDates("SAMPLE").isEmpty());
         assertTrue(mappingCache.getNonMergeablePeriodDates("SAMPLE").isEmpty());
@@ -37,7 +37,7 @@ public class RelativeDatesMappingCacheTest {
 
     @Test
     public void addToIsStoredInMergeableList(){
-        MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate> mapping = mappingCreator.createMapping("SAMPLE", "To");
+        BugsListSeadMapping<DatesCalendar, RelativeDate> mapping = mappingCreator.createMapping("SAMPLE", "To");
         mappingCache.add(mapping);
         assertFalse(mappingCache.getMergeablePeriodDates("SAMPLE").isEmpty());
         assertTrue(mappingCache.getNonMergeablePeriodDates("SAMPLE").isEmpty());
@@ -45,7 +45,7 @@ public class RelativeDatesMappingCacheTest {
 
     @Test
     public void addFromCaIsStoredInMergeableList(){
-        MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate> mapping = mappingCreator.createMapping("SAMPLE", "FromCa");
+        BugsListSeadMapping<DatesCalendar, RelativeDate> mapping = mappingCreator.createMapping("SAMPLE", "FromCa");
         mappingCache.add(mapping);
         assertFalse(mappingCache.getMergeablePeriodDates("SAMPLE").isEmpty());
         assertTrue(mappingCache.getNonMergeablePeriodDates("SAMPLE").isEmpty());
@@ -53,7 +53,7 @@ public class RelativeDatesMappingCacheTest {
 
     @Test
     public void addToCaIsStoredInMergeableList(){
-        MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate> mapping = mappingCreator.createMapping("SAMPLE", "ToCa");
+        BugsListSeadMapping<DatesCalendar, RelativeDate> mapping = mappingCreator.createMapping("SAMPLE", "ToCa");
         mappingCache.add(mapping);
         assertFalse(mappingCache.getMergeablePeriodDates("SAMPLE").isEmpty());
         assertTrue(mappingCache.getNonMergeablePeriodDates("SAMPLE").isEmpty());
@@ -61,7 +61,7 @@ public class RelativeDatesMappingCacheTest {
 
     @Test
     public void addCaIsStoredInNonMergeableList(){
-        MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate> mapping = mappingCreator.createMapping("SAMPLE", "Ca");
+        BugsListSeadMapping<DatesCalendar, RelativeDate> mapping = mappingCreator.createMapping("SAMPLE", "Ca");
         mappingCache.add(mapping);
         assertFalse(mappingCache.getNonMergeablePeriodDates("SAMPLE").isEmpty());
         assertTrue(mappingCache.getMergeablePeriodDates("SAMPLE").isEmpty());
@@ -69,8 +69,8 @@ public class RelativeDatesMappingCacheTest {
 
     @Test
     public void addDifferentSamplesToDifferentLists(){
-        MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate> from = mappingCreator.createMapping("Sample mergeable", "From");
-        MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate> different = mappingCreator.createMapping("Sample nonmergeable", "Different");
+        BugsListSeadMapping<DatesCalendar, RelativeDate> from = mappingCreator.createMapping("Sample mergeable", "From");
+        BugsListSeadMapping<DatesCalendar, RelativeDate> different = mappingCreator.createMapping("Sample nonmergeable", "Different");
         mappingCache.add(from);
         mappingCache.add(different);
         assertTrue(mappingCache.getMergeablePeriodDates("Sample nonmergeable").isEmpty());
@@ -81,8 +81,8 @@ public class RelativeDatesMappingCacheTest {
 
     @Test
     public void sampleNameExistsOnlyOnceRegardlessOfUncertainty(){
-        MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate> from = mappingCreator.createMapping("Sample", "From");
-        MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate> different = mappingCreator.createMapping("Sample", "Different");
+        BugsListSeadMapping<DatesCalendar, RelativeDate> from = mappingCreator.createMapping("Sample", "From");
+        BugsListSeadMapping<DatesCalendar, RelativeDate> different = mappingCreator.createMapping("Sample", "Different");
         mappingCache.add(from);
         mappingCache.add(different);
         assertEquals(1, mappingCache.getStoredSampleCodes().size());

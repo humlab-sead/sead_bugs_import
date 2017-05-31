@@ -2,7 +2,7 @@ package se.sead.bugsimport.datescalendar.cache;
 
 import org.junit.Before;
 import org.junit.Test;
-import se.sead.bugsimport.MappingResult;
+import se.sead.bugsimport.BugsListSeadMapping;
 import se.sead.bugsimport.datescalendar.bugsmodel.DatesCalendar;
 import se.sead.bugsimport.datesperiod.seadmodel.RelativeDate;
 import se.sead.bugsimport.datesradio.seadmodel.DatingUncertainty;
@@ -36,7 +36,7 @@ public class UncertaintyDatesCalendarContainerManagerTest {
 
     @Test
     public void sampleHasOneFromAndOneToRelativeDates(){
-        List<MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate>> sampleData =
+        List<BugsListSeadMapping<DatesCalendar, RelativeDate>> sampleData =
                 Arrays.asList(
                         mappingCreator.createMapping("SAMPLE", "From"),
                         mappingCreator.createMapping("SAMPLE", "To")
@@ -48,7 +48,7 @@ public class UncertaintyDatesCalendarContainerManagerTest {
 
     @Test
     public void orderOfUncertaintiesInListDoesNotMatter(){
-        List<MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate>> sampleData =
+        List<BugsListSeadMapping<DatesCalendar, RelativeDate>> sampleData =
                 Arrays.asList(
                         mappingCreator.createMapping("SAMPLE", "To"),
                         mappingCreator.createMapping("SAMPLE", "From")
@@ -60,7 +60,7 @@ public class UncertaintyDatesCalendarContainerManagerTest {
 
     @Test
     public void fromAndToUncertaintyIsCaUncertainties(){
-        List<MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate>> sampleData =
+        List<BugsListSeadMapping<DatesCalendar, RelativeDate>> sampleData =
                 Arrays.asList(
                         mappingCreator.createMapping("SAMPLE", "FromCa"),
                         mappingCreator.createMapping("SAMPLE", "ToCa")
@@ -72,7 +72,7 @@ public class UncertaintyDatesCalendarContainerManagerTest {
 
     @Test
     public void noFromOrToUncertainty(){
-        List<MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate>> sampleData =
+        List<BugsListSeadMapping<DatesCalendar, RelativeDate>> sampleData =
                 Arrays.asList(
                         mappingCreator.createMapping("SAMPLE", "Unknown"),
                         mappingCreator.createMapping("SAMPLE", "Ca")
@@ -83,7 +83,7 @@ public class UncertaintyDatesCalendarContainerManagerTest {
 
     @Test
     public void moreThanFromAndToUncertaintyResultInFindingFromAndTo(){
-        List<MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate>> sampleData =
+        List<BugsListSeadMapping<DatesCalendar, RelativeDate>> sampleData =
                 Arrays.asList(
                         mappingCreator.createMapping("SAMPLE", "Unknown"),
                         mappingCreator.createMapping("SAMPLE", "From"),
@@ -97,7 +97,7 @@ public class UncertaintyDatesCalendarContainerManagerTest {
 
     @Test(expected = UncertaintyExtractor.TooManyUncertaintiesOfSameKindException.class)
     public void moreThanOneFromIsError(){
-        List<MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate>> sampleData =
+        List<BugsListSeadMapping<DatesCalendar, RelativeDate>> sampleData =
                 Arrays.asList(
                         mappingCreator.createMapping("SAMPLE", "From"),
                         mappingCreator.createMapping("SAMPLE", "From"),
@@ -108,7 +108,7 @@ public class UncertaintyDatesCalendarContainerManagerTest {
 
     @Test
     public void bothCaAndNonCaExists(){
-        List<MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate>> sampleData =
+        List<BugsListSeadMapping<DatesCalendar, RelativeDate>> sampleData =
                 Arrays.asList(
                         mappingCreator.createMapping("SAMPLE", "FromCa"),
                         mappingCreator.createMapping("SAMPLE", "ToCa"),
@@ -124,7 +124,7 @@ public class UncertaintyDatesCalendarContainerManagerTest {
 
     @Test
     public void bothCaAndNonCaExistsInAnyOrder(){
-        List<MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate>> sampleData =
+        List<BugsListSeadMapping<DatesCalendar, RelativeDate>> sampleData =
                 Arrays.asList(
                         mappingCreator.createMapping("SAMPLE", "To"),
                         mappingCreator.createMapping("SAMPLE", "FromCa"),
@@ -140,7 +140,7 @@ public class UncertaintyDatesCalendarContainerManagerTest {
 
     @Test
     public void openEndedFromIsAccepted(){
-        List<MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate>> sampleData =
+        List<BugsListSeadMapping<DatesCalendar, RelativeDate>> sampleData =
                 Arrays.asList(
                         mappingCreator.createMapping("SAMPLE", "From")
                 );
@@ -151,7 +151,7 @@ public class UncertaintyDatesCalendarContainerManagerTest {
 
     @Test
     public void openEndedToIsAccepted(){
-        List<MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate>> sampleData =
+        List<BugsListSeadMapping<DatesCalendar, RelativeDate>> sampleData =
                 Arrays.asList(
                         mappingCreator.createMapping("SAMPLE", "To")
                 );
@@ -162,7 +162,7 @@ public class UncertaintyDatesCalendarContainerManagerTest {
 
     @Test
     public void openEndedToAndFromCaIsAccepted(){
-        List<MappingResult.BugsListSeadMapping<DatesCalendar, RelativeDate>> sampleData =
+        List<BugsListSeadMapping<DatesCalendar, RelativeDate>> sampleData =
                 Arrays.asList(
                         mappingCreator.createMapping("SAMPLE", "To"),
                         mappingCreator.createMapping("SAMPLE", "FromCa")
