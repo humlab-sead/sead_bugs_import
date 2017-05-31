@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import se.sead.bugs.AccessDatabaseProvider;
 import se.sead.bugsimport.BugsSeadMapper;
+import se.sead.bugsimport.MappingResult;
+import se.sead.bugsimport.SetMappingResult;
 import se.sead.bugsimport.specieskeys.bugsmodel.Keys;
 import se.sead.bugsimport.specieskeys.bugsmodel.KeysBugsTable;
 import se.sead.bugsimport.specieskeys.seadmodel.TextIdentificationKeys;
@@ -21,5 +23,10 @@ public class IdentificationKeysBugsSeadMapper extends BugsSeadMapper<Keys, TextI
                 new KeysBugsTable(),
                 singleBugsTableRowConverterForMapper
         );
+    }
+
+    @Override
+    protected MappingResult<Keys, TextIdentificationKeys> initMapperResultContainer() {
+        return new SetMappingResult<>();
     }
 }

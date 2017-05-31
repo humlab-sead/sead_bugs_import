@@ -66,17 +66,16 @@ public class TextIdentificationKeys extends LoggableEntity{
 
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
         if (keys != null ? !keys.equals(that.keys) : that.keys != null) return false;
-        if (!reference.equals(that.reference)) return false;
-        return species.equals(that.species);
-
+        if (reference != null ? !reference.equals(that.reference) : that.reference != null) return false;
+        return species != null ? species.equals(that.species) : that.species == null;
     }
 
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (keys != null ? keys.hashCode() : 0);
-        result = 31 * result + reference.hashCode();
-        result = 31 * result + species.hashCode();
+        result = 31 * result + (reference != null ? reference.hashCode() : 0);
+        result = 31 * result + (species != null ? species.hashCode() : 0);
         return result;
     }
 

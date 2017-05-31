@@ -42,6 +42,11 @@ class ExpectedBugsData {
                             01.00101220d,
                             "Skidmore unpubl.",
                             null
+                    ),
+                    create(
+                            01.00101220d,
+                            "Skidmore unpubl.",
+                            "Key to Cicindelinae"
                     )
             );
 
