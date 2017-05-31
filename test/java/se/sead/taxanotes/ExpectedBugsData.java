@@ -15,7 +15,8 @@ class ExpectedBugsData {
                     create(3d, "Ref 3", "Ref does not exist"),
                     create(4d, "Ref 2", "Species does not exist"),
                     create(5d, "Ref 2", null),
-                    create(6d, null, "No reference")
+                    create(6d, null, "No reference"),
+                    create(2d, "Ref 1", "Note to be inserted")
             );
 
     private static TaxoNotes create(Double code, String ref, String data){
