@@ -40,8 +40,8 @@ class RelativeDatesDatabaseContentProvider implements DatabaseContentVerificatio
     private Method histCal;
     private Method unknownCal;
     private DataType calendarDate;
-    private RelativeAgeType calendarDateTyp;
-    private RelativeAgeType calendarDateRange;
+    private RelativeAgeType calendarDateType;
+    private RelativeAgeType calendarDateRangeType;
     private DatasetMaster bugsMaster;
 
     RelativeDatesDatabaseContentProvider(
@@ -66,8 +66,8 @@ class RelativeDatesDatabaseContentProvider implements DatabaseContentVerificatio
         geolPer = methodRepository.findOne(4);
         histCal = methodRepository.findOne(5);
         unknownCal = methodRepository.findOne(6);
-        calendarDateTyp = relativeAgeTypeRepository.findOne(2);
-        calendarDateRange = relativeAgeTypeRepository.findOne(3);
+        calendarDateType = relativeAgeTypeRepository.findOne(2);
+        calendarDateRangeType = relativeAgeTypeRepository.findOne(3);
         this.relativeDateRepository = relativeDateRepository;
         bugsMaster = datasetMasterRepository.findBugsMasterSet();
         calendarDate = dataTypeRepository.findOne(1);
@@ -157,7 +157,7 @@ class RelativeDatesDatabaseContentProvider implements DatabaseContentVerificatio
                 TestRelativeDate.create(
                         null,
                         null,
-                        createCalenderRelativeAge("CAL_" + 100 + "_BC", 2050, calendarDateTyp),
+                        createCalenderRelativeAge("CAL_" + 100 + "_BC", 2050, calendarDateType),
                         "insert bc version",
                         TestAnalysisEntity.create(
                                 null,
@@ -168,7 +168,7 @@ class RelativeDatesDatabaseContentProvider implements DatabaseContentVerificatio
                 TestRelativeDate.create(
                         null,
                         null,
-                        createC14RelativeAge(100, "BP", calendarDateTyp),
+                        createC14RelativeAge(100, "BP", calendarDateType),
                         "insert bp version",
                         TestAnalysisEntity.create(
                                 null,
@@ -179,7 +179,7 @@ class RelativeDatesDatabaseContentProvider implements DatabaseContentVerificatio
                 TestRelativeDate.create(
                         null,
                         null,
-                        createCalendarRelativeAge("CAL_" + 100 + "-" + 200 + "_AD", 1850, 1750, calendarDateRange),
+                        createCalendarRelativeAge("CAL_" + 100 + "-" + 200 + "_AD", 1850, 1750, calendarDateRangeType),
                         "range",
                         TestAnalysisEntity.create(
                                 null,
@@ -190,7 +190,7 @@ class RelativeDatesDatabaseContentProvider implements DatabaseContentVerificatio
                 TestRelativeDate.create(
                         null,
                         caUncertainty,
-                        createCalendarRelativeAge("CAL_" + 100 + "-" + 200 + "_AD", 1850, 1750, calendarDateRange),
+                        createCalendarRelativeAge("CAL_" + 100 + "-" + 200 + "_AD", 1850, 1750, calendarDateRangeType),
                         "existing calendar range but with uncertainty",
                         TestAnalysisEntity.create(
                                 null,
@@ -201,7 +201,7 @@ class RelativeDatesDatabaseContentProvider implements DatabaseContentVerificatio
                 TestRelativeDate.create(
                         null,
                         fromUncertainty,
-                        createCalendarRelativeAge("CAL_" + 100 + "_AD-", 1850, null, calendarDateRange),
+                        createCalendarRelativeAge("CAL_" + 100 + "_AD-", 1850, null, calendarDateRangeType),
                         "Add with open-ended period code",
                         TestAnalysisEntity.create(
                                 null,
@@ -212,7 +212,7 @@ class RelativeDatesDatabaseContentProvider implements DatabaseContentVerificatio
                 TestRelativeDate.create(
                         null,
                         toUncertainty,
-                        createCalendarRelativeAge("CAL_-" + 200 + "_AD", null, 1750, calendarDateRange),
+                        createCalendarRelativeAge("CAL_-" + 200 + "_AD", null, 1750, calendarDateRangeType),
                         "Add with open-started period code",
                         TestAnalysisEntity.create(
                                 null,

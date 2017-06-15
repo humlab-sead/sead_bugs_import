@@ -66,7 +66,7 @@ insert into tbl_relative_age_types (relative_age_type_id, age_type) values (3, '
 
 insert into tbl_dataset_masters (master_set_id, master_name) values (1, 'Bugs database');
 insert into tbl_data_type_groups (data_type_group_id, data_type_group_name) values (1, 'Dating types');
-insert into tbl_data_types (data_type_id, data_type_group_id, data_type_name) values (1, 1, 'Calendar date');
+insert into tbl_data_types (data_type_id, data_type_group_id, data_type_name) values (1, 1, 'Calendar dates');
 
 insert into tbl_relative_ages (relative_age_id, relative_age_type_id, relative_age_name, abbreviation, description, cal_age_older, cal_age_younger, location_id)
   values (1, 2, null, 'CAL_100_AD', 'Autocreated from bugs import', 1850, 1850, null);
