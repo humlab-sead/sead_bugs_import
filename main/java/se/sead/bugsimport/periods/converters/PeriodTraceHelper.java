@@ -16,6 +16,8 @@ import java.util.List;
 @Component
 public class PeriodTraceHelper extends SeadDataFromTraceHelper<Period, RelativeAge> {
 
+    private static final String SEAD_TABLE_NAME = "tbl_relative_ages";
+
     public static final Period NO_PERIOD_FOUND;
 
     static {
@@ -28,11 +30,11 @@ public class PeriodTraceHelper extends SeadDataFromTraceHelper<Period, RelativeA
 
     @Autowired
     public PeriodTraceHelper(RelativeAgeRepository repository){
-        super(PeriodBugsTable.TABLE_NAME, "tbl_relative_ages", false, repository);
+        super(PeriodBugsTable.TABLE_NAME, SEAD_TABLE_NAME, false, repository);
     }
 
     public Period getPeriodFromTrace(RelativeAge seadValue){
-        List<BugsTrace> agesById = traceRepository.findBySeadTableAndSeadIdOrderByChangeDate(getSeadTableName(), seadValue.getId());
+        List<BugsTrace> agesById = traceRepository.findBySeadTableAndSeadIdOrderByChangeDate(SEAD_TABLE_NAME, seadValue.getId());
         if(agesById.isEmpty()){
             return NO_PERIOD_FOUND;
         } else {

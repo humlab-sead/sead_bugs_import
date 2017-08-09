@@ -2,6 +2,7 @@ package se.sead.bugsimport.tracing;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import se.sead.bugs.TraceableBugsData;
+import se.sead.bugsimport.tracing.accessors.*;
 import se.sead.bugsimport.tracing.seadmodel.BugsTrace;
 import se.sead.repositories.BugsTraceRepository;
 import se.sead.repositories.CreateAndReadRepository;
@@ -18,24 +19,19 @@ public abstract class SeadDataFromTraceHelper<BugsType extends TraceableBugsData
     @Autowired
     protected BugsTraceRepository traceRepository;
     private CreateAndReadRepository<SeadType, Integer> accessRepository;
-    private String bugsTableName;
-
-    private boolean useCompressedDataForIdentification;
-    private String seadTableName = null;
-
-    public SeadDataFromTraceHelper(boolean useCompressedDataForIdentification, CreateAndReadRepository<SeadType, Integer> accessRepository){
-        this(null, useCompressedDataForIdentification, accessRepository);
-    }
+    private TraceAccessor traceAccessor;
 
     public SeadDataFromTraceHelper(String bugsTableName, boolean useCompressedDataForIdentification, CreateAndReadRepository<SeadType, Integer> accessRepository){
-        this.bugsTableName = bugsTableName;
-        this.useCompressedDataForIdentification = useCompressedDataForIdentification;
-        this.accessRepository = accessRepository;
+        this(InternalFactory.createTraceAccessor(bugsTableName, useCompressedDataForIdentification), accessRepository);
     }
 
     public SeadDataFromTraceHelper(String bugsTableName, String seadTableName, boolean useCompressedDataForIdentification, CreateAndReadRepository<SeadType, Integer> accessRepository){
-        this(bugsTableName, useCompressedDataForIdentification, accessRepository);
-        this.seadTableName = seadTableName;
+        this(InternalFactory.createSeadTableTraceAccessor(bugsTableName, seadTableName, useCompressedDataForIdentification), accessRepository);
+    }
+
+    public SeadDataFromTraceHelper(TraceAccessor traceAccessor, CreateAndReadRepository<SeadType, Integer> accessRepository){
+        this.traceAccessor = traceAccessor;
+        this.accessRepository = accessRepository;
     }
 
     public SeadType getFromLastTrace(String traceIdentifier){
@@ -57,29 +53,12 @@ public abstract class SeadDataFromTraceHelper<BugsType extends TraceableBugsData
     }
 
     private List<BugsTrace> getBugsTraces(String traceIdentifier) {
-        List<BugsTrace> traces;
-        if(useCompressedDataForIdentification && seadTableName != null) {
-            traces = traceRepository.findByBugsTableAndSeadTableAndAccessInformationDataOrderByChangeDate(getBugsTableName(), getSeadTableName(), traceIdentifier);
-        } else if(useCompressedDataForIdentification && seadTableName == null){
-            traces = traceRepository.findByBugsTableAndAccessInformationDataOrderByChangeDate(getBugsTableName(), traceIdentifier);
-        } else if(!useCompressedDataForIdentification && seadTableName != null) {
-            traces = traceRepository.findByBugsTableAndSeadTableAndBugsIdentifierOrderByChangeDate(getBugsTableName(), getSeadTableName(), traceIdentifier);
-        } else {
-            traces = traceRepository.findByBugsTableAndBugsIdentifierOrderByChangeDate(getBugsTableName(), traceIdentifier);
-        }
-        return traces;
+        traceAccessor.setBugsTraceRepository(traceRepository);
+        return traceAccessor.getBugsTraces(traceIdentifier);
     }
 
     protected BugsTrace getSelectedResult(List<BugsTrace> traces){
         return traces.get(0);
-    }
-
-    protected String getBugsTableName(){
-        return bugsTableName;
-    }
-
-    protected String getSeadTableName(){
-        return seadTableName;
     }
 
     public SeadType getSeadDataFromTrace(BugsTrace latest){
@@ -97,5 +76,23 @@ public abstract class SeadDataFromTraceHelper<BugsType extends TraceableBugsData
         Instant loggableEntityDateUpdated = loggableEntity.getDateUpdated().toInstant().truncatedTo(ChronoUnit.DAYS);
         Instant traceDateChanged = comparableTrace.getChangeDate().toInstant().truncatedTo(ChronoUnit.DAYS);
         return loggableEntityDateUpdated.isAfter(traceDateChanged);
+    }
+
+    static class InternalFactory {
+        static TraceAccessor createTraceAccessor(String bugsTable, boolean useCompressedIdentifier){
+            if(useCompressedIdentifier){
+                return new CompressedData(bugsTable);
+            } else {
+                return new BugsIdentifier(bugsTable);
+            }
+        }
+
+        static TraceAccessor createSeadTableTraceAccessor(String bugsTable, String seadTableName, boolean useCompressedIdentifier){
+            if(useCompressedIdentifier){
+                return new CompressedDataWithSeadDataTable(bugsTable, seadTableName);
+            } else {
+                return new BugsIdentifierWithSeadDataTable(bugsTable, seadTableName);
+            }
+        }
     }
 }
