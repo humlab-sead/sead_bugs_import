@@ -21,7 +21,7 @@ public abstract class LogVerifier<T extends TraceableBugsData> implements BugsTr
         switch(bugsData.compressToString()){
             case "{1.0,Def}":
                 assertHelper.assertSize(traces, 1);
-                assertHelper.assertPrestoredTrace(traces, 3);
+                assertHelper.assertPrestoredTrace(traces, 4);
                 assertHelper.assertEmpty(errors);
                 break;
             case "{1.0,null}":
@@ -39,10 +39,15 @@ public abstract class LogVerifier<T extends TraceableBugsData> implements BugsTr
                 break;
             case "{3.0,Def}":
                 assertHelper.assertSize(traces, 1);
-                assertHelper.assertPrestoredTrace(traces, 4);
+                assertHelper.assertPrestoredTrace(traces, 5);
                 assertHelper.assertEmpty(errors);
                 break;
             case "{3.0,Def 2}":
+                assertHelper.assertSize(traces, 1);
+                assertHelper.assertInserts(traces, 1);
+                assertHelper.assertEmpty(errors);
+                break;
+            case "{2.0,def 3}":
                 assertHelper.assertSize(traces, 1);
                 assertHelper.assertInserts(traces, 1);
                 assertHelper.assertEmpty(errors);

@@ -22,11 +22,16 @@ insert into tbl_ecocode_definitions (ecocode_definition_id, ecocode_group_id, ab
 insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
 values (2, 'TEcoDefKoch', '', 'Def 2', 'tbl_ecocode_definitions', 2);
 
+insert into tbl_ecocode_definitions (ecocode_definition_id, ecocode_group_id, abbreviation, name, definition) values
+  (3, 1, 'Def 3', 'Definition 3', 'Lowercase definition matching');
+insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
+values (3, 'TEcoDefKoch', '', 'Def 3', 'tbl_ecocode_definitions', 3);
+
 insert into tbl_ecocodes (ecocode_id, taxon_id, ecocode_definition_id) values (1, 1, 1);
 insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
-    values (3, 'TEcoKoch', '{1.0,Def}', null, 'tbl_ecocodes', 1);
+    values (4, 'TEcoKoch', '{1.0,Def}', null, 'tbl_ecocodes', 1);
 
 insert into tbl_ecocodes (ecocode_id, taxon_id, ecocode_definition_id) values (2, 3, 1);
 insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
-    values (4, 'TEcoKoch', '{3.0,Def}', null, 'tbl_ecocodes', 2);
+    values (5, 'TEcoKoch', '{3.0,Def}', null, 'tbl_ecocodes', 2);
 

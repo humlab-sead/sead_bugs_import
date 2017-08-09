@@ -47,6 +47,11 @@ public class DatabaseContentProvider implements DatabaseContentVerification.Data
                         null,
                         speciesRepository.findOne(3),
                         definitionRepository.findOne(2)
+                ),
+                TestEcocode.create(
+                        null,
+                        speciesRepository.findOne(2),
+                        definitionRepository.findOne(3)
                 )
         );
     }

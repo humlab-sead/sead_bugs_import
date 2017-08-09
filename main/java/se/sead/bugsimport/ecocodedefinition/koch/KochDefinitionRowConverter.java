@@ -7,6 +7,7 @@ import se.sead.bugsimport.ecocodedefinition.koch.bugsmodel.EcoDefKoch;
 import se.sead.bugsimport.ecocodedefinition.koch.bugsmodel.EcoDefKochBugsTable;
 import se.sead.bugsimport.ecocodedefinition.seadmodel.EcocodeDefinition;
 import se.sead.bugsimport.tracing.SeadDataFromTraceHelper;
+import se.sead.bugsimport.tracing.accessors.IgnoreCaseBugsIdentifierWithSeadDataTable;
 import se.sead.repositories.EcocodeDefinitionRepository;
 
 @Component
@@ -43,7 +44,7 @@ public class KochDefinitionRowConverter implements BugsTableRowConverter<EcoDefK
 
         @Autowired
         public KochDefinitionTraceHelper(EcocodeDefinitionRepository repository){
-            super(EcoDefKochBugsTable.TABLE_NAME, "tbl_ecocode_definitions", false, repository);
+            super(new IgnoreCaseBugsIdentifierWithSeadDataTable(EcoDefKochBugsTable.TABLE_NAME, "tbl_ecocode_definitions"), repository);
         }
     }
 }
