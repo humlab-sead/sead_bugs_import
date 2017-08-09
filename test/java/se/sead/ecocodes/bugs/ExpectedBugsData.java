@@ -15,7 +15,8 @@ class ExpectedBugsData {
                     create(2d, "Def 2"), // insert
                     create(3d, "Def"), // already stored
                     create(3d, "Def 2"), // insert on code = 3
-                    create(99d, "Def") // no species found
+                    create(99d, "Def"), // no species found
+                    create(2d, "def 3")
             );
 
     private static EcoBugs create(
