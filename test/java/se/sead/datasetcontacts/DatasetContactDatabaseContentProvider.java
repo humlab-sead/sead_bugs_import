@@ -85,6 +85,18 @@ class DatasetContactDatabaseContentProvider implements DatabaseContentVerificati
                         TestContact.create(null, null, null, null, null, "University of Carpatia", null, null),
                         contactTypeRepository.getSpecimentRepositoryType(),
                         TestDataset.create(5,"COUN000005",methodRepository.findOne(3),bugsMaster, dataTypeRepository.findOne(1))
+                ),
+                TestDatasetContact.create(
+                        null,
+                        TestContact.create(3, null, null, null, null, null, "First", null),
+                        contactTypeRepository.getIdentifiedByType(),
+                        TestDataset.create(6,"COUN000006",methodRepository.findOne(3),bugsMaster, dataTypeRepository.findOne(1))
+                ),
+                TestDatasetContact.create(
+                        null,
+                        TestContact.create(null, null, null, null, null, null, "Arnold (only half)", null),
+                        contactTypeRepository.getIdentifiedByType(),
+                        TestDataset.create(6,"COUN000006",methodRepository.findOne(3),bugsMaster, dataTypeRepository.findOne(1))
                 )
         );
     }

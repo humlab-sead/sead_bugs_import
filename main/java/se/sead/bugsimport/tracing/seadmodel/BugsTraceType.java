@@ -7,5 +7,7 @@ public enum BugsTraceType {
     INSERT,
     ERROR,
     UPDATE,
-    DELETE
+    DELETE,
+    INSERT_FLAGGED,
+    UPDATE_FLAGGED
 }

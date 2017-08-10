@@ -8,6 +8,14 @@ public class ContactCreator {
         Contact contact = new Contact();
         contact.setLastName(lastName);
         contact.setFirstName(firstName);
+        if(hasParenthesis(firstName) || hasParenthesis(lastName)){
+            contact.setFlagged(true);
+        }
         return contact;
+    }
+
+    private boolean hasParenthesis(String name){
+        return name != null &&
+                (name.contains("(") || name.contains(")"));
     }
 }

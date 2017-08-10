@@ -40,6 +40,9 @@ public class SiteContactToDatasetContactParser {
         DatasetContact datasetContact = new DatasetContact();
         datasetContact.setContact(contactCacheAndRepositoryAccessor.getFromCacheOrRepository(contact));
         datasetContact.setType(contactType);
+        if(contact.isFlagged()){
+            datasetContact.setFlagged(true);
+        }
         return datasetContact;
     }
 

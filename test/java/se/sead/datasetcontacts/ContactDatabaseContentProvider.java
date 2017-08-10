@@ -27,7 +27,8 @@ class ContactDatabaseContentProvider implements DatabaseContentVerification.Data
                 TestContact.create(4, null, null, null, null, null, "Second", null),
                 TestContact.create(null, null, null, null, null, null, "Archer", null),
                 TestContact.create(null, null, null, null, null, "University of Carpatia", null, null),
-                TestContact.create(null, null, null, null, null, null, "A new person", null)
+                TestContact.create(null, null, null, null, null, null, "A new person", null),
+                TestContact.create(null, null, null, null, null, null, "Arnold (only half)", null)
         );
     }
 

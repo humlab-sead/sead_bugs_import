@@ -3,10 +3,12 @@ package se.sead.bugsimport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import se.sead.bugs.TraceableBugsData;
+import se.sead.bugsimport.tracing.TraceEventManager;
 import se.sead.bugsimport.tracing.TracePersister;
 import se.sead.sead.model.LoggableEntity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public abstract class Persister<BugsType extends TraceableBugsData, SeadType extends LoggableEntity> {
 
@@ -32,6 +34,9 @@ public abstract class Persister<BugsType extends TraceableBugsData, SeadType ext
                 SeadType savedItem = save(seadData);
                 mappedData.setSavedData(seadData, savedItem);
                 insertTraceLog(mappedData);
+                if(seadData.isFlagged()){
+                    insertErrorLogForFlag(mappedData, savedItem);
+                }
             } catch (DataAccessException dae) {
                 seadData.addError(dae.getMessage());
                 insertErrorLog(mappedData);
@@ -49,6 +54,13 @@ public abstract class Persister<BugsType extends TraceableBugsData, SeadType ext
 
     private void insertErrorLog(BugsListSeadMapping<BugsType, SeadType> dataContainer){
         tracePersister.saveErrorLog(dataContainer.getBugsData(), dataContainer.getErrorMessages());
+    }
+
+    private void insertErrorLogForFlag(BugsListSeadMapping<BugsType, SeadType> dataContainer, SeadType currentDataPoint){
+        String tableName = TraceEventManager.getTableNameFromClassAnnotation(currentDataPoint);
+        tracePersister.saveErrorLog(dataContainer.getBugsData(), Arrays.asList(
+                "FLAGGED: saved sead index: " + tableName + ":" + currentDataPoint.getId()
+        ));
     }
 
 }

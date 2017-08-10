@@ -22,6 +22,8 @@ public abstract class LoggableEntity {
     private boolean updated = false;
     @Transient
     private List<String> errors;
+    @Transient
+    private boolean flagged;
 
     public abstract Integer getId();
 
@@ -45,6 +47,14 @@ public abstract class LoggableEntity {
             errors = new ArrayList<>();
         }
         errors.add(error);
+    }
+
+    public boolean isFlagged(){
+        return flagged;
+    }
+
+    public void setFlagged(boolean flagged){
+        this.flagged = flagged;
     }
 
     public void markForDeletion(){

@@ -10,12 +10,16 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 import se.sead.bugsimport.datasetcontacts.DatasetContactImporter;
+import se.sead.bugsimport.tracing.seadmodel.BugsError;
 import se.sead.repositories.*;
 import se.sead.sead.contact.Contact;
 import se.sead.sead.data.DatasetContact;
 import se.sead.testutils.DatabaseContentVerification;
 import se.sead.testutils.DefaultConfig;
-import se.sead.testutils.NoAccessFileOnlyDataModelConfig;
+
+import java.util.List;
+
+import static org.junit.Assert.assertFalse;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {DatasetContactImportTest.Config.class})
@@ -32,6 +36,7 @@ public class DatasetContactImportTest {
 
     private DatabaseContentVerification<DatasetContact> datasetContactDatabaseContentVerification;
     private DatabaseContentVerification<Contact> contactDatabaseContentVerification;
+    private VerifyLogs logVerifier;
 
     @Autowired
     private ContactTypeRepository contactTypeRepository;
@@ -45,9 +50,11 @@ public class DatasetContactImportTest {
     private DatasetContactRepository datasetContactRepository;
     @Autowired
     private ContactRepository contactRepository;
-
     @Autowired
     private DatasetContactImporter importer;
+
+    @Autowired
+    private BugsErrorRepository errorRepository;
 
     @Before
     public void setup() {
@@ -67,7 +74,7 @@ public class DatasetContactImportTest {
                                 contactRepository
                         )
                 );
-
+        logVerifier = new VerifyLogs(errorRepository);
     }
 
     @Test
@@ -75,5 +82,19 @@ public class DatasetContactImportTest {
         importer.run();
         datasetContactDatabaseContentVerification.verifyDatabaseContent();
         contactDatabaseContentVerification.verifyDatabaseContent();
+        logVerifier.verifyErrors();
+    }
+
+    private static class VerifyLogs {
+        private BugsErrorRepository errorRepository;
+
+        private VerifyLogs(BugsErrorRepository errorRepository) {
+            this.errorRepository = errorRepository;
+        }
+
+        void verifyErrors(){
+            List<BugsError> errors = errorRepository.findByBugsTableAndBugsIdentifier("TCountsheet", "COUN000006");
+            assertFalse(errors.isEmpty());
+        }
     }
 }

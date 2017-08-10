@@ -47,7 +47,7 @@ public class TraceEventManager {
         addTrace(trace);
     }
 
-    private String getTableNameFromClassAnnotation(Object entity) {
+    public static String getTableNameFromClassAnnotation(Object entity) {
         Class entityClass = entity.getClass();
         Annotation annotation = entityClass.getAnnotation(Table.class);
         if(annotation instanceof Table){
@@ -57,13 +57,21 @@ public class TraceEventManager {
     }
 
     private void addTrace(BugsTrace trace){
-        if(tracesContainInsertForSameItem(trace) && trace.getType() == BugsTraceType.UPDATE){
+        if(tracesContainInsertForSameItem(trace) && isUpdated(trace)){
             return;
         }
-        if(tracesContainUpdateForSameItem(trace) && trace.getType() == BugsTraceType.INSERT){
+        if(tracesContainUpdateForSameItem(trace) && isInsert(trace)){
             updateTraceTypeToInsert(trace);
         }
         tracesForInsertions.add(trace);
+    }
+
+    private boolean isUpdated(BugsTrace trace) {
+        return trace.getType() == BugsTraceType.UPDATE;
+    }
+
+    private boolean isInsert(BugsTrace trace) {
+        return trace.getType() == BugsTraceType.INSERT;
     }
 
     private boolean tracesContainInsertForSameItem(BugsTrace trace){
