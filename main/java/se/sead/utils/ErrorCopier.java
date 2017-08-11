@@ -9,6 +9,6 @@ public class ErrorCopier {
         if(errorCarrier.isErrorFree()){
             return;
         }
-        errorCarrier.getErrors().forEach(error -> errorReceiver.addError(error));
+        errorCarrier.getErrorMessages().forEach(error -> errorReceiver.addError(error));
     }
 }

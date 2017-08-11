@@ -52,6 +52,14 @@ public class TracesAndErrorVerifier implements BugsTracesAndErrorsVerification.L
                 assertHelper.assertEmpty(traces);
                 assertHelper.assertContainsError(errors, "No attribute unit");
                 break;
+            case "{1.0,null,null,null,null}":
+                assertHelper.assertEmpty(traces);
+                assertHelper.assertContainsError(errors, "IGNORED: No attribute type, No attribute value, No attribute unit");
+                break;
+            case "{1.0,null,null,0.0,null}":
+                assertHelper.assertEmpty(traces);
+                assertHelper.assertContainsError(errors, "IGNORED: No attribute type, No attribute unit");
+                break;
             case "{2.0,New,Min,1,mm}":
             case "{3.0,New,Max,1,mm}":
             case "{3.0,New,Min,1,mm}":

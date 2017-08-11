@@ -56,7 +56,7 @@ public class BugsListSeadMapping<BugsType extends TraceableBugsData, SeadType ex
 
     public List<String> getErrorMessages(){
         List<String> errors = new ArrayList<>();
-        seadData.forEach(seadType -> errors.addAll(seadType.getErrors()));
+        seadData.forEach(seadType -> errors.addAll(seadType.getErrorMessages()));
         return errors;
     }
 

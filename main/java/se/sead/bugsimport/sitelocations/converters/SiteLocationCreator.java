@@ -46,7 +46,7 @@ public class SiteLocationCreator {
 
     private void addInheritedSiteErrors(SiteLocation siteLocation) {
         if(site != null && !site.isErrorFree()){
-            addErrors(siteLocation, site.getErrors());
+            addErrors(siteLocation, site.getErrorMessages());
         }
     }
 
@@ -59,7 +59,7 @@ public class SiteLocationCreator {
 
     private void addInheritedLocationErrors(SiteLocation siteLocation){
         if(location != null && !location.isErrorFree()){
-            addErrors(siteLocation, location.getErrors());
+            addErrors(siteLocation, location.getErrorMessages());
         }
     }
 

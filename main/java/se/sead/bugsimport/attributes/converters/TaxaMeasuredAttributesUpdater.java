@@ -7,8 +7,13 @@ import se.sead.bugsimport.attributes.seadmodel.TaxaMeasuredAttributes;
 import se.sead.bugsimport.species.seadmodel.TaxaSpecies;
 import se.sead.repositories.TaxonomicOrderRepository;
 import se.sead.utils.BigDecimalDefinition;
+import se.sead.utils.errorlog.ErrorLog;
+import se.sead.utils.errorlog.IgnoredItemErrorLog;
+import se.sead.utils.errorlog.SingleMessageErrorLog;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Component
@@ -25,6 +30,7 @@ public class TaxaMeasuredAttributesUpdater {
         private TaxaMeasuredAttributes original;
         private BugsAttributes bugsData;
         private boolean updated = false;
+        private MeasuredAttributeErrorLog errorLog = new MeasuredAttributeErrorLog();
 
         Updater(TaxaMeasuredAttributes original, BugsAttributes bugsData) {
             this.original = original;
@@ -37,6 +43,9 @@ public class TaxaMeasuredAttributesUpdater {
             updated = setValue() || updated;
             updated = setUnits() || updated;
             updated = setSpecies() || updated;
+            if(errorLog.hasErrors()){
+                original.addError(errorLog.getErrorLog());
+            }
             original.setUpdated(updated);
         }
 
@@ -44,7 +53,7 @@ public class TaxaMeasuredAttributesUpdater {
             String originalType = original.getType();
             String attribType = bugsData.getType();
             if(attribType == null || attribType.isEmpty()){
-                original.addError("No attribute type");
+                errorLog.addError(MeasuredAttributeErrorLog.NO_TYPE);
                 return false;
             }
             original.setType(attribType);
@@ -61,7 +70,7 @@ public class TaxaMeasuredAttributesUpdater {
             BigDecimal originalValue = original.getValue();
             BigDecimal newValue = BigDecimalDefinition.convertToSeadContext(bugsData.getValue());
             if(newValue == null){
-                original.addError("No attribute value");
+                errorLog.addError(MeasuredAttributeErrorLog.NO_VALUE);
                 return false;
             }
             original.setValue(newValue);
@@ -72,7 +81,7 @@ public class TaxaMeasuredAttributesUpdater {
             String originalUnits = original.getUnits();
             String attribUnits = bugsData.getUnits();
             if(attribUnits == null || attribUnits.isEmpty()){
-                original.addError("No attribute unit");
+                errorLog.addError(MeasuredAttributeErrorLog.NO_UNIT);
                 return false;
             }
             original.setUnits(attribUnits);
@@ -84,9 +93,60 @@ public class TaxaMeasuredAttributesUpdater {
             TaxaSpecies bugsSpeciesByCode = taxonomicOrderRepository.findBugsSpeciesByCode(bugsData.getCode());
             original.setSpecies(bugsSpeciesByCode);
             if(bugsSpeciesByCode == null){
-                original.addError("No species found for code");
+                errorLog.addError(MeasuredAttributeErrorLog.NO_SPECIES);
             }
             return !Objects.equals(originalSpecies, bugsSpeciesByCode);
+        }
+    }
+
+    private static class MeasuredAttributeErrorLog {
+
+        static String NO_VALUE = "No attribute value";
+        static String NO_UNIT = "No attribute unit";
+        static String NO_TYPE = "No attribute type";
+        static String NO_SPECIES = "No species found for code";
+
+
+        private List<String> errorLogs = new ArrayList<>();
+
+        void addError(String errorMessage){
+            errorLogs.add(errorMessage);
+        }
+
+        ErrorLog getErrorLog() {
+            if(errorLogs.isEmpty()){
+                return null;
+            } else if(logsContainAllIgnoreMarkers()){
+                return new IgnoredItemErrorLog(compressErrors());
+            }
+            return new SingleMessageErrorLog(compressErrors());
+        }
+
+        private boolean logsContainAllIgnoreMarkers(){
+            return (
+                    errorLogs.size() == 3 &&
+                    errorLogs.contains(NO_VALUE) &&
+                    errorLogs.contains(NO_TYPE) &&
+                    errorLogs.contains(NO_UNIT)
+                    )
+                    ||
+                    (
+                    errorLogs.size() == 2 &&
+                    errorLogs.contains(NO_TYPE) &&
+                    errorLogs.contains(NO_UNIT)
+                    )
+                    ;
+        }
+
+        private String compressErrors(){
+            return String.join(
+                    ", ",
+                    errorLogs
+            );
+        }
+
+        boolean hasErrors(){
+            return !errorLogs.isEmpty();
         }
     }
 }

@@ -1,12 +1,15 @@
 package se.sead.sead.model;
 
 import se.sead.bugsimport.tracing.PostEventListener;
+import se.sead.utils.errorlog.ErrorLog;
+import se.sead.utils.errorlog.SingleMessageErrorLog;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @MappedSuperclass
 @EntityListeners({PostEventListener.class})
@@ -21,7 +24,7 @@ public abstract class LoggableEntity {
     @Transient
     private boolean updated = false;
     @Transient
-    private List<String> errors;
+    private List<ErrorLog> errors;
     @Transient
     private boolean flagged;
 
@@ -31,18 +34,23 @@ public abstract class LoggableEntity {
         return getId() == null;
     }
 
-    public List<String> getErrors(){
+    public List<String> getErrorMessages(){
         if(errors == null){
             return Collections.EMPTY_LIST;
         }
-        return errors;
+        return errors.stream().map(errorLog -> errorLog.getMessage()).collect(Collectors.toList());
     }
 
     public boolean isErrorFree(){
         return errors == null;
     }
 
+    @Deprecated
     public void addError(String error){
+        addError(new SingleMessageErrorLog(error));
+    }
+
+    public void addError(ErrorLog error){
         if(errors == null){
             errors = new ArrayList<>();
         }
@@ -82,4 +90,5 @@ public abstract class LoggableEntity {
     public void setDateUpdated(Date dateUpdated) {
         this.dateUpdated = dateUpdated;
     }
+
 }

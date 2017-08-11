@@ -144,7 +144,7 @@ public class DatabaseContentProvider implements DatabaseContentVerification.Data
             if(sourceDifferences == 0){
                 int targetDifferences = speciesComparator.compare(o1.getTargetSpecies(), o2.getTargetSpecies());
                 if(targetDifferences == 0){
-                    return compare(o1.getErrors(), o2.getErrors());
+                    return compare(o1.getErrorMessages(), o2.getErrorMessages());
                 }
                 return targetDifferences;
             }

@@ -26,7 +26,9 @@ public class ExpectedBugsData {
                 create(6d, "Changed", "Min", 2f, "mm"),
                 create(7d, "Changed after import", "Max", 2f, "mm"),
                 create(7d, "Stored", "Min", 1f, "mm"),
-                create(99d, "No species exist", "Max", 1f, "mm")
+                create(99d, "No species exist", "Max", 1f, "mm"),
+                create(1d, null, null, 0f, null),
+                    create(1d, null, null, null, null)
             );
 
     private static BugsAttributes create(

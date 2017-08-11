@@ -6,6 +6,7 @@ import se.sead.bugs.TraceableBugsData;
 import se.sead.bugsimport.tracing.TraceEventManager;
 import se.sead.bugsimport.tracing.TracePersister;
 import se.sead.sead.model.LoggableEntity;
+import se.sead.utils.errorlog.ExceptionErrorLog;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,7 +39,7 @@ public abstract class Persister<BugsType extends TraceableBugsData, SeadType ext
                     insertErrorLogForFlag(mappedData, savedItem);
                 }
             } catch (DataAccessException dae) {
-                seadData.addError(dae.getMessage());
+                seadData.addError(new ExceptionErrorLog(dae));
                 insertErrorLog(mappedData);
             }
         }
@@ -62,5 +63,4 @@ public abstract class Persister<BugsType extends TraceableBugsData, SeadType ext
                 "FLAGGED: saved sead index: " + tableName + ":" + currentDataPoint.getId()
         ));
     }
-
 }
