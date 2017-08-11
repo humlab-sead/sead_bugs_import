@@ -11,6 +11,7 @@ import se.sead.bugsimport.tracing.seadmodel.BugsTrace;
 import se.sead.repositories.BugsTraceRepository;
 import se.sead.repositories.MeasuredAttributesRepository;
 import se.sead.repositories.TaxonomicOrderRepository;
+import se.sead.utils.errorlog.SingleMessageErrorLog;
 
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class TaxaMeasuredAttributesTraceCheck implements TaxaMeasuredAttributesS
 
     static {
         SEAD_DATA_CONTAIN_NEWER_UPDATES = new TaxaMeasuredAttributes();
-        SEAD_DATA_CONTAIN_NEWER_UPDATES.addError(SEAD_DATA_HAS_BEEN_UPDATED_SINCE_LAST_BUGS_IMPORT);
+        SEAD_DATA_CONTAIN_NEWER_UPDATES.addError(new SingleMessageErrorLog(SEAD_DATA_HAS_BEEN_UPDATED_SINCE_LAST_BUGS_IMPORT));
     }
 
     @Autowired

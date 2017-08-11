@@ -10,6 +10,7 @@ import se.sead.bugsimport.site.seadmodel.SeadSite;
 import se.sead.repositories.SampleGroupRepository;
 import se.sead.repositories.SamplingContextRepository;
 import se.sead.sead.model.SamplingContext;
+import se.sead.utils.errorlog.SingleMessageErrorLog;
 
 import java.util.List;
 
@@ -45,7 +46,13 @@ public class SampleGroupBugsTableRowConverter implements BugsTableRowConverter<C
             return create(bugsData, site, context);
         } else if(previousGroup == null && !previousByName.isEmpty()){
             SampleGroup group = new SampleGroup();
-            group.addError("Name found for site, but no bugs import marker: change name? countsheet=" + bugsData.getName() + "site=" + bugsData.getSiteCode());
+            group.addError(
+                    new SingleMessageErrorLog(
+                        "Name found for site, but no bugs import marker: change name? countsheet="
+                        + bugsData.getName()
+                        + "site=" + bugsData.getSiteCode()
+                    )
+            );
             return group;
         }
         return update(bugsData, site, context, previousGroup);

@@ -45,7 +45,6 @@ public abstract class LoggableEntity {
         return errors == null;
     }
 
-    @Deprecated
     public void addError(String error){
         addError(new SingleMessageErrorLog(error));
     }
