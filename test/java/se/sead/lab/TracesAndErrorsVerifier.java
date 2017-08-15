@@ -53,6 +53,10 @@ public class TracesAndErrorsVerifier implements BugsTracesAndErrorsVerification.
                 assertHelper.assertPrestoredTrace(traces, 3);
                 assertHelper.assertContainsError(errors, SeadDataFromTraceHelper.SEAD_DATA_HAS_BEEN_UPDATED_SINCE_LAST_BUGS_IMPORT);
                 break;
+            case "Code":
+                assertHelper.assertEmpty(traces);
+                assertHelper.assertContainsError(errors, "IGNORED: ");
+                break;
         }
     }
 }

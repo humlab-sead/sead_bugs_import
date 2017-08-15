@@ -6,6 +6,7 @@ import se.sead.bugsimport.lab.bugsmodel.BugsLab;
 import se.sead.bugsimport.lab.seadmodel.DatingLab;
 import se.sead.bugsimport.locations.seadmodel.Location;
 import se.sead.repositories.LocationRepository;
+import se.sead.utils.errorlog.IgnoredItemErrorLog;
 
 import java.util.Objects;
 
@@ -56,6 +57,10 @@ public class DatingLabUpdater {
             Location originalCountry = original.getCountry();
             if(bugsData.getCountry() == null || bugsData.getCountry().isEmpty()){
                 original.addError("No country specified");
+                return false;
+            }
+            if(bugsData.getCountry().equals("Country")){
+                original.addError(new IgnoredItemErrorLog(""));
                 return false;
             }
             Location countryByName = locationRepository.findCountryByName(bugsData.getCountry());
