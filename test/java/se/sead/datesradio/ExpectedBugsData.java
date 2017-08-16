@@ -21,9 +21,8 @@ public class ExpectedBugsData {
                     create("DATE000010", "SAMP000002", "lab-00010", null, 6000, null, null, "C14 Std", null, "A", "Unknown sample id"),
                     create("DATE000011", "SAMP000001", "lab-00011", null, 6000, null, null, "C14 Std", null, "B", "Unknown lab"),
                     create("DATE000012", "SAMP000001", "lab-00012", null, 5999, null, null, "C14 Std", null, "A", "Sead data updated after import"),
-                    create("DATE000013", "SAMP000001", "abc-1", null, 6000, (short)100, null, "C14 Std", null, "Unknown", "Lab not set"),
-                    create("DATE000014", "SAMP000001", "abc-2", null, 6000, (short)100, null, "C14 Std", null, null, "Lab not set")
-
+                    create("DATE000013", "SAMP000001", "abc-1", ">", 6000, (short)100, null, "C14 Std", null, "Unknown", "Lab not set"),
+                    create("DATE000014", "SAMP000001", "abc-2", ">", 6000, (short)100, null, "C14 Std", null, null, "Lab not set")
             );
 
     private static DatesRadio create(
