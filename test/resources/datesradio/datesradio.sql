@@ -49,6 +49,8 @@ insert into tbl_dating_labs (dating_lab_id, international_lab_id, lab_name, coun
 values (1, 'A', 'Arizona', 3);
 insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
 values (5, 'TLab', '{A,Arizona,USA}', 'A', 'tbl_dating_labs', 1);
+insert into tbl_dating_labs (dating_lab_id, international_lab_id, lab_name)
+    values (2, 'Unknown', 'Unknown lab, or non-certified lab');
 
 insert into tbl_data_type_groups (data_type_group_id, data_type_group_name) values (1, 'Composite scale');
 insert into tbl_data_types (data_type_id, data_type_group_id, data_type_name) values (1, 1, 'Undefined other');
@@ -100,3 +102,16 @@ insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_i
 values (16, 'TDatesRadio', null, 'DATE000012', 'tbl_analysis_entities', 4);
 insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id, change_date)
 values (17, 'TDatesRadio', null, 'DATE000012', 'tbl_geochronology', 4, '2015-01-01');
+
+/*
+insert into tbl_datasets (dataset_id, master_set_id, method_id, data_type_id, dataset_name) values (5, 1, 3, 1, 'DATE000013');
+insert into tbl_analysis_entities (analysis_entity_id, physical_sample_id, dataset_id) values (5, 1, 5);
+insert into tbl_geochronology (geochron_id, analysis_entity_id, dating_lab_id, lab_number, age, error_older, error_younger, notes, dating_uncertainty_id)
+values (5, 5, XXX, 'abc-1', 6000, 100, 100, 'Lab not set', 1);
+insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
+values (18, 'TDatesRadio', null, 'DATE000013', 'tbl_datasets', 5);
+insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
+values (19, 'TDatesRadio', null, 'DATE000013', 'tbl_analysis_entities', 5);
+insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
+values (20, 'TDatesRadio', null, 'DATE000013', 'tbl_geochronology', 5);
+*/

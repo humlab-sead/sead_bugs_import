@@ -9,6 +9,8 @@ import se.sead.testutils.BugsTracesAndErrorsVerification;
 
 import java.util.List;
 
+import static org.junit.Assert.assertTrue;
+
 public class LogAndErrorVerifier implements BugsTracesAndErrorsVerification.LogVerificationCallback<DatesRadio> {
 
     private AssertHelper datasetAssertHelper;
@@ -83,11 +85,24 @@ public class LogAndErrorVerifier implements BugsTracesAndErrorsVerification.LogV
                 geochronologyAssertHelper.assertPrestoredTrace(traces, 17);
                 geochronologyAssertHelper.assertContainsError(errors, SeadDataFromTraceHelper.SEAD_DATA_HAS_BEEN_UPDATED_SINCE_LAST_BUGS_IMPORT);
                 break;
+            case "DATE000013":
+                listHelper.assertSize(traces, 3);
+                listHelper.assertSize(errors, 1);
+                datasetAssertHelper.assertInserts(traces, 1);
+                analysisEntityAssertHelper.assertInserts(traces, 1);
+                geochronologyAssertHelper.assertInserts(traces, 1);
+                assertFlaggedMessage(errors, "tbl_geochronology");
+                break;
         }
     }
 
     private void assertErrorMessage(List<BugsTrace> traces, List<BugsError> errors, String errorMessage){
         geochronologyAssertHelper.assertContainsError(errors, errorMessage);
         listHelper.assertEmpty(traces);
+    }
+
+    private void assertFlaggedMessage(List<BugsError> errors, String tableName){
+        boolean b = errors.stream().anyMatch(error -> error.getMessage().startsWith("FLAGGED: saved sead index: " + tableName));
+        assertTrue(b);
     }
 }

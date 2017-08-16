@@ -6,7 +6,6 @@ import se.sead.bugsimport.datesradio.bugsmodel.DatesRadio;
 import se.sead.bugsimport.datesradio.seadmodel.DatingUncertainty;
 import se.sead.bugsimport.datesradio.seadmodel.Geochronology;
 import se.sead.bugsimport.lab.seadmodel.DatingLab;
-import se.sead.bugsimport.lab.search.DatingLabTraceHelper;
 import se.sead.repositories.DatingUncertaintyRepository;
 import se.sead.sead.data.AnalysisEntity;
 import se.sead.utils.BigDecimalDefinition;
@@ -26,21 +25,27 @@ public class GeochronologyUpdater {
     @Autowired
     private GeochronologyAnalysisEntityCreator analysisEntityCreator;
     @Autowired
-    private DatingLabTraceHelper datingLabTraceHelper;
-    @Autowired
     private DatingUncertaintyRepository datingUncertaintyRepository;
+    @Autowired
+    private DatingLabManagerFactory datingLabManagerFactory;
 
     public void update(Geochronology original, DatesRadio bugsData){
-        new Updater(original, bugsData).update();
+        new Updater(
+                original,
+                bugsData,
+                datingLabManagerFactory.createManager()
+        ).update();
     }
 
     private class Updater {
         private Geochronology original;
         private DatesRadio bugsData;
+        private DatingLabManagerFactory.DatingLabManager datingLabManager;
 
-        Updater(Geochronology original, DatesRadio bugsData) {
+        Updater(Geochronology original, DatesRadio bugsData, DatingLabManagerFactory.DatingLabManager datingLabManager) {
             this.original = original;
             this.bugsData = bugsData;
+            this.datingLabManager = datingLabManager;
         }
 
         void update(){
@@ -68,14 +73,14 @@ public class GeochronologyUpdater {
 
         private boolean setDatingLab() {
             DatingLab originalDatingLaboratory = original.getDatingLaboratory();
-            DatingLab fromLastTrace = datingLabTraceHelper.getFromLastTrace(bugsData.getLabId());
-            if(fromLastTrace == null){
-
-                // must be ok, but only if field is empty in bugs
-                original.addError("No lab found");
+            DatingLab seadLabFromCode = datingLabManager.getSeadLabFromCode(bugsData.getLabId());
+            if(seadLabFromCode.isErrorFree() && seadLabFromCode.isFlagged()){
+                original.setFlagged(true);
+            } else if(!seadLabFromCode.isErrorFree()){
+                ErrorCopier.copyPotentialErrors(original, seadLabFromCode);
             }
-            original.setDatingLaboratory(fromLastTrace);
-            return !Objects.equals(originalDatingLaboratory, fromLastTrace);
+            original.setDatingLaboratory(seadLabFromCode);
+            return !Objects.equals(originalDatingLaboratory, seadLabFromCode);
         }
 
         private boolean setLabSampleNumber() {

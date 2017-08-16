@@ -34,9 +34,9 @@ public class DatabaseContentProvider implements DatabaseContentVerification.Data
     private Method c14StdMethod;
     private GeochronologyRepository geochronologyRepository;
     private DatingLab defaultDatingLab;
+    private DatingLab unknownDatingLab;
     private Sample defaultSample;
     private DatingUncertainty greaterThan;
-    private DatingUncertainty unknown;
 
     public DatabaseContentProvider(
             DatasetMasterRepository datasetMasterRepository,
@@ -51,9 +51,9 @@ public class DatabaseContentProvider implements DatabaseContentVerification.Data
         this.c14StdMethod = methodRepository.findOne(3);
         this.geochronologyRepository = geochronologyRepository;
         this.defaultDatingLab = datingLabRepository.findOne(1);
+        this.unknownDatingLab = datingLabRepository.findOne(2);
         this.defaultSample = sampleRepository.findOne(1);
         this.greaterThan = datingUncertaintyRepository.findOne(1);
-        this.unknown = datingUncertaintyRepository.findOne(2);
     }
 
     @Override
@@ -135,6 +135,28 @@ public class DatabaseContentProvider implements DatabaseContentVerification.Data
                         createNumericVersion(70),
                         createNumericVersion(50),
                         "insert with upper and lower errors"
+                ),
+                TestGeochronology.create(
+                        null,
+                        createAe(null, null, "DATE000013"),
+                        unknownDatingLab,
+                        greaterThan,
+                        "abc-1",
+                        createNumericVersion(6000),
+                        createNumericVersion(100),
+                        createNumericVersion(100),
+                        "Lab not set"
+                ),
+                TestGeochronology.create(
+                        null,
+                        createAe(null, null, "DATE000014"),
+                        unknownDatingLab,
+                        greaterThan,
+                        "abc-2",
+                        createNumericVersion(6000),
+                        createNumericVersion(100),
+                        createNumericVersion(100),
+                        "Lab not set"
                 )
         );
     }
