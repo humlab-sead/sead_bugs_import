@@ -7,6 +7,7 @@ import se.sead.bugsimport.periods.bugsmodel.Period;
 import se.sead.bugsimport.periods.converters.PeriodTraceHelper;
 import se.sead.bugsimport.periods.converters.RelativeAgeUpdater;
 import se.sead.bugsimport.periods.seadmodel.RelativeAge;
+import se.sead.utils.errorlog.IgnoredItemErrorLog;
 
 @Component
 public class PeriodRowConverter implements BugsTableRowConverter<Period, RelativeAge> {
@@ -46,7 +47,7 @@ public class PeriodRowConverter implements BugsTableRowConverter<Period, Relativ
 
     private static class IgnoreRelativeAge extends RelativeAge {
         IgnoreRelativeAge(){
-            addError("This item is ignored");
+            addError(new IgnoredItemErrorLog("This item is ignored"));
         }
     }
 }

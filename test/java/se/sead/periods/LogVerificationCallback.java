@@ -22,7 +22,7 @@ class LogVerificationCallback implements BugsTracesAndErrorsVerification.LogVeri
         switch(bugsData.getPeriodCode()){
             case "?":
                 assertHelper.assertEmpty(traces);
-                assertHelper.assertContainsError(errors, "This item is ignored");
+                assertHelper.assertContainsError(errors, "IGNORED: This item is ignored");
                 break;
             case "ERR_NO_LOC":
                 assertHelper.assertEmpty(traces);
