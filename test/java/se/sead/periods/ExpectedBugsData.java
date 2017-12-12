@@ -19,6 +19,7 @@ class ExpectedBugsData {
                 PeriodCreator.create("INSERT", "New", "Archaeological", "BP insert", null, "UK", 800, "BP", 1100, "BP", "Radiometric"),
                 PeriodCreator.create("INSERTCAL", "New calendar", "Archaeological", "Calendar insert", null, "UK", 2500, "AD", 600, "AD", "Calendar"),
                 PeriodCreator.create("U_NEWER_SEAD", "Sead data updated", "Geological", "Sead data has changed", "Ref 1000", null, 12000, "BP", 10500, "BP", "Radiometric"),
-                PeriodCreator.create("UPDATE", "Updated", "Archaeological", "Update", null, "Eastern Mediterranean", 666, "BP", 1918, "BP", "Radiometric")
+                PeriodCreator.create("UPDATE", "Updated", "Archaeological", "Update", null, "Eastern Mediterranean", 666, "BP", 1918, "BP", "Radiometric"),
+                PeriodCreator.create("INSERT_CAL_W_BP", "BP Calendar start", "Archaeological", "BP as start on a calendar item", null, "UK", 10000, "BP", 868, "AD", "Calendar")
             );
 }

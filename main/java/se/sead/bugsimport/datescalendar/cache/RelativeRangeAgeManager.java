@@ -84,6 +84,11 @@ public class RelativeRangeAgeManager {
         protected String getType() {
             return typeManager.getCalendarRangeTypeName();
         }
+
+        @Override
+        protected String getYearsType() {
+            return "Calendar";
+        }
     }
 
     private static class AbbreviationCreator {

@@ -115,6 +115,18 @@ public class DatabaseContentProvider implements DatabaseContentVerification.Data
                         "Update",
                         archaeologicalType,
                         easterMediterraneanLocation
+                ),
+                TestRelativeAge.create(
+                        null,
+                        "INSERT_CAL_W_BP",
+                        "BP Calendar start",
+                        null,
+                        null,
+                        createRelativeAgeBigDecimal(10000),
+                        createRelativeAgeBigDecimal(1082),
+                        "BP as start on a calendar item",
+                        archaeologicalType,
+                        ukLocation
                 )
         );
     }

@@ -262,10 +262,10 @@ class RelativeDatesDatabaseContentProvider implements DatabaseContentVerificatio
                 null,
                 "CAL_" + date + "_" + bcadbp,
                 null,
-                c14Value,
-                c14Value,
                 null,
                 null,
+                c14Value,
+                c14Value,
                 "Autocreated from bugs import",
                 type,
                 null

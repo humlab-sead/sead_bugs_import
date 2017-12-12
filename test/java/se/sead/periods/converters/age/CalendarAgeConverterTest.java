@@ -39,11 +39,17 @@ public class CalendarAgeConverterTest {
     }
 
     @Test
-    public void beginBCADisBPResultsInNull(){
+    public void beginBCADisBPResultsInSameValue(){
         Period data = new Period();
         data.setBegin(1000);
         data.setBeginBCad("BP");
-        assertNull(converter.getBeginAge(data));
+        assertEquals(createExpectedValue(1000), converter.getBeginAge(data));
+    }
+
+    private BigDecimal createExpectedValue(int value) {
+        BigDecimal expected = new BigDecimal(value, SEAD_AGE_CONTEXT);
+        expected.setScale(AGE_SCALE);
+        return expected;
     }
 
     @Test
@@ -51,7 +57,7 @@ public class CalendarAgeConverterTest {
         Period data = new Period();
         data.setEnd(1000);
         data.setEndBCad("BP");
-        assertNull(converter.getEndAge(data));
+        assertEquals(createExpectedValue(1000), converter.getEndAge(data));
     }
 
     @Test
@@ -59,8 +65,7 @@ public class CalendarAgeConverterTest {
         Period data = new Period();
         data.setBegin(1000);
         data.setBeginBCad("BC");
-        BigDecimal expected = new BigDecimal(2950, SEAD_AGE_CONTEXT);
-        expected.setScale(AGE_SCALE);
+        BigDecimal expected = createExpectedValue(2950);
         assertEquals(expected, converter.getBeginAge(data));
     }
 
@@ -69,8 +74,7 @@ public class CalendarAgeConverterTest {
         Period data = new Period();
         data.setEnd(1000);
         data.setEndBCad("BC");
-        BigDecimal expected = new BigDecimal(2950, SEAD_AGE_CONTEXT);
-        expected.setScale(AGE_SCALE);
+        BigDecimal expected = createExpectedValue(2950);
         assertEquals(expected, converter.getEndAge(data));
     }
 
@@ -79,8 +83,7 @@ public class CalendarAgeConverterTest {
         Period data = new Period();
         data.setBegin(1000);
         data.setBeginBCad("AD");
-        BigDecimal expected = new BigDecimal((1950 - 1000), SEAD_AGE_CONTEXT);
-        expected.setScale(AGE_SCALE);
+        BigDecimal expected = createExpectedValue((1950 - 1000));
         assertEquals(expected, converter.getBeginAge(data));
     }
 
@@ -89,8 +92,7 @@ public class CalendarAgeConverterTest {
         Period data = new Period();
         data.setEnd(1000);
         data.setEndBCad("AD");
-        BigDecimal expected = new BigDecimal((1950 - 1000), SEAD_AGE_CONTEXT);
-        expected.setScale(AGE_SCALE);
+        BigDecimal expected = createExpectedValue((1950 - 1000));
         assertEquals(expected, converter.getEndAge(data));
     }
 

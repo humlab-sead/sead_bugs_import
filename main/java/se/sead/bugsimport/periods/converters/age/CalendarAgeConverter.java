@@ -26,7 +26,7 @@ public class CalendarAgeConverter extends AgeConverter{
 
         @Override
         public BigDecimal convert(String bcad, Integer bugsData) {
-            return null;
+            return BigDecimal.valueOf(bugsData);
         }
     }
 

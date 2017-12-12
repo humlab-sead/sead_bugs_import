@@ -21,10 +21,12 @@ public abstract class AbstractPeriodForRelativeAgeCreator {
         period.setType(getType());
         period.setDesc(STANDARD_NOTES);
         period.setPeriodCode(computedAbbreviation);
+        period.setYearsType(getYearsType());
         return period;
     }
 
     protected abstract void setAgePeriodData(Period period);
 
     protected abstract String getType();
+    protected abstract String getYearsType();
 }

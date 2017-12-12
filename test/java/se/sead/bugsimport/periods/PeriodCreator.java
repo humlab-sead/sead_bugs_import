@@ -62,7 +62,7 @@ public class PeriodCreator {
         public static final String AD_AGE_RELATION_SPECIFICATION = "AD";
         public static final String C14_AGE_RELATION_SPECIFICATION = "BP";
         public static final String CALENDAR_YEAR_TYPE = "Calendar";
-        public static final String C14_YEAR_TYPE = "C14";
+        public static final String C14_YEAR_TYPE = "Radiometric";
         public static final String RADIOMETRIC_YEAR_TYPE = "Radiometric";
 
         public static final String DEFAULT_AGE_RELATION = C14_AGE_RELATION_SPECIFICATION;

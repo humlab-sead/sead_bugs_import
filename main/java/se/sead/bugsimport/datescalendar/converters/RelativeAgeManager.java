@@ -66,6 +66,11 @@ public class RelativeAgeManager {
         protected String getType(){
             return typeManager.getCalendarDateTypeName();
         }
+
+        @Override
+        protected String getYearsType() {
+            return "Calendar";
+        }
     }
 
 }

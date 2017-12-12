@@ -65,10 +65,10 @@ class RelativeAgesDatabaseContentProvider implements DatabaseContentVerification
                         null,
                         "CAL_100_BP",
                         null,
-                        RelativeDatesDatabaseContentProvider.createSeadValue(100),
-                        RelativeDatesDatabaseContentProvider.createSeadValue(100),
                         null,
                         null,
+                        RelativeDatesDatabaseContentProvider.createSeadValue(100),
+                        RelativeDatesDatabaseContentProvider.createSeadValue(100),
                         "Autocreated from bugs import",
                         typeRepository.findOne(2),
                         null

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import se.sead.bugsimport.locations.seadmodel.Location;
 import se.sead.bugsimport.periods.bugsmodel.Period;
+import se.sead.bugsimport.periods.converters.age.AgeUpdater;
 import se.sead.bugsimport.periods.converters.age.C14AgeConverter;
 import se.sead.bugsimport.periods.converters.age.CalendarAgeConverter;
 import se.sead.bugsimport.periods.converters.geography.GeographicExtentUpdater;
@@ -38,20 +39,22 @@ public class RelativeAgeUpdater {
 
     public void update(RelativeAge original, Period bugsData){new Updater(original, bugsData).update();}
 
+
     private class Updater {
         private RelativeAge original;
         private Period bugsData;
+        private AgeUpdater activeAgeUpdater;
 
         Updater(RelativeAge original, Period bugsData) {
             this.original = original;
             this.bugsData = bugsData;
+            activeAgeUpdater = AgeUpdater.getUpdater(original, bugsData);
         }
 
         void update(){
             boolean updated = setName();
             updated = setDescription() || updated;
-            updated = setBeginAge() || updated;
-            updated = setEndAge() || updated;
+            updated = setBeginAndEnd() || updated;
             updated = setGeographicExtent() || updated;
             updated = setType() || updated;
             updated = setAbbreviation() || updated;
@@ -74,26 +77,9 @@ public class RelativeAgeUpdater {
             return !Objects.equals(originalDescription, bugsData.getDesc());
         }
 
-        private boolean setBeginAge() {
-            BigDecimal originalC14AgeOlder = original.getC14AgeOlder();
-            BigDecimal originalCalAgeOlder = original.getCalAgeOlder();
-            BigDecimal c14BugsAge = c14AgeConverter.getBeginAge(bugsData);
-            BigDecimal calendarBugsAge = calendarAgeConverter.getBeginAge(bugsData);
-            original.setC14AgeOlder(c14BugsAge);
-            original.setCalAgeOlder(calendarBugsAge);
-            return !BigDecimalDefinition.equalBigDecimalNumericValues(originalC14AgeOlder, c14BugsAge)
-                    || !BigDecimalDefinition.equalBigDecimalNumericValues(originalCalAgeOlder, calendarBugsAge);
-        }
-
-        private boolean setEndAge() {
-            BigDecimal originalC14AgeYounger = original.getC14AgeYounger();
-            BigDecimal originalCalAgeYounger = original.getCalAgeYounger();
-            BigDecimal c14AgeYounger = c14AgeConverter.getEndAge(bugsData);
-            BigDecimal calendarAgeYounger = calendarAgeConverter.getEndAge(bugsData);
-            original.setC14AgeYounger(c14AgeYounger);
-            original.setCalAgeYounger(calendarAgeYounger);
-            return !BigDecimalDefinition.equalBigDecimalNumericValues(originalC14AgeYounger, c14AgeYounger)
-                    || !BigDecimalDefinition.equalBigDecimalNumericValues(originalCalAgeYounger, calendarAgeYounger);
+        private boolean setBeginAndEnd(){
+            boolean startUpdated = activeAgeUpdater.setBeginDate();
+            return activeAgeUpdater.setEndDate() || startUpdated;
         }
 
         private boolean setGeographicExtent() {
