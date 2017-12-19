@@ -32,7 +32,7 @@ public class RelativeDatesMappingCache {
         if(mapping.isErrorFree() || mapping.isNewSeadData()){
             DatingUncertainty uncertainty = mapping.getSeadData().get(0).getUncertainty();
             if(uncertainty != null) {
-                return uncertaintyManager.isToOrFromUncertiantyWithoutCaValidation(uncertainty);
+                return uncertaintyManager.isToOrFromUncertaintyWithoutCaValidation(uncertainty);
             }
         }
         return false;

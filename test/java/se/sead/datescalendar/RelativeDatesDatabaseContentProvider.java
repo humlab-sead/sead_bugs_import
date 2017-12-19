@@ -30,6 +30,7 @@ class RelativeDatesDatabaseContentProvider implements DatabaseContentVerificatio
     private Sample defaultSample;
     private Sample sample2;
     private Sample sample3;
+    private Sample sample5;
     private DatingUncertainty fromUncertainty;
     private DatingUncertainty caUncertainty;
     private DatingUncertainty toUncertainty;
@@ -57,6 +58,7 @@ class RelativeDatesDatabaseContentProvider implements DatabaseContentVerificatio
         defaultSample = sampleRepository.findOne(1);
         sample2 = sampleRepository.findOne(2);
         sample3 = sampleRepository.findOne(3);
+        sample5 = sampleRepository.findOne(5);
         fromUncertainty = datingUncertaintyRepository.findOne(3);
         caUncertainty = datingUncertaintyRepository.findOne(5);
         toUncertainty = datingUncertaintyRepository.findOne(4);
@@ -229,6 +231,28 @@ class RelativeDatesDatabaseContentProvider implements DatabaseContentVerificatio
                                 null,
                                 TestDataset.create(null, "CALE000025", histCal, bugsMaster, calendarDate),
                                 sample3
+                        )
+                ),
+                TestRelativeDate.create(
+                        null,
+                        null,
+                        createCalendarRelativeAge("CAL_100-120_AD", 1850, 1830, calendarDateRangeType),
+                        "C14 Date 1",
+                        TestAnalysisEntity.create(
+                                null,
+                                TestDataset.create(null, "CALE000029", archPer, bugsMaster, calendarDate),
+                                sample5
+                        )
+                ),
+                TestRelativeDate.create(
+                        null,
+                        null,
+                        createCalendarRelativeAge("CAL_90-120_AD", 1860, 1830, calendarDateRangeType),
+                        "C14 Date 2",
+                        TestAnalysisEntity.create(
+                                null,
+                                TestDataset.create(null, "CALE000031", archPer, bugsMaster, calendarDate),
+                                sample5
                         )
                 )
         );

@@ -43,7 +43,7 @@ public class DatingUncertaintyManager {
         this.datingUncertaintyRepository = datingUncertaintyRepository;
     }
 
-    DatingUncertainty getOpposite(DatingUncertainty currentUncertainty){
+    public DatingUncertainty getOpposite(DatingUncertainty currentUncertainty){
         if(currentUncertainty == null){
             return null;
         }
@@ -61,35 +61,35 @@ public class DatingUncertaintyManager {
         }
     }
 
-    boolean isFromCaUncertainty(DatingUncertainty currentUncertainty){
+    public boolean isFromCaUncertainty(DatingUncertainty currentUncertainty){
         initUncertainties();
         return currentUncertainty.equals(fromCaUncertainty);
     }
 
-    boolean isFromUncertainty(DatingUncertainty currentUncertainty) {
+    public boolean isFromUncertainty(DatingUncertainty currentUncertainty) {
         initUncertainties();
         return currentUncertainty.equals(fromUncertainty);
     }
 
-    boolean isToUncertainty(DatingUncertainty currentUncertainty) {
+    public boolean isToUncertainty(DatingUncertainty currentUncertainty) {
         initUncertainties();
         return currentUncertainty.equals(toUncertainty);
     }
 
-    boolean isToCaUncertainty(DatingUncertainty currentUncertainty){
+    public boolean isToCaUncertainty(DatingUncertainty currentUncertainty){
         initUncertainties();
         return currentUncertainty.equals(toCaUncertainty);
     }
 
-    boolean isToUncertaintyWithoutCaValidation(DatingUncertainty uncertainty){
+    public boolean isToUncertaintyWithoutCaValidation(DatingUncertainty uncertainty){
         return isToUncertainty(uncertainty) || isToCaUncertainty(uncertainty);
     }
 
-    boolean isFromUncertaintyWithoutCaValidation(DatingUncertainty uncertainty){
+    public boolean isFromUncertaintyWithoutCaValidation(DatingUncertainty uncertainty){
         return isFromUncertainty(uncertainty) || isFromCaUncertainty(uncertainty);
     }
 
-    boolean isToOrFromUncertiantyWithoutCaValidation(DatingUncertainty uncertainty){
+    public boolean isToOrFromUncertaintyWithoutCaValidation(DatingUncertainty uncertainty){
         return isToUncertaintyWithoutCaValidation(uncertainty) || isFromUncertaintyWithoutCaValidation(uncertainty);
     }
 
@@ -110,7 +110,7 @@ public class DatingUncertaintyManager {
         }
     }
 
-    DatingUncertainty convertUncertainty(DatingUncertainty uncertainty){
+    public DatingUncertainty convertUncertainty(DatingUncertainty uncertainty){
         if(isCaUncertainty(uncertainty)){
             return caUncertainty;
         } else {
@@ -118,7 +118,7 @@ public class DatingUncertaintyManager {
         }
     }
 
-    boolean isCaUncertainty(DatingUncertainty uncertainty){
+    public boolean isCaUncertainty(DatingUncertainty uncertainty){
         return fromCaUncertainty.equals(uncertainty) ||
                 toCaUncertainty.equals(uncertainty) ||
                 caUncertainty.equals(uncertainty);

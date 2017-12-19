@@ -4,6 +4,9 @@ import org.junit.Before;
 import org.junit.Test;
 import se.sead.bugsimport.BugsListSeadMapping;
 import se.sead.bugsimport.datescalendar.bugsmodel.DatesCalendar;
+import se.sead.bugsimport.datescalendar.cache.datepairs.DatesCalendarMappingContainer;
+import se.sead.bugsimport.datescalendar.cache.datepairs.TooManyUncertaintiesOfSameKindException;
+import se.sead.bugsimport.datescalendar.cache.datepairs.UncertaintyDatesCalendarContainerManager;
 import se.sead.bugsimport.datesperiod.seadmodel.RelativeDate;
 import se.sead.bugsimport.datesradio.seadmodel.DatingUncertainty;
 import se.sead.repositories.DatingUncertaintyRepository;
@@ -13,7 +16,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class UncertaintyDatesCalendarContainerManagerTest {
+public class DatesCalendarMappingContainerManagerTest {
 
     private DatingUncertaintyManager datingUncertaintyManager;
     private UncertaintyDatesCalendarContainerManager ageMerger;
@@ -41,7 +44,7 @@ public class UncertaintyDatesCalendarContainerManagerTest {
                         mappingCreator.createMapping("SAMPLE", "From"),
                         mappingCreator.createMapping("SAMPLE", "To")
                 );
-        List<UncertaintyDatesCalendarContainer> ranges = ageMerger.createRanges(sampleData);
+        List<DatesCalendarMappingContainer> ranges = ageMerger.createRanges(sampleData);
         assertEquals("From", ranges.get(0).getFromDate().getUncertainty());
         assertEquals("To", ranges.get(0).getToDate().getUncertainty());
     }
@@ -53,7 +56,7 @@ public class UncertaintyDatesCalendarContainerManagerTest {
                         mappingCreator.createMapping("SAMPLE", "To"),
                         mappingCreator.createMapping("SAMPLE", "From")
                 );
-        List<UncertaintyDatesCalendarContainer> ranges = ageMerger.createRanges(sampleData);
+        List<DatesCalendarMappingContainer> ranges = ageMerger.createRanges(sampleData);
         assertEquals("From", ranges.get(0).getFromDate().getUncertainty());
         assertEquals("To", ranges.get(0).getToDate().getUncertainty());
     }
@@ -65,7 +68,7 @@ public class UncertaintyDatesCalendarContainerManagerTest {
                         mappingCreator.createMapping("SAMPLE", "FromCa"),
                         mappingCreator.createMapping("SAMPLE", "ToCa")
                 );
-        List<UncertaintyDatesCalendarContainer> ranges = ageMerger.createRanges(sampleData);
+        List<DatesCalendarMappingContainer> ranges = ageMerger.createRanges(sampleData);
         assertEquals("FromCa", ranges.get(0).getFromDate().getUncertainty());
         assertEquals("ToCa", ranges.get(0).getToDate().getUncertainty());
     }
@@ -77,7 +80,7 @@ public class UncertaintyDatesCalendarContainerManagerTest {
                         mappingCreator.createMapping("SAMPLE", "Unknown"),
                         mappingCreator.createMapping("SAMPLE", "Ca")
                 );
-        List<UncertaintyDatesCalendarContainer> ranges = ageMerger.createRanges(sampleData);
+        List<DatesCalendarMappingContainer> ranges = ageMerger.createRanges(sampleData);
         assertTrue(ranges.isEmpty());
     }
 
@@ -89,13 +92,13 @@ public class UncertaintyDatesCalendarContainerManagerTest {
                         mappingCreator.createMapping("SAMPLE", "From"),
                         mappingCreator.createMapping("SAMPLE", "To")
                 );
-        List<UncertaintyDatesCalendarContainer> ranges = ageMerger.createRanges(sampleData);
+        List<DatesCalendarMappingContainer> ranges = ageMerger.createRanges(sampleData);
         assertEquals(1, ranges.size());
         assertEquals("From", ranges.get(0).getFromDate().getUncertainty());
         assertEquals("To", ranges.get(0).getToDate().getUncertainty());
     }
 
-    @Test(expected = UncertaintyExtractor.TooManyUncertaintiesOfSameKindException.class)
+    @Test(expected = TooManyUncertaintiesOfSameKindException.class)
     public void moreThanOneFromIsError(){
         List<BugsListSeadMapping<DatesCalendar, RelativeDate>> sampleData =
                 Arrays.asList(
@@ -115,7 +118,7 @@ public class UncertaintyDatesCalendarContainerManagerTest {
                         mappingCreator.createMapping("SAMPLE", "From"),
                         mappingCreator.createMapping("SAMPLE", "To")
                 );
-        List<UncertaintyDatesCalendarContainer> ranges = ageMerger.createRanges(sampleData);
+        List<DatesCalendarMappingContainer> ranges = ageMerger.createRanges(sampleData);
         assertEquals("FromCa", ranges.get(0).getFromDate().getUncertainty());
         assertEquals("ToCa", ranges.get(0).getToDate().getUncertainty());
         assertEquals("From", ranges.get(1).getFromDate().getUncertainty());
@@ -131,7 +134,7 @@ public class UncertaintyDatesCalendarContainerManagerTest {
                         mappingCreator.createMapping("SAMPLE", "From"),
                         mappingCreator.createMapping("SAMPLE", "ToCa")
                         );
-        List<UncertaintyDatesCalendarContainer> ranges = ageMerger.createRanges(sampleData);
+        List<DatesCalendarMappingContainer> ranges = ageMerger.createRanges(sampleData);
         assertEquals("FromCa", ranges.get(0).getFromDate().getUncertainty());
         assertEquals("ToCa", ranges.get(0).getToDate().getUncertainty());
         assertEquals("From", ranges.get(1).getFromDate().getUncertainty());
@@ -144,7 +147,7 @@ public class UncertaintyDatesCalendarContainerManagerTest {
                 Arrays.asList(
                         mappingCreator.createMapping("SAMPLE", "From")
                 );
-        List<UncertaintyDatesCalendarContainer> ranges = ageMerger.createRanges(sampleData);
+        List<DatesCalendarMappingContainer> ranges = ageMerger.createRanges(sampleData);
         assertEquals("From", ranges.get(0).getFromDate().getUncertainty());
         assertNull(ranges.get(0).getToDate().getUncertainty());
     }
@@ -155,7 +158,7 @@ public class UncertaintyDatesCalendarContainerManagerTest {
                 Arrays.asList(
                         mappingCreator.createMapping("SAMPLE", "To")
                 );
-        List<UncertaintyDatesCalendarContainer> ranges = ageMerger.createRanges(sampleData);
+        List<DatesCalendarMappingContainer> ranges = ageMerger.createRanges(sampleData);
         assertEquals("To", ranges.get(0).getToDate().getUncertainty());
         assertNull(ranges.get(0).getFromDate().getUncertainty());
     }
@@ -167,7 +170,7 @@ public class UncertaintyDatesCalendarContainerManagerTest {
                         mappingCreator.createMapping("SAMPLE", "To"),
                         mappingCreator.createMapping("SAMPLE", "FromCa")
                 );
-        List<UncertaintyDatesCalendarContainer> ranges = ageMerger.createRanges(sampleData);
+        List<DatesCalendarMappingContainer> ranges = ageMerger.createRanges(sampleData);
         assertEquals("FromCa", ranges.get(0).getFromDate().getUncertainty());
         assertNull(ranges.get(0).getToDate().getUncertainty());
         assertEquals("To", ranges.get(1).getToDate().getUncertainty());

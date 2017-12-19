@@ -3,6 +3,9 @@ package se.sead.bugsimport.datescalendar.cache;
 import org.springframework.stereotype.Component;
 import se.sead.bugsimport.BugsListSeadMapping;
 import se.sead.bugsimport.datescalendar.bugsmodel.DatesCalendar;
+import se.sead.bugsimport.datescalendar.cache.datepairs.TooManyUncertaintiesOfSameKindException;
+import se.sead.bugsimport.datescalendar.cache.datepairs.DatesCalendarMappingContainer;
+import se.sead.bugsimport.datescalendar.cache.datepairs.UncertaintyDatesCalendarContainerManager;
 import se.sead.bugsimport.datesperiod.seadmodel.RelativeDate;
 import se.sead.bugsimport.periods.seadmodel.RelativeAge;
 
@@ -28,20 +31,20 @@ public class RelativeDateMerger {
     ) {
         List<BugsListSeadMapping<DatesCalendar, RelativeDate>> mergedItems = new ArrayList<>();
         try {
-            List<UncertaintyDatesCalendarContainer> ranges = containerManager.createRanges(mergeableItems);
-            for (UncertaintyDatesCalendarContainer container :
+            List<DatesCalendarMappingContainer> ranges = containerManager.createRanges(mergeableItems);
+            for (DatesCalendarMappingContainer container :
                     ranges) {
                 RelativeAge mergeRelativeAge = ageManager.createOrGet(container.getFromDate(), container.getToDate());
                 mergedItems.add(updateAndExtractMapping(container, mergeRelativeAge));
             }
-        } catch (UncertaintyExtractor.TooManyUncertaintiesOfSameKindException ex){
+        } catch (TooManyUncertaintiesOfSameKindException ex){
             mergedItems.add(new ErrorCreator(ex.getFoundMappingsWithSameKindOfUncertainty()).create());
         }
         return mergedItems;
     }
 
     private BugsListSeadMapping<DatesCalendar, RelativeDate> updateAndExtractMapping(
-            UncertaintyDatesCalendarContainer container,
+            DatesCalendarMappingContainer container,
             RelativeAge mergeRelativeAge
     ) {
         InformationCopier copier = new InformationCopier(containerManager, container, mergeRelativeAge);
@@ -51,11 +54,11 @@ public class RelativeDateMerger {
     private static class InformationCopier {
 
         private UncertaintyDatesCalendarContainerManager ageMerger;
-        private UncertaintyDatesCalendarContainer container;
+        private DatesCalendarMappingContainer container;
         private RelativeAge range;
-        private boolean useFromAsDefault = true;
+        private boolean useFromAsDefault;
 
-        public InformationCopier(UncertaintyDatesCalendarContainerManager ageMerger, UncertaintyDatesCalendarContainer container, RelativeAge range) {
+        public InformationCopier(UncertaintyDatesCalendarContainerManager ageMerger, DatesCalendarMappingContainer container, RelativeAge range) {
             this.ageMerger = ageMerger;
             this.container = container;
             this.range = range;
@@ -82,12 +85,7 @@ public class RelativeDateMerger {
         }
 
         private void updateUncertainty() {
-            ageMerger.updateUncertaintyIfNeeded(getTargetDate(), isClosedRange());
-        }
-
-        private boolean isClosedRange(){
-            return container.getFromMapping() != UncertaintyExtractor.NO_DATES_CALENDAR_FOR_UNCERTAINTY &&
-                    container.getToMapping() != UncertaintyExtractor.NO_DATES_CALENDAR_FOR_UNCERTAINTY;
+            ageMerger.updateUncertaintyIfNeeded(getTargetDate(), container.isClosedRange());
         }
 
         private void mergeNotes() {
@@ -99,9 +97,9 @@ public class RelativeDateMerger {
         }
 
         private RelativeDate getOtherDate(){
-            if(useFromAsDefault && container.getToMapping() != UncertaintyExtractor.NO_DATES_CALENDAR_FOR_UNCERTAINTY){
+            if(useFromAsDefault && container.toDateIsSet()){
                 return container.getToMapping().getSeadData().get(0);
-            } else if(!useFromAsDefault && container.getFromMapping() != UncertaintyExtractor.NO_DATES_CALENDAR_FOR_UNCERTAINTY){
+            } else if(!useFromAsDefault && container.fromDateIsSet()){
                 return container.getFromMapping().getSeadData().get(0);
             } else {
                 return new RelativeDate();

@@ -37,7 +37,7 @@ public class RelativeAgeManager {
         return relativeAge;
     }
 
-    private String createAbbreviation(Integer date, String bcadbp){
+    private static String createAbbreviation(Integer date, String bcadbp){
         return String.format(NAME_TEMPLATE, date, bcadbp);
     }
 

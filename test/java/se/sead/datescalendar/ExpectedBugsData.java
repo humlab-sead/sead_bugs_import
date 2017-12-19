@@ -32,7 +32,11 @@ class ExpectedBugsData {
                     create("SAMP000003", null, "CALE000025", 100, "AD", "HistCal", "A method from another group"),
                     create("SAMP000004", "From", "CALE000026", 100, "AD", "ArchCal", "Start of problematic uncertainty date"),
                     create("SAMP000004", "To", "CALE000027", 200, "AD", "ArchCal", "Stop of problematic uncertainty date"),
-                    create("SAMP000004", "From", "CALE000028", 120, "AD", "ArchCal", "Troublesome uncertainty date")
+                    create("SAMP000004", "From", "CALE000028", 120, "AD", "ArchCal", "Troublesome uncertainty date"),
+                    create("SAMP000005", "From", "CALE000029", 100, "AD", "ArchCal", "C14 Date 1"),
+                    create("SAMP000005", "To", "CALE000030", 120, "AD", "ArchCal", "C14 Date 1"),
+                    create("SAMP000005", "From", "CALE000031", 90, "AD", "ArchCal", "C14 Date 2"),
+                    create("SAMP000005", "To", "CALE000032", 120, "AD", "ArchCal", "C14 Date 2")
             );
 
     private static DatesCalendar create(

@@ -1,7 +1,8 @@
-package se.sead.bugsimport.datescalendar.cache;
+package se.sead.bugsimport.datescalendar.cache.datepairs;
 
 import se.sead.bugsimport.BugsListSeadMapping;
 import se.sead.bugsimport.datescalendar.bugsmodel.DatesCalendar;
+import se.sead.bugsimport.datescalendar.cache.DatingUncertaintyManager;
 import se.sead.bugsimport.datesperiod.seadmodel.RelativeDate;
 
 import java.util.ArrayList;
@@ -9,7 +10,7 @@ import java.util.Collections;
 import java.util.List;
 
 abstract class UncertaintyExtractor {
-    static final BugsListSeadMapping<DatesCalendar, RelativeDate> NO_DATES_CALENDAR_FOR_UNCERTAINTY = new BugsListSeadMapping<>(new DatesCalendar(), Collections.EMPTY_LIST);
+
 
     protected DatingUncertaintyManager uncertaintyManager;
 
@@ -29,7 +30,7 @@ abstract class UncertaintyExtractor {
             }
         }
         if(foundDates.isEmpty()){
-            return NO_DATES_CALENDAR_FOR_UNCERTAINTY;
+            return DatesCalendarMappingContainer.NO_DATES_CALENDAR_FOR_UNCERTAINTY;
         } else if(foundDates.size() > 1){
             throw new TooManyUncertaintiesOfSameKindException(foundDates);
         }
@@ -84,16 +85,4 @@ abstract class UncertaintyExtractor {
         }
     }
 
-    static class TooManyUncertaintiesOfSameKindException extends RuntimeException {
-        private List<BugsListSeadMapping<DatesCalendar, RelativeDate>> foundMappingsWithSameKindOfUncertainty;
-        TooManyUncertaintiesOfSameKindException(
-                List<BugsListSeadMapping<DatesCalendar, RelativeDate>> foundMappingsWithSameKindOfUncertainty
-        ){
-            this.foundMappingsWithSameKindOfUncertainty = foundMappingsWithSameKindOfUncertainty;
-        }
-
-        List<BugsListSeadMapping<DatesCalendar, RelativeDate>> getFoundMappingsWithSameKindOfUncertainty() {
-            return foundMappingsWithSameKindOfUncertainty;
-        }
-    }
 }
