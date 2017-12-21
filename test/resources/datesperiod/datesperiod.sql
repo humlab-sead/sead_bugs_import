@@ -34,6 +34,8 @@ insert into tbl_methods (method_id, method_group_id, method_name, method_abbrev_
 values (5, 3, 'GeolPerRadio', 'GeolPerRadio');
 insert into tbl_methods (method_id, method_group_id, method_name, method_abbrev_or_alt_name)
     values (6, 3, 'UnknownCal', 'UnknownCal');
+insert into tbl_methods (method_id, method_group_id, method_name, method_abbrev_or_alt_name)
+values (7, 3, 'Strat(Geol)', 'Strat(Geol)');
 
 insert into tbl_dimensions (dimension_id, method_group_id, dimension_name) values (1, 2, 'Upper boundary depth from unknown reference');
 insert into tbl_dimensions (dimension_id, method_group_id, dimension_name) values (2, 2, 'Lower boundary depth from unknown reference');
@@ -103,3 +105,8 @@ insert into tbl_relative_dates (relative_date_id, relative_age_id, analysis_enti
     values (3, 1, 3, null, 'Sead changed data after import', '2016-01-01');
 insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id, change_date)
     values (9, 'TDatesPeriod', '{}', 'PERI000013', 'tbl_relative_dates', 3, '2015-01-01');
+
+insert into tbl_relative_ages (relative_age_id, relative_age_type_id, relative_age_name, abbreviation, description, c14_age_older, c14_age_younger, location_id)
+values (4, 2, 'Early Holoscene', 'EH', 'Pollen Zone IV-VI', 10000, 7000, 1);
+insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
+values (10, 'TPeriods', '{EH|Early Holoscene|Geological|Pollen Zone IV-VI||Country|10000|BP|7000|BP|C14}', 'EH', 'tbl_relative_ages', 4);

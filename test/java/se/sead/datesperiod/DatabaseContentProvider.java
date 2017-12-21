@@ -28,9 +28,11 @@ class DatabaseContentProvider implements DatabaseContentVerification.DatabaseCon
     private Method geolPerRadioMethod;
     private Method archPerCalMethod;
     private Method unknownCalDating;
+    private Method stratGeolMethod;
     private RelativeAge existingAge;
     private RelativeAge calPer;
     private RelativeAge radio;
+    private RelativeAge stratGeolAge;
     private DatasetMaster bugsMaster;
     private DataType countedDates;
     private DataType uncalibratedDates;
@@ -49,10 +51,12 @@ class DatabaseContentProvider implements DatabaseContentVerification.DatabaseCon
         geolPerC14Method = methodRepository.findOne(4);
         archPerCalMethod = methodRepository.findOne(3);
         geolPerRadioMethod = methodRepository.findOne(5);
+        stratGeolMethod = methodRepository.findOne(7);
         unknownCalDating = methodRepository.findOne(6);
         existingAge = relativeAgeRepository.findOne(1);
         calPer = relativeAgeRepository.findOne(2);
         radio = relativeAgeRepository.findOne(3);
+        stratGeolAge = relativeAgeRepository.findOne(4);
         bugsMaster = datasetMasterRepository.findOne(1);
         uncalibratedDates = dataTypeRepository.findOne(1);
         countedDates = dataTypeRepository.findOne(2);
@@ -125,6 +129,21 @@ class DatabaseContentProvider implements DatabaseContentVerification.DatabaseCon
                                 TestAnalysisEntity.create(null,
                                         TestDataset.create(null,"PERI000015", geolPerRadioMethod, bugsMaster, uncalibratedDates),
                                         defaultSample)
+                        ),
+                        TestRelativeDate.create(
+                                null,
+                                null,
+                                stratGeolAge,
+                                null,
+                                TestAnalysisEntity.create(null,
+                                        TestDataset.create(
+                                                null,
+                                                "PERI000016",
+                                                stratGeolMethod,
+                                                bugsMaster,
+                                                uncalibratedDates
+                                        ),
+                                        defaultSample)
                         )
                 );
     }
@@ -151,7 +170,16 @@ class DatabaseContentProvider implements DatabaseContentVerification.DatabaseCon
     private static class RelativeDateComparator implements Comparator<RelativeDate> {
         @Override
         public int compare(RelativeDate o1, RelativeDate o2) {
-            return o1.getNotes().compareTo(o2.getNotes());
+            String o1Note = o1.getNotes();
+            String o2Note = o2.getNotes();
+            if(o1Note != null && o2Note != null){
+                return o1Note.compareTo(o2Note);
+            } else if(o1Note != null && o2Note == null){
+                return -1;
+            } else if(o1Note == null && o2Note != null){
+                return 1;
+            }
+            return 0;
         }
     }
 }
