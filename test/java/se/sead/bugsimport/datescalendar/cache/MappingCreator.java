@@ -10,16 +10,21 @@ import java.util.Arrays;
 class MappingCreator {
 
     BugsListSeadMapping<DatesCalendar, RelativeDate> createMapping(String sampleCode, String uncertainty){
-        DatesCalendar datesCalendar = createDatesCalendar(sampleCode, uncertainty);
+        return createMapping(sampleCode, uncertainty, "");
+    }
+
+    BugsListSeadMapping<DatesCalendar, RelativeDate> createMapping(String sampleCode, String uncertainty, String note){
+        DatesCalendar datesCalendar = createDatesCalendar(sampleCode, uncertainty, note);
         DatingUncertainty datingUncertainty = createDatingUncertainty(uncertainty);
         RelativeDate relativeDate = createRelativeDate(datingUncertainty);
         return new BugsListSeadMapping<>(datesCalendar, Arrays.asList(relativeDate));
     }
 
-    private DatesCalendar createDatesCalendar(String sampleCode, String uncertainty){
+    private DatesCalendar createDatesCalendar(String sampleCode, String uncertainty, String notes){
         DatesCalendar datesCalendar = new DatesCalendar();
         datesCalendar.setSample(sampleCode);
         datesCalendar.setUncertainty(uncertainty);
+        datesCalendar.setNotes(notes);
         return datesCalendar;
     }
 

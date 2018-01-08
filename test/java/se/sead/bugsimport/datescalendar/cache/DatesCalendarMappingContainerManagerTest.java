@@ -177,6 +177,49 @@ public class DatesCalendarMappingContainerManagerTest {
         assertNull(ranges.get(1).getFromDate().getUncertainty());
     }
 
+    @Test
+    public void groupedByNoteWhenToAndFromMatching(){
+        List<BugsListSeadMapping<DatesCalendar, RelativeDate>> sampleData =
+                Arrays.asList(
+                        mappingCreator.createMapping("SAMPLE", "To", "First"),
+                        mappingCreator.createMapping("SAMPLE", "From", "First"),
+                        mappingCreator.createMapping("SAMPLE", "Ca")
+                );
+        List<DatesCalendarMappingContainer> ranges = ageMerger.createRanges(sampleData);
+        assertEquals(1, ranges.size());
+        assertEquals("To", ranges.get(0).getToDate().getUncertainty());
+        assertEquals("From", ranges.get(0).getFromDate().getUncertainty());
+    }
+
+    @Test
+    public void groupedByNoteWhenToAndFromMatchingEvenOnSameUncertainty(){
+        List<BugsListSeadMapping<DatesCalendar, RelativeDate>> sampleData =
+                Arrays.asList(
+                        mappingCreator.createMapping("SAMPLE", "To", "First"),
+                        mappingCreator.createMapping("SAMPLE", "From", "First"),
+                        mappingCreator.createMapping("SAMPLE", "To")
+                );
+        List<DatesCalendarMappingContainer> ranges = ageMerger.createRanges(sampleData);
+        assertEquals(2, ranges.size());
+        DatesCalendarMappingContainer closedItem;
+        DatesCalendarMappingContainer openItem;
+
+        if(ranges.get(0).getFromDate().getUncertainty() != null){
+            closedItem = ranges.get(0);
+            openItem = ranges.get(1);
+        } else {
+            closedItem = ranges.get(1);
+            openItem = ranges.get(0);
+        }
+
+        assertEquals("To", closedItem.getToDate().getUncertainty());
+        assertEquals("From", closedItem.getFromDate().getUncertainty());
+        assertEquals("To", openItem.getToDate().getUncertainty());
+        assertNull(openItem.getFromDate().getUncertainty());
+    }
+
+
+
     private static class MockDatingUncertaintyRepository implements DatingUncertaintyRepository {
 
         @Override

@@ -36,7 +36,11 @@ class ExpectedBugsData {
                     create("SAMP000005", "From", "CALE000029", 100, "AD", "ArchCal", "C14 Date 1"),
                     create("SAMP000005", "To", "CALE000030", 120, "AD", "ArchCal", "C14 Date 1"),
                     create("SAMP000005", "From", "CALE000031", 90, "AD", "ArchCal", "C14 Date 2"),
-                    create("SAMP000005", "To", "CALE000032", 120, "AD", "ArchCal", "C14 Date 2")
+                    create("SAMP000005", "To", "CALE000032", 120, "AD", "ArchCal", "C14 Date 2"),
+                    create("SAMP000005", "From", "CALE000033", 90, "AD", "ArchCal", "Matched by note only"),
+                    create("SAMP000005", "To", "CALE000034", 100, "AD", "ArchCal", "Matched by note only"),
+                    create("SAMP000005", "From", "CALE000035", 100, "AD", "ArchCal", "Open ended by something else"),
+                    create("SAMP000005", "To", "CALE000036", 100, "AD", "ArchCal", "Open ended start by something different")
             );
 
     private static DatesCalendar create(

@@ -86,6 +86,11 @@ public class LogVerifier implements BugsTracesAndErrorsVerification.LogVerificat
             case "CALE000019":
             case "CALE000023":
             case "CALE000024":
+            case "CALE000029":
+            case "CALE000031":
+            case "CALE000033":
+            case "CALE000035":
+            case "CALE000036":
                 listHelper.assertSize(traces, 4);
                 relativeDatesAssertHelper.assertInserts(traces, 1);
                 relativeAgeAssertHelper.assertInserts(traces, 1);
@@ -97,6 +102,9 @@ public class LogVerifier implements BugsTracesAndErrorsVerification.LogVerificat
             case "CALE000022":
             case "CALE000027":
             case "CALE000028":
+            case "CALE000030":
+            case "CALE000032":
+            case "CALE000034":
                 listHelper.assertEmpty(traces);
                 listHelper.assertEmpty(errors);
                 break;

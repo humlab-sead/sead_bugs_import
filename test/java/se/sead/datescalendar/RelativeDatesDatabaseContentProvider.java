@@ -254,6 +254,50 @@ class RelativeDatesDatabaseContentProvider implements DatabaseContentVerificatio
                                 TestDataset.create(null, "CALE000031", archPer, bugsMaster, calendarDate),
                                 sample5
                         )
+                ),
+                TestRelativeDate.create(
+                        null,
+                        null,
+                        createCalendarRelativeAge("CAL_90-100_AD", 1860, 1850, calendarDateRangeType),
+                        "Matched by note only",
+                        TestAnalysisEntity.create(
+                                null,
+                                TestDataset.create(null, "CALE000033", archPer, bugsMaster, calendarDate),
+                                sample5
+                        )
+                ),
+                TestRelativeDate.create(
+                        null,
+                        null,
+                        createCalendarRelativeAge("CAL_90-100_AD", 1860, 1850, calendarDateRangeType),
+                        "Matched by note only",
+                        TestAnalysisEntity.create(
+                                null,
+                                TestDataset.create(null, "CALE000033", archPer, bugsMaster, calendarDate),
+                                sample5
+                        )
+                ),
+                TestRelativeDate.create(
+                        null,
+                        fromUncertainty,
+                        createCalendarRelativeAge("CAL_" + 100 + "_AD-", 1850, null, calendarDateRangeType),
+                        "Open ended by something else",
+                        TestAnalysisEntity.create(
+                                null,
+                                TestDataset.create(null, "CALE000035", archPer, bugsMaster, calendarDate),
+                                sample5
+                        )
+                ),
+                TestRelativeDate.create(
+                        null,
+                        toUncertainty,
+                        createCalendarRelativeAge("CAL_-" + 100 + "_AD", null, 1850, calendarDateRangeType),
+                        "Open ended start by something different",
+                        TestAnalysisEntity.create(
+                                null,
+                                TestDataset.create(null, "CALE000036", archPer, bugsMaster, calendarDate),
+                                defaultSample
+                        )
                 )
         );
     }

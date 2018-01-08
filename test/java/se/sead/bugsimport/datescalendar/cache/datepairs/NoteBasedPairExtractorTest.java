@@ -55,7 +55,7 @@ public class NoteBasedPairExtractorTest {
         List<BugsListSeadMapping<DatesCalendar, RelativeDate>> sampleDates = createSampleDates("Date 1", "Date 2");
         Map<String, List<BugsListSeadMapping<DatesCalendar, RelativeDate>>> stringListMap = pairExtractor.extractMappedPairs(sampleDates);
         assertTrue(
-                Stream.of("", "Date 1", "Date 2")
+                Stream.of("Date 1", "Date 2")
                 .allMatch(s -> stringListMap.containsKey(s))
         );
     }
@@ -64,20 +64,21 @@ public class NoteBasedPairExtractorTest {
     public void notesFromOneSetAndVariousOtherNotesProducesDifferentGroups(){
         List<BugsListSeadMapping<DatesCalendar, RelativeDate>> sampleDates = createSampleDates("Date 1", "Blaha", "Other", "Groups");
         Map<String, List<BugsListSeadMapping<DatesCalendar, RelativeDate>>> stringListMap = pairExtractor.extractMappedPairs(sampleDates);
-        assertEquals(2, stringListMap.size());
+        assertEquals(4, stringListMap.size());
         assertTrue(
-                Stream.of("", "Date 1")
+                Stream.of("Date 1", "Blaha", "Other", "Groups")
                 .allMatch(s -> stringListMap.keySet().contains(s))
         );
     }
 
     @Test
     public void notesEndingWithMarkerProducesSeparateSets(){
-        List<BugsListSeadMapping<DatesCalendar, RelativeDate>> sampleDates = createSampleDates("Data Date 1", "Data Date 1", "Data other", "Data free");
+        List<BugsListSeadMapping<DatesCalendar, RelativeDate>> sampleDates =
+                createSampleDates("Data Date 1", "Data Date 1", "Data other", "Data free");
         Map<String, List<BugsListSeadMapping<DatesCalendar, RelativeDate>>> stringListMap = pairExtractor.extractMappedPairs(sampleDates);
-        assertEquals(2, stringListMap.size());
+        assertEquals(3, stringListMap.size());
         assertTrue(
-                Stream.of("", "Data Date 1")
+                Stream.of("Data Date 1", "Data other", "Data free")
                 .allMatch(s -> stringListMap.keySet().contains(s))
         );
     }

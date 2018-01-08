@@ -19,20 +19,19 @@ class NoteBasedPairExtractor {
 
     public Map<String, List<BugsListSeadMapping<DatesCalendar, RelativeDate>>> extractMappedPairs(List<BugsListSeadMapping<DatesCalendar, RelativeDate>> carriersForSample){
         Map<String, List<BugsListSeadMapping<DatesCalendar, RelativeDate>>> mappedItems = new HashMap<>();
-        mappedItems.put(DEFAULT_MAPPING, new ArrayList<>());
+        //mappedItems.put(DEFAULT_MAPPING, new ArrayList<>());
         for (BugsListSeadMapping<DatesCalendar, RelativeDate> sampleMapping :
                 carriersForSample) {
             String note = sampleMapping.getBugsData().getNotes();
-            if(containMarkerNote(note)){
-                List<BugsListSeadMapping<DatesCalendar, RelativeDate>> mappingsForNote = mappedItems.get(note);
-                if(mappingsForNote == null){
-                    mappingsForNote = new ArrayList<>();
-                    mappedItems.put(note, mappingsForNote);
-                }
-                mappingsForNote.add(sampleMapping);
-            } else {
-                mappedItems.get("").add(sampleMapping);
+            if(note == null || note.trim().isEmpty()){
+                note = DEFAULT_MAPPING;
             }
+            List<BugsListSeadMapping<DatesCalendar, RelativeDate>> mappingsForNote = mappedItems.get(note);
+            if(mappingsForNote == null){
+                mappingsForNote = new ArrayList<>();
+                mappedItems.put(note, mappingsForNote);
+            }
+            mappingsForNote.add(sampleMapping);
         }
         return mappedItems;
     }
