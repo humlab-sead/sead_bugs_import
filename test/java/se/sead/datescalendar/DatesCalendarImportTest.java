@@ -1,5 +1,6 @@
 package se.sead.datescalendar;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +57,7 @@ public class DatesCalendarImportTest {
     private DatesCalendarImporter importer;
 
     @Test
+    @Ignore
     public void run(){
         DatabaseContentVerification<RelativeDate> relativeDatesDatabaseContentVerifier = createDatabaseContentVerifier();
         DatabaseContentVerification<RelativeAge> ageDatabaseContentVerifier = createAgeDatabaseContentVerifier();

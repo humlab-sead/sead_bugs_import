@@ -46,6 +46,8 @@ public abstract class AgeUpdater {
                 case "calendar":
                 case "Calender":
                 case "calender": return new CalendarAgeUpdater(original, period);
+                case "C14":
+                case "c14":
                 case "Radiometric":
                 case "radiometric": return new C14AgeUpdater(original, period);
             }

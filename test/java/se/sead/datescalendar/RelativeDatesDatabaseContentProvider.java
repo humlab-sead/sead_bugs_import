@@ -27,13 +27,14 @@ class RelativeDatesDatabaseContentProvider implements DatabaseContentVerificatio
     static final int SEAD_AGE_SCALE = 5;
 
     private RelativeDateRepository relativeDateRepository;
-    private Sample defaultSample;
+    private Sample sample1;
     private Sample sample2;
     private Sample sample3;
     private Sample sample5;
     private DatingUncertainty fromUncertainty;
     private DatingUncertainty caUncertainty;
     private DatingUncertainty toUncertainty;
+    private DatingUncertainty fromCaUncertainty;
     private RelativeAge cal100AD;
     private RelativeAge cal120AD;
     private Method archPer;
@@ -55,13 +56,14 @@ class RelativeDatesDatabaseContentProvider implements DatabaseContentVerificatio
             DatasetMasterRepository datasetMasterRepository,
             DataTypeRepository dataTypeRepository
     ){
-        defaultSample = sampleRepository.findOne(1);
+        sample1 = sampleRepository.findOne(1);
         sample2 = sampleRepository.findOne(2);
         sample3 = sampleRepository.findOne(3);
         sample5 = sampleRepository.findOne(5);
         fromUncertainty = datingUncertaintyRepository.findOne(3);
         caUncertainty = datingUncertaintyRepository.findOne(5);
         toUncertainty = datingUncertaintyRepository.findOne(4);
+        fromCaUncertainty = datingUncertaintyRepository.findOne(6);
         cal100AD = relativeAgeRepository.findOne(1);
         cal120AD = relativeAgeRepository.findOne(2);
         archPer = methodRepository.findOne(3);
@@ -86,7 +88,7 @@ class RelativeDatesDatabaseContentProvider implements DatabaseContentVerificatio
                         TestAnalysisEntity.create(
                                 1,
                                 TestDataset.create(1, "CALE000015", archPer,bugsMaster, calendarDate),
-                                defaultSample
+                                sample1
                         )
                 ),
                 TestRelativeDate.create(
@@ -97,7 +99,7 @@ class RelativeDatesDatabaseContentProvider implements DatabaseContentVerificatio
                         TestAnalysisEntity.create(
                                 2,
                                 TestDataset.create(2,"CALE000011", archPer, bugsMaster, calendarDate),
-                                defaultSample
+                                sample1
                         )
                 ),
                 TestRelativeDate.create(
@@ -108,7 +110,7 @@ class RelativeDatesDatabaseContentProvider implements DatabaseContentVerificatio
                         TestAnalysisEntity.create(
                                 3,
                                 TestDataset.create(3, "CALE000012", archPer, bugsMaster, calendarDate),
-                                defaultSample
+                                sample1
                         )
                 ),
                 TestRelativeDate.create(
@@ -119,7 +121,7 @@ class RelativeDatesDatabaseContentProvider implements DatabaseContentVerificatio
                         TestAnalysisEntity.create(
                                 4,
                                 TestDataset.create(4, "CALE000016", archPer, bugsMaster, calendarDate),
-                                defaultSample
+                                sample1
                         )
 
                 ),
@@ -131,7 +133,7 @@ class RelativeDatesDatabaseContentProvider implements DatabaseContentVerificatio
                         TestAnalysisEntity.create(
                                 null,
                                 TestDataset.create(null, "CALE000010", archPer, bugsMaster, calendarDate),
-                                defaultSample
+                                sample1
                         )
                 ),
                 TestRelativeDate.create(
@@ -142,7 +144,7 @@ class RelativeDatesDatabaseContentProvider implements DatabaseContentVerificatio
                         TestAnalysisEntity.create(
                                 null,
                                 TestDataset.create(null, "CALE000013", unknownCal, bugsMaster, calendarDate),
-                                defaultSample
+                                sample1
                         )
                 ),
                 TestRelativeDate.create(
@@ -153,7 +155,7 @@ class RelativeDatesDatabaseContentProvider implements DatabaseContentVerificatio
                         TestAnalysisEntity.create(
                                 null,
                                 TestDataset.create(null, "CALE000014", archPer, bugsMaster, calendarDate),
-                                defaultSample
+                                sample1
                         )
                 ),
                 TestRelativeDate.create(
@@ -164,7 +166,7 @@ class RelativeDatesDatabaseContentProvider implements DatabaseContentVerificatio
                         TestAnalysisEntity.create(
                                 null,
                                 TestDataset.create(null, "CALE000017", archPer, bugsMaster, calendarDate),
-                                defaultSample
+                                sample1
                         )
                 ),
                 TestRelativeDate.create(
@@ -175,7 +177,7 @@ class RelativeDatesDatabaseContentProvider implements DatabaseContentVerificatio
                         TestAnalysisEntity.create(
                                 null,
                                 TestDataset.create(null, "CALE000018", geolPer, bugsMaster, calendarDate),
-                                defaultSample
+                                sample1
                         )
                 ),
                 TestRelativeDate.create(
@@ -192,11 +194,22 @@ class RelativeDatesDatabaseContentProvider implements DatabaseContentVerificatio
                 TestRelativeDate.create(
                         null,
                         caUncertainty,
+                        createCalendarRelativeAge("CAL_" + 100 + "_AD-", 1850, null, calendarDateRangeType),
+                        null,
+                        TestAnalysisEntity.create(
+                                null,
+                                TestDataset.create(null, "CALE000021", archPer, bugsMaster, calendarDate),
+                                sample3
+                        )
+                ),
+                TestRelativeDate.create(
+                        null,
+                        caUncertainty,
                         createCalendarRelativeAge("CAL_" + 100 + "-" + 200 + "_AD", 1850, 1750, calendarDateRangeType),
                         "existing calendar range but with uncertainty",
                         TestAnalysisEntity.create(
                                 null,
-                                TestDataset.create(null, "CALE000021", archPer, bugsMaster, calendarDate),
+                                TestDataset.create(null, "CALE000022", archPer, bugsMaster, calendarDate),
                                 sample3
                         )
                 ),
@@ -219,7 +232,7 @@ class RelativeDatesDatabaseContentProvider implements DatabaseContentVerificatio
                         TestAnalysisEntity.create(
                                 null,
                                 TestDataset.create(null, "CALE000024", archPer, bugsMaster, calendarDate),
-                                defaultSample
+                                sample1
                         )
                 ),
                 TestRelativeDate.create(
@@ -268,17 +281,6 @@ class RelativeDatesDatabaseContentProvider implements DatabaseContentVerificatio
                 ),
                 TestRelativeDate.create(
                         null,
-                        null,
-                        createCalendarRelativeAge("CAL_90-100_AD", 1860, 1850, calendarDateRangeType),
-                        "Matched by note only",
-                        TestAnalysisEntity.create(
-                                null,
-                                TestDataset.create(null, "CALE000033", archPer, bugsMaster, calendarDate),
-                                sample5
-                        )
-                ),
-                TestRelativeDate.create(
-                        null,
                         fromUncertainty,
                         createCalendarRelativeAge("CAL_" + 100 + "_AD-", 1850, null, calendarDateRangeType),
                         "Open ended by something else",
@@ -296,7 +298,7 @@ class RelativeDatesDatabaseContentProvider implements DatabaseContentVerificatio
                         TestAnalysisEntity.create(
                                 null,
                                 TestDataset.create(null, "CALE000036", archPer, bugsMaster, calendarDate),
-                                defaultSample
+                                sample1
                         )
                 )
         );
