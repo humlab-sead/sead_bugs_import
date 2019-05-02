@@ -1,0 +1,19 @@
+-- select pg_terminate_backend(pg_stat_activity.pid)
+-- from pg_stat_activity
+-- where pg_stat_activity.datname in ('sead_master_9', 'sead_bugs_import_20180503', 'sead_staging_bugs')
+--   and pid <> pg_backend_pid();
+
+-- drop database if exists sead_staging_bugs;
+
+create database sead_staging_bugs
+    with template sead_bugs_import_20180503 owner sead_master;
+
+-- empty db: run statements one-by-one
+select pg_terminate_backend(pg_stat_activity.pid)
+from pg_stat_activity
+where pg_stat_activity.datname in ('sead_staging_bugs_empty')
+  and pid <> pg_backend_pid();
+
+drop database sead_staging_bugs_empty;
+
+create database sead_staging_bugs_empty owner sead_master;

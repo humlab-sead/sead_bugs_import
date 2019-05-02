@@ -56,6 +56,11 @@ public class Abundance extends LoggableEntity {
     public void setSpecies(TaxaSpecies species) {
         this.species = species;
     }
+//#region
+    @Transient
+    @Column(name = "abundance_element_id", nullable = true)
+    private Integer ignored_abundance_element_id;
+////#endregion
 
     @Override
     public boolean equals(Object o) {
