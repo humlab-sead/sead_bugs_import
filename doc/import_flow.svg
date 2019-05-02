@@ -1,0 +1,514 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Genererad av Microsoft Visio, SVG-export import_flow.svg Import flow -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events"
+		xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="8.96804in" height="6.506in"
+		viewBox="0 0 645.699 468.432" xml:space="preserve" color-interpolation-filters="sRGB" class="st26">
+	<v:documentProperties v:langID="1053" v:metric="true" v:viewMarkup="false">
+		<v:userDefs>
+			<v:ud v:nameU="msvNoAutoConnect" v:prompt="" v:val="VT0(1):26"/>
+		</v:userDefs>
+	</v:documentProperties>
+
+	<style type="text/css">
+	<![CDATA[
+		.st1 {fill:#5b9bd5;stroke:#ffffff;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.5}
+		.st2 {stroke:#5592c9;stroke-dasharray:3.5,2.5;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.5}
+		.st3 {fill:#ffffff;font-family:Calibri;font-size:0.75em;font-weight:bold}
+		.st4 {fill:#a5a5a5;stroke:#ffffff;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.5}
+		.st5 {stroke:#9b9b9b;stroke-dasharray:3.5,2.5;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.5}
+		.st6 {fill:#73ae42;stroke:#6ca43d;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.5}
+		.st7 {marker-end:url(#mrkr4-36);stroke:#73ae42;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.5}
+		.st8 {fill:#73ae42;fill-opacity:1;stroke:#73ae42;stroke-opacity:1;stroke-width:0.13368983957219}
+		.st9 {fill:#ffffff;stroke:none;stroke-linecap:butt;stroke-width:7.2}
+		.st10 {fill:#53802e;font-family:Calibri;font-size:0.666664em}
+		.st11 {font-size:1em}
+		.st12 {fill:#ffffff;font-family:Calibri;font-size:0.75em}
+		.st13 {font-size:0.888885em}
+		.st14 {marker-end:url(#mrkr3-82);stroke:#73ae42;stroke-dasharray:3.5,2.5;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.5}
+		.st15 {marker-end:url(#mrkr4-159);stroke:#6ca43d;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.5}
+		.st16 {fill:#6ca43d;fill-opacity:1;stroke:#6ca43d;stroke-opacity:1;stroke-width:0.13368983957219}
+		.st17 {marker-end:url(#mrkr3-167);stroke:#6ca43d;stroke-dasharray:3.5,2.5;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.5}
+		.st18 {fill:#a5a5a5;fill-opacity:0;stroke:#a5a5a5;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.5}
+		.st19 {fill:#ffffff;stroke:#a5a5a5;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.5}
+		.st20 {fill:#a5a5a5;font-family:Calibri;font-size:0.666664em;font-weight:bold}
+		.st21 {fill:#a5a5a5;font-family:Calibri;font-size:0.666664em}
+		.st22 {stroke:#5692c9;stroke-dasharray:0,5;stroke-linecap:round;stroke-linejoin:round;stroke-width:1}
+		.st23 {stroke:#ffffff;stroke-linecap:round;stroke-linejoin:round;stroke-width:1}
+		.st24 {fill:#5b9bd5;font-family:Calibri;font-size:0.666664em}
+		.st25 {font-size:1em;font-weight:bold}
+		.st26 {fill:none;fill-rule:evenodd;font-size:12px;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
+	]]>
+	</style>
+
+	<defs id="Markers">
+		<g id="lend4">
+			<path d="M 2 1 L 0 0 L 2 -1 L 2 1 " style="stroke:none"/>
+		</g>
+		<marker id="mrkr4-36" class="st8" v:arrowType="4" v:arrowSize="3" v:setback="14.96" refX="-14.96" orient="auto"
+				markerUnits="strokeWidth" overflow="visible">
+			<use xlink:href="#lend4" transform="scale(-7.48,-7.48) "/>
+		</marker>
+		<g id="lend3">
+			<path d="M 2 1 L 0 0 L 2 -1 " style="stroke-linecap:round;stroke-linejoin:round;fill:none"/>
+		</g>
+		<marker id="mrkr3-82" class="st8" v:arrowType="3" v:arrowSize="3" orient="auto" markerUnits="strokeWidth"
+				overflow="visible">
+			<use xlink:href="#lend3" transform="scale(-7.48,-7.48) "/>
+		</marker>
+		<marker id="mrkr4-159" class="st16" v:arrowType="4" v:arrowSize="3" v:setback="14.96" refX="-14.96" orient="auto"
+				markerUnits="strokeWidth" overflow="visible">
+			<use xlink:href="#lend4" transform="scale(-7.48,-7.48) "/>
+		</marker>
+		<marker id="mrkr3-167" class="st16" v:arrowType="3" v:arrowSize="3" orient="auto" markerUnits="strokeWidth"
+				overflow="visible">
+			<use xlink:href="#lend3" transform="scale(-7.48,-7.48) "/>
+		</marker>
+	</defs>
+	<g v:mID="5" v:index="3" v:groupContext="foregroundPage">
+		<v:userDefs>
+			<v:ud v:nameU="msvThemeOrder" v:val="VT0(0):26"/>
+		</v:userDefs>
+		<title>Import flow</title>
+		<v:pageProperties v:drawingScale="0.0393701" v:pageScale="0.0393701" v:drawingUnits="24" v:shadowOffsetX="8.50394"
+				v:shadowOffsetY="-8.50394"/>
+		<v:layer v:name="Koppling" v:index="0"/>
+		<g id="group1-1" transform="translate(18.25,-421.127)" v:mID="1" v:groupContext="group">
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+				<v:ud v:nameU="ShowActor" v:prompt="" v:val="VT0(0):5"/>
+				<v:ud v:nameU="ShowDestruction" v:prompt="" v:val="VT0(0):5"/>
+			</v:userDefs>
+			<title>Objektlivslinje</title>
+			<desc>Importer</desc>
+			<g id="shape2-2" v:mID="2" v:groupContext="shape">
+				<title>Ark.2</title>
+				<rect x="0" y="442.92" width="51.0236" height="25.5118" class="st1"/>
+			</g>
+			<g id="shape3-4" v:mID="3" v:groupContext="shape" transform="translate(17.0079,-29.0551)">
+				<title>Ark.3</title>
+				<path d="M8.5 468.43 a0 0 0 1 1 0 0 a0 0 0 1 1 0 0 Z" class="st1"/>
+			</g>
+			<g id="shape4-6" v:mID="4" v:groupContext="shape" transform="translate(17.0079,388.954)">
+				<title>Ark.4</title>
+			</g>
+			<g id="shape5-8" v:mID="5" v:groupContext="shape" transform="translate(493.944,468.432) rotate(90)">
+				<title>Ark.5</title>
+				<path d="M0 468.43 L371.34 468.43" class="st2"/>
+			</g>
+			<g id="shape1-11" v:mID="1" v:groupContext="groupContent">
+				<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+				<v:textRect cx="25.5118" cy="455.676" width="51.03" height="25.5118"/>
+				<rect x="0" y="442.92" width="51.0236" height="25.5118" class="st1"/>
+				<text x="8.79" y="458.38" class="st3" v:langID="1053"><v:paragraph v:horizAlign="1"/><v:tabList/>Importer</text>			</g>
+		</g>
+		<g id="group6-14" transform="translate(108.959,-421.127)" v:mID="6" v:groupContext="group">
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+				<v:ud v:nameU="ShowActor" v:prompt="" v:val="VT0(0):5"/>
+				<v:ud v:nameU="ShowDestruction" v:prompt="" v:val="VT0(0):5"/>
+			</v:userDefs>
+			<title>Objektlivslinje.6</title>
+			<desc>importer</desc>
+			<g id="shape7-15" v:mID="7" v:groupContext="shape">
+				<title>Ark.7</title>
+				<rect x="0" y="442.92" width="51.0236" height="25.5118" class="st4"/>
+			</g>
+			<g id="shape8-17" v:mID="8" v:groupContext="shape" transform="translate(17.0079,-29.0551)">
+				<title>Ark.8</title>
+				<path d="M8.5 468.43 a0 0 0 1 1 0 0 a0 0 0 1 1 0 0 Z" class="st4"/>
+			</g>
+			<g id="shape9-19" v:mID="9" v:groupContext="shape" transform="translate(17.0079,96.9854)">
+				<title>Ark.9</title>
+			</g>
+			<g id="shape10-21" v:mID="10" v:groupContext="shape" transform="translate(493.944,468.432) rotate(90)">
+				<title>Ark.10</title>
+				<path d="M0 468.43 L79.37 468.43" class="st5"/>
+			</g>
+			<g id="shape6-24" v:mID="6" v:groupContext="groupContent">
+				<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+				<v:textRect cx="25.5118" cy="455.676" width="51.03" height="25.5118"/>
+				<rect x="0" y="442.92" width="51.0236" height="25.5118" class="st4"/>
+				<text x="8.89" y="458.38" class="st3" v:langID="1053"><v:paragraph v:horizAlign="1"/><v:tabList/>importer</text>			</g>
+		</g>
+		<g id="shape11-27" v:mID="11" v:groupContext="shape" transform="translate(-420.418,418.644) rotate(-90)">
+			<title>aktivering</title>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<rect x="0" y="459.928" width="337.323" height="8.50394" class="st6"/>
+		</g>
+		<g id="shape12-29" v:mID="12" v:groupContext="shape" transform="translate(-329.71,118.171) rotate(-90)">
+			<title>aktivering.12</title>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<rect x="0" y="459.928" width="36.8504" height="8.50394" class="st6"/>
+		</g>
+		<g id="shape13-31" v:mID="13" v:groupContext="shape" v:layerMember="0" transform="translate(48.0138,-377.19)">
+			<title>Meddelande</title>
+			<desc>run() [ for each required ]</desc>
+			<v:userDefs>
+				<v:ud v:nameU="IsReturn" v:prompt="" v:val="VT0(0):5"/>
+				<v:ud v:nameU="IsAsync" v:prompt="" v:val="VT0(0):26"/>
+				<v:ud v:nameU="IsSelfMessage" v:prompt="" v:val="VT0(0):5"/>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="41.1024" cy="459.078" width="74.79" height="27.2035"/>
+			<path d="M0 475.52 C18.29 475.52 52.85 475.52 74.72 475.52" class="st7"/>
+			<rect v:rectContext="textBkgnd" x="8.61617" y="449.478" width="64.9726" height="19.1997" class="st9"/>
+			<text x="33.08" y="456.68" class="st10" v:langID="1053"><v:paragraph v:horizAlign="1"/><v:tabList/>run()<v:newlineChar/><tspan
+						x="8.62" dy="1.2em" class="st11">[ </tspan>for each required ]</text>		</g>
+		<g id="group14-40" transform="translate(184.077,-421.127)" v:mID="14" v:groupContext="group">
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+				<v:ud v:nameU="ShowActor" v:prompt="" v:val="VT0(0):5"/>
+				<v:ud v:nameU="ShowDestruction" v:prompt="" v:val="VT0(0):5"/>
+			</v:userDefs>
+			<title>Objektlivslinje.14</title>
+			<desc>dataMapper BugsSeadMapper</desc>
+			<g id="shape15-41" v:mID="15" v:groupContext="shape" transform="translate(20.5512,0)">
+				<title>Ark.15</title>
+				<rect x="0" y="442.92" width="51.0236" height="25.5118" class="st1"/>
+			</g>
+			<g id="shape16-43" v:mID="16" v:groupContext="shape" transform="translate(37.5591,-29.0551)">
+				<title>Ark.16</title>
+				<path d="M8.5 468.43 a0 0 0 1 1 0 0 a0 0 0 1 1 0 0 Z" class="st1"/>
+			</g>
+			<g id="shape17-45" v:mID="17" v:groupContext="shape" transform="translate(30.7087,403.127)">
+				<title>Ark.17</title>
+			</g>
+			<g id="shape18-47" v:mID="18" v:groupContext="shape" transform="translate(514.495,468.432) rotate(90)">
+				<title>Ark.18</title>
+				<path d="M0 468.43 L385.51 468.43" class="st2"/>
+			</g>
+			<g id="shape14-50" v:mID="14" v:groupContext="groupContent">
+				<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+				<v:textRect cx="46.063" cy="455.676" width="92.13" height="25.5118"/>
+				<rect x="0" y="442.92" width="92.126" height="25.5118" class="st1"/>
+				<text x="23.34" y="452.98" class="st12" v:langID="1053"><v:paragraph v:horizAlign="1"/><v:tabList/>dataMapper<v:newlineChar/><tspan
+							x="17.57" dy="1.35em" class="st13">BugsSeadMapper</tspan></text>			</g>
+		</g>
+		<g id="shape20-54" v:mID="20" v:groupContext="shape" transform="translate(-234.04,424.313) rotate(-90)">
+			<title>aktivering.20</title>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<rect x="0" y="459.928" width="342.992" height="8.50394" class="st6"/>
+		</g>
+		<g id="shape21-56" v:mID="21" v:groupContext="shape" v:layerMember="0" transform="translate(48.0138,-329.001)">
+			<title>Meddelande.21</title>
+			<desc>importBugsData()</desc>
+			<v:userDefs>
+				<v:ud v:nameU="IsReturn" v:prompt="" v:val="VT0(0):5"/>
+				<v:ud v:nameU="IsAsync" v:prompt="" v:val="VT0(0):26"/>
+				<v:ud v:nameU="IsSelfMessage" v:prompt="" v:val="VT0(0):5"/>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="36.4496" cy="452.842" width="67.5" height="17.6036"/>
+			<path d="M0 461.35 L170.39 461.35" class="st7"/>
+			<rect v:rectContext="textBkgnd" x="7.60825" y="448.042" width="57.6829" height="9.59985" class="st9"/>
+			<text x="7.61" y="455.24" class="st10" v:langID="1053"><v:paragraph v:horizAlign="1"/><v:tabList/>importBugsData()</text>		</g>
+		<g id="group22-63" transform="translate(246.614,-385.512)" v:mID="22" v:groupContext="group">
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+				<v:ud v:nameU="ShowActor" v:prompt="" v:val="VT0(0):5"/>
+				<v:ud v:nameU="ShowDestruction" v:prompt="" v:val="VT0(0):5"/>
+			</v:userDefs>
+			<title>Objektlivslinje.22</title>
+			<desc>bugsTable BugsTable</desc>
+			<g id="shape23-64" v:mID="23" v:groupContext="shape">
+				<title>Ark.23</title>
+				<rect x="0" y="442.92" width="51.0236" height="25.5118" class="st1"/>
+			</g>
+			<g id="shape24-66" v:mID="24" v:groupContext="shape" transform="translate(17.0079,-29.0551)">
+				<title>Ark.24</title>
+				<path d="M8.5 468.43 a0 0 0 1 1 0 0 a0 0 0 1 1 0 0 Z" class="st1"/>
+			</g>
+			<g id="shape25-68" v:mID="25" v:groupContext="shape" transform="translate(17.0079,71.4736)">
+				<title>Ark.25</title>
+			</g>
+			<g id="shape26-70" v:mID="26" v:groupContext="shape" transform="translate(493.944,468.432) rotate(90)">
+				<title>Ark.26</title>
+				<path d="M0 468.43 L53.86 468.43" class="st2"/>
+			</g>
+			<g id="shape22-73" v:mID="22" v:groupContext="groupContent">
+				<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+				<v:textRect cx="25.5118" cy="455.676" width="51.03" height="25.5118"/>
+				<rect x="0" y="442.92" width="51.0236" height="25.5118" class="st1"/>
+				<text x="6.92" y="452.98" class="st12" v:langID="2057"><v:paragraph v:horizAlign="1"/><v:tabList/>bugsTable<v:newlineChar/><tspan
+							x="8.91" dy="1.35em" class="st13">BugsTable</tspan></text>			</g>
+		</g>
+		<g id="shape27-77" v:mID="27" v:groupContext="shape" v:layerMember="0" transform="translate(225.888,-54.0405)">
+			<title>Returmeddelande</title>
+			<desc>mappedData</desc>
+			<v:userDefs>
+				<v:ud v:nameU="IsReturn" v:prompt="" v:val="VT0(1):5"/>
+				<v:ud v:nameU="IsAsync" v:prompt="" v:val="VT0(0):26"/>
+				<v:ud v:nameU="IsSelfMessage" v:prompt="" v:val="VT0(0):5"/>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="-138.508" cy="453.409" width="51.89" height="17.6036"/>
+			<path d="M0 461.35 L-177.87 461.35" class="st14"/>
+			<rect v:rectContext="textBkgnd" x="-159.547" y="448.609" width="42.0776" height="9.59985" class="st9"/>
+			<text x="-159.55" y="455.81" class="st10" v:langID="1053"><v:paragraph v:horizAlign="1"/><v:tabList/>mappedData</text>		</g>
+		<g id="group30-85" transform="translate(446.281,-236.875)" v:mID="30" v:groupContext="group">
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+				<v:ud v:nameU="ShowActor" v:prompt="" v:val="VT0(0):5"/>
+				<v:ud v:nameU="ShowDestruction" v:prompt="" v:val="VT0(0):5"/>
+			</v:userDefs>
+			<title>Objektlivslinje.30</title>
+			<desc>rowConverter BugsTableRowConverter</desc>
+			<g id="shape31-86" v:mID="31" v:groupContext="shape" transform="translate(20.5512,0)">
+				<title>Ark.31</title>
+				<rect x="0" y="442.92" width="51.0236" height="25.5118" class="st1"/>
+			</g>
+			<g id="shape32-88" v:mID="32" v:groupContext="shape" transform="translate(37.5591,-29.0551)">
+				<title>Ark.32</title>
+				<path d="M8.5 468.43 a0 0 0 1 1 0 0 a0 0 0 1 1 0 0 Z" class="st1"/>
+			</g>
+			<g id="shape33-90" v:mID="33" v:groupContext="shape" transform="translate(30.7087,160.38)">
+				<title>Ark.33</title>
+			</g>
+			<g id="shape34-92" v:mID="34" v:groupContext="shape" transform="translate(514.495,468.432) rotate(90)">
+				<title>Ark.34</title>
+				<path d="M0 468.43 L142.76 468.43" class="st2"/>
+			</g>
+			<g id="shape30-95" v:mID="30" v:groupContext="groupContent">
+				<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+				<v:textRect cx="46.063" cy="455.676" width="92.13" height="25.5118"/>
+				<rect x="0" y="442.92" width="92.126" height="25.5118" class="st1"/>
+				<text x="20.61" y="452.98" class="st12" v:langID="2057"><v:paragraph v:horizAlign="1"/><v:tabList/>rowConverter<v:newlineChar/><tspan
+							x="6.06" dy="1.35em" class="st13">BugsTableRowConverter</tspan></text>			</g>
+		</g>
+		<g id="group37-99" transform="translate(308.093,-236.875)" v:mID="37" v:groupContext="group">
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+				<v:ud v:nameU="ShowActor" v:prompt="" v:val="VT0(0):5"/>
+				<v:ud v:nameU="ShowDestruction" v:prompt="" v:val="VT0(0):5"/>
+			</v:userDefs>
+			<title>Objektlivslinje.37</title>
+			<desc>translationService BugsValueTranslationService</desc>
+			<g id="shape38-100" v:mID="38" v:groupContext="shape" transform="translate(27.6378,0)">
+				<title>Ark.38</title>
+				<rect x="0" y="442.92" width="51.0236" height="25.5118" class="st1"/>
+			</g>
+			<g id="shape39-102" v:mID="39" v:groupContext="shape" transform="translate(44.6457,-29.0551)">
+				<title>Ark.39</title>
+				<path d="M8.5 468.43 a0 0 0 1 1 0 0 a0 0 0 1 1 0 0 Z" class="st1"/>
+			</g>
+			<g id="shape40-104" v:mID="40" v:groupContext="shape" transform="translate(35.4331,74.3082)">
+				<title>Ark.40</title>
+			</g>
+			<g id="shape41-106" v:mID="41" v:groupContext="shape" transform="translate(521.582,468.432) rotate(90)">
+				<title>Ark.41</title>
+				<path d="M0 468.43 L56.69 468.43" class="st2"/>
+			</g>
+			<g id="shape37-109" v:mID="37" v:groupContext="groupContent">
+				<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+				<v:textRect cx="53.1496" cy="455.676" width="106.3" height="25.5118"/>
+				<rect x="0" y="442.92" width="106.299" height="25.5118" class="st1"/>
+				<text x="20.25" y="452.98" class="st12" v:langID="2057"><v:paragraph v:horizAlign="1"/><v:tabList/>translationService<v:newlineChar/><tspan
+							x="6.37" dy="1.35em" class="st13">BugsValueTranslationService</tspan></text>			</g>
+		</g>
+		<g id="group43-113" transform="translate(308.093,-421.127)" v:mID="43" v:groupContext="group">
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+				<v:ud v:nameU="ShowActor" v:prompt="" v:val="VT0(0):5"/>
+				<v:ud v:nameU="ShowDestruction" v:prompt="" v:val="VT0(0):5"/>
+			</v:userDefs>
+			<title>Objektlivslinje.43</title>
+			<desc>accessProvider AccessDatabaseProvider</desc>
+			<g id="shape44-114" v:mID="44" v:groupContext="shape" transform="translate(27.6378,0)">
+				<title>Ark.44</title>
+				<rect x="0" y="442.92" width="51.0236" height="25.5118" class="st1"/>
+			</g>
+			<g id="shape45-116" v:mID="45" v:groupContext="shape" transform="translate(44.6457,-29.0551)">
+				<title>Ark.45</title>
+				<path d="M8.5 468.43 a0 0 0 1 1 0 0 a0 0 0 1 1 0 0 Z" class="st1"/>
+			</g>
+			<g id="shape46-118" v:mID="46" v:groupContext="shape" transform="translate(35.4331,167.852)">
+				<title>Ark.46</title>
+			</g>
+			<g id="shape47-120" v:mID="47" v:groupContext="shape" transform="translate(521.582,468.432) rotate(90)">
+				<title>Ark.47</title>
+				<path d="M0 468.43 L150.24 468.43" class="st2"/>
+			</g>
+			<g id="shape43-123" v:mID="43" v:groupContext="groupContent">
+				<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+				<v:textRect cx="53.1496" cy="455.676" width="106.3" height="25.5118"/>
+				<rect x="0" y="442.92" width="106.299" height="25.5118" class="st1"/>
+				<text x="25.93" y="452.98" class="st12" v:langID="2057"><v:paragraph v:horizAlign="1"/><v:tabList/>accessProvider<v:newlineChar/><tspan
+							x="13.35" dy="1.35em" class="st13">AccessDatabaseProvider</tspan></text>			</g>
+		</g>
+		<g id="shape48-127" v:mID="48" v:groupContext="shape" v:layerMember="0" transform="translate(234.392,-309.159)">
+			<title>Meddelande.48</title>
+			<desc>read(bugsTable)</desc>
+			<v:userDefs>
+				<v:ud v:nameU="IsReturn" v:prompt="" v:val="VT0(0):5"/>
+				<v:ud v:nameU="IsAsync" v:prompt="" v:val="VT0(0):26"/>
+				<v:ud v:nameU="IsSelfMessage" v:prompt="" v:val="VT0(0):5"/>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="70.1575" cy="455.676" width="62.52" height="17.6036"/>
+			<path d="M0 461.35 L115.12 461.35" class="st7"/>
+			<rect v:rectContext="textBkgnd" x="43.8043" y="450.877" width="52.7066" height="9.59985" class="st9"/>
+			<text x="43.8" y="458.08" class="st10" v:langID="2057"><v:paragraph v:horizAlign="1"/><v:tabList/>read(bugsTable)</text>		</g>
+		<g id="shape49-134" v:mID="49" v:groupContext="shape" transform="translate(-102.938,174.864) rotate(-90)">
+			<title>aktivering.49</title>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<rect x="0" y="459.928" width="93.5433" height="8.50394" class="st6"/>
+		</g>
+		<g id="shape50-136" v:mID="50" v:groupContext="shape" v:layerMember="0" transform="translate(356.99,-294.985)">
+			<title>Returmeddelande.50</title>
+			<desc>items: List&#60;BugsType&#62;</desc>
+			<v:userDefs>
+				<v:ud v:nameU="IsReturn" v:prompt="" v:val="VT0(1):5"/>
+				<v:ud v:nameU="IsAsync" v:prompt="" v:val="VT0(0):26"/>
+				<v:ud v:nameU="IsSelfMessage" v:prompt="" v:val="VT0(0):5"/>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="-66.2694" cy="467.015" width="81.91" height="17.6036"/>
+			<path d="M0 461.35 L-122.6 461.35" class="st14"/>
+			<rect v:rectContext="textBkgnd" x="-102.316" y="462.215" width="72.0928" height="9.59985" class="st9"/>
+			<text x="-102.32" y="469.42" class="st10" v:langID="2057"><v:paragraph v:horizAlign="1"/><v:tabList/>items: List&#60;BugsType&#62;</text>		</g>
+		<g id="shape52-143" v:mID="52" v:groupContext="shape" transform="translate(28.1642,359.116) rotate(-90)">
+			<title>aktivering.52</title>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<rect x="0" y="459.928" width="93.5433" height="8.50394" class="st6"/>
+		</g>
+		<g id="shape53-145" v:mID="53" v:groupContext="shape" v:layerMember="0" transform="translate(234.392,-195.773)">
+			<title>Meddelande.53</title>
+			<desc>translateValues(item)</desc>
+			<v:userDefs>
+				<v:ud v:nameU="IsReturn" v:prompt="" v:val="VT0(0):5"/>
+				<v:ud v:nameU="IsAsync" v:prompt="" v:val="VT0(0):26"/>
+				<v:ud v:nameU="IsSelfMessage" v:prompt="" v:val="VT0(0):5"/>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="53.1496" cy="453.409" width="80.03" height="17.6036"/>
+			<path d="M0 461.35 L115.12 461.35" class="st7"/>
+			<rect v:rectContext="textBkgnd" x="18.041" y="448.609" width="70.2175" height="9.59985" class="st9"/>
+			<text x="18.04" y="455.81" class="st10" v:langID="2057"><v:paragraph v:horizAlign="1"/><v:tabList/>translateValues(item)</text>		</g>
+		<g id="shape54-152" v:mID="54" v:groupContext="shape" transform="translate(-102.938,282.581) rotate(-90)">
+			<title>aktivering.54</title>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<rect x="0" y="459.928" width="17.0079" height="8.50394" class="st6"/>
+		</g>
+		<g id="shape55-154" v:mID="55" v:groupContext="shape" v:layerMember="0" transform="translate(234.392,-170.261)">
+			<title>Meddelande.55</title>
+			<desc>convertListForDataRow(item)</desc>
+			<v:userDefs>
+				<v:ud v:nameU="IsReturn" v:prompt="" v:val="VT0(0):5"/>
+				<v:ud v:nameU="IsAsync" v:prompt="" v:val="VT0(0):26"/>
+				<v:ud v:nameU="IsSelfMessage" v:prompt="" v:val="VT0(0):5"/>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="58.8189" cy="452.842" width="105.66" height="17.6036"/>
+			<path d="M0 461.35 L246.22 461.35" class="st15"/>
+			<rect v:rectContext="textBkgnd" x="10.8977" y="448.042" width="95.8425" height="9.59985" class="st9"/>
+			<text x="10.9" y="455.24" class="st10" v:langID="2057"><v:paragraph v:horizAlign="1"/><v:tabList/>convertListForDataRow(item)</text>		</g>
+		<g id="shape56-162" v:mID="56" v:groupContext="shape" v:layerMember="0" transform="translate(492.344,-158.922)">
+			<title>Returmeddelande.56</title>
+			<desc>List&#60;SeadType&#62;</desc>
+			<v:userDefs>
+				<v:ud v:nameU="IsReturn" v:prompt="" v:val="VT0(1):5"/>
+				<v:ud v:nameU="IsAsync" v:prompt="" v:val="VT0(0):26"/>
+				<v:ud v:nameU="IsSelfMessage" v:prompt="" v:val="VT0(0):5"/>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="-136.772" cy="469.85" width="60.19" height="17.6036"/>
+			<path d="M0 475.52 L-257.95 475.52" class="st17"/>
+			<rect v:rectContext="textBkgnd" x="-161.957" y="465.05" width="50.3707" height="9.59985" class="st9"/>
+			<text x="-161.96" y="472.25" class="st10" v:langID="2057"><v:paragraph v:horizAlign="1"/><v:tabList/>List&#60;SeadType&#62;</text>		</g>
+		<g id="group57-170" transform="translate(158.565,-78.135)" v:mID="57" v:groupContext="group">
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<title>Upprepa fragment</title>
+			<g id="shape57-171" v:mID="57" v:groupContext="groupContent">
+				<rect x="0" y="326.7" width="381.26" height="141.732" class="st18"/>
+			</g>
+			<g id="shape58-173" v:mID="58" v:groupContext="shape" transform="translate(0,-124.129)">
+				<title>Ark.58</title>
+				<desc>loop</desc>
+				<v:userDefs>
+					<v:ud v:nameU="FoldSize" v:prompt="" v:val="VT0(0.098425196850394):24"/>
+					<v:ud v:nameU="BackFillColor" v:prompt="" v:val="VT5(#96afcf)"/>
+					<v:ud v:nameU="BackLineColor" v:prompt="" v:val="VT5(#1f477d)"/>
+					<v:ud v:nameU="BackCharColor" v:prompt="" v:val="VT5(#000000)"/>
+					<v:ud v:nameU="DarkerColor" v:prompt="" v:val="VT5(#000000)"/>
+					<v:ud v:nameU="BackFillColor" v:prompt="" v:val="VT5(#a5a5a5)"/>
+					<v:ud v:nameU="BackLineColor" v:prompt="" v:val="VT5(#a5a5a5)"/>
+					<v:ud v:nameU="BackCharColor" v:prompt="" v:val="VT5(#ffffff)"/>
+					<v:ud v:nameU="DarkerColor" v:prompt="" v:val="VT5(#a5a5a5)"/>
+				</v:userDefs>
+				<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+				<v:textRect cx="32" cy="459.63" width="64" height="17.6036"/>
+				<path d="M0 468.43 L56.91 468.43 L64 461.35 L64 450.83 L0 450.83 L0 468.43 Z" class="st19"/>
+				<text x="4" y="462.03" class="st20" v:langID="2057"><v:paragraph/><v:tabList/>loop</text>			</g>
+			<g id="shape59-176" v:mID="59" v:groupContext="shape" transform="translate(0,-106.525)">
+				<title>Ark.59</title>
+				<desc>item : BugType</desc>
+				<v:userDefs>
+					<v:ud v:nameU="msvQuickStyleVariationRestore" v:prompt="" v:val="VT0(2):26"/>
+				</v:userDefs>
+				<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+				<v:textRect cx="32" cy="459.63" width="64" height="17.6036"/>
+				<text x="4" y="462.03" class="st21" v:langID="2057"><v:paragraph/><v:tabList/>item : BugType</text>			</g>
+		</g>
+		<g id="group65-178" transform="translate(37.3768,175.389) rotate(-90)" v:mID="65" v:groupContext="group">
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<title>Anteckning</title>
+			<g id="shape66-179" v:mID="66" v:groupContext="shape" transform="translate(-226.938,753.935) rotate(-147.724)">
+				<title>Ark.66</title>
+				<path d="M63.7 468.43 L0 468.43" class="st22"/>
+			</g>
+			<g id="shape67-182" v:mID="67" v:groupContext="shape" transform="translate(468.432,357.881) rotate(90)">
+				<title>Ark.67</title>
+				<desc>Applies value-to-value translations as defined in bugs_type_t...</desc>
+				<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+				<v:textRect cx="55.2756" cy="445.231" width="110.56" height="46.4035"/>
+				<path d="M18.43 422.03 L0 422.03 L0 468.43 L18.43 468.43" class="st23"/>
+				<text x="4" y="433.23" class="st24" v:langID="2057"><v:paragraph/><v:tabList/>Applies <tspan class="st25">value</tspan><tspan
+							class="st25">-</tspan><tspan class="st25">to</tspan><tspan class="st25">-</tspan><tspan class="st25">value </tspan><tspan
+							x="4" dy="1.2em" class="st25">translations</tspan> as defined in <tspan x="4" dy="1.2em" class="st11">bugs</tspan>_type_translations and <tspan
+							x="4" dy="1.2em" class="st11">id</tspan>_type_translation tables.</text>			</g>
+		</g>
+		<g id="group68-194" transform="translate(159.267,181.927) rotate(-90)" v:mID="68" v:groupContext="group">
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<title>Anteckning.68</title>
+			<g id="shape69-195" v:mID="69" v:groupContext="shape" transform="translate(-217.628,762.503) rotate(-149.744)">
+				<title>Ark.69</title>
+				<path d="M49.23 468.43 L0 468.43" class="st22"/>
+			</g>
+			<g id="shape70-198" v:mID="70" v:groupContext="shape" transform="translate(468.432,357.881) rotate(90)">
+				<title>Ark.70</title>
+				<desc>This is where the actual BugStype to SeadType entity mapping ...</desc>
+				<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+				<v:textRect cx="55.2756" cy="450.03" width="110.56" height="36.8035"/>
+				<path d="M18.43 431.63 L0 431.63 L0 468.43 L18.43 468.43" class="st23"/>
+				<text x="4" y="442.83" class="st24" v:langID="2057"><v:paragraph/><v:tabList/>This is where the actual <tspan x="4"
+							dy="1.2em" class="st11">BugStype to SeadType entity </tspan><tspan x="4" dy="1.2em" class="st11">mapping occurs</tspan>,</text>			</g>
+		</g>
+	</g>
+</svg>

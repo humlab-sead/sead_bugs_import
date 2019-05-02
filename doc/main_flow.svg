@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Genererad av Microsoft Visio, SVG-export main_flow.svg Main import flow -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events"
+		xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="6.61521in" height="4.75498in"
+		viewBox="0 0 476.295 342.358" xml:space="preserve" color-interpolation-filters="sRGB" class="st15">
+	<v:documentProperties v:langID="1053" v:metric="true" v:viewMarkup="false">
+		<v:userDefs>
+			<v:ud v:nameU="msvNoAutoConnect" v:prompt="" v:val="VT0(1):26"/>
+		</v:userDefs>
+	</v:documentProperties>
+
+	<style type="text/css">
+	<![CDATA[
+		.st1 {fill:#5b9bd5;stroke:#ffffff;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.5}
+		.st2 {stroke:#5592c9;stroke-dasharray:3.5,2.5;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.5}
+		.st3 {fill:#ffffff;font-family:Calibri;font-size:0.75em;font-weight:bold}
+		.st4 {fill:#73ae42;stroke:#6ca43d;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.5}
+		.st5 {marker-end:url(#mrkr4-49);stroke:#6ca43d;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.5}
+		.st6 {fill:#6ca43d;fill-opacity:1;stroke:#6ca43d;stroke-opacity:1;stroke-width:0.13368983957219}
+		.st7 {fill:#ffffff;stroke:none;stroke-linecap:butt;stroke-width:7.2}
+		.st8 {fill:#53802e;font-family:Calibri;font-size:0.666664em}
+		.st9 {font-size:1em}
+		.st10 {marker-end:url(#mrkr4-58);stroke:#6ca43d;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.5}
+		.st11 {fill:#ffffff;stroke:none;stroke-linecap:butt}
+		.st12 {fill:#a5a5a5;fill-opacity:0;stroke:#a5a5a5;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.5}
+		.st13 {fill:#ffffff;stroke:#a5a5a5;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.5}
+		.st14 {fill:#a5a5a5;font-family:Calibri;font-size:0.666664em;font-weight:bold}
+		.st15 {fill:none;fill-rule:evenodd;font-size:12px;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
+	]]>
+	</style>
+
+	<defs id="Markers">
+		<g id="lend4">
+			<path d="M 2 1 L 0 0 L 2 -1 L 2 1 " style="stroke:none"/>
+		</g>
+		<marker id="mrkr4-49" class="st6" v:arrowType="4" v:arrowSize="3" v:setback="14.24" refX="-14.24" orient="auto"
+				markerUnits="strokeWidth" overflow="visible">
+			<use xlink:href="#lend4" transform="scale(-7.48,-7.48) "/>
+		</marker>
+		<marker id="mrkr4-58" class="st6" v:arrowType="4" v:arrowSize="3" v:setback="14.96" refX="-14.96" orient="auto"
+				markerUnits="strokeWidth" overflow="visible">
+			<use xlink:href="#lend4" transform="scale(-7.48,-7.48) "/>
+		</marker>
+	</defs>
+	<g v:mID="0" v:index="1" v:groupContext="foregroundPage">
+		<v:userDefs>
+			<v:ud v:nameU="msvThemeOrder" v:val="VT0(0):26"/>
+		</v:userDefs>
+		<title>Main import flow</title>
+		<v:pageProperties v:drawingScale="0.0393701" v:pageScale="0.0393701" v:drawingUnits="24" v:shadowOffsetX="8.50394"
+				v:shadowOffsetY="-8.50394"/>
+		<v:layer v:name="Koppling" v:index="0"/>
+		<g id="group1-1" transform="translate(18.25,-295.053)" v:mID="1" v:groupContext="group">
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+				<v:ud v:nameU="ShowActor" v:prompt="" v:val="VT0(0):5"/>
+				<v:ud v:nameU="ShowDestruction" v:prompt="" v:val="VT0(0):5"/>
+			</v:userDefs>
+			<title>Objektlivslinje</title>
+			<desc>Application</desc>
+			<g id="shape2-2" v:mID="2" v:groupContext="shape" transform="translate(7.37008,0)">
+				<title>Ark.2</title>
+				<rect x="0" y="316.846" width="51.0236" height="25.5118" class="st1"/>
+			</g>
+			<g id="shape3-4" v:mID="3" v:groupContext="shape" transform="translate(24.378,-29.0551)">
+				<title>Ark.3</title>
+				<path d="M8.5 342.36 a0 0 0 1 1 0 0 a0 0 0 1 1 0 0 Z" class="st1"/>
+			</g>
+			<g id="shape4-6" v:mID="4" v:groupContext="shape" transform="translate(21.9213,145.392)">
+				<title>Ark.4</title>
+			</g>
+			<g id="shape5-8" v:mID="5" v:groupContext="shape" transform="translate(375.24,342.358) rotate(90)">
+				<title>Ark.5</title>
+				<path d="M0 342.36 L127.78 342.36" class="st2"/>
+			</g>
+			<g id="shape1-11" v:mID="1" v:groupContext="groupContent">
+				<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+				<v:textRect cx="32.8819" cy="329.602" width="65.77" height="25.5118"/>
+				<rect x="0" y="316.846" width="65.7638" height="25.5118" class="st1"/>
+				<text x="11.51" y="332.3" class="st3" v:langID="1053"><v:paragraph v:horizAlign="1"/><v:tabList/>Application</text>			</g>
+		</g>
+		<g id="group6-14" transform="translate(201.935,-294.835)" v:mID="6" v:groupContext="group">
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+				<v:ud v:nameU="ShowActor" v:prompt="" v:val="VT0(0):5"/>
+				<v:ud v:nameU="ShowDestruction" v:prompt="" v:val="VT0(0):5"/>
+			</v:userDefs>
+			<title>Objektlivslinje.6</title>
+			<desc>ImportRunner</desc>
+			<g id="shape7-15" v:mID="7" v:groupContext="shape" transform="translate(7.37008,0)">
+				<title>Ark.7</title>
+				<rect x="0" y="316.846" width="51.0236" height="25.5118" class="st1"/>
+			</g>
+			<g id="shape8-17" v:mID="8" v:groupContext="shape" transform="translate(24.378,-29.0551)">
+				<title>Ark.8</title>
+				<path d="M8.5 342.36 a0 0 0 1 1 0 0 a0 0 0 1 1 0 0 Z" class="st1"/>
+			</g>
+			<g id="shape9-19" v:mID="9" v:groupContext="shape" transform="translate(21.9213,172.322)">
+				<title>Ark.9</title>
+			</g>
+			<g id="shape10-21" v:mID="10" v:groupContext="shape" transform="translate(375.24,342.358) rotate(90)">
+				<title>Ark.10</title>
+				<path d="M0 342.36 L154.71 342.36" class="st2"/>
+			</g>
+			<g id="shape6-24" v:mID="6" v:groupContext="groupContent">
+				<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+				<v:textRect cx="32.8819" cy="329.602" width="65.77" height="25.5118"/>
+				<rect x="0" y="316.846" width="65.7638" height="25.5118" class="st1"/>
+				<text x="6.39" y="332.3" class="st3" v:langID="1053"><v:paragraph v:horizAlign="1"/><v:tabList/>ImportRunner</text>			</g>
+		</g>
+		<g id="group11-27" transform="translate(110.093,-294.835)" v:mID="11" v:groupContext="group">
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+				<v:ud v:nameU="ShowActor" v:prompt="" v:val="VT0(0):5"/>
+				<v:ud v:nameU="ShowDestruction" v:prompt="" v:val="VT0(0):5"/>
+			</v:userDefs>
+			<title>Objektlivslinje.11</title>
+			<desc>DefaultRunner</desc>
+			<g id="shape12-28" v:mID="12" v:groupContext="shape" transform="translate(7.37008,0)">
+				<title>Ark.12</title>
+				<rect x="0" y="316.846" width="51.0236" height="25.5118" class="st1"/>
+			</g>
+			<g id="shape13-30" v:mID="13" v:groupContext="shape" transform="translate(24.378,-29.0551)">
+				<title>Ark.13</title>
+				<path d="M8.5 342.36 a0 0 0 1 1 0 0 a0 0 0 1 1 0 0 Z" class="st1"/>
+			</g>
+			<g id="shape14-32" v:mID="14" v:groupContext="shape" transform="translate(21.9213,168.07)">
+				<title>Ark.14</title>
+			</g>
+			<g id="shape15-34" v:mID="15" v:groupContext="shape" transform="translate(375.24,342.358) rotate(90)">
+				<title>Ark.15</title>
+				<path d="M0 342.36 L150.45 342.36" class="st2"/>
+			</g>
+			<g id="shape11-37" v:mID="11" v:groupContext="groupContent">
+				<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+				<v:textRect cx="32.8819" cy="329.602" width="65.77" height="25.5118"/>
+				<rect x="0" y="316.846" width="65.7638" height="25.5118" class="st1"/>
+				<text x="5.41" y="332.3" class="st3" v:langID="1053"><v:paragraph v:horizAlign="1"/><v:tabList/>DefaultRunner</text>			</g>
+		</g>
+		<g id="shape16-40" v:mID="16" v:groupContext="shape" transform="translate(-286.974,132.344) rotate(-90)">
+			<title>aktivering</title>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<rect x="0" y="333.854" width="51.0236" height="8.50394" class="st4"/>
+		</g>
+		<g id="shape17-42" v:mID="17" v:groupContext="shape" transform="translate(-195.132,175.082) rotate(-90)">
+			<title>aktivering.17</title>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<rect x="0" y="333.854" width="90.4906" height="8.50394" class="st4"/>
+		</g>
+		<g id="shape18-44" v:mID="18" v:groupContext="shape" v:layerMember="0" transform="translate(55.3839,-249.481)">
+			<title>Meddelande</title>
+			<desc>run [ if shouldRun ]</desc>
+			<v:userDefs>
+				<v:ud v:nameU="IsReturn" v:prompt="" v:val="VT0(0):5"/>
+				<v:ud v:nameU="IsAsync" v:prompt="" v:val="VT0(0):26"/>
+				<v:ud v:nameU="IsSelfMessage" v:prompt="" v:val="VT0(0):5"/>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="36.8907" cy="334.678" width="60.78" height="27.2035"/>
+			<path d="M0 347.81 C-0 348.63 0 349.68 11.49 350.28 C25.09 350.99 54.79 351.07 75.86 351.08 L76.22 351.08" class="st5"/>
+			<rect v:rectContext="textBkgnd" x="12.3145" y="325.078" width="49.1523" height="19.1997" class="st7"/>
+			<text x="32.2" y="332.28" class="st8" v:langID="1053"><v:paragraph v:horizAlign="1"/><v:tabList/>run<v:newlineChar/><tspan
+						x="12.31" dy="1.2em" class="st9">[ </tspan>if shouldRun ]  </text>		</g>
+		<g id="shape19-53" v:mID="19" v:groupContext="shape" v:layerMember="0" transform="translate(140.14,-223.751)">
+			<title>Self-meddelande</title>
+			<desc>getImporters [ filter by args ]</desc>
+			<v:userDefs>
+				<v:ud v:nameU="IsReturn" v:prompt="" v:val="VT0(0):5"/>
+				<v:ud v:nameU="IsAsync" v:prompt="" v:val="VT0(0):26"/>
+				<v:ud v:nameU="IsSelfMessage" v:prompt="" v:val="VT0(1):5"/>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="58.9606" cy="348.246" width="58.86" height="27.2035"/>
+			<path d="M7.09 342.36 L16.58 342.36 A8.50394 8.50394 0 0 1 25.09 350.86 L25.09 350.86 A8.50394 8.50394 0 0 1 16.58 359.37
+						 L14.57 359.37" class="st10"/>
+			<rect v:rectContext="textBkgnd" x="34.4393" y="338.646" width="49.043" height="19.1997" class="st7"/>
+			<text x="37.65" y="345.85" class="st8" v:langID="1053"><v:paragraph v:horizAlign="1"/><v:tabList/>getImporters<v:newlineChar/><tspan
+						x="34.44" dy="1.2em" class="st9">[ </tspan>filter by args ]</text>		</g>
+		<g id="shape20-62" v:mID="20" v:groupContext="shape" transform="translate(-103.289,189.255) rotate(-90)">
+			<title>aktivering.20</title>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<rect x="0" y="333.854" width="41.062" height="8.50394" class="st4"/>
+		</g>
+		<g id="shape21-64" v:mID="21" v:groupContext="shape" v:layerMember="0" transform="translate(147.226,-189.115)">
+			<title>Meddelande.21</title>
+			<desc>run (importers)</desc>
+			<v:userDefs>
+				<v:ud v:nameU="IsReturn" v:prompt="" v:val="VT0(0):5"/>
+				<v:ud v:nameU="IsAsync" v:prompt="" v:val="VT0(0):26"/>
+				<v:ud v:nameU="IsSelfMessage" v:prompt="" v:val="VT0(0):5"/>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="37.8513" cy="347.586" width="59.69" height="17.6036"/>
+			<path d="M0 344.57 C-0 347.01 0 350.16 11.59 351.95 C25.2 354.05 54.81 354.29 75.86 354.31 L76.22 354.31" class="st5"/>
+			<rect v:rectContext="textBkgnd" x="12.916" y="342.786" width="49.8708" height="9.59985" class="st11"/>
+			<text x="12.92" y="349.99" class="st8" v:langID="1053"><v:paragraph v:horizAlign="1"/><v:tabList/>run (importers)</text>		</g>
+		<g id="group22-71" transform="translate(293.778,-294.835)" v:mID="22" v:groupContext="group">
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+				<v:ud v:nameU="ShowActor" v:prompt="" v:val="VT0(0):5"/>
+				<v:ud v:nameU="ShowDestruction" v:prompt="" v:val="VT0(0):5"/>
+			</v:userDefs>
+			<title>Objektlivslinje.22</title>
+			<desc>Importer</desc>
+			<g id="shape23-72" v:mID="23" v:groupContext="shape" transform="translate(7.37008,0)">
+				<title>Ark.23</title>
+				<rect x="0" y="316.846" width="51.0236" height="25.5118" class="st1"/>
+			</g>
+			<g id="shape24-74" v:mID="24" v:groupContext="shape" transform="translate(24.378,-29.0551)">
+				<title>Ark.24</title>
+				<path d="M8.5 342.36 a0 0 0 1 1 0 0 a0 0 0 1 1 0 0 Z" class="st1"/>
+			</g>
+			<g id="shape25-76" v:mID="25" v:groupContext="shape" transform="translate(21.9213,190.747)">
+				<title>Ark.25</title>
+			</g>
+			<g id="shape26-78" v:mID="26" v:groupContext="shape" transform="translate(375.24,342.358) rotate(90)">
+				<title>Ark.26</title>
+				<path d="M0 342.36 L173.13 342.36" class="st2"/>
+			</g>
+			<g id="shape22-81" v:mID="22" v:groupContext="groupContent">
+				<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+				<v:textRect cx="32.8819" cy="329.602" width="65.77" height="25.5118"/>
+				<rect x="0" y="316.846" width="65.7638" height="25.5118" class="st1"/>
+				<text x="16.16" y="332.3" class="st3" v:langID="1053"><v:paragraph v:horizAlign="1"/><v:tabList/>Importer</text>			</g>
+		</g>
+		<g id="shape27-84" v:mID="27" v:groupContext="shape" transform="translate(-11.4469,309.869) rotate(-90)">
+			<title>aktivering.27</title>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<rect x="0" y="333.854" width="134.787" height="8.50394" class="st4"/>
+		</g>
+		<g id="shape28-86" v:mID="28" v:groupContext="shape" v:layerMember="0" transform="translate(239.069,-162.295)">
+			<title>Meddelande.28</title>
+			<desc>run()</desc>
+			<v:userDefs>
+				<v:ud v:nameU="IsReturn" v:prompt="" v:val="VT0(0):5"/>
+				<v:ud v:nameU="IsAsync" v:prompt="" v:val="VT0(0):26"/>
+				<v:ud v:nameU="IsSelfMessage" v:prompt="" v:val="VT0(0):5"/>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="35.5748" cy="361.112" width="40" height="17.6036"/>
+			<path d="M0 344.5 C0 346.97 -0 350.17 11.59 351.98 C25.21 354.12 54.81 354.36 75.86 354.38 L76.22 354.38" class="st5"/>
+			<rect v:rectContext="textBkgnd" x="27.5513" y="356.312" width="16.0469" height="9.59985" class="st7"/>
+			<text x="27.55" y="363.51" class="st8" v:langID="1053"><v:paragraph v:horizAlign="1"/><v:tabList/>run<tspan class="st9"
+						v:langID="2057">()</tspan></text>		</g>
+		<g id="shape30-94" v:mID="30" v:groupContext="shape" v:layerMember="0" transform="translate(323.825,-133.26)">
+			<title>Self-meddelande.30</title>
+			<desc>runRequiredImporters()</desc>
+			<v:userDefs>
+				<v:ud v:nameU="IsReturn" v:prompt="" v:val="VT0(0):5"/>
+				<v:ud v:nameU="IsAsync" v:prompt="" v:val="VT0(0):26"/>
+				<v:ud v:nameU="IsSelfMessage" v:prompt="" v:val="VT0(1):5"/>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="68.5984" cy="350.753" width="87.6" height="17.6036"/>
+			<path d="M7.09 342.36 L16.58 342.36 A8.50394 8.50394 0 0 1 25.09 350.86 L25.09 350.86 A8.50394 8.50394 0 0 1 16.58 359.37
+						 L14.57 359.37" class="st10"/>
+			<rect v:rectContext="textBkgnd" x="29.7082" y="345.953" width="77.7807" height="9.59985" class="st7"/>
+			<text x="29.71" y="353.15" class="st8" v:langID="1053"><v:paragraph v:horizAlign="1"/><v:tabList/>runRequiredImporters()</text>		</g>
+		<g id="shape31-101" v:mID="31" v:groupContext="shape" v:layerMember="0" transform="translate(323.825,-96.4099)">
+			<title>Self-meddelande.31</title>
+			<desc>mappedData = mapData()</desc>
+			<v:userDefs>
+				<v:ud v:nameU="IsReturn" v:prompt="" v:val="VT0(0):5"/>
+				<v:ud v:nameU="IsAsync" v:prompt="" v:val="VT0(0):26"/>
+				<v:ud v:nameU="IsSelfMessage" v:prompt="" v:val="VT0(1):5"/>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="74.2677" cy="350.753" width="94.04" height="17.6036"/>
+			<path d="M7.09 342.36 L16.58 342.36 A8.50394 8.50394 0 0 1 25.09 350.86 L25.09 350.86 A8.50394 8.50394 0 0 1 16.58 359.37
+						 L14.57 359.37" class="st10"/>
+			<rect v:rectContext="textBkgnd" x="32.1568" y="345.953" width="84.222" height="9.59985" class="st7"/>
+			<text x="32.16" y="353.15" class="st8" v:langID="1053"><v:paragraph v:horizAlign="1"/><v:tabList/>mappedData = mapData()</text>		</g>
+		<g id="shape32-108" v:mID="32" v:groupContext="shape" v:layerMember="0" transform="translate(323.825,-53.8902)">
+			<title>Self-meddelande.32</title>
+			<desc>saveData(mappedData)</desc>
+			<v:userDefs>
+				<v:ud v:nameU="IsReturn" v:prompt="" v:val="VT0(0):5"/>
+				<v:ud v:nameU="IsAsync" v:prompt="" v:val="VT0(0):26"/>
+				<v:ud v:nameU="IsSelfMessage" v:prompt="" v:val="VT0(1):5"/>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="68.5984" cy="349.354" width="86.57" height="17.6036"/>
+			<path d="M7.09 342.36 L16.58 342.36 A8.50394 8.50394 0 0 1 25.09 350.86 L25.09 350.86 A8.50394 8.50394 0 0 1 16.58 359.37
+						 L14.57 359.37" class="st10"/>
+			<rect v:rectContext="textBkgnd" x="30.2238" y="344.554" width="76.7494" height="9.59985" class="st7"/>
+			<text x="30.22" y="351.75" class="st8" v:langID="1053"><v:paragraph v:horizAlign="1"/><v:tabList/>saveData(mappedData)</text>		</g>
+		<g id="group33-115" transform="translate(245.447,-18.25)" v:mID="33" v:groupContext="group">
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<title>Upprepa fragment</title>
+			<g id="shape33-116" v:mID="33" v:groupContext="groupContent">
+				<rect x="0" y="177.949" width="212.598" height="164.409" class="st12"/>
+			</g>
+			<g id="shape34-118" v:mID="34" v:groupContext="shape" transform="translate(0,-146.806)">
+				<title>Ark.34</title>
+				<desc>for each importer</desc>
+				<v:userDefs>
+					<v:ud v:nameU="FoldSize" v:prompt="" v:val="VT0(0.098425196850394):24"/>
+					<v:ud v:nameU="BackFillColor" v:prompt="" v:val="VT5(#96afcf)"/>
+					<v:ud v:nameU="BackLineColor" v:prompt="" v:val="VT5(#1f477d)"/>
+					<v:ud v:nameU="BackCharColor" v:prompt="" v:val="VT5(#000000)"/>
+					<v:ud v:nameU="DarkerColor" v:prompt="" v:val="VT5(#000000)"/>
+					<v:ud v:nameU="BackFillColor" v:prompt="" v:val="VT5(#a5a5a5)"/>
+					<v:ud v:nameU="BackLineColor" v:prompt="" v:val="VT5(#a5a5a5)"/>
+					<v:ud v:nameU="BackCharColor" v:prompt="" v:val="VT5(#ffffff)"/>
+					<v:ud v:nameU="DarkerColor" v:prompt="" v:val="VT5(#a5a5a5)"/>
+				</v:userDefs>
+				<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+				<v:textRect cx="34.1387" cy="333.556" width="68.28" height="17.6036"/>
+				<path d="M0 342.36 L61.19 342.36 L68.28 335.27 L68.28 324.75 L0 324.75 L0 342.36 Z" class="st13"/>
+				<text x="4" y="335.96" class="st14" v:langID="2057"><v:paragraph/><v:tabList/>for each importer</text>			</g>
+		</g>
+	</g>
+</svg>
