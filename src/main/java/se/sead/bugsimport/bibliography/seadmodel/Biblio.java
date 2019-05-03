@@ -16,12 +16,14 @@ public class Biblio extends LoggableEntity {
     @GeneratedValue(generator = "biblio_seq_gen")
     @Column(name="biblio_id", nullable = false)
     private Integer id;
-    @Column(name="bugs_author")
-    private String bugsAuthor;
     @Column(name="bugs_reference")
     private String bugsReference;
-    @Column(name="bugs_title")
-    private String bugsTitle;
+    @Column(name="authors")
+    private String authors;
+    @Column(name="full_reference")
+    private String fullReference;
+    @Column(name="title")
+    private String title;
 
     @Override
     public Integer getId() {
@@ -32,12 +34,12 @@ public class Biblio extends LoggableEntity {
         this.id = id;
     }
 
-    public String getBugsAuthor() {
-        return bugsAuthor;
+    public String getAuthors() {
+        return authors;
     }
 
-    public void setBugsAuthor(String bugsAuthor) {
-        this.bugsAuthor = bugsAuthor;
+    public void setAuthors(String authors) {
+        this.authors = authors;
     }
 
     public String getBugsReference() {
@@ -48,12 +50,20 @@ public class Biblio extends LoggableEntity {
         this.bugsReference = bugsReference;
     }
 
-    public String getBugsTitle() {
-        return bugsTitle;
+    public String getFullReference() {
+        return fullReference;
     }
 
-    public void setBugsTitle(String bugsTitle) {
-        this.bugsTitle = bugsTitle;
+    public void setFullReference(String fullReference) {
+        this.fullReference = fullReference;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     @Override
@@ -64,27 +74,30 @@ public class Biblio extends LoggableEntity {
         Biblio biblio = (Biblio) o;
 
         if (id != null ? !id.equals(biblio.id) : biblio.id != null) return false;
-        if (bugsAuthor != null ? !bugsAuthor.equals(biblio.bugsAuthor) : biblio.bugsAuthor != null) return false;
-        if (bugsReference != null ? !bugsReference.equals(biblio.bugsReference) : biblio.bugsReference != null)
+        if (authors != null ? !authors.equals(biblio.authors) : biblio.authors != null) return false;
+        if (bugsReference != null ? !bugsReference.equals(biblio.bugsReference) : biblio.bugsReference != null) return false;
+        if (fullReference != null ? !fullReference.equals(biblio.fullReference) : biblio.fullReference != null)
             return false;
-        return bugsTitle != null ? bugsTitle.equals(biblio.bugsTitle) : biblio.bugsTitle == null;
+        return title != null ? title.equals(biblio.title) : biblio.title == null;
 
     }
 
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (bugsAuthor != null ? bugsAuthor.hashCode() : 0);
+        result = 31 * result + (authors != null ? authors.hashCode() : 0);
         result = 31 * result + (bugsReference != null ? bugsReference.hashCode() : 0);
-        result = 31 * result + (bugsTitle != null ? bugsTitle.hashCode() : 0);
+        result = 31 * result + (fullReference != null ? fullReference.hashCode() : 0);
+        result = 31 * result + (title != null ? title.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString(){
         return "Biblio{" +
-                bugsAuthor + "," +
+                authors + "," +
                 bugsReference + "," +
-                bugsTitle + "}";
+                fullReference + "," +
+                title + "}";
     }
 }

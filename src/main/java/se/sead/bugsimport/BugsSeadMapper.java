@@ -40,8 +40,8 @@ public abstract class BugsSeadMapper<BugsType extends TraceableBugsData, SeadTyp
             try {
                 resultContainer.add(readItem, getConvertedValue(readItem));
             } catch (Throwable t){
-                logger.error("THROW DISABLED BY ROGER: Throwing error for : {}", readItem);
-                //throw t;
+                //logger.error("THROW DISABLED BY ROGER: Throwing error for : {}", readItem);
+                throw t;
             }
         }
         return resultContainer;

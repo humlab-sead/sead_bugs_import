@@ -16,29 +16,39 @@ class BiblioUpdater {
     }
 
     void update(){
-        boolean updated = setAuthor();
-        updated = setReference() || updated;
+        boolean updated = setAuthors();
+        updated = setBugsReference() || updated;
+        updated = setFullReference() || updated;
         updated = setTitle() || updated;
         if(updated){
             original.setUpdated(true);
         }
     }
 
-    private boolean setAuthor(){
-        String originalAuthor = original.getBugsAuthor();
-        original.setBugsAuthor(bugsData.getAuthor());
-        return !Objects.equals(originalAuthor, original.getBugsAuthor());
+    private boolean setAuthors(){
+        String originalAuthor = original.getAuthors();
+        original.setAuthors(bugsData.getAuthor());
+        return !Objects.equals(originalAuthor, original.getAuthors());
     }
 
-    private boolean setReference(){
-        String originalReference = original.getBugsReference();
+    private boolean setBugsReference(){
+        String originalBugsReference = original.getBugsReference();
         original.setBugsReference(bugsData.getReference());
-        return !Objects.equals(originalReference, original.getBugsReference());
+        return !Objects.equals(originalBugsReference, original.getBugsReference());
+    }
+
+    private boolean setFullReference(){
+        String originalFullReference = original.getFullReference();
+        if (bugsData.getAuthor() == null || bugsData.getTitle() == null)
+            original.setFullReference(bugsData.getReference());
+        else
+            original.setFullReference(bugsData.getAuthor() + " " + bugsData.getTitle());
+        return !Objects.equals(originalFullReference, original.getFullReference());
     }
 
     private boolean setTitle(){
-        String originalTitle = original.getBugsTitle();
-        original.setBugsTitle(bugsData.getTitle());
-        return !Objects.equals(originalTitle, original.getBugsTitle());
+        String originalTitle = original.getTitle();
+        original.setTitle(bugsData.getTitle());
+        return !Objects.equals(originalTitle, original.getTitle());
     }
 }

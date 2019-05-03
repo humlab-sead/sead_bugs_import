@@ -41,6 +41,14 @@ public class BugsBiblio extends TraceableBugsData {
         this.notes = notes;
     }
 
+    public String getFullReference()
+    {
+        if (author == null && title == null)
+            return reference;
+        String fullReference = author + " " + title;
+        return fullReference;
+    }
+
     @Override
     public String compressToString() {
         return "{" +
