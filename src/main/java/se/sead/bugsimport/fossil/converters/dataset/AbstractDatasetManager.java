@@ -42,6 +42,7 @@ public class AbstractDatasetManager {
         String countSheetCode = components[0];
         String countSheetType = components[4];
         DataType dataType = dataTypeRepository.findByName(countSheetType);
+        assert dataType != null : String.format("Datatype %s not found", countSheetType);
         return new DatasetData(countSheetCode, dataType);
     }
 

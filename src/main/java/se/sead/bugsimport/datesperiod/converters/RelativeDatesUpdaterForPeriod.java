@@ -81,7 +81,12 @@ public class RelativeDatesUpdaterForPeriod extends BaseRelativeDatesUpdater<Date
 
         @Override
         protected DataType getDataType() {
-            return dataTypeRepository.findByName("Uncalibrated dates");
+            DataType dataType = dataTypeRepository.findByName("Uncalibrated dates");
+            assert dataType != null : String.format("Datatype %s not found", "Uncalibrated dates");
+            if (dataType == null){
+                original.addError(String.format("Datatype %s not found", "Uncalibrated dates"));
+            }
+            return dataType;
         }
 
         @Override

@@ -37,7 +37,9 @@ public class RelativeAgeUpdater {
         this.calendarAgeConverter = calendarAgeConverter;
     }
 
-    public void update(RelativeAge original, Period bugsData){new Updater(original, bugsData).update();}
+    public void update(RelativeAge original, Period bugsData){
+        new Updater(original, bugsData).update();
+    }
 
 
     private class Updater {
@@ -58,6 +60,11 @@ public class RelativeAgeUpdater {
             updated = setGeographicExtent() || updated;
             updated = setType() || updated;
             updated = setAbbreviation() || updated;
+
+            if (original.getName().isEmpty()) {
+                original.setName(original.getAbbreviation());
+            }
+
             original.setUpdated(updated);
         }
 

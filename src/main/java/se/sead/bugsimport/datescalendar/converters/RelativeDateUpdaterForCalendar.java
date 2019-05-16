@@ -75,6 +75,9 @@ public class RelativeDateUpdaterForCalendar extends BaseRelativeDatesUpdater<Dat
 
         @Override
         protected DataType getDataType() {
+            if (relativeDateDataType == null){
+                original.addError(String.format("Datatype %s not found", "Uncalibrated dates"));
+            }
             return relativeDateDataType;
         }
 
