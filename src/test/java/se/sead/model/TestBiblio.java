@@ -10,9 +10,9 @@ public class TestBiblio extends Biblio {
 
     public static Biblio create(Integer id, String bugsAuthor, String bugsReference, String bugsTitle){
         Biblio biblio = new TestBiblio(id);
-        biblio.setBugsAuthor(bugsAuthor);
+        biblio.setAuthors(bugsAuthor);
         biblio.setBugsReference(bugsReference);
-        biblio.setBugsTitle(bugsTitle);
+        biblio.setTitle(bugsTitle);
         return biblio;
     }
 }

@@ -5,7 +5,7 @@ insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_i
 values (1, 'Country', '', 'UK', 'tbl_locations', 1);
 insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
 values (2, 'Country', '', 'Swe', 'tbl_locations', 2);
-insert into tbl_biblio (biblio_id, bugs_author, bugs_reference, bugs_title) values (1, 'Hyman, P.S. (1992)', 'Hyman 1992', 'A review of the scarce and threatened Coleoptera of Great Britain, Part 1 (Revised & updated by M.S.Parsons). UK Joint Nature Conservation Committee, Peterborough.');
+insert into tbl_biblio (biblio_id, authors, bugs_reference, title) values (1, 'Hyman, P.S. (1992)', 'Hyman 1992', 'A review of the scarce and threatened Coleoptera of Great Britain, Part 1 (Revised & updated by M.S.Parsons). UK Joint Nature Conservation Committee, Peterborough.');
 
 INSERT INTO tbl_rdb_systems (rdb_system_id, biblio_id, location_id, rdb_system) VALUES (1, 1, 1, 'Test 1');
 insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)

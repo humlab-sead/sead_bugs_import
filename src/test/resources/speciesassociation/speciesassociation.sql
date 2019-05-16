@@ -10,8 +10,8 @@ insert into tbl_taxonomic_order (taxonomic_order_id, taxon_id, taxonomic_code, t
 insert into tbl_taxonomic_order (taxonomic_order_id, taxon_id, taxonomic_code, taxonomic_order_system_id) values (2, 2, 2.0000000, 1);
 insert into tbl_taxonomic_order (taxonomic_order_id, taxon_id, taxonomic_code, taxonomic_order_system_id) values (3, 3, 3.0000000, 1);
 
-insert into tbl_biblio (biblio_id, bugs_author, bugs_reference, bugs_title) values (1, 'Ref 1', 'Ref 1', 'Ref 1');
-insert into tbl_biblio (biblio_id, bugs_author, bugs_reference, bugs_title) values (2, 'Ref 3', 'Ref 3', 'Ref 3');
+insert into tbl_biblio (biblio_id, authors, bugs_reference, title) values (1, 'Ref 1', 'Ref 1', 'Ref 1');
+insert into tbl_biblio (biblio_id, authors, bugs_reference, title) values (2, 'Ref 3', 'Ref 3', 'Ref 3');
 
 insert into tbl_species_association_types (association_type_id, association_type_name) values (1, 'parasitizes');
 insert into tbl_species_association_types (association_type_id, association_type_name) values (2, 'is associated with');

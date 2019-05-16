@@ -1,4 +1,4 @@
-insert into tbl_biblio (biblio_id, bugs_author, bugs_reference, bugs_title) values (1,'Skidmore (unpubl.)','Skidmore unpubl.','Keys to the British Beetle (Coleoptera) Fauna.');
+insert into tbl_biblio (biblio_id, authors, bugs_reference, title) values (1,'Skidmore (unpubl.)','Skidmore unpubl.','Keys to the British Beetle (Coleoptera) Fauna.');
 insert into tbl_taxa_tree_orders (order_id, order_name) values(1, 'ORDER PENDING CLASSIFICATION');
 insert into tbl_taxa_tree_families (family_id, family_name, order_id) values (1, 'CARABIDAE', 1);
 insert into tbl_taxa_tree_genera (genus_id, genus_name, family_id) values (1, 'Carabidae', 1);

@@ -1,10 +1,10 @@
-insert into tbl_biblio (biblio_id, bugs_author, bugs_reference, bugs_title) values (1, 'Hyman, P.S. (1992)', 'Hyman 1992', 'A review of the scarce and threatened Coleoptera of Great Britain, Part 1 (Revised & updated by M.S.Parsons). UK Joint Nature Conservation Committee, Peterborough.');
-insert into tbl_biblio (biblio_id, bugs_author, bugs_reference, bugs_title) values (2, 'IUCN (2001)', 'IUCN 2001', 'IUCN Red List Categories and Criteria: Version 3.1. IUCN Species Survival Commission. IUCN, Gland, Switzerland and Cambridge, U.K. ii + 30pp.');
-insert into tbl_biblio (biblio_id, bugs_author, bugs_reference, bugs_title) values (3, 'Gärdenfors, U. (2000)', 'Gärdenfors 2000', 'Hur rödlistas arter? Manualer och riktlinjer [How to red-list species. Manual and guidelines]. ArtDatabanken, SLU, Uppsala [In Swedish, English Summary].');
-insert into tbl_biblio (biblio_id, bugs_author, bugs_reference, bugs_title) values (4, 'Test (2000)', 'Test 2000', 'Test bibliographic material');
-insert into tbl_biblio (biblio_id, bugs_author, bugs_reference, bugs_title) values (5, 'Updated (1894)', 'Updated 1894', 'Update test bibliographic material');
-insert into tbl_biblio (biblio_id, bugs_author, bugs_reference, bugs_title) values (6, 'Error no system', 'Error no system', 'This is just an error message');
-insert into tbl_biblio (biblio_id, bugs_author, bugs_reference, bugs_title) values (7, 'Error failed country', 'Error country does not exists', 'No country exist for code');
+insert into tbl_biblio (biblio_id, authors, bugs_reference, title) values (1, 'Hyman, P.S. (1992)', 'Hyman 1992', 'A review of the scarce and threatened Coleoptera of Great Britain, Part 1 (Revised & updated by M.S.Parsons). UK Joint Nature Conservation Committee, Peterborough.');
+insert into tbl_biblio (biblio_id, authors, bugs_reference, title) values (2, 'IUCN (2001)', 'IUCN 2001', 'IUCN Red List Categories and Criteria: Version 3.1. IUCN Species Survival Commission. IUCN, Gland, Switzerland and Cambridge, U.K. ii + 30pp.');
+insert into tbl_biblio (biblio_id, authors, bugs_reference, title) values (3, 'Gärdenfors, U. (2000)', 'Gärdenfors 2000', 'Hur rödlistas arter? Manualer och riktlinjer [How to red-list species. Manual and guidelines]. ArtDatabanken, SLU, Uppsala [In Swedish, English Summary].');
+insert into tbl_biblio (biblio_id, authors, bugs_reference, title) values (4, 'Test (2000)', 'Test 2000', 'Test bibliographic material');
+insert into tbl_biblio (biblio_id, authors, bugs_reference, title) values (5, 'Updated (1894)', 'Updated 1894', 'Update test bibliographic material');
+insert into tbl_biblio (biblio_id, authors, bugs_reference, title) values (6, 'Error no system', 'Error no system', 'This is just an error message');
+insert into tbl_biblio (biblio_id, authors, bugs_reference, title) values (7, 'Error failed country', 'Error country does not exists', 'No country exist for code');
 
 insert into tbl_location_types (location_type_id, location_type) values (1, 'Country');
 insert into tbl_locations (location_id, location_name, location_type_id) values (1, 'United kingdom', 1);
