@@ -60,11 +60,6 @@ public class RelativeAgeUpdater {
             updated = setGeographicExtent() || updated;
             updated = setType() || updated;
             updated = setAbbreviation() || updated;
-
-            if (original.getName().isEmpty()) {
-                original.setName(original.getAbbreviation());
-            }
-
             original.setUpdated(updated);
         }
 
@@ -72,7 +67,8 @@ public class RelativeAgeUpdater {
             String originalName = original.getName();
             String bugsDataName = bugsData.getName();
             if(bugsDataName == null || bugsDataName.isEmpty()){
-                original.addError("No period name given");
+                original.addError("FLAGGED: No period name given (using PeriodCode)");
+                bugsDataName = bugsData.getPeriodCode();
             }
             original.setName(bugsDataName);
             return !Objects.equals(originalName, bugsDataName);
