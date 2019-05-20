@@ -41,6 +41,7 @@ public class DatingLabManagerFactory {
 
     DatingLabManager createManager(){
         return new DatingLabManager(
+                repository,
                 datingLabTraceHelper,
                 getUnknownSeadLab(),
                 noMatchingSeadLabFound,
@@ -60,12 +61,14 @@ public class DatingLabManagerFactory {
         private DatingLab seadUnknownLab;
         private String unknownBugsLabIdentifier;
         private DatingLab noLabFoundErrorContainer;
-
+        private DatingLabRepository repository;
         public DatingLabManager(
+                DatingLabRepository repository,
                 DatingLabTraceHelper traceHelper,
                 DatingLab seadUnknownLab,
                 DatingLab noLabFoundErrorContainer,
                 String unknownBugsLabIdentifier) {
+            this.repository = repository;
             this.traceHelper = traceHelper;
             this.seadUnknownLab = seadUnknownLab;
             this.unknownBugsLabIdentifier = unknownBugsLabIdentifier;
@@ -76,11 +79,14 @@ public class DatingLabManagerFactory {
             if(isEmpty(bugsLabIdentifier) || unknownBugsLabIdentifier.equals(bugsLabIdentifier)){
                 return seadUnknownLab;
             }
-            DatingLab fromLastTrace = traceHelper.getFromLastTrace(bugsLabIdentifier);
-            if(fromLastTrace == null){
+            DatingLab datingLab = traceHelper.getFromLastTrace(bugsLabIdentifier);
+            if(datingLab == null){
+                datingLab = repository.findByLabId(bugsLabIdentifier);
+            }
+            if(datingLab == null){
                 return noLabFoundErrorContainer;
             }
-            return fromLastTrace;
+            return datingLab;
         }
 
         private static boolean isEmpty(String identifier){
