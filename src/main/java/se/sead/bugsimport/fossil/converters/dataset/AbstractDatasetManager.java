@@ -40,9 +40,9 @@ public class AbstractDatasetManager {
         String bugsData = sampleGroupTrace.getTranslatedCompressedData().replace("{", "").replace("}", "");
         String[] components = bugsData.split(",");
         String countSheetCode = components[0];
-        String countSheetType = components[4];
+        // String countSheetType = components[4];
+        String countSheetType = components[components.length - 1];
         DataType dataType = dataTypeRepository.findByName(countSheetType);
-        assert dataType != null : String.format("Datatype %s not found", countSheetType);
         return new DatasetData(countSheetCode, dataType);
     }
 
