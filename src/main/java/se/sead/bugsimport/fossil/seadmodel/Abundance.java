@@ -17,6 +17,8 @@ public class Abundance extends LoggableEntity {
     private Integer id;
     @Column(name = "abundance")
     private Integer abundance;
+    @Column(name = "abundance_element_id")
+    private Integer abundanceElementId = 5; // always "MNI"
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "analysis_entity_id")
     private AnalysisEntity analysisEntity;
@@ -56,11 +58,14 @@ public class Abundance extends LoggableEntity {
     public void setSpecies(TaxaSpecies species) {
         this.species = species;
     }
-//#region
-    @Transient
-    @Column(name = "abundance_element_id", nullable = true)
-    private Integer ignored_abundance_element_id;
-////#endregion
+
+    public Integer getAbundanceElementId() {
+        return abundanceElementId;
+    }
+
+    public void setAbundanceElementId(int abundanceElementId ) {
+        // noop, always 5
+    }
 
     @Override
     public boolean equals(Object o) {
