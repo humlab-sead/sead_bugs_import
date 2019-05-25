@@ -6,7 +6,7 @@ import se.sead.bugsimport.BugsTableRowConverter;
 import se.sead.bugsimport.fossil.bugsmodel.Fossil;
 import se.sead.bugsimport.fossil.converters.AbundanceUpdater;
 import se.sead.bugsimport.fossil.converters.FossilTraceHelper;
-import se.sead.bugsimport.fossil.seadmodel.Abundance;
+import se.sead.sead.data.Abundance;
 
 @Component
 public class FossilRowConverter implements BugsTableRowConverter<Fossil, Abundance> {

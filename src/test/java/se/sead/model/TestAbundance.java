@@ -1,6 +1,6 @@
 package se.sead.model;
 
-import se.sead.bugsimport.fossil.seadmodel.Abundance;
+import se.sead.sead.data.Abundance;
 import se.sead.bugsimport.species.seadmodel.TaxaSpecies;
 import se.sead.sead.data.AnalysisEntity;
 

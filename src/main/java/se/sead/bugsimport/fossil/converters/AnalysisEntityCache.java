@@ -1,6 +1,6 @@
 package se.sead.bugsimport.fossil.converters;
 
-import se.sead.bugsimport.fossil.seadmodel.Abundance;
+import se.sead.sead.data.Abundance;
 import se.sead.bugsimport.sample.seadmodel.Sample;
 import se.sead.sead.data.AnalysisEntity;
 import se.sead.sead.data.Dataset;
@@ -10,16 +10,13 @@ import java.util.*;
 public class AnalysisEntityCache {
 
     private Map<AnalysisEntityCacheKey, AnalysisEntity> cache;
-    private Map<AnalysisEntity, List<Abundance>> entityMapper;
 
     public AnalysisEntityCache(){
         cache = Collections.synchronizedMap(new HashMap<>());
-        entityMapper = Collections.synchronizedMap(new HashMap<>());
     }
 
     void init(){
         cache.clear();
-        entityMapper.clear();
     }
 
     AnalysisEntity find(Sample sample, Dataset dataset){
@@ -34,27 +31,6 @@ public class AnalysisEntityCache {
     void store(Sample sample, Dataset dataset, AnalysisEntity analysisEntity){
         AnalysisEntityCacheKey key = createKey(sample, dataset);
         cache.put(key, analysisEntity);
-    }
-
-    void bind(AnalysisEntity analysisEntity, Abundance abundance){
-        List<Abundance> abundances = entityMapper.get(analysisEntity);
-        if(abundances == null){
-            abundances = new ArrayList<>();
-            entityMapper.put(analysisEntity, abundances);
-        }
-        abundances.add(abundance);
-    }
-
-    public List<Abundance> getAbundances(AnalysisEntity analysisEntity){
-        List<Abundance> abundances = entityMapper.get(analysisEntity);
-        if(abundances == null){
-            return Collections.EMPTY_LIST;
-        }
-        return abundances;
-    }
-
-    public void resetAbundances(AnalysisEntity newAnalysisEntity, List<Abundance> abundances) {
-        entityMapper.put(newAnalysisEntity, abundances);
     }
 
     private static class AnalysisEntityCacheKey {

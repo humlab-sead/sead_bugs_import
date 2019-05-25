@@ -47,7 +47,7 @@ public abstract class BugsSeadMapper<BugsType extends TraceableBugsData, SeadTyp
         return resultContainer;
     }
 
-    private List<BugsType> readItems(){
+    protected List<BugsType> readItems(){
         AccessReader reader = new AccessReader(getAccessReader());
         return reader.read(bugsTable);
     }

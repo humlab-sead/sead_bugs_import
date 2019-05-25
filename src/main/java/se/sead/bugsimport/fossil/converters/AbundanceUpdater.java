@@ -3,7 +3,7 @@ package se.sead.bugsimport.fossil.converters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import se.sead.bugsimport.fossil.bugsmodel.Fossil;
-import se.sead.bugsimport.fossil.seadmodel.Abundance;
+import se.sead.sead.data.Abundance;
 import se.sead.bugsimport.species.seadmodel.TaxaSpecies;
 import se.sead.repositories.TaxonomicOrderRepository;
 import se.sead.utils.BigDecimalDefinition;

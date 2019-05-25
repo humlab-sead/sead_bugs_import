@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import se.sead.bugsimport.countsheets.seadmodel.SampleGroup;
 import se.sead.bugsimport.fossil.bugsmodel.Fossil;
-import se.sead.bugsimport.fossil.seadmodel.Abundance;
+import se.sead.sead.data.Abundance;
 import se.sead.bugsimport.sample.converters.SampleTracerHelper;
 import se.sead.bugsimport.sample.seadmodel.Sample;
 import se.sead.repositories.AnalysisEntityRepository;
@@ -69,9 +69,13 @@ public class AnalysisEntityManager {
         }
 
         AnalysisEntity ae = cache.find(sampleFromLastTrace, dataset);
+
         if(ae == null && dataset.isNewItem()){
+            // System.out.format("Analysis entity for %s NOT FOUND in cache (new ds). sample %s dataset %s", bugsData.getFossilBugsCODE(), sampleFromLastTrace.getName(), dataset.getName());
             ae = createAnalysisEntity(sampleFromLastTrace, dataset);
+            cache.store(sampleFromLastTrace, dataset, ae);
         } else if(ae == null){
+            // System.out.format("Analysis entity for %s NOT FOUND in cache. Searching in SEAD. Sample %s dataset %s", bugsData.getFossilBugsCODE(), sampleFromLastTrace.getName(), dataset.getName());
             List<AnalysisEntity> entitiesForSample = aeRepository.findBySampleAndDataset(sampleFromLastTrace, dataset);
             if(entitiesForSample.isEmpty()){
                 ae = createAnalysisEntity(sampleFromLastTrace, dataset);
@@ -82,10 +86,12 @@ public class AnalysisEntityManager {
                 return false;
             }
             cache.store(sampleFromLastTrace, dataset, ae);
+        // } else {
+        //    System.out.format("Analysis entity for %s FOUND in cache. sample %s dataset %s", bugsData.getFossilBugsCODE(), sampleFromLastTrace.getName(), dataset.getName());
         }
         AnalysisEntity originalAbundanceAnalysisEntity = originalAbundance.getAnalysisEntity();
         originalAbundance.setAnalysisEntity(ae);
-        cache.bind(ae, originalAbundance);
+        ae.getAbundances().add(originalAbundance);
         return !Objects.equals(originalAbundanceAnalysisEntity, ae);
     }
 
@@ -101,11 +107,4 @@ public class AnalysisEntityManager {
         return ae;
     }
 
-    public List<Abundance> getAbundancesFor(AnalysisEntity analysisEntity){
-        return cache.getAbundances(analysisEntity);
-    }
-
-    public void reassociateAbundances(AnalysisEntity newAnalysisEntity, List<Abundance> abundances){
-        cache.resetAbundances(newAnalysisEntity, abundances);
-    }
 }

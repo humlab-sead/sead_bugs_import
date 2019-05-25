@@ -1,6 +1,6 @@
 package se.sead.repositories;
 
-import se.sead.bugsimport.fossil.seadmodel.Abundance;
+import se.sead.sead.data.Abundance;
 
 import java.util.List;
 

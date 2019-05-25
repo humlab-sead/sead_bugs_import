@@ -3,6 +3,8 @@ package se.sead.sead.data;
 import se.sead.bugsimport.sample.seadmodel.Sample;
 import se.sead.sead.model.LoggableEntity;
 
+import java.util.*;
+
 import javax.persistence.*;
 
 @Entity
@@ -74,5 +76,18 @@ public class AnalysisEntity extends LoggableEntity {
                 ", sample=" + sample +
                 ", dataset=" + dataset +
                 '}';
+    }
+
+    @Transient
+    private List<Abundance> abundances = new ArrayList<>();
+
+    public List<Abundance> getAbundances()
+    {
+        return abundances;
+    }
+
+    public List<Abundance> setAbundances(List<Abundance> abundances)
+    {
+        return this.abundances = abundances;
     }
 }

@@ -23,12 +23,18 @@ public class CreateAndReadRepositoryImpl<T, ID extends Serializable> extends Sim
     @Override
     @Transactional
     public T saveOrUpdate(T entity) {
-        if(entity instanceof LoggableEntity && ((LoggableEntity)entity).isMarkedForDeletion()){
-            Object entityToDelete = entityManager.find(entity.getClass(), ((LoggableEntity) entity).getId());
-            entityManager.remove(entityToDelete);
-            return null;
-        } else {
-            return entityManager.merge(entity);
+
+        if (entity instanceof LoggableEntity) {
+            LoggableEntity loggableEntity = (LoggableEntity)entity;
+            if(loggableEntity.isMarkedForDeletion()) {
+                Object entityToDelete = entityManager.find(entity.getClass(), loggableEntity.getId());
+                entityManager.remove(entityToDelete);
+                return null;
+            } // else if (loggableEntity.isNewItem()) {
+            //    entityManager.persist(entity);
+            //    return entity;
+            //}
         }
+        return entityManager.merge(entity);
     }
 }

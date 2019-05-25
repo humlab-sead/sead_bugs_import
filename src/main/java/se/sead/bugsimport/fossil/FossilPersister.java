@@ -6,7 +6,8 @@ import se.sead.bugsimport.Persister;
 import se.sead.bugsimport.fossil.bugsmodel.Fossil;
 import se.sead.bugsimport.fossil.converters.AnalysisEntityManager;
 import se.sead.bugsimport.fossil.converters.DatasetCache;
-import se.sead.bugsimport.fossil.seadmodel.Abundance;
+//import se.sead.bugsimport.fossil.seadmodel.Abundance;
+import se.sead.sead.data.Abundance;
 import se.sead.repositories.AbundanceRepository;
 import se.sead.sead.data.AnalysisEntity;
 import se.sead.sead.data.Dataset;
@@ -41,7 +42,7 @@ public class FossilPersister extends Persister<Fossil, Abundance> {
 
     private void reassociate(AnalysisEntity originalAnalysisEntity, AnalysisEntity analysisEntity){
         if(originalAnalysisEntity.isNewItem()) {
-            List<Abundance> abundancesFor = analysisEntityManager.getAbundancesFor(originalAnalysisEntity);
+            List<Abundance> abundancesFor = originalAnalysisEntity.getAbundances();
             abundancesFor.forEach(abundance -> abundance.setAnalysisEntity(analysisEntity));
             datasetCache.put(analysisEntity.getDataset());
         }

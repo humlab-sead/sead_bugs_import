@@ -15,7 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import se.sead.Application;
 import se.sead.bugsimport.fossil.FossilImporter;
 import se.sead.bugsimport.fossil.bugsmodel.Fossil;
-import se.sead.bugsimport.fossil.seadmodel.Abundance;
+import se.sead.sead.data.Abundance;
 import se.sead.repositories.*;
 import se.sead.sead.data.AnalysisEntity;
 import se.sead.sead.data.Dataset;
