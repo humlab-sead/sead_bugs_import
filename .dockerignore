@@ -1,0 +1,9 @@
+/target/
+/dist/
+/data/
+/bugsdata/
+.vscode
+*.log
+*.out
+*.class
+.git
