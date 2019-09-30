@@ -3,6 +3,7 @@
 
 # Log file
 *.log
+*.out
 
 # BlueJ files
 *.ctxt
@@ -15,7 +16,7 @@
 *.war
 *.nar
 *.ear
-*.zip
+# *.zip
 *.tar.gz
 *.rar
 
@@ -51,4 +52,5 @@
 
 data/
 
-application.properties
+src/main/resources/application.properties
+tmp/
