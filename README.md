@@ -7,10 +7,9 @@ same as on GitHub.
 
 ## Overview
 
-
 ## Prerequisites
 
-For building and running the application you need:
+To build and run the application you will need:
 
 - [OpenJDK 1.8](openjdk.org)
 - [Maven 3](https://maven.apache.org)
@@ -24,28 +23,39 @@ For building and running the application you need:
 ## Installation
 
 ```bash
-$ git clone https://github/com/humlab/SEAD/sead_bugs_import
-$ cd sead_bugs_import
-$ mvn -Dmaven.test.skip=true clean package
+git clone https://github.com/humlab-sead/sead_bugs_import
+cd sead_bugs_import
+mvn -Dmaven.test.skip=true clean
+mvn -Dmaven.test.skip=true package
+```
+
+```
+
+docker run --rm -it sead_bugs_import:latest bash
+
 ```
 
 ## Usage
 
+> java -jar jar_file --file=mbd-file [--importers=..] [--validate-schema]
+
 ```
-% java -jar jar-file --file="filename" [--importers=..] [--validate-schema]
+% wget -d --user-agent="Mozilla/5.0 (Windows NT x.y; rv:10.0) Gecko/20100101 Firefox/10.0"  https://www.bugscep.com/downloads/bugsdata.zip
+% unzip /path/to/file.zip -d temp_for_zip_extract
+% java -jar target/bugs.import-0.1-SNAPSHOT.jar --file=./data/bugsdata_20190503.mdb --importers=Bibliography,Lab
 ```
 
 ### Options
 
 * `--file=` - _string_ Bugs MS Access database file to import. (**required**)
-* `--importers=` - _string_ Comma seperated list of importers to run.
+* `--importers=` - _string_ Comma separated list of named importers to run, where each item is a simple type name (no namespace) without the "Importer" suffix.
 * `--validate-schema` - Validate schema (create/update) but do not run.
 * `--no-run` - Do not run.
 
 ## Steps to perform a bugs import
 
-1. Verify application configuration
-2. Setup the target database (e.g. sead_staging_bugs)
+1. Verify configuration
+2. Setup target database (e.g. sead_staging_bugs)
 3. Download and unpack latest bugs database from [http://www.bugscep.com](http://www.bugscep.com/downloads.html), [link to file](http://www.bugscep.com/downloads/bugsdata.zip)
 4. Run Java application to do an import of downloaded bugs database.
 
@@ -54,20 +64,20 @@ $ mvn -Dmaven.test.skip=true clean package
 % java -jar target/bugs.import-0.1-SNAPSHOT.jar --file="./data/bugsdata_yyyymmdd.mdb"
 ```
 
-### Verify application configuration
+### Verify configuration
 
 The application uses PostgreSQL as target database in production, and an in-memory database (H2) when running tests.
-Before your run this application, it would be good to check properties defined in application-postgresql.properties file.
+Before your run this application, it would be good to check properties defined in application.properties file.
 
 ```ini
 spring.datasource.driverClassName=org.postgresql.Driver
-spring.datasource.url=jdbc:postgresql://host:port/seaddb
+spring.datasource.url=jdbc:postgresql://host:port/sead_staging
 spring.datasource.username=username
 spring.datasource.password=123456
 
 spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
-#spring.jpa.show-sql=true
-spring.jpa.hibernate.ddl-auto=xyz
+spring.jpa.show-sql=false
+spring.jpa.hibernate.ddl-auto=none
 # spring.jpa.generate-ddl=true
 ```
 Set xyz to ```update``` if target database schema should be updated to conform to the applications data model. Set to ```none``` if model is correct, or if changes are handled manually outside of code (which is better). (TODO: Add service that at startup, or when given a flag, generates update ddl  similar to using ```update```).
@@ -103,6 +113,61 @@ The three SQL-scripts that reside in the ./sql folder  can be used to setup a ne
 
 The commands must be executed as a superuser using e.g. ```psql``` or ```pgAdmin```. You might first need to terminate existing processes in the source and (new) target database.
 
+```bash
+#!/bin/bash
+
+REPOSITORY="https://raw.githubusercontent.com/humlab-sead/sead_change_control/master"
+
+source_db="template_bugs_import"
+target_db="sead_staging_bugs"
+
+dbhost=`cat ~/.default.sead.server`
+dbuser=`cat  ~/.default.sead.username`
+
+dbexec() {
+    psql -bqw -h $dbhost -U $dbuser -c "$1" $target_db
+}
+
+kickout() {
+    xsql="select pg_terminate_backend(pid) from pg_stat_activity where datname = '$1' and pid <> pg_backend_pid();"
+    psql -bqw -h $dbhost -U $dbuser -c "$xsql" "postgres"
+}
+
+apply_crs() {
+    project=$1
+    items=$2
+    for CR in ${items}; do
+        echo "Applying ${project}/${CR}..."
+        rm -f ${CR}.sql
+        wget -q -nv ${REPOSITORY}/${project}/deploy/${CR}.sql --output-document=${CR}.sql
+        psql --echo-errors --quiet -h $dbhost -U $dbuser --no-password --file="${CR}.sql" $target_db
+        rm -f ${CR}.sql
+    done
+}
+
+BugsCRs="\
+    CS_BUGS_20190503_SETUP_SCHEMA\
+    CS_BUGS_20190503_ADD_TRANSLATIONS"
+
+GeneralCRs="\
+    CS_DATINGLAB_20190503_ADD_UNKNOWN_LAB\
+    CS_METHOD_20190503_ADD_BUGS_METHODS\
+    CS_TAXA_20190503_ADD_SPECIES_ASSOC_TYPES\
+    CS_TAXA_20190503_ATTRIBUTE_TYPE_LENGTH"
+
+kickout $target_db
+dropdb --echo --if-exists --host=$dbhost --username=$dbuser --no-password "$target_db"
+
+kickout $source_db
+createdb --echo --owner=sead_master --host=$dbhost --username=$dbuser --no-password --encoding="UTF8" -T "$source_db" "$target_db"
+
+apply_crs  "bugs" "$BugsCRs"
+apply_crs  "general" "$GeneralCRs"
+
+echo "done!"
+
+```
+
 ### Download latest bugs database
 
 The latest version of the from Bugs download page e.g. using wget (or a browser):
@@ -125,7 +190,6 @@ Unpack the file into a folder that can be accessed by the bugs import applicatio
 
 ### Import flow
 <img src='./doc/import_flow.svg'></img>
-C:\\Users\\roma0050\\Documents\\Projects\\SEAD\\bugs_import
 
 ### Logging JPA Queries
 
