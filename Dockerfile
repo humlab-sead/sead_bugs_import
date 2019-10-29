@@ -1,32 +1,43 @@
-FROM maven:3.6.2-jdk-8
+FROM maven:3.6.2-jdk-8 as build
 
-ARG USER_HOME_DIR="/home/developer"
+ARG BRANCH=master
 
 RUN apt-get update && apt-get install -y \
   ssh \
   git \
-  wget curl unzip \
-  && useradd -m developer
+  wget curl unzip
 
-ENV MAVEN_CONFIG "$USER_HOME_DIR/.m2"
+WORKDIR /source
+
+ADD https://api.github.com/repos/humlab-sead/sead_bugs_import/git/refs/heads/$BRANCH version.json
+
+RUN git clone https://github.com/humlab-sead/sead_bugs_import \
+     && cd sead_bugs_import \
+     && mvn -Dmaven.test.skip=true clean \
+     && mvn -Dmaven.test.skip=true package
+
+FROM maven:3.6.2-jdk-8
+
+RUN apt-get update && apt-get install -y \
+  wget unzip
+
+ARG USER_HOME_DIR="/home/bugger"
+
+LABEL MAINTAINER Roger Mähler <roger dot mahler at umu dot se>
+
+RUN useradd -m bugger
 
 WORKDIR ${USER_HOME_DIR}
 
-COPY ./.mvn .
-COPY ./config .
-COPY ./configuration .
-COPY ./pom.xml .
-COPY ./.classpath .
+COPY --from=build /source/sead_bugs_import/target/bugs.import-0.1-SNAPSHOT.jar .
 
-RUN git clone https://github.com/humlab-sead/sead_bugs_import
-#  \
-#     && cd sead_bugs_import \
-#     && mvn -Dmaven.test.skip=true clean \
-#     && mvn -Dmaven.test.skip=true package
+COPY ./docker-entrypoint.sh .
 
-COPY ./config .
+RUN mkdir -p /home/bugger/config \
+    && mkdir -p /home/bugger/data \
+    && chmod +x ./docker-entrypoint.sh
 
-#RUN javac Main.java
+# COPY ./config/application.properties config/application.properties
 
-#CMD ["java", "Main"]
-
+# COPY ./configuration .
+ENTRYPOINT [ "docker-entrypoint.sh" ]

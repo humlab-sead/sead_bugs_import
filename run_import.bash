@@ -14,16 +14,16 @@ cr_version=@v0.1
 #echo "130.239.1.181" >  ~/.default.sead.server
 #echo "humlab_admin" >  ~/.default.sead.username
 
-if [[ -f "$dbhostfile" ]]; then
-    dbhost=`cat $dbhostfile`
-fi
-if [[ -f "$dbuserfile" ]]; then
-    dbuser=`cat $dbuserfile`
-fi
+# if [[ -f "$dbhostfile" ]]; then
+#     dbhost=`cat $dbhostfile`
+# fi
+# if [[ -f "$dbuserfile" ]]; then
+#     dbuser=`cat $dbuserfile`
+# fi
 
-if [[ ! -f $bugsdir ]]; then
-    mkdir $bugsdir
-fi
+# if [[ ! -f $bugsdir ]]; then
+#     mkdir $bugsdir
+# fi
 
 rm -rf $bugsdir/tmp
 mkdir $bugsdir/tmp
@@ -33,18 +33,18 @@ while [[ $# -gt 0 ]]
 do
     key="$1"
     case $key in
-        -h|--host)
-            dbhost="$2"; shift; shift
-        ;;
-        -u|--user)
-            dbuser="$2"; shift; shift
-        ;;
-        -t|--target-database)
-            dbtarget="$2"; shift; shift
-        ;;
-        -s|--source-datbase)
-            dbsource="$2"; shift; shift
-        ;;
+        # -h|--host)
+        #     dbhost="$2"; shift; shift
+        # ;;
+        # -u|--user)
+        #     dbuser="$2"; shift; shift
+        # ;;
+        # -t|--target-database)
+        #     dbtarget="$2"; shift; shift
+        # ;;
+        # -s|--source-datbase)
+        #     dbsource="$2"; shift; shift
+        # ;;
         -c|--clean-build)
             on_conflict="$2"; shift
         ;;
@@ -86,6 +86,8 @@ function download_latest_bugsdata()
     unzip bugsdata.zip bugsdata.mdb
 
 }
+
+download_latest_bugsdata
 
 mvn -Dmaven.test.skip=true clean package
 mkdir dist
