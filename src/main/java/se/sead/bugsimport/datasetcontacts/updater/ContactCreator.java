@@ -8,9 +8,9 @@ public class ContactCreator {
         Contact contact = new Contact();
         contact.setLastName(lastName);
         contact.setFirstName(firstName);
-        if(hasParenthesis(firstName) || hasParenthesis(lastName)){
-            contact.setFlagged(true);
-        }
+        // if(hasParenthesis(firstName) || hasParenthesis(lastName)){
+        //     contact.setFlagged(true);
+        // }
         return contact;
     }
 
