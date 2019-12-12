@@ -51,7 +51,7 @@ public class DatingLabManagerFactory {
     private DatingLab getUnknownSeadLab(){
         if(unknownSeadLab == null){
             unknownSeadLab = repository.findByLabId(unknownDatingLabSeadIdentifier);
-            unknownSeadLab.setFlagged(true);
+            // unknownSeadLab.setFlagged(true);
         }
         return unknownSeadLab;
     }
