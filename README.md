@@ -63,6 +63,8 @@ docker run --rm -it sead_bugs_import:latest bash
 % java -jar target/bugs.import-0.1-SNAPSHOT.jar --validate-schema
 % java -jar target/bugs.import-0.1-SNAPSHOT.jar --file="./data/bugsdata_yyyymmdd.mdb"
 ```
+5. Check flagged events/errors in import lag (ROGER - WHERE EXACTLY?)
+6. Apply manual updates to SEAD records which cannot be fixed through corrections in BugsCEP or by altering import routines/mappings (e.g. where SEAD functionality exheeds Bugs)
 
 ### Verify configuration
 
