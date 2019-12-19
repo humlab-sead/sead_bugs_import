@@ -33,7 +33,7 @@ public class GeochronologyMethodManager {
         if(defaultMethodName == null || defaultMethodName.isEmpty()){
             defaultMethodIfEmpty = null;
         } else {
-            defaultMethodIfEmpty = methodRepository.getByAbbreviationAndGroup(defaultMethodName, geochronologyMethodGroup);
+            defaultMethodIfEmpty = methodRepository.getByAbbreviation(defaultMethodName);
         }
     }
 
@@ -43,7 +43,7 @@ public class GeochronologyMethodManager {
                 (datingMethod == null || datingMethod.isEmpty())){
            return defaultMethodIfEmpty;
         }
-        return methodRepository.getByAbbreviationAndGroup(datingMethod, geochronologyMethodGroup);
+        return methodRepository.getByAbbreviation(datingMethod);
     }
 
     private boolean isConfiguredForAllowedEmptyMethod() {
