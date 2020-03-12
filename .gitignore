@@ -54,3 +54,5 @@
 
 application.properties
 tmp/
+
+.env
