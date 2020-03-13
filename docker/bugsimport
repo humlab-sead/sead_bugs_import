@@ -1,0 +1,18 @@
+#!/bin/bash
+
+BUGSIMPORT_IMAGE=${BUGSIMPORT_IMAGE:=humlab/bugsimport:latest}
+
+envvars=( )
+
+for var in BUGSIMPORT_DBHOST BUGSIMPORT_DBPORT BUGSIMPORT_DBNAME BUGSIMPORT_DBUSER BUGSIMPORT_DBPASSWORD
+do
+    if [ -n "${!var}" ]; then
+       envvars+=(-e $var)
+    fi
+done
+
+docker run  -it --rm --network host \
+    --env-file .env \
+    --mount "type=bind,src=$(pwd),/home/bugger/data" \
+     "${passopt[@]}" \
+     humlab/bugsimport:latest $@

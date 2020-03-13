@@ -31,13 +31,15 @@ WORKDIR ${USER_HOME_DIR}
 
 COPY --from=build /source/sead_bugs_import/target/bugs.import-0.1-SNAPSHOT.jar .
 
-COPY ./docker-entrypoint.sh .
+COPY ./docker-entrypoint.sh /usr/bin/docker-entrypoint.sh
+COPY ./application.properties.template .
 
 RUN mkdir -p /home/bugger/config \
-    && mkdir -p /home/bugger/data \
-    && chmod +x ./docker-entrypoint.sh
+    && mkdir -p /home/bugger/bugsdata \
+    && chmod +x /usr/bin/docker-entrypoint.sh
 
-# COPY ./config/application.properties config/application.properties
+USER bugger
 
-# COPY ./configuration .
 ENTRYPOINT [ "docker-entrypoint.sh" ]
+
+CMD ["docker-entrypoint.sh" ]
