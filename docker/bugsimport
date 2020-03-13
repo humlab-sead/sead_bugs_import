@@ -1,18 +1,75 @@
 #!/bin/bash
 
 BUGSIMPORT_IMAGE=${BUGSIMPORT_IMAGE:=humlab/bugsimport:latest}
+BUGSIMPORT_DBPORT=${BUGSIMPORT_DBPORT:=5432}
 
-envvars=( )
+# Read configuration elements from .env if exists
+if [ -f ".env" ]; then
+    eval $(egrep -v '^#' .env | xargs)
+fi
+
+sync_sequences=no
+
+POSITIONAL=()
+while [[ $# -gt 0 ]]
+do
+    key="$1"
+    case $key in
+        --host)
+            BUGSIMPORT_DBHOST="$2"; shift; shift
+        ;;
+        --database)
+            BUGSIMPORT_DBNAME="$2"; shift; shift
+        ;;
+        --port)
+            BUGSIMPORT_DBPORT="$2"; shift; shift
+        ;;
+        --user)
+            BUGSIMPORT_DBUSER="$2"; shift; shift
+        ;;
+        --image)
+            BUGSIMPORT_IMAGE="$2"; shift; shift
+        ;;
+        --sync-sequences)
+            sync_sequences=yes; shift
+        ;;
+        *)
+        POSITIONAL+=("$1")
+        shift
+        ;;
+    esac
+done
+
+sync_sequences() {
+    echo "Syncing sequences in $1..."
+    xsql="select sead_utility.sync_sequences();"
+    psql -bqw -h $BUGSIMPORT_DBHOST -U $BUGSIMPORT_DBUSER -c "$xsql" "$1" > /dev/null 2>&1
+    if [ $? -ne 0 ];  then
+        echo "fatal: sync failed!" >&2
+        exit 64
+    fi
+}
+
+envvars=()
+
+if [ "$BUGSIMPORT_DBPASSWORD" == "" ]; then
+    echo -n "Password: "; read -s BUGSIMPORT_DBPASSWORD
+fi
 
 for var in BUGSIMPORT_DBHOST BUGSIMPORT_DBPORT BUGSIMPORT_DBNAME BUGSIMPORT_DBUSER BUGSIMPORT_DBPASSWORD
 do
-    if [ -n "${!var}" ]; then
-       envvars+=(-e $var)
+    if [ "${!var}" == "" ]; then
+       echo "error: \$$var not set"
+       exit 64
     fi
+
+    envvars+=(-e $var)
 done
 
-docker run  -it --rm --network host \
-    --env-file .env \
-    --mount "type=bind,src=$(pwd),/home/bugger/data" \
-     "${passopt[@]}" \
-     humlab/bugsimport:latest $@
+if [ "$sync_sequences" == "yes" ]; then
+    sync_sequences $BUGSIMPORT_DBNAME
+fi
+
+echo docker run -it --rm --network host --mount "type=bind,src=$(pwd),/home/bugger/data" "${envvars[@]}" humlab/bugsimport:latest $@
+
+BUGSIMPORT_DBPASSWORD=""

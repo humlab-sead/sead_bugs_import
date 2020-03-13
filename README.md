@@ -37,6 +37,8 @@ docker run --rm -it sead_bugs_import:latest bash
 
 ## Usage
 
+See wiki [How to perform a Bugs Import](https://github.com/humlab-sead/sead_bugs_import/wiki/How-to-perform-a-Bugs-Import) for a non-technical description of how to import Bugs data into the SEAD database.
+
 > java -jar jar_file --file=mbd-file [--importers=..] [--validate-schema]
 
 ```
