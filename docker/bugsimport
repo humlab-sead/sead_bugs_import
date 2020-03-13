@@ -40,6 +40,8 @@ do
     esac
 done
 
+set -- "${POSITIONAL[@]}" # restore positional parameters
+
 sync_sequences() {
     echo "Syncing sequences in $1..."
     xsql="select sead_utility.sync_sequences();"
@@ -54,22 +56,33 @@ envvars=()
 
 if [ "$BUGSIMPORT_DBPASSWORD" == "" ]; then
     echo -n "Password: "; read -s BUGSIMPORT_DBPASSWORD
+    echo ""
 fi
 
-for var in BUGSIMPORT_DBHOST BUGSIMPORT_DBPORT BUGSIMPORT_DBNAME BUGSIMPORT_DBUSER BUGSIMPORT_DBPASSWORD
-do
-    if [ "${!var}" == "" ]; then
-       echo "error: \$$var not set"
-       exit 64
-    fi
+# for var in BUGSIMPORT_DBHOST BUGSIMPORT_DBPORT BUGSIMPORT_DBNAME BUGSIMPORT_DBUSER BUGSIMPORT_DBPASSWORD
+# do
+#     if [ "${var}" == "" ]; then
+#        echo "error: \$$var not set"
+#        exit 64
+#     fi
 
-    envvars+=(-e $var)
-done
+#     envvars+=(-e $var)
+# done
 
 if [ "$sync_sequences" == "yes" ]; then
     sync_sequences $BUGSIMPORT_DBNAME
 fi
 
-echo docker run -it --rm --network host --mount "type=bind,src=$(pwd),/home/bugger/data" "${envvars[@]}" humlab/bugsimport:latest $@
+export BUGSIMPORT_DBUSER=$BUGSIMPORT_DBUSER
+export BUGSIMPORT_DBPASSWORD=$BUGSIMPORT_DBPASSWORD
 
-BUGSIMPORT_DBPASSWORD=""
+docker run -it --rm --network host \
+    --mount "type=bind,src=$(pwd),dst=/home/bugger/data" \
+    -e BUGSIMPORT_DBHOST=$BUGSIMPORT_DBHOST \
+    -e BUGSIMPORT_DBPORT=$BUGSIMPORT_DBPORT \
+    -e BUGSIMPORT_DBNAME=$BUGSIMPORT_DBNAME \
+    -e BUGSIMPORT_DBUSER \
+    -e BUGSIMPORT_DBPASSWORD \
+    humlab/bugsimport:latest $@
+
+unset BUGSIMPORT_DBHOST BUGSIMPORT_DBPORT BUGSIMPORT_DBNAME BUGSIMPORT_DBUSER BUGSIMPORT_DBPASSWORD
