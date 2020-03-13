@@ -21,25 +21,21 @@ FROM maven:3.6.2-jdk-8
 RUN apt-get update && apt-get install -y \
   wget unzip
 
-ARG USER_HOME_DIR="/home/bugger"
-
 LABEL MAINTAINER Roger Mähler <roger dot mahler at umu dot se>
 
 RUN useradd -m bugger
 
-WORKDIR ${USER_HOME_DIR}
-
-COPY --from=build /source/sead_bugs_import/target/bugs.import-0.1-SNAPSHOT.jar .
-
 COPY ./docker-entrypoint.sh /usr/bin/docker-entrypoint.sh
-COPY ./application.properties.template .
 
-RUN mkdir -p /home/bugger/config \
-    && mkdir -p /home/bugger/bugsdata \
-    && chmod +x /usr/bin/docker-entrypoint.sh
+RUN chmod +x /usr/bin/docker-entrypoint.sh
 
 USER bugger
 
+WORKDIR /home/bugger
+COPY --from=build /source/sead_bugs_import/target/bugs.import-0.1-SNAPSHOT.jar .
+RUN mkdir -p /home/bugger/config
+COPY ./application.properties.template .
+
 ENTRYPOINT [ "docker-entrypoint.sh" ]
 
-CMD ["docker-entrypoint.sh" ]
+CMD [ ]
