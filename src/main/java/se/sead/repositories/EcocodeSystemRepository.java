@@ -6,6 +6,6 @@ import se.sead.bugsimport.ecocodedefinitiongroups.seadmodel.EcocodeSystem;
 
 public interface EcocodeSystemRepository extends Repository<EcocodeSystem, Integer> {
 
-    @Query("select eSystem from EcocodeSystem eSystem where eSystem.name = 'Koch System'")
+    @Query("select eSystem from EcocodeSystem eSystem where eSystem.name = 'Koch Ecology Codes'")
     EcocodeSystem findKochSystem();
 }
