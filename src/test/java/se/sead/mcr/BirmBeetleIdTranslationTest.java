@@ -40,7 +40,7 @@ public class BirmBeetleIdTranslationTest {
         createAndSaveIdTranslation(createIdentifier(), "CODE", "10");
         BirmBeetleDat source = createDefaultSource();
         translationService.translateValues(source);
-        assertEquals(new Double(10), source.getBugsCode());
+        assertEquals(Double.valueOf(10), source.getBugsCode());
     }
 
     private String createIdentifier(){
@@ -69,7 +69,7 @@ public class BirmBeetleIdTranslationTest {
         createAndSaveIdTranslation(createIdentifier(), "MCRRow", "2");
         BirmBeetleDat source = createDefaultSource();
         translationService.translateValues(source);
-        assertEquals(new Short("2"), source.getRow());
+        assertEquals(Short.valueOf("2"), source.getRow());
     }
 
     @Test

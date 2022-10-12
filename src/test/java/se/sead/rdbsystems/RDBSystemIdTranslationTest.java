@@ -80,7 +80,7 @@ public class RDBSystemIdTranslationTest {
         BugsRDBSystem source = create();
         source.setRdbFirstPublished((short)2000);
         translationService.translateValues(source);
-        assertEquals(new Short("1900"), source.getRdbFirstPublished());
+        assertEquals(Short.valueOf("1900"), source.getRdbFirstPublished());
     }
 
     @Test

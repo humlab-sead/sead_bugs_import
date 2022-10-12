@@ -45,7 +45,7 @@ public class SpeciesAssociationIdTranslationTest {
         createAndSaveIdTranslation("CODE", "10");
         source.setCode(1d);
         translationService.translateValues(source);
-        assertEquals(new Double(10d), source.getCode());
+        assertEquals(Double.valueOf(10d), source.getCode());
     }
 
     private void createAndSaveIdTranslation(
@@ -61,7 +61,7 @@ public class SpeciesAssociationIdTranslationTest {
         createAndSaveIdTranslation("AssociatedSpeciesCODE", "10");
         source.setAssociatedSpeciesCODE(1d);
         translationService.translateValues(source);
-        assertEquals(new Double(10d), source.getAssociatedSpeciesCODE());
+        assertEquals(Double.valueOf(10d), source.getAssociatedSpeciesCODE());
     }
 
     @Test

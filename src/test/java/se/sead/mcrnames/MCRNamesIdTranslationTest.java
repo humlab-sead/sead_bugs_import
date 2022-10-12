@@ -37,7 +37,7 @@ public class MCRNamesIdTranslationTest {
         createAndSaveIdTranslation("CODE", "10");
         BugsMCRNames source = create();
         translationService.translateValues(source);
-        assertEquals(new Double(10d), source.getCode());
+        assertEquals(Double.valueOf(10d), source.getCode());
     }
 
     private void createAndSaveIdTranslation(
@@ -60,7 +60,7 @@ public class MCRNamesIdTranslationTest {
         BugsMCRNames source = create();
         source.setMcrNumber((short)10);
         translationService.translateValues(source);
-        assertEquals(new Short("100"), source.getMcrNumber());
+        assertEquals(Short.valueOf("100"), source.getMcrNumber());
     }
 
     @Test
@@ -87,7 +87,7 @@ public class MCRNamesIdTranslationTest {
         BugsMCRNames source = create();
         source.setTempCode(1d);
         translationService.translateValues(source);
-        assertEquals(new Double(10d), source.getTempCode());
+        assertEquals(Double.valueOf(10d), source.getTempCode());
     }
 
     @Test

@@ -49,7 +49,7 @@ public class SpeciesSynonymsIdTranslationTest {
     public void changeCODE(){
         createAndSaveIdTranslation("CODE", "10");
         translationService.translateValues(source);
-        assertEquals(new Double(10d), source.getCode());
+        assertEquals(Double.valueOf(10d), source.getCode());
     }
 
     private void createAndSaveIdTranslation(String column, String replacementValue){

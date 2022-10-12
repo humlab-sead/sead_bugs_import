@@ -37,7 +37,7 @@ public class BirmBeetleTypeTranslationTest {
         BirmBeetleDat source = new BirmBeetleDat();
         source.setBugsCode(1d);
         translationService.translateValues(source);
-        assertEquals(new Double(10d), source.getBugsCode());
+        assertEquals(Double.valueOf(10d), source.getBugsCode());
     }
 
     private void createAndSaveTypeTranslation(
@@ -55,7 +55,7 @@ public class BirmBeetleTypeTranslationTest {
         BirmBeetleDat source = new BirmBeetleDat();
         source.setRow((short)1);
         translationService.translateValues(source);
-        assertEquals(new Short("10"), source.getRow());
+        assertEquals(Short.valueOf("10"), source.getRow());
     }
 
     @Test(expected = Exception.class)

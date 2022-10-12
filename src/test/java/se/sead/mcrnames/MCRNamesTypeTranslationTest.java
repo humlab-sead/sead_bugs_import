@@ -36,7 +36,7 @@ public class MCRNamesTypeTranslationTest {
         BugsMCRNames source = new BugsMCRNames();
         source.setCode(1d);
         translationService.translateValues(source);
-        assertEquals(new Double(10d), source.getCode());
+        assertEquals(Double.valueOf(10d), source.getCode());
     }
 
     private void createAndSaveTypeTranslation(
@@ -54,7 +54,7 @@ public class MCRNamesTypeTranslationTest {
         BugsMCRNames source = new BugsMCRNames();
         source.setMcrNumber((short)1);
         translationService.translateValues(source);
-        assertEquals(new Short("10"), source.getMcrNumber());
+        assertEquals(Short.valueOf("10"), source.getMcrNumber());
     }
 
     @Test
@@ -81,7 +81,7 @@ public class MCRNamesTypeTranslationTest {
         BugsMCRNames source = new BugsMCRNames();
         source.setTempCode(1d);
         translationService.translateValues(source);
-        assertEquals(new Double(10d), source.getTempCode());
+        assertEquals(Double.valueOf(10d), source.getTempCode());
     }
 
     @Test

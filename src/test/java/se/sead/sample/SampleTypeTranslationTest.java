@@ -72,7 +72,7 @@ public class SampleTypeTranslationTest {
         BugsSample source = new BugsSample();
         source.setZOrDepthTop(0d);
         translationService.translateValues(source);
-        assertEquals(new Double(1d), source.getZOrDepthTop());
+        assertEquals(Double.valueOf(1d), source.getZOrDepthTop());
     }
 
     @Test
@@ -81,7 +81,7 @@ public class SampleTypeTranslationTest {
         BugsSample source = new BugsSample();
         source.setZOrDepthBot(0d);
         translationService.translateValues(source);
-        assertEquals(new Double(1d), source.getZOrDepthBot());
+        assertEquals(Double.valueOf(1d), source.getZOrDepthBot());
     }
 
     @Test

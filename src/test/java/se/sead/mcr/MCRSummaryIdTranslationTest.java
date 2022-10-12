@@ -36,7 +36,7 @@ public class MCRSummaryIdTranslationTest {
         createAndSaveIdTranslation(createIdentifer("1.0"), "CODE", "10");
         MCRSummaryData source = create(1d);
         translationService.translateValues(source);
-        assertEquals(new Double(10d), source.getCode());
+        assertEquals(Double.valueOf(10d), source.getCode());
     }
 
     private String createIdentifer(String code){
@@ -73,7 +73,7 @@ public class MCRSummaryIdTranslationTest {
         createAndSaveIdTranslation(createIdentifer("1.0"), "TMaxLo", "100");
         MCRSummaryData source = create(1d);
         translationService.translateValues(source);
-        assertEquals(new Short("100"), source.getMaxLo());
+        assertEquals(Short.valueOf("100"), source.getMaxLo());
     }
 
     @Test
@@ -81,7 +81,7 @@ public class MCRSummaryIdTranslationTest {
         createAndSaveIdTranslation(createIdentifer("1.0"), "TMaxHi", "100");
         MCRSummaryData source = create(1d);
         translationService.translateValues(source);
-        assertEquals(new Short("100"), source.getMaxHi());
+        assertEquals(Short.valueOf("100"), source.getMaxHi());
     }
 
     @Test
@@ -89,7 +89,7 @@ public class MCRSummaryIdTranslationTest {
         createAndSaveIdTranslation(createIdentifer("1.0"), "TMinLo", "100");
         MCRSummaryData source = create(1d);
         translationService.translateValues(source);
-        assertEquals(new Short("100"), source.getMinLo());
+        assertEquals(Short.valueOf("100"), source.getMinLo());
     }
 
     @Test
@@ -97,7 +97,7 @@ public class MCRSummaryIdTranslationTest {
         createAndSaveIdTranslation(createIdentifer("1.0"), "TMinHi", "100");
         MCRSummaryData source = create(1d);
         translationService.translateValues(source);
-        assertEquals(new Short("100"), source.getMinHi());
+        assertEquals(Short.valueOf("100"), source.getMinHi());
     }
 
     @Test
@@ -105,7 +105,7 @@ public class MCRSummaryIdTranslationTest {
         createAndSaveIdTranslation(createIdentifer("1.0"), "TRangeLo", "100");
         MCRSummaryData source = create(1d);
         translationService.translateValues(source);
-        assertEquals(new Short("100"), source.getRangeLo());
+        assertEquals(Short.valueOf("100"), source.getRangeLo());
     }
 
     @Test
@@ -113,7 +113,7 @@ public class MCRSummaryIdTranslationTest {
         createAndSaveIdTranslation(createIdentifer("1.0"), "TRangeHi", "100");
         MCRSummaryData source = create(1d);
         translationService.translateValues(source);
-        assertEquals(new Short("100"), source.getRangeHi());
+        assertEquals(Short.valueOf("100"), source.getRangeHi());
     }
 
     @Test
@@ -121,7 +121,7 @@ public class MCRSummaryIdTranslationTest {
         createAndSaveIdTranslation(createIdentifer("1.0"), "COGMidTMax", "100");
         MCRSummaryData source = create(1d);
         translationService.translateValues(source);
-        assertEquals(new Short("100"), source.getCogMidTMax());
+        assertEquals(Short.valueOf("100"), source.getCogMidTMax());
     }
 
     @Test
@@ -129,6 +129,6 @@ public class MCRSummaryIdTranslationTest {
         createAndSaveIdTranslation(createIdentifer("1.0"), "COGMidTRange", "100");
         MCRSummaryData source = create(1d);
         translationService.translateValues(source);
-        assertEquals(new Short("100"), source.getCogMidTRange());
+        assertEquals(Short.valueOf("100"), source.getCogMidTRange());
     }
 }

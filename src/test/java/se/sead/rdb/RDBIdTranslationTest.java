@@ -36,7 +36,7 @@ public class RDBIdTranslationTest {
         createAndSaveIdTranslation("1.0", "CODE", "10");
         BugsRDB source = create();
         translationService.translateValues(source);
-        assertEquals(new Double(10d), source.getCode());
+        assertEquals(Double.valueOf(10d), source.getCode());
     }
 
     private void createAndSaveIdTranslation(

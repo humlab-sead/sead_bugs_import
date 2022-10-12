@@ -42,7 +42,7 @@ public class EcoKochIdTranslationTest {
         source.setCode(1d);
         source.setBugsKochCode("eco");
         translationService.translateValues(source);
-        assertEquals(new Double(10d), source.getCode());
+        assertEquals(Double.valueOf(10d), source.getCode());
     }
 
     private void createAndSaveIdTranslation(

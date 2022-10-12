@@ -81,7 +81,7 @@ public class SiteTypeTranslationTest {
         BugsSite source = new BugsSite();
         source.setLatDD(0f);
         translationService.translateValues(source);
-        assertEquals(new Float(11f), source.getLatDD());
+        assertEquals(Float.valueOf(11f), source.getLatDD());
     }
 
     @Test
@@ -90,7 +90,7 @@ public class SiteTypeTranslationTest {
         BugsSite source = new BugsSite();
         source.setLongDD(0f);
         translationService.translateValues(source);
-        assertEquals(new Float(11f), source.getLongDD());
+        assertEquals(Float.valueOf(11f), source.getLongDD());
     }
 
     @Test
@@ -99,7 +99,7 @@ public class SiteTypeTranslationTest {
         BugsSite source = new BugsSite();
         source.setAlt(0f);
         translationService.translateValues(source);
-        assertEquals(new Float(-1f), source.getAlt());
+        assertEquals(Float.valueOf(-1f), source.getAlt());
     }
 
     @Test

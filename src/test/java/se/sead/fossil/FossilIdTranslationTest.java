@@ -40,7 +40,7 @@ public class FossilIdTranslationTest {
         Fossil source = create();
         source.setCode(10d);
         translationService.translateValues(source);
-        assertEquals(new Double(1d), source.getCode());
+        assertEquals(Double.valueOf(1d), source.getCode());
     }
 
     private void createAndSaveIdTranslation(
@@ -72,6 +72,6 @@ public class FossilIdTranslationTest {
         Fossil source = create();
         source.setAbundance(0);
         translationService.translateValues(source);
-        assertEquals(new Integer(1), source.getAbundance());
+        assertEquals(Integer.valueOf(1), source.getAbundance());
     }
 }

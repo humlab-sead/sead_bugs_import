@@ -82,7 +82,7 @@ public class DatesRadioTypeTranslationTest {
         DatesRadio source = new DatesRadio();
         source.setDate(0);
         translationService.translateValues(source);
-        assertEquals(new Integer(1000), source.getDate());
+        assertEquals(Integer.valueOf(1000), source.getDate());
     }
 
     @Test
@@ -91,7 +91,7 @@ public class DatesRadioTypeTranslationTest {
         DatesRadio source = new DatesRadio();
         source.setAgeErrorOrPlusError((short)2);
         translationService.translateValues(source);
-        assertEquals(new Short((short)200), source.getAgeErrorOrPlusError());
+        assertEquals(Short.valueOf((short)200), source.getAgeErrorOrPlusError());
     }
 
     @Test
@@ -100,7 +100,7 @@ public class DatesRadioTypeTranslationTest {
         DatesRadio source = new DatesRadio();
         source.setAgeErrorMinus(2);
         translationService.translateValues(source);
-        assertEquals(new Integer(200), source.getAgeErrorMinus());
+        assertEquals(Integer.valueOf(200), source.getAgeErrorMinus());
     }
 
     @Test

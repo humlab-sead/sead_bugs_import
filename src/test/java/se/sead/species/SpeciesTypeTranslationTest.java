@@ -43,7 +43,7 @@ public class SpeciesTypeTranslationTest {
     public void changeCODE(){
         createAndSaveTypeTranslation("CODE", "1", "100");
         translationService.translateValues(source);
-        assertEquals(new Double(100d), source.getCode());
+        assertEquals(Double.valueOf(100d), source.getCode());
     }
 
     private void createAndSaveTypeTranslation(

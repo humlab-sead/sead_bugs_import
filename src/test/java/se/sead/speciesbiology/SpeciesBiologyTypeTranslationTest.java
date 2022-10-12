@@ -36,7 +36,7 @@ public class SpeciesBiologyTypeTranslationTest {
         Biology source = new Biology();
         source.setCode(1d);
         translationService.translateValues(source);
-        assertEquals(new Double(10d), source.getCode());
+        assertEquals(Double.valueOf(10d), source.getCode());
     }
 
     private void createAndSaveTypeTranslation(

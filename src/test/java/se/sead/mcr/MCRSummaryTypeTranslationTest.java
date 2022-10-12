@@ -37,7 +37,7 @@ public class MCRSummaryTypeTranslationTest {
         MCRSummaryData source = new MCRSummaryData();
         source.setCode(1d);
         translationService.translateValues(source);
-        assertEquals(new Double(10d), source.getCode());
+        assertEquals(Double.valueOf(10d), source.getCode());
     }
 
     private void createAndSaveTypeTranslation(
@@ -55,7 +55,7 @@ public class MCRSummaryTypeTranslationTest {
         MCRSummaryData source = new MCRSummaryData();
         source.setMaxLo((short)10);
         translationService.translateValues(source);
-        assertEquals(new Short("15"), source.getMaxLo());
+        assertEquals(Short.valueOf("15"), source.getMaxLo());
     }
 
     @Test
@@ -64,7 +64,7 @@ public class MCRSummaryTypeTranslationTest {
         MCRSummaryData source = new MCRSummaryData();
         source.setMaxHi((short)10);
         translationService.translateValues(source);
-        assertEquals(new Short("15"), source.getMaxHi());
+        assertEquals(Short.valueOf("15"), source.getMaxHi());
     }
 
     @Test
@@ -73,7 +73,7 @@ public class MCRSummaryTypeTranslationTest {
         MCRSummaryData source = new MCRSummaryData();
         source.setMinLo((short)10);
         translationService.translateValues(source);
-        assertEquals(new Short("15"), source.getMinLo());
+        assertEquals(Short.valueOf("15"), source.getMinLo());
     }
 
     @Test
@@ -82,7 +82,7 @@ public class MCRSummaryTypeTranslationTest {
         MCRSummaryData source = new MCRSummaryData();
         source.setMinHi((short)10);
         translationService.translateValues(source);
-        assertEquals(new Short("15"), source.getMinHi());
+        assertEquals(Short.valueOf("15"), source.getMinHi());
     }
 
     @Test
@@ -91,7 +91,7 @@ public class MCRSummaryTypeTranslationTest {
         MCRSummaryData source = new MCRSummaryData();
         source.setRangeLo((short)10);
         translationService.translateValues(source);
-        assertEquals(new Short("15"), source.getRangeLo());
+        assertEquals(Short.valueOf("15"), source.getRangeLo());
     }
 
     @Test
@@ -100,7 +100,7 @@ public class MCRSummaryTypeTranslationTest {
         MCRSummaryData source = new MCRSummaryData();
         source.setRangeHi((short)10);
         translationService.translateValues(source);
-        assertEquals(new Short("15"), source.getRangeHi());
+        assertEquals(Short.valueOf("15"), source.getRangeHi());
     }
 
     @Test
@@ -109,7 +109,7 @@ public class MCRSummaryTypeTranslationTest {
         MCRSummaryData source = new MCRSummaryData();
         source.setCogMidTMax((short)10);
         translationService.translateValues(source);
-        assertEquals(new Short("15"), source.getCogMidTMax());
+        assertEquals(Short.valueOf("15"), source.getCogMidTMax());
     }
 
     @Test
@@ -118,6 +118,6 @@ public class MCRSummaryTypeTranslationTest {
         MCRSummaryData source = new MCRSummaryData();
         source.setCogMidTRange((short)10);
         translationService.translateValues(source);
-        assertEquals(new Short("15"), source.getCogMidTRange());
+        assertEquals(Short.valueOf("15"), source.getCogMidTRange());
     }
 }

@@ -37,7 +37,7 @@ public class FossilTypeTranslationTest {
         Fossil source = new Fossil();
         source.setCode(1d);
         translationService.translateValues(source);
-        assertEquals(new Double(10d), source.getCode());
+        assertEquals(Double.valueOf(10d), source.getCode());
     }
 
     private void createAndSaveTypeTranslation(
@@ -64,6 +64,6 @@ public class FossilTypeTranslationTest {
         Fossil source = new Fossil();
         source.setAbundance(1);
         translationService.translateValues(source);
-        assertEquals(new Integer(0), source.getAbundance());
+        assertEquals(Integer.valueOf(0), source.getAbundance());
     }
 }

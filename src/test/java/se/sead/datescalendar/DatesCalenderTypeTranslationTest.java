@@ -82,7 +82,7 @@ public class DatesCalenderTypeTranslationTest {
         DatesCalendar source = new DatesCalendar();
         source.setDate(10);
         translationService.translateValues(source);
-        assertEquals(new Integer(1000), source.getDate());
+        assertEquals(Integer.valueOf(1000), source.getDate());
     }
 
     @Test

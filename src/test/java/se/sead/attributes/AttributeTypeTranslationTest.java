@@ -37,7 +37,7 @@ public class AttributeTypeTranslationTest {
         BugsAttributes source = new BugsAttributes();
         source.setCode(99d);
         translationService.translateValues(source);
-        assertEquals(new Double(1d), source.getCode());
+        assertEquals(Double.valueOf(1d), source.getCode());
     }
 
     private void createAndSaveTypeTranslation(
@@ -73,7 +73,7 @@ public class AttributeTypeTranslationTest {
         BugsAttributes source = new BugsAttributes();
         source.setValue(1f);
         translationService.translateValues(source);
-        assertEquals(new Float(123f), source.getValue());
+        assertEquals(Float.valueOf(123f), source.getValue());
     }
 
     @Test

@@ -77,7 +77,7 @@ public class SampleIdTranslationTest {
         createAndSaveIdTranslation("ZorDepthTop", "1");
         source.setZOrDepthTop(0d);
         translationService.translateValues(source);
-        assertEquals(new Double(1d), source.getZOrDepthTop());
+        assertEquals(Double.valueOf(1d), source.getZOrDepthTop());
     }
 
     @Test
@@ -85,7 +85,7 @@ public class SampleIdTranslationTest {
         createAndSaveIdTranslation("ZorDepthBot", "1");
         source.setZOrDepthBot(0d);
         translationService.translateValues(source);
-        assertEquals(new Double(1d), source.getZOrDepthBot());
+        assertEquals(Double.valueOf(1d), source.getZOrDepthBot());
     }
 
     @Test

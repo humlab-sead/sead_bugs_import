@@ -44,7 +44,7 @@ public class SeasonActiveAdultTypeTranslationTest {
     public void changeCODE(){
         createAndSaveTypeTranslation("CODE", "1", "10");
         translationService.translateValues(source);
-        assertEquals(new Double(10d), source.getCode());
+        assertEquals(Double.valueOf(10d), source.getCode());
     }
 
     private void createAndSaveTypeTranslation(

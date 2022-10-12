@@ -36,7 +36,7 @@ public class SpeciesDistributionTypeTranslationTest {
         Distrib source = new Distrib();
         source.setCode(10d);
         translationService.translateValues(source);
-        assertEquals(new Double(1d), source.getCode());
+        assertEquals(Double.valueOf(1d), source.getCode());
     }
 
     private void createAndSaveTypeTranslation(

@@ -85,7 +85,7 @@ public class SiteIdTranslationTest {
         createAndSaveIdTranslation("LatDD", "11.1");
         source.setLatDD(0f);
         translationService.translateValues(source);
-        assertEquals(new Float(11.1f), source.getLatDD());
+        assertEquals(Float.valueOf(11.1f), source.getLatDD());
     }
 
     @Test
@@ -93,7 +93,7 @@ public class SiteIdTranslationTest {
         createAndSaveIdTranslation("LongDD", "11.1");
         source.setLongDD(0f);
         translationService.translateValues(source);
-        assertEquals(new Float(11.1f), source.getLongDD());
+        assertEquals(Float.valueOf(11.1f), source.getLongDD());
     }
 
     @Test
@@ -101,7 +101,7 @@ public class SiteIdTranslationTest {
         createAndSaveIdTranslation("Alt", "11.1");
         source.setAlt(0f);
         translationService.translateValues(source);
-        assertEquals(new Float(11.1f), source.getAlt());
+        assertEquals(Float.valueOf(11.1f), source.getAlt());
     }
 
     @Test

@@ -36,7 +36,7 @@ public class SpeciesAssociationTypeTranslationTest {
         BugsSpeciesAssociation source = new BugsSpeciesAssociation();
         source.setCode(10d);
         translationService.translateValues(source);
-        assertEquals(new Double(100d), source.getCode());
+        assertEquals(Double.valueOf(100d), source.getCode());
     }
 
     private void createAndSaveTypeTranslation(
@@ -54,7 +54,7 @@ public class SpeciesAssociationTypeTranslationTest {
         BugsSpeciesAssociation source = new BugsSpeciesAssociation();
         source.setAssociatedSpeciesCODE(10d);
         translationService.translateValues(source);
-        assertEquals(new Double(100), source.getAssociatedSpeciesCODE());
+        assertEquals(Double.valueOf(100), source.getAssociatedSpeciesCODE());
     }
 
     @Test

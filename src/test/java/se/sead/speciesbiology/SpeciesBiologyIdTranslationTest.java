@@ -46,7 +46,7 @@ public class SpeciesBiologyIdTranslationTest {
     public void changeCODE(){
         createAndSaveIdTranslation("CODE", "10");
         translationService.translateValues(source);
-        assertEquals(new Double(10d), source.getCode());
+        assertEquals(Double.valueOf(10d), source.getCode());
     }
 
     private void createAndSaveIdTranslation(
