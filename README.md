@@ -71,7 +71,7 @@ See wiki [How to perform a Bugs Import](https://github.com/humlab-sead/sead_bugs
 ### Verify configuration
 
 The application uses PostgreSQL as target database in production, and an in-memory database (H2) when running tests.
-Before your run this application, it would be good to check properties defined in application.properties file.
+Please checck that the connection properties defined in `application.properties` is properly set.
 
 ```ini
 spring.datasource.driverClassName=org.postgresql.Driver
@@ -84,6 +84,7 @@ spring.jpa.show-sql=false
 spring.jpa.hibernate.ddl-auto=none
 # spring.jpa.generate-ddl=true
 ```
+
 Set xyz to ```update``` if target database schema should be updated to conform to the applications data model. Set to ```none``` if model is correct, or if changes are handled manually outside of code (which is better). (TODO: Add service that at startup, or when given a flag, generates update ddl  similar to using ```update```).
 
 TODO: Move DB specifics to a Spring Boot profile instead (need source code changes @Profile(profile) attribute. (spring.profile.active)
