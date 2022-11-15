@@ -1,4 +1,8 @@
 #!/bin/bash
+##################################################################################################################
+# This script copies a Bugs MS Access database into a new PostgreSQL database
+#  This script, and the target database, is only used for testing and Q&A of the Bugs import system
+##################################################################################################################
 
 export PGCLIENTENCODING=UTF8
 
@@ -62,8 +66,8 @@ function usage() {
 
 set -- "${POSITIONAL[@]}" # restore positional parameters
 
-if [ "$dbhost" != "seadserv.humlab.umu.se" ]; then
-    echo "This script can for now only be run on 130.239.1.181";
+if [ "$dbhost" != "humlabseadserv.srv.its.umu.se" ]; then
+    echo "This script can for now only be run on humlabseadserv.srv.its.umu.se";
     exit 64
 fi
 
