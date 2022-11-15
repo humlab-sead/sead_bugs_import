@@ -1,9 +1,13 @@
 #!/bin/bash
 #######################################################################
 # WORK IN PROGRESS
+# THIS WILL MOST LIKELY BE DEPRECATED IN FAVOR OF DOCKER SOLUTION
+#
 # The intention of this script is to enable running a bugs bugs import
 # with this script as the single starting poiint
+#
 #######################################################################
+
 export JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:bin/java::")
 
 bugsdir=~/bugs
