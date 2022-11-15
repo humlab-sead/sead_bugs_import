@@ -1,0 +1,125 @@
+#!/bin/bash
+##################################################################################################################
+# This script copies a table from one database to another
+##################################################################################################################
+
+set -e
+
+export PGCLIENTENCODING=UTF8
+
+dothostfile=~/vault/.default.sead.server
+dotuserfile=~/vault/.default.sead.username
+
+target_database=
+target_schema=
+source_database=
+source_table=
+
+if [[ -f "$dothostfile" ]]; then
+    dbhost=`cat $dothostfile`
+fi
+if [[ -f "$dotuserfile" ]]; then
+    dbuser=`cat $dotuserfile`
+fi
+
+usage_message=$(cat <<EOF
+usage: deploy_staging OPTIONS...
+
+    --host SERVERNAME               Target server (${dbhost})
+    --user USERNAME                 User on target server (${dbuser})
+    --target-database DBNAME        Target database name. Mandatory.
+    --source-database DBNAME        Name of source database
+    --source-table DBNAME           Name of source table
+
+EOF
+)
+
+POSITIONAL=()
+while [[ $# -gt 0 ]]
+do
+    key="$1"
+
+    case $key in
+        --host)
+            dbhost="$2"; shift; shift
+        ;;
+        --user)
+            dbuser="$2"; shift; shift
+        ;;
+        --target-database)
+            target_database="$2"; shift; shift
+        ;;
+        --source-database)
+            source_database="$2";
+            shift; shift
+        ;;
+        --source-table)
+            source_table="$2";
+            shift; shift
+        ;;
+        --target-schema)
+            target_schema="$2";
+            shift; shift
+        ;;
+        *)
+            POSITIONAL+=("$1") # save it in an array for later
+            shift
+        ;;
+    esac
+done
+
+function usage() {
+    echo "$usage_message"
+}
+
+set -- "${POSITIONAL[@]}" # restore positional parameters
+
+# if [ "$dbhost" != "humlabseadserv.srv.its.umu.se" ]; then
+#     echo "This script can for now only be run on humlabseadserv.srv.its.umu.se";
+#     exit 64
+# fi
+
+if [ "${source_database}" == "" ]; then
+    echo "error: source database name not specified"
+    usage
+    exit 64
+fi
+
+if [ "${source_table}" == "" ]; then
+    echo "error: source table name not specified"
+    usage
+    exit 64
+fi
+
+if [ "${target_database}"  == "" ]; then
+    echo "error: target ${target_database} not specified"
+    usage
+    exit 64
+fi
+
+echo "info: copying table ${source_table} from ${source_database} into ${target_database}...";
+
+function dbexec() {
+    p_db=$1
+    p_sql=$2
+    psql -v ON_ERROR_STOP=1 --host=$dbhost --username=$dbuser --no-password --dbname=$p_db --command "$p_sql"
+    if [ $? -ne 0 ];  then
+        echo "fatal: psql command failed! Deploy aborted." >&2
+        exit 64
+    fi
+}
+
+dbexec $target_database "drop table if exists \"$source_table\";"
+
+pg_dump --host=$dbhost --username=$dbuser --dbname=$source_database --quote-all-identifiers --no-tablespaces --table=\"$source_table\" \
+    | psql  --host=$dbhost --username=$dbuser --dbname=$target_database
+
+if [ "$target_schema" != "" ]; then
+
+    dbexec $target_database "create schema if not exists $target_schema;"
+    dbexec $target_database "drop table if exists $target_schema.\"$source_table\";"
+    dbexec $target_database "alter table \"$source_table\" set schema $target_schema ;"
+
+fi
+
+# scripts/copy-table --host humlabseadserv.srv.its.umu.se --user humlab_admin --source-database bugsdata_20200219 --target-database sead_production_201912 --source-table INDEX --target-schema bugsdata
