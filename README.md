@@ -227,3 +227,8 @@ Tests are also automatically run from command line when e.g. `mvn package` or `m
 * DDL update drops columns in target table that hasn't been mapped in entity.
 * DDL update drops constraints.
 *
+
+
+## Notes
+
+* Use `man mdb-export` etc. to get help on [mdbtoos](https://github.com/mdbtools/mdbtools).
