@@ -15,7 +15,7 @@ public abstract class Importer<BugsType extends TraceableBugsData, SeadType exte
 
     private BugsSeadMapper<BugsType, SeadType> dataMapper;
     private Persister<BugsType, SeadType> persister;
-    private List<Importer<? extends TraceableBugsData,? extends LoggableEntity>> requiredImporters;
+    private List<Importer<? extends TraceableBugsData, ? extends LoggableEntity>> requiredImporters;
     private boolean hasRun = false;
 
     protected Importer(BugsSeadMapper<BugsType, SeadType> dataMapper, Persister<BugsType, SeadType> persister) {
@@ -33,43 +33,48 @@ public abstract class Importer<BugsType extends TraceableBugsData, SeadType exte
         setRequiredImporters(requiredImporters);
     }
 
-    private void setRequiredImporters(Importer<? extends TraceableBugsData,? extends LoggableEntity>... requiredImporters){
-        if(requiredImporters != null && requiredImporters.length > 0 && requiredImporters[0] != null){
+    private void setRequiredImporters(
+            Importer<? extends TraceableBugsData, ? extends LoggableEntity>... requiredImporters) {
+        if (requiredImporters != null && requiredImporters.length > 0 && requiredImporters[0] != null) {
             this.requiredImporters = Arrays.asList(requiredImporters);
         } else {
             this.requiredImporters = Collections.EMPTY_LIST;
         }
     }
 
-    public void run(){
-        if(hasRun){
+    public void run() {
+        run(0);
+    }
+
+    public void run(int indent) {
+        String pad = indent < 1 ? "" : String.format("%" + indent + "c", ' ');
+        if (hasRun) {
             return;
         }
-        if(logger.isInfoEnabled()){
-            logger.info("start running {}", getClass().getSimpleName());
+        if (logger.isInfoEnabled()) {
+            logger.info("{}importer {}.run() mapper: {}, persister: {}", pad, getClass().getSimpleName(), dataMapper.getClass().getSimpleName(), persister.getClass().getSimpleName());
         }
-        runRequiredImporters();
-        if(logger.isInfoEnabled() && !requiredImporters.isEmpty()){
-            logger.info("finished required importers");
-        }
+        runRequiredImporters(indent);
         MappingResult<BugsType, SeadType> mappedData = mapData();
-        if(logger.isInfoEnabled()){
-            logger.info("finished mapping data");
-        }
         saveData(mappedData);
-        if(logger.isInfoEnabled()){
-            logger.info("done with importer: {}", getClass().getSimpleName());
+
+        if (logger.isInfoEnabled()) {
+            logger.info("{}importer {}: done", pad, getClass().getSimpleName());
         }
         hasRun = true;
     }
 
-    private void runRequiredImporters(){
-        for (Importer<? extends TraceableBugsData, ? extends LoggableEntity> importer :
-                requiredImporters) {
-            if(logger.isDebugEnabled()){
-                logger.debug("run required importer: {}", importer.getClass().getSimpleName());
+    private void runRequiredImporters() {
+        runRequiredImporters(0);
+    }
+
+    private void runRequiredImporters(int indent) {
+        for (Importer<? extends TraceableBugsData, ? extends LoggableEntity> importer : requiredImporters) {
+            if (logger.isDebugEnabled()) {
+                logger.info("importer {}: starting required importer {}", getClass().getSimpleName(),
+                        importer.getClass().getSimpleName());
             }
-            importer.run();
+            importer.run(indent + 4);
         }
     }
 
@@ -77,7 +82,7 @@ public abstract class Importer<BugsType extends TraceableBugsData, SeadType exte
         return dataMapper.importBugsData();
     }
 
-    private void saveData(MappingResult<BugsType, SeadType> mappedData){
+    private void saveData(MappingResult<BugsType, SeadType> mappedData) {
         persister.persist(mappedData);
     }
 }
