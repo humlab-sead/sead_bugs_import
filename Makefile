@@ -13,3 +13,6 @@ package:
 .PHONY: config
 config:
 	@cat ./config/application.properties
+
+tools:
+	@@sudo apt install mdbtools unixodbc
