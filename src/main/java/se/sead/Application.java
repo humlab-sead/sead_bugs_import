@@ -1,5 +1,7 @@
 package se.sead;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -22,6 +24,8 @@ import java.util.List;
 @SpringBootApplication
 @EnableJpaRepositories(repositoryBaseClass = CreateAndReadRepositoryImpl.class)
 public class Application {
+
+    private static final Logger logger = LoggerFactory.getLogger(Application.class);
 
     public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
@@ -69,6 +73,7 @@ public class Application {
         @Override
         public void run(ApplicationArguments applicationArguments) throws Exception {
         	argumentManager = new ApplicationArgumentManager(applicationArguments);
+            logger.info("using database: {}", applicationArguments.getOptionValues("file"));
             if(argumentManager.shouldRun()){
                 runner.run(getImporters());
             }
