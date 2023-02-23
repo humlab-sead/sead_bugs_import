@@ -26,7 +26,7 @@ public class DatabaseContentVerification<SeadType extends LoggableEntity> {
         }
     }
 
-    private DatabaseContentTestDataProvider<SeadType> contentProvider;
+    public DatabaseContentTestDataProvider<SeadType> contentProvider;
 
     public DatabaseContentVerification(DatabaseContentTestDataProvider<SeadType> contentProvider){
         this.contentProvider = contentProvider;
