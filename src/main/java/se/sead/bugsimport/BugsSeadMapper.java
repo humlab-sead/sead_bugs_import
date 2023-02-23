@@ -29,30 +29,30 @@ public abstract class BugsSeadMapper<BugsType extends TraceableBugsData, SeadTyp
         this.singleBugsTableRowConverterForMapper = singleBugsTableRowConverterForMapper;
     }
 
-    public MappingResult<BugsType, SeadType> importBugsData(){
+    public MappingResult<BugsType, SeadType> importBugsData() {
+
         MappingResult<BugsType, SeadType> resultContainer = initMapperResultContainer();
         List<BugsType> readItems = readItems();
-        for (BugsType readItem :
-                readItems) {
-            if(logger.isDebugEnabled()){
+        for (BugsType readItem : readItems) {
+            if (logger.isDebugEnabled()) {
                 logger.debug("mapping row item: {}", readItem);
             }
             try {
                 resultContainer.add(readItem, getConvertedValue(readItem));
-            } catch (Throwable t){
-                //logger.error("THROW DISABLED BY ROGER: Throwing error for : {}", readItem);
+            } catch (Throwable t) {
+                // logger.error("THROW DISABLED BY ROGER: Throwing error for : {}", readItem);
                 throw t;
             }
         }
         return resultContainer;
     }
 
-    protected List<BugsType> readItems(){
+    protected List<BugsType> readItems() {
         AccessReader reader = new AccessReader(getAccessReader());
         return reader.read(bugsTable);
     }
 
-    protected MappingResult<BugsType, SeadType> initMapperResultContainer(){
+    protected MappingResult<BugsType, SeadType> initMapperResultContainer() {
         return new ListMappingResult<>();
     }
 
@@ -65,9 +65,10 @@ public abstract class BugsSeadMapper<BugsType extends TraceableBugsData, SeadTyp
         try {
             dataTranslationService.translateValues(readItem);
             return singleBugsTableRowConverterForMapper.convertListForDataRow(readItem);
-        } catch (DataAccessException dae){
-            if(logger.isErrorEnabled()){
-                logger.error("data access error during convert for object {} - {}", getClass().getSimpleName(), unalteredVersion);
+        } catch (DataAccessException dae) {
+            if (logger.isErrorEnabled()) {
+                logger.error("data access error during convert for object {} - {}", getClass().getSimpleName(),
+                        unalteredVersion);
             }
             throw dae;
         }
