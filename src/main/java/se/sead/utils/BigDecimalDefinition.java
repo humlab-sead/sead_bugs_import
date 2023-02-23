@@ -41,6 +41,6 @@ public class BigDecimalDefinition {
         if(code == null){
             return null;
         }
-        return new BigDecimal(code).setScale(SEAD_SCALE, BigDecimal.ROUND_HALF_UP);
+        return new BigDecimal(code).setScale(SEAD_SCALE, RoundingMode.HALF_UP);
     }
 }
