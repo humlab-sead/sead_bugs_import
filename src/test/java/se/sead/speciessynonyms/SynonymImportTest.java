@@ -12,9 +12,13 @@ import se.sead.bugsimport.speciesassociation.seadmodel.SpeciesAssociation;
 import se.sead.bugsimport.speciessynonyms.SynonymImporter;
 import se.sead.bugsimport.speciessynonyms.bugsmodel.Synonym;
 import se.sead.repositories.*;
+import se.sead.sead.model.LoggableEntity;
+import se.sead.bugsimport.species.seadmodel.TaxaSpecies;
 import se.sead.testutils.BugsTracesAndErrorsVerification;
 import se.sead.testutils.DatabaseContentVerification;
 import se.sead.testutils.DefaultConfig;
+import java.util.List;
+import static org.junit.Assert.assertFalse;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -24,7 +28,7 @@ public class SynonymImportTest {
 
     @TestConfiguration
     public static class Config extends DefaultConfig {
-        public Config(){
+        public Config() {
             super("speciessynonyms");
         }
     }
@@ -51,7 +55,7 @@ public class SynonymImportTest {
     private LogVerifier logVerifier;
 
     @Test
-    public void run(){
+    public void run() {
         DatabaseContentVerification<SpeciesAssociation> databaseContentVerifier = createDatabaseContentVerifier();
         BugsTracesAndErrorsVerification<Synonym> logVerification = createLogVerifier();
         importer.run();
@@ -60,18 +64,18 @@ public class SynonymImportTest {
         logVerifier.assertOneAuthorCreated();
     }
 
-    private DatabaseContentVerification<SpeciesAssociation> createDatabaseContentVerifier(){
+    private DatabaseContentVerification<SpeciesAssociation> createDatabaseContentVerifier() {
         return new DatabaseContentVerification<>(new DatabaseContentProvider(
                 speciesAssociationRepository,
                 speciesAssociationTypeRepository,
                 speciesRepository,
                 genusRepository,
                 familyRepository,
-                biblioDataRepository
-        ));
+                biblioDataRepository)
+            );
     }
 
-    private BugsTracesAndErrorsVerification<Synonym> createLogVerifier(){
+    private BugsTracesAndErrorsVerification<Synonym> createLogVerifier() {
         logVerifier = new LogVerifier();
         return new BugsTracesAndErrorsVerification.ByCompressed<>(
                 traceRepository,
