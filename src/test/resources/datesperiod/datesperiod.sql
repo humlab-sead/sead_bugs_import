@@ -107,6 +107,6 @@ insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_i
     values (9, 'TDatesPeriod', '{}', 'PERI000013', 'tbl_relative_dates', 3, '2015-01-01');
 
 insert into tbl_relative_ages (relative_age_id, relative_age_type_id, relative_age_name, abbreviation, description, c14_age_older, c14_age_younger, location_id)
-values (4, 1, 'Early Holoscene', 'EH', 'Pollen Zone IV-VI', 10000, 7000, 1);
+values (4, 1, 'Early Holocene', 'EH', 'Pollen Zone IV-VI', 10000, 7000, 1);
 insert into bugs_import.bugs_trace (bugs_trace_id, bugs_table, bugs_data, bugs_identifier, sead_table, sead_reference_id)
-values (10, 'TPeriods', '{EH|Early Holoscene|Geological|Pollen Zone IV-VI||Country|10000|BP|7000|BP|C14}', 'EH', 'tbl_relative_ages', 4);
+values (10, 'TPeriods', '{EH|Early Holocene|Geological|Pollen Zone IV-VI||Country|10000|BP|7000|BP|C14}', 'EH', 'tbl_relative_ages', 4);
