@@ -62,3 +62,4 @@ tmp/
 *.mdb
 /lib/
 /postgresql_data/
+**/*.ldb
