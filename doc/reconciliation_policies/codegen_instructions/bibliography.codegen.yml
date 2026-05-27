@@ -1,0 +1,336 @@
+# BugsCEP → SEAD Codegen Instructions
+# Domain: Bibliography
+# Policy file: ../bibliography.policy.yml
+#
+# This file contains the LLM/AI code-generation instructions for the
+# Bibliography domain.  It is intentionally separate from the policy so
+# the policy stays human-readable data and this file can be updated
+# independently when the generation strategy changes.
+#
+# HOW TO USE
+#   Pass this file + the corresponding policy file as context to an LLM,
+#   then ask it to generate the artifacts listed in the `artifacts` section.
+#   The policy file is the data source; this file tells the LLM what to do
+#   with that data.
+#
+# ═════════════════════════════════════════════════════════════════════════════
+# TASK
+# ═════════════════════════════════════════════════════════════════════════════
+#
+# Generate a complete, working Python importer module for this domain from the
+# accompanying policy file (bibliography.policy.yml).
+# Do NOT read or reference the original Java source files.
+# The policy file is the single source of truth for all data decisions.
+#
+# ═════════════════════════════════════════════════════════════════════════════
+# OUTPUT
+# ═════════════════════════════════════════════════════════════════════════════
+#
+# Produce exactly the files listed in the `artifacts` section below.
+# Each artifact specifies: output path, class/function names, base classes,
+# and which policy sections drive its content.
+# Generate artifacts in the listed order — each one imports the previous.
+#
+# ═════════════════════════════════════════════════════════════════════════════
+# FRAMEWORK ASSUMPTIONS
+# ═════════════════════════════════════════════════════════════════════════════
+#
+# The following base classes already exist and MUST be imported as shown.
+# Do not redefine them:
+#
+#   from sead_bugs_import.core.importer  import Importer
+#   from sead_bugs_import.core.mapper    import BugsSeadMapper
+#   from sead_bugs_import.core.persister import Persister
+#   from sead_bugs_import.core.tracing   import TracePersister
+#   from sead_bugs_import.core.result    import MappingResult
+#
+# psycopg2 is used for ALL PostgreSQL writes.        No SQLAlchemy ORM.
+# jaydebeapi is used for ALL MS Access reads.
+#
+# ═════════════════════════════════════════════════════════════════════════════
+# EXPRESSION LANGUAGE
+# ═════════════════════════════════════════════════════════════════════════════
+#
+# Expressions in policy fields `transform.*`, `reconciliation.rules[].identifier_expr`,
+# and `reconciliation.rules[].bind` values are Python 3 expressions.
+#
+#   `source`  — the BugsCEP dataclass instance for the current row
+#   `target`  — the current SEAD DTO instance being built/updated
+#
+# Emit these expressions verbatim as Python code.  Do not wrap them in
+# eval(); inline them directly as Python statements.
+#
+# ═════════════════════════════════════════════════════════════════════════════
+# INVARIANTS  — the generated code MUST satisfy ALL of these
+# ═════════════════════════════════════════════════════════════════════════════
+#
+#  1. Every row read from source.sql produces exactly one call to reconcile(),
+#     which returns either an existing row dict or None.
+#
+#  2. Reconciliation rules are tried in ascending order value.
+#     The first non-None result wins; remaining rules are NOT evaluated.
+#
+#  3. If a trace row exists and on_error is `skip`, return the existing row
+#     unchanged — no field updates, no new trace row written.
+#
+#  4. update_detection compares ONLY the fields listed in
+#     update_detection.fields.  If ALL are equal, no DB write is issued
+#     and no trace row is written.
+#
+#  5. A trace row is written to bugs_import.bugs_trace on every operation
+#     listed in tracing.write_on (insert and/or update).  Never on a skip
+#     or no-change.
+#
+#  6. Any exception during row processing is caught, written to
+#     bugs_import.bugs_errors, and processing continues with the next row.
+#     Do not re-raise; do not abort the batch.
+#
+#  7. source.trace_key.template is used verbatim to build bugs_identifier.
+#     Substitute each {FIELD} placeholder with str(value), where Python None
+#     renders as the string "None" (matching Java null.toString() behaviour).
+#
+#  8. Source fields with role `ignored`, or with no corresponding mapping
+#     entry, MUST NOT be written to the target table.
+#
+#  9. The importer is idempotent: running it twice on the same MDB file
+#     against the same database must produce identical final state both times.
+#
+# ═════════════════════════════════════════════════════════════════════════════
+# ANTI-PATTERNS  — do NOT do any of these
+# ═════════════════════════════════════════════════════════════════════════════
+#
+#  - Do not use SQLAlchemy ORM, Django ORM, or any other ORM layer.
+#
+#  - Do not define a full SEAD entity class mirroring all columns of the
+#    target table.  Use the narrow DTO described in the `dto` artifact only.
+#
+#  - Do not hard-code table names, sequence names, or bugs_table strings as
+#    bare string literals outside the repository class.  Centralise them as
+#    class-level constants (TABLE, SEQUENCE, BUGS_TABLE).
+#
+#  - Do not swallow exceptions silently.  Every caught exception must produce
+#    a row in bugs_import.bugs_errors.
+#
+#  - Do not commit inside the per-row loop.  Issue a single commit after all
+#    rows in the table have been processed.
+#
+#  - Do not emit SQL with string interpolation.  Always use parameterised
+#    queries (%s placeholders with psycopg2, :name with jaydebeapi).
+#
+
+# ═════════════════════════════════════════════════════════════════════════════
+# ARTIFACTS
+# ═════════════════════════════════════════════════════════════════════════════
+#
+# Each entry is one file to generate.
+# `policy_sections` lists which sections of bibliography.policy.yml supply
+# the data for that file.  Read those sections carefully before generating.
+
+artifacts:
+
+  - id: dto
+    path: sead_bugs_import/bibliography/dto.py
+    policy_sections: [target, mappings]
+    description: >
+      A plain Python dataclass representing one row as it will be written to
+      the SEAD target table.  Contains only the columns the importer writes.
+    instructions:
+      - Decorate with @dataclass.
+      - Class name: BiblioDto
+      - One field per entry in policy mappings[], using target_field as the
+        attribute name and the Python equivalent of the mapping type:
+          string  → str | None
+          integer → int | None
+      - Add `biblio_id: int | None = None` as the first field (PK, set after
+        reconciliation resolves the identity).
+      - Do NOT add any field not present in mappings.
+    postconditions:
+      class: BiblioDto
+      fields: [biblio_id, bugs_reference, authors, title, full_reference]
+
+  - id: source_reader
+    path: sead_bugs_import/bibliography/source_reader.py
+    policy_sections: [source]
+    description: >
+      Reads all rows from the BugsCEP MS Access table via jaydebeapi and
+      returns a list of BugsBiblioRow dataclasses.
+    instructions:
+      - Dataclass name: BugsBiblioRow
+      - One field per source.fields[] entry whose role is NOT "ignored".
+        Attribute names are the Access column names lowercased
+        (e.g. REFERENCE → reference, Notes → notes).
+      - Method `bugs_identifier(self) -> str`:
+          returns the value of the attribute corresponding to source.identity_key
+          (lowercased).
+      - Method `trace_key(self) -> str`:
+          formats source.trace_key.template by substituting each {FIELD}
+          placeholder with str(getattr(self, field.lower())).
+          Python None must render as the string "None".
+      - Module-level function `read_all(conn) -> list[BugsBiblioRow]`:
+          executes source.sql via the jaydebeapi connection `conn` and
+          returns one BugsBiblioRow per result row.  Column names are read
+          from cursor.description and lowercased.
+    postconditions:
+      class: BugsBiblioRow
+      fields: [reference, author, title, notes]
+      methods: [bugs_identifier, trace_key]
+      functions: [read_all]
+
+  - id: mapper
+    path: sead_bugs_import/bibliography/mapper.py
+    policy_sections: [mappings]
+    description: >
+      Converts a BugsBiblioRow into a BiblioDto by applying all field
+      mappings from the policy.  Pure data transformation — no DB access.
+    instructions:
+      - Class name: BibliographyMapper
+      - One public method: `map(self, row: BugsBiblioRow) -> BiblioDto`
+      - For each entry in policy mappings[]:
+          If source_field is present:
+            dto.<target_field> = row.<source_field lowercased>
+          If transform is present:
+            Emit the transform inline as Python, substituting `source` → `row`.
+            For transform.type = conditional:
+              dto.<target_field> = <if_false> if not (<condition>) else <if_true>
+      - Do NOT set biblio_id — the repository sets it after reconciliation.
+    postconditions:
+      class: BibliographyMapper
+      methods: [map]
+
+  - id: repository
+    path: sead_bugs_import/bibliography/repository.py
+    policy_sections: [target, reconciliation, update_detection, tracing]
+    description: >
+      Write-only repository for tbl_biblio.  Handles reconciliation queries,
+      identity allocation (sequence), insert/update, and trace writes.
+      Raw psycopg2 SQL only — no ORM.
+    instructions:
+      - Class name: BiblioRepository
+      - Constructor: `__init__(self, conn, trace_persister: TracePersister)`
+        where conn is a live psycopg2 connection (not a factory).
+      - Class-level constants derived from policy:
+          TABLE      = "tbl_biblio"          # target.table
+          BUGS_TABLE = "TBiblio"             # tracing.bugs_table
+          SEQUENCE   = "tbl_biblio_biblio_id_seq"  # target.identity.sequence
+      - Method `reconcile(self, row: BugsBiblioRow) -> tuple[dict | None, bool]`
+        The second element of the tuple is True when the row must be skipped
+        entirely (on_error: skip).  Try rules in ascending order value:
+          Rule 1 (trace_lookup, order=1):
+            SELECT sead_reference_id, has_error
+            FROM bugs_import.bugs_trace
+            WHERE bugs_table = %s AND bugs_identifier = %s
+            ORDER BY change_date DESC LIMIT 1
+            params: (BUGS_TABLE, row.trace_key())
+            If found and has_error → return (existing_biblio_row_dict, True)
+            If found and no error  → fetch tbl_biblio row by PK, return (row_dict, False)
+          Rule 2 (database_query, order=2):
+            SELECT * FROM tbl_biblio WHERE bugs_reference ILIKE %s
+            params: (row.reference,)
+            If found → return (row_dict, False)
+          Rule 3 (create_new, order=3):
+            return (None, False)
+      - Method `save(self, row: BugsBiblioRow) -> int`:
+          1. existing, skip = self.reconcile(row)
+          2. If skip: return existing["biblio_id"] — write nothing.
+          3. dto = BibliographyMapper().map(row)
+          4. If existing is not None:
+               Compare each field in update_detection.fields between
+               existing dict and dto.
+               If all equal: return existing["biblio_id"] — write nothing.
+               If any differ: UPDATE tbl_biblio SET bugs_reference=%s,
+                 authors=%s, title=%s, full_reference=%s
+                 WHERE biblio_id=%s
+               Then call self._write_trace(row, existing["biblio_id"], "UPDATE")
+               Return existing["biblio_id"].
+          5. If existing is None:
+               new_id = SELECT nextval(%s) → SEQUENCE
+               INSERT INTO tbl_biblio
+                 (biblio_id, bugs_reference, authors, title, full_reference)
+                 VALUES (%s, %s, %s, %s, %s)
+               Call self._write_trace(row, new_id, "INSERT")
+               Return new_id.
+      - Method `_write_trace(self, row: BugsBiblioRow, sead_id: int, operation: str)`:
+          Only execute when operation.lower() is in tracing.write_on.
+          INSERT INTO bugs_import.bugs_trace
+            (bugs_table, bugs_identifier, sead_table, sead_reference_id,
+             type, change_date)
+          VALUES (%s, %s, %s, %s, %s, NOW())
+          params: (BUGS_TABLE, row.trace_key(), TABLE, sead_id, operation)
+    postconditions:
+      class: BiblioRepository
+      methods: [reconcile, save, _write_trace]
+
+  - id: importer
+    path: sead_bugs_import/bibliography/importer.py
+    policy_sections: [policy, dependencies]
+    description: >
+      Top-level orchestrator.  Reads all source rows, maps and saves each,
+      catches and logs per-row errors, commits once at the end.
+    instructions:
+      - Class name: BibliographyImporter, extends Importer.
+      - Constructor: `__init__(self, access_conn, pg_conn, trace_persister)`
+          Instantiate BugsBiblioReader, BibliographyMapper, BiblioRepository
+          internally as self.reader, self.mapper, self.repo.
+          Call super().__init__(required_importers=[])  # dependencies is empty
+      - Override `_run(self) -> None`:
+            rows = read_all(self.access_conn)
+            for row in rows:
+                try:
+                    self.repo.save(row)
+                except Exception as exc:
+                    self.trace_persister.save_error(
+                        bugs_table=BiblioRepository.BUGS_TABLE,
+                        bugs_identifier=row.trace_key(),
+                        message=str(exc),
+                    )
+            self.pg_conn.commit()
+      - Do NOT commit inside the row loop.
+      - Do NOT instantiate BibliographyMapper inside the loop; reuse self.mapper.
+    postconditions:
+      class: BibliographyImporter
+      methods: [_run]
+
+  - id: tests
+    path: tests/bibliography/test_bibliography_importer.py
+    policy_sections: [source, target, reconciliation, update_detection, tracing]
+    description: >
+      pytest integration tests using the bundled MDB fixture and a
+      testcontainers PostgreSQL instance.
+    instructions:
+      - Use pytest fixtures `pg_conn` and `access_conn` from conftest.py.
+      - Write exactly these 7 test functions:
+
+        test_import_inserts_rows:
+          Run BibliographyImporter.
+          Assert SELECT COUNT(*) FROM tbl_biblio > 0.
+
+        test_trace_written:
+          Run importer.
+          Assert COUNT(*) FROM bugs_import.bugs_trace
+          WHERE bugs_table = 'TBiblio'
+          equals COUNT(*) FROM tbl_biblio.
+
+        test_idempotent:
+          Run importer twice.
+          Assert row count and trace count after second run equals first run.
+
+        test_update_detection:
+          INSERT a tbl_biblio row with a known bugs_reference and wrong authors.
+          Run importer.
+          Assert the authors column now matches the value from the MDB fixture.
+
+        test_full_reference_derivation_with_author_and_title:
+          Instantiate BibliographyMapper directly.
+          Call map() with a BugsBiblioRow where author and title are both set.
+          Assert dto.full_reference == row.author + ' ' + row.title.
+
+        test_full_reference_derivation_fallback:
+          Call map() with author=None.
+          Assert dto.full_reference == row.reference.
+
+        test_notes_not_written:
+          Run importer.
+          Assert that no column named "notes" exists in tbl_biblio
+          (or assert that the Notes source value does not appear in any row).
+    postconditions:
+      test_count: 7

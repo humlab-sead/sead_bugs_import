@@ -1,0 +1,126 @@
+# BugsCEP → SEAD Reconciliation Policy Format
+# Version: 1.0
+#
+# This schema describes every field allowed in a *.policy.yml file.
+# Each policy file is self-contained: it encodes enough information for a
+# code generator (human or LLM) to produce a complete Python importer for
+# one BugsCEP-to-SEAD domain pair without reading the Java source code.
+#
+# Expression language (used in transform.expr, conditions, bind values):
+#   - Python 3 syntax subset: attribute access, arithmetic, string concat,
+#     None checks, ternary `x if cond else y`
+#   - source.<field>  — access a field of the BugsCEP source record
+#   - target.<field>  — access a field of the current SEAD target record
+#   - Callable helpers listed per-policy in the helpers section
+#
+# ─────────────────────────────────────────────────────────────────────────────
+
+meta:
+  format_version: "1.0"
+  generated_from: java_source   # java_source | manual | llm_extracted
+  reviewed: false               # set to true after human review
+
+policy:
+  domain: <string>              # e.g. bibliography, site, fossil
+  description: <string>
+
+# ── SOURCE ───────────────────────────────────────────────────────────────────
+source:
+  system: bugscep
+  table: <string>               # MS Access table name, e.g. TBiblio
+  sql: <string>                 # Full SELECT used to read all rows
+  fields:
+    - name: <string>            # Access column name (case-sensitive)
+      type: string|integer|decimal|boolean|date
+      nullable: true|false
+      role: natural_key         # natural_key | data | ignored
+      comment: <string>         # optional
+  identity_key: <field_name>    # field returned by getBugsIdentifier()
+  trace_key:
+    # Template for compressToString(); field names wrapped in {}
+    template: <string>          # e.g. "{reference},{author},{title},{notes}"
+
+# ── TARGET ───────────────────────────────────────────────────────────────────
+target:
+  system: sead
+  table: <string>               # PostgreSQL table name, e.g. tbl_biblio
+  identity:
+    column: <string>            # PK column name
+    type: integer|bigint|uuid
+    strategy: sequence|identity_service|provided
+    sequence: <string>          # PostgreSQL sequence name (if strategy=sequence)
+    identity_service_endpoint: <string>  # REST endpoint (if strategy=identity_service)
+
+# ── MAPPINGS ─────────────────────────────────────────────────────────────────
+# Each mapping rule writes one target column.  Exactly one of source_field or
+# transform must be present (not both).
+mappings:
+  - target_field: <string>      # SEAD column name
+    type: string|integer|decimal|boolean|date|timestamp
+    nullable: true|false
+    source_field: <string>      # direct copy from this BugsCEP field (no transform)
+    # OR, for derived fields:
+    transform:
+      type: conditional|concat|call|coerce|constant
+      # conditional:
+      condition: <expr>         # boolean expr; if true, use if_true value
+      if_true:  <expr>
+      if_false: <expr>
+      # concat:
+      parts: [<expr>, ...]
+      separator: <string>
+      # call:
+      helper: <helper_name>
+      args: [<expr>, ...]
+      # coerce:
+      input: <expr>
+      output_type: <type>
+      # constant:
+      value: <literal>
+
+# ── RECONCILIATION ───────────────────────────────────────────────────────────
+# Rules are evaluated in order.  First rule that returns a non-null match wins.
+reconciliation:
+  strategy: ordered_rules
+  rules:
+    - name: <string>
+      order: <integer>          # lower = higher priority
+      type: trace_lookup|database_query|create_new
+      description: <string>
+
+      # type: trace_lookup
+      bugs_table: <string>      # must match source.table
+      identifier_expr: <expr>   # expression yielding the bugs_identifier value
+
+      # type: database_query
+      table: <string>
+      where: <sql_fragment>     # parameterised, :name placeholders
+      bind:                     # map placeholder → expression
+        <name>: <expr>
+
+      # All types
+      on_match: update|return_as_is|skip
+      on_error: skip|raise      # if match found but has prior trace error
+
+# ── UPDATE DETECTION ─────────────────────────────────────────────────────────
+update_detection:
+  strategy: field_comparison|always|never
+  fields: [<target_field>, ...]  # compared old vs new; any diff → mark updated
+  on_change: mark_updated        # mark_updated | ignore
+
+# ── DEPENDENCIES ─────────────────────────────────────────────────────────────
+dependencies: []                 # list of domain names that must run first
+
+# ── TRACING ──────────────────────────────────────────────────────────────────
+tracing:
+  bugs_table: <string>          # written to bugs_import.bugs_trace.bugs_table
+  sead_table: <string>          # written to bugs_import.bugs_trace.sead_table
+  write_on: [insert, update]    # when to write a trace row
+
+# ── HELPERS ──────────────────────────────────────────────────────────────────
+# Named helper functions referenced in transform.call.
+# These must be implemented in the generated code; descriptions guide the LLM.
+helpers: []
+#  - name: <string>
+#    description: <string>
+#    signature: <string>        # Python type annotation hint

@@ -1,0 +1,213 @@
+# BugsCEP → SEAD Reconciliation Policy
+# Domain: Lab (TLab → tbl_dating_labs)
+#
+# Extracted from Java sources:
+#   BugsLab.java, LabBugsTable.java
+#   DatingLab.java (JPA entity)
+#   LabRowConverter.java      (reconciliation logic)
+#   DatingLabUpdater.java     (field mapping + update detection)
+#   DatingLabRepository.java  (SEAD lookup queries)
+#   DatingLabTraceSearch.java / DatingLabByLabIdSearch.java
+#   DatingLabTraceHelper.java
+#
+# Schema:               _schema.yml
+# Codegen instructions: codegen_instructions/lab.codegen.yml  (not yet created)
+# ─────────────────────────────────────────────────────────────────────────────
+
+meta:
+  format_version: "1.0"
+  generated_from: java_source
+  reviewed: false
+  notes: >
+    Requires CountryImporter to have run first so that tbl_locations already
+    contains the country rows referenced by the country_id FK.
+    Country is looked up by name from tbl_locations; missing or unresolvable
+    countries (including the literal string "Country") produce an error row
+    rather than an insert.
+    Address and Telephone are read from the Access table but are NOT written
+    to tbl_dating_labs (no such columns exist in the SEAD schema).
+    Website and email appear as @BugsColumn annotations on BugsLab but are
+    not fetched in LabBugsTable.createItem() — they are effectively absent.
+
+policy:
+  domain: lab
+  description: >
+    Imports radiocarbon dating laboratory records from TLab into
+    tbl_dating_labs.  Records are matched first by prior import trace,
+    then by the international_lab_id column.  Country is resolved to a
+    tbl_locations FK before insert/update; an unresolvable country blocks
+    the row with an error.
+
+# ── SOURCE ───────────────────────────────────────────────────────────────────
+
+source:
+  table: TLab
+  sql: >
+    SELECT LabID, Labname, Address, Country, Telephone
+    FROM TLab
+  # Note: Website and email columns exist on BugsLab but are not fetched in
+  # LabBugsTable.createItem() and therefore do not appear in the SQL.
+
+  fields:
+    - name: LabID
+      type: string
+      role: identity
+      note: Business key; used as bugs_identifier in bugs_trace.
+
+    - name: Labname
+      type: string
+      role: data
+      note: >
+        Required. A null or empty lab name adds error "No lab name" and
+        suppresses the DB write for this row.
+
+    - name: Address
+      type: string
+      role: ignored
+      note: >
+        Read from Access but not written to tbl_dating_labs; no such column
+        exists in the SEAD schema.
+
+    - name: Country
+      type: string
+      role: data
+      note: >
+        Resolved to a tbl_locations FK (country_id) by name lookup.
+        Three error cases:
+        (a) null or empty → error "No country specified"
+        (b) literal value "Country" (placeholder row in Access) → IgnoredItemError
+        (c) name not found in tbl_locations → error "No country found"
+
+    - name: Telephone
+      type: string
+      role: ignored
+      note: >
+        Read from Access but not written to tbl_dating_labs; no such column
+        exists in the SEAD schema.
+
+  trace_key:
+    template: "{{{LabID},{Labname},{Country}}}"
+    note: >
+      Wraps three fields in literal curly braces, matching Java's
+      compressToString(): "{" + labId + ',' + labName + ',' + country + '}'.
+      The outer {{ / }} are escaped braces in Python .format() syntax.
+      Only LabID, Labname, Country appear — Address and Telephone are
+      excluded from the trace key.
+
+  identity_key: LabID
+  # returned by BugsLab.getBugsIdentifier() → getLabId()
+
+# ── TARGET ───────────────────────────────────────────────────────────────────
+
+target:
+  table: tbl_dating_labs
+  pk: dating_lab_id
+  sequence: tbl_dating_labs_dating_lab_id_seq
+
+# ── MAPPINGS ─────────────────────────────────────────────────────────────────
+#
+# Only the three columns written by DatingLabUpdater are listed here.
+# Address and Telephone are ignored (roles set above); Website/email absent.
+
+mappings:
+  - source_field: LabID
+    target_field: international_lab_id
+    type: string
+    note: >
+      Direct copy. Update detection tracks changes (Objects.equals).
+
+  - source_field: Labname
+    target_field: lab_name
+    type: string
+    note: >
+      Required. Empty/null triggers error "No lab name" and the field is
+      left unchanged on the entity (no setter called in the error path).
+
+  - source_field: Country
+    target_field: country_id
+    type: fk
+    fk_table: tbl_locations
+    fk_lookup: "SELECT location_id FROM tbl_locations WHERE location_name = %s AND location_type_id = <country_type_id>"
+    note: >
+      Resolved to a Location FK by country name. See error cases under
+      source.fields.Country above. Update detection uses object equality
+      on the resolved Location instance (Objects.equals).
+
+# ── RECONCILIATION ───────────────────────────────────────────────────────────
+
+reconciliation:
+  rules:
+    - order: 1
+      strategy: trace_lookup
+      description: >
+        Delegate to DatingLabTraceHelper (SeadDataFromTraceHelper with
+        allowDeleted=false).  Looks up the most recent bugs_trace row for
+        this LabID.  If found, fetches the tbl_dating_labs row by PK.
+        Returns null (NO_LAB_FOUND sentinel) when no trace exists.
+        If the fetched entity has errors (isErrorFree() == false), the
+        error-flagged entity is returned and rule evaluation stops —
+        the row is re-persisted with its existing error state (on_error: skip).
+      query: >
+        SELECT sead_reference_id
+        FROM bugs_import.bugs_trace
+        WHERE bugs_table = 'TLab' AND bugs_identifier = %s
+        ORDER BY change_date DESC
+        LIMIT 1
+      bind: ["source.lab_id"]
+      allow_deleted: false
+      on_error: skip
+      note: >
+        allowDeleted=false means if the trace points to a no-longer-existing
+        tbl_dating_labs row, a null is returned (fall through to rule 2).
+
+    - order: 2
+      strategy: database_query
+      description: >
+        Look up tbl_dating_labs by international_lab_id (exact match).
+        DatingLabRepository.findByLabId() → JPA derived query.
+      query: >
+        SELECT * FROM tbl_dating_labs WHERE international_lab_id = %s
+      bind: ["source.lab_id"]
+      result_handling:
+        count_zero: null   # fall through to create_new
+        count_one:  found  # update path
+
+    - order: 3
+      strategy: create_new
+      description: No existing record; allocate a new dating_lab_id and insert.
+
+# ── UPDATE DETECTION ─────────────────────────────────────────────────────────
+
+update_detection:
+  fields:
+    - international_lab_id   # LabID  — Objects.equals
+    - lab_name               # Labname — Objects.equals
+    - country_id             # Country (resolved Location) — Objects.equals
+
+  notes: >
+    DatingLabUpdater.Updater.update() sets updated=true if any of the three
+    fields changes.  The updated flag drives whether bugs_trace records a
+    type=UPDATE.  Error conditions (missing lab name, unresolved country)
+    short-circuit the setter and keep updated=false for that field.
+
+# ── DEPENDENCIES ─────────────────────────────────────────────────────────────
+
+dependencies:
+  required_importers: [Country]
+  # LabImporter constructor: super(dataMapper, persister, countryImporter)
+  # Country location rows must exist in tbl_locations before lab records
+  # can be inserted (country_id FK).
+
+# ── TRACING ──────────────────────────────────────────────────────────────────
+
+tracing:
+  bugs_table: TLab
+  sead_table: tbl_dating_labs
+  identifier_expr: "source.trace_key()"
+  write_on: [insert, update]
+
+# ── HELPERS ──────────────────────────────────────────────────────────────────
+
+helpers: []
+# No custom helper functions needed. Country FK resolution is done entirely
+# via the fk_lookup query defined in the mappings section.

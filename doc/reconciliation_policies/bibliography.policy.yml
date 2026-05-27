@@ -1,0 +1,192 @@
+# BugsCEP → SEAD Reconciliation Policy
+# Domain: Bibliography (TBiblio → tbl_biblio)
+#
+# Extracted from Java sources:
+#   BugsBiblio.java, BugsBiblioBugsTable.java
+#   Biblio.java (JPA entity)
+#   BibliographyRowConverter.java (reconciliation logic)
+#   BiblioUpdater.java           (field mapping + update detection)
+#   BiblioDataRepository.java    (SEAD lookup queries)
+#
+# Schema:            _schema.yml
+# Codegen instructions: codegen_instructions/bibliography.codegen.yml
+# ─────────────────────────────────────────────────────────────────────────────
+
+meta:
+  format_version: "1.0"
+  generated_from: java_source
+  reviewed: false
+  notes: >
+    Leaf importer — no dependencies on other domains.
+    The `full_reference` column is a derived field not present in BugsCEP;
+    its derivation rule is encoded in the mapping below.
+
+policy:
+  domain: bibliography
+  description: >
+    Imports bibliographic references from the BugsCEP TBiblio table into
+    the SEAD tbl_biblio table.  Records are matched first by prior import
+    trace, then by a case-insensitive lookup on the bugs_reference column.
+    If no match is found a new row is inserted.
+
+# ── SOURCE ───────────────────────────────────────────────────────────────────
+
+source:
+  system: bugscep
+  table: TBiblio
+  sql: "SELECT REFERENCE, AUTHOR, TITLE, Notes FROM TBiblio"
+  fields:
+    - name: REFERENCE
+      type: string
+      nullable: true
+      role: natural_key
+      comment: >
+        Short citation key, e.g. "Elias 1994".
+        Used as the bugs_identifier in traces and as the lookup key
+        against tbl_biblio.bugs_reference.
+    - name: AUTHOR
+      type: string
+      nullable: true
+      role: data
+    - name: TITLE
+      type: string
+      nullable: true
+      role: data
+    - name: Notes
+      type: string
+      nullable: true
+      role: data
+      comment: Not written to tbl_biblio — present in source but unmapped.
+
+  identity_key: REFERENCE   # BugsBiblio.getBugsIdentifier()
+
+  trace_key:
+    # BugsBiblio.compressToString() — written verbatim to bugs_trace.bugs_identifier
+    template: "{REFERENCE},{AUTHOR},{TITLE},{Notes}"
+
+# ── TARGET ───────────────────────────────────────────────────────────────────
+
+target:
+  system: sead
+  table: tbl_biblio
+  identity:
+    column: biblio_id
+    type: integer
+    strategy: sequence
+    sequence: tbl_biblio_biblio_id_seq
+    # New-architecture alternative:
+    # strategy: identity_service
+    # identity_service_endpoint: /biblio/id
+
+# ── MAPPINGS ─────────────────────────────────────────────────────────────────
+
+mappings:
+  - target_field: bugs_reference
+    type: string
+    nullable: true
+    source_field: REFERENCE
+    comment: Direct copy. Case is preserved; lookups are case-insensitive.
+
+  - target_field: authors
+    type: string
+    nullable: true
+    source_field: AUTHOR
+    comment: Direct copy.
+
+  - target_field: title
+    type: string
+    nullable: true
+    source_field: TITLE
+    comment: Direct copy.
+
+  - target_field: full_reference
+    type: string
+    nullable: true
+    comment: >
+      Derived column — not present in BugsCEP.
+      When both AUTHOR and TITLE are present, concatenate them.
+      Otherwise fall back to REFERENCE alone.
+    transform:
+      type: conditional
+      condition: "source.AUTHOR is None or source.TITLE is None"
+      if_true:  "source.REFERENCE"
+      if_false: "source.AUTHOR + ' ' + source.TITLE"
+
+  # NOTE: source.Notes is intentionally not written to tbl_biblio.
+  # The SEAD schema has no notes column for this table.
+
+# ── RECONCILIATION ───────────────────────────────────────────────────────────
+
+reconciliation:
+  strategy: ordered_rules
+  rules:
+
+    - name: trace_lookup
+      order: 1
+      type: trace_lookup
+      description: >
+        Look up the most recent successful import trace for this BugsCEP record.
+        Uses bugs_table + bugs_identifier to find the sead_reference_id, then
+        loads the Biblio row by that PK.  If the trace references a row that
+        was previously written with errors, skip this record entirely.
+      bugs_table: TBiblio
+      identifier_expr: "source.REFERENCE"
+      on_match: update
+      on_error: skip    # trace row exists but has error flag → return as-is, do not reprocess
+
+    - name: database_lookup
+      order: 2
+      type: database_query
+      description: >
+        If no trace exists (first import or trace table was cleared), find an
+        existing tbl_biblio row by bugs_reference, case-insensitively.
+        This handles re-imports against a pre-populated SEAD database.
+      table: tbl_biblio
+      where: "bugs_reference ILIKE :reference"
+      bind:
+        reference: "source.REFERENCE"
+      on_match: update
+
+    - name: create_new
+      order: 3
+      type: create_new
+      description: >
+        No existing record found.  Allocate a new biblio_id (from the
+        identity service or PostgreSQL sequence) and insert a new row.
+      on_match: insert
+
+# ── UPDATE DETECTION ─────────────────────────────────────────────────────────
+
+update_detection:
+  strategy: field_comparison
+  fields:
+    - bugs_reference
+    - authors
+    - full_reference
+    - title
+  on_change: mark_updated
+  comment: >
+    BiblioUpdater.update() compares each field individually.
+    If ANY field differs between the incoming BugsCEP data and the existing
+    SEAD row, the entity is marked updated and re-persisted.
+    No partial updates — the whole row is rewritten.
+
+# ── DEPENDENCIES ─────────────────────────────────────────────────────────────
+
+dependencies: []
+# Bibliography is a leaf importer.  It is a dependency OF SiteImporter,
+# SiteReferencesImporter, and several others — but it depends on nothing itself.
+
+# ── TRACING ──────────────────────────────────────────────────────────────────
+
+tracing:
+  bugs_table: TBiblio       # written to bugs_import.bugs_trace.bugs_table
+  sead_table: tbl_biblio    # written to bugs_import.bugs_trace.sead_table
+  write_on: [insert, update]
+
+# ── HELPERS ──────────────────────────────────────────────────────────────────
+
+helpers: []
+# No custom helper functions required for this domain.
+# The only non-trivial logic is the full_reference derivation, which is
+# expressed inline in the mapping above.

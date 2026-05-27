@@ -1,0 +1,326 @@
+# BugsCEP → SEAD Reconciliation Policy
+# Domain: Site (TSite → tbl_sites)
+#
+# Extracted from Java sources:
+#   BugsSite.java, BugsSiteBugsTable.java
+#   SeadSite.java (JPA entity)
+#   BugsSiteTableConverter.java  (reconciliation logic)
+#   SeadSiteCreator.java         (field mapping)
+#   SiteUpdater.java             (update detection)
+#   SiteRepository.java          (SEAD lookup queries)
+#   SiteFromTrace.java / SiteFromCodeAllowDeletedSite.java  (trace lookup)
+#   SiteLocationHandler.java, CountryLocationHandler.java, RegionLocationHandler.java
+#
+# Schema:               _schema.yml
+# Codegen instructions: codegen_instructions/site.codegen.yml  (not yet created)
+# ─────────────────────────────────────────────────────────────────────────────
+
+meta:
+  format_version: "1.0"
+  generated_from: java_source
+  reviewed: false
+  notes: >
+    Leaf importer — no dependencies on other domain importers.
+    More complex than Bibliography: requires location resolution (Region and
+    Country → tbl_locations / tbl_location_types) before the site row itself
+    can be reconciled.  Updates are conditionally allowed via the
+    allow.site.updates config flag (defaults to false).  The trace check also
+    detects whether the SEAD row was externally edited after the last import
+    and blocks re-import if so.
+
+policy:
+  domain: site
+  description: >
+    Imports site records from the BugsCEP TSite table into tbl_sites.
+    Before reconciling the site row itself the importer resolves Region
+    and Country to Location rows in tbl_locations.  If the country cannot
+    be resolved the row is rejected with an error.  Site lookup first
+    checks the bugs_trace table; on a miss it falls back to a name+location
+    join query.  A found site that was externally edited in SEAD since the
+    last import is also rejected with an error rather than overwritten.
+
+# ── SOURCE ───────────────────────────────────────────────────────────────────
+
+source:
+  table: TSite
+  sql: >
+    SELECT SiteCODE, SiteName, Region, Country, NGR,
+           LatDD, LongDD, Alt, IDBy, Interp, Specimens
+    FROM TSite
+
+  fields:
+    - name: SiteCODE
+      type: string
+      role: identity
+      note: >
+        Business key.  Used as bugs_identifier in bugs_trace and as the
+        primary handle for all reconciliation lookups.
+
+    - name: SiteName
+      type: string
+      role: data
+      note: Required; a site without a name triggers an error.
+
+    - name: Region
+      type: string
+      role: location
+      note: >
+        Resolved to a tbl_locations row (type = "Region") before site
+        reconciliation.  Not written directly to tbl_sites.
+
+    - name: Country
+      type: string
+      role: location
+      note: >
+        Resolved to a tbl_locations row (type = "Country") before site
+        reconciliation.  A missing country record blocks the entire site row.
+        Whether a missing country is auto-created is controlled by the
+        allow.create.country config flag (default true).
+
+    - name: NGR
+      type: string
+      role: data
+      note: National Grid Reference; maps to national_site_identifier.
+
+    - name: LatDD
+      type: float
+      role: data
+      note: Decimal-degrees latitude; converted to BigDecimal for tbl_sites.
+
+    - name: LongDD
+      type: float
+      role: data
+      note: Decimal-degrees longitude; converted to BigDecimal for tbl_sites.
+
+    - name: Alt
+      type: float
+      role: data
+      note: Altitude in metres; converted to BigDecimal for tbl_sites.
+
+    - name: IDBy
+      type: string
+      role: ignored
+      note: >
+        Identified-by field.  Read from Access but not written to tbl_sites
+        (no column exists in the SEAD schema for it).
+
+    - name: Interp
+      type: string
+      role: data
+      note: Interpretation / description; maps to site_description.
+
+    - name: Specimens
+      type: string
+      role: ignored
+      note: >
+        Specimen notes.  Read from Access but not written to tbl_sites
+        (no column exists in the SEAD schema for it).
+
+  trace_key:
+    template: "{{{SiteCODE},{SiteName},{Region},{Country},{NGR},{LatDD},{LongDD},{Alt},{IDBy},{Interp},{Specimens}}}"
+    note: >
+      Python .format()-style template.  {{ and }} are literal braces; the
+      entire value is wrapped in curly braces to match the Java
+      compressToString() output.  Python None renders as the string "None".
+
+  identity_key: SiteCODE
+  # returned by getBugsIdentifier() → getCode()
+
+# ── TARGET ───────────────────────────────────────────────────────────────────
+
+target:
+  table: tbl_sites
+  pk: site_id
+  sequence: tbl_sites_site_id_seq
+
+# ── MAPPINGS ─────────────────────────────────────────────────────────────────
+#
+# Only fields written to tbl_sites are listed here.
+# Region and Country drive location resolution (see reconciliation) but do
+# not appear as tbl_sites columns.  IDBy and Specimens are ignored entirely.
+
+mappings:
+  - source_field: SiteName
+    target_field: site_name
+    type: string
+    note: >
+      Required.  SeadSiteCreator adds an error to the entity if SiteName is
+      empty or null; the Persister will then record a bugs_error and skip the
+      DB write.
+
+  - source_field: NGR
+    target_field: national_site_identifier
+    type: string
+
+  - source_field: Interp
+    target_field: site_description
+    type: string
+    note: >
+      Windows line endings (\r\n) are normalised to \n in the equality
+      check inside SeadSite.equals(), so the update-detection comparison
+      must apply the same normalisation before deciding whether an update
+      is needed.
+
+  - source_field: LatDD
+    target_field: latitude_dd
+    type: decimal
+    transform: "float_to_decimal(source.lat_dd)"
+    note: >
+      Float → BigDecimal via BigDecimalDefinition.convertToSeadContext().
+      A null source value maps to null; the update is suppressed if the
+      new value is null (see update_detection notes below).
+
+  - source_field: LongDD
+    target_field: longitude_dd
+    type: decimal
+    transform: "float_to_decimal(source.long_dd)"
+    note: Same null-suppression behaviour as latitude_dd.
+
+  - source_field: Alt
+    target_field: altitude
+    type: decimal
+    transform: "float_to_decimal(source.alt)"
+    note: Same null-suppression behaviour as latitude_dd.
+
+# ── RECONCILIATION ───────────────────────────────────────────────────────────
+#
+# Rules are tried in the order listed.  The first rule that produces a result
+# wins; subsequent rules are not evaluated.
+# The location resolution (Region + Country) is a prerequisite guard that
+# runs before any of these rules.  A missing country causes an immediate
+# error rather than continuing to rule 1.
+
+reconciliation:
+
+  prerequisite:
+    description: >
+      Resolve Region and Country to Location rows in tbl_locations before
+      entering the rule chain.  If no Country location can be found or
+      created, emit error "No country exists for site" and skip remaining
+      rules.
+    config:
+      allow_create_country:
+        property: allow.create.country
+        default: true
+        note: >
+          When true, an unrecognised Country string creates a new tbl_locations
+          row of type "Country".  When false, a missing country is always an
+          error.
+
+  rules:
+    - order: 1
+      strategy: trace_lookup
+      description: >
+        Look up the most recent bugs_trace row for this SiteCODE.  If found,
+        fetch the tbl_sites row by its PK.  If the tbl_sites row was
+        modified in SEAD after the trace timestamp (external edit), reject
+        with error "Sead data has been updated since last bugs import" and
+        return the (error-flagged) site unchanged.  If the trace row
+        indicates a prior error (has_error = true), return the site unchanged
+        without re-processing (on_error: skip).
+      query: >
+        SELECT sead_reference_id, has_error, change_date
+        FROM bugs_import.bugs_trace
+        WHERE bugs_table = 'TSite' AND bugs_identifier = %s
+        ORDER BY change_date DESC
+        LIMIT 1
+      bind: ["source.code"]
+      on_error: skip
+      on_external_edit: error
+      external_edit_message: "Sead data has been updated since last bugs import"
+
+    - order: 2
+      strategy: database_query
+      description: >
+        Name + location join: if no new Location rows were just created
+        during prerequisite resolution, use the precise name+locations query;
+        otherwise fall back to name-only.
+        Exactly 1 result → error "Site name exists for non-imported site" (not
+        imported via bugs, so we refuse to claim it).
+        More than 1 result → error "More than one site found by name and location".
+        0 results → fall through to rule 3.
+      variants:
+        - condition: "not any_created_locations"
+          query: >
+            SELECT s.*
+            FROM tbl_sites s
+            JOIN tbl_site_locations sl ON sl.site_id = s.site_id
+            WHERE s.site_name = %s
+              AND sl.location_id = ANY(%s)
+            GROUP BY s.site_id
+            HAVING COUNT(*) = %s
+          bind: ["source.name", "location_ids", "len(location_ids)"]
+        - condition: "any_created_locations"
+          query: >
+            SELECT * FROM tbl_sites WHERE site_name = %s
+          bind: ["source.name"]
+      result_handling:
+        count_zero: null      # fall through to create_new
+        count_one:  error     # "Site name exists for non-imported site"
+        count_many: error     # "More than one site found by name and location"
+
+    - order: 3
+      strategy: create_new
+      description: No existing record found; allocate a new site_id and insert.
+
+# ── UPDATE DETECTION ─────────────────────────────────────────────────────────
+
+update_detection:
+  fields:
+    - national_site_identifier   # NGR
+    - site_description           # Interp  — compare after \r\n → \n normalisation
+    - latitude_dd                # LatDD   — BigDecimal numeric equality
+    - longitude_dd               # LongDD  — BigDecimal numeric equality
+    - altitude                   # Alt     — BigDecimal numeric equality
+    - site_name                  # SiteName
+
+  notes: >
+    BigDecimal fields use numeric equality (scale-insensitive), not
+    Object.equals().  Null incoming values do NOT overwrite existing
+    non-null values (null-suppression during doUpdates).
+    Update writes are additionally gated by allow.site.updates (default
+    false); if updates are detected but the flag is false, the row is
+    rejected with error "Bugs data is updated but updates are disallowed."
+
+  config:
+    allow_site_updates:
+      property: allow.site.updates
+      default: false
+      note: >
+        Set to true to permit overwriting existing tbl_sites rows when
+        BugsCEP data has changed since the last import.
+
+# ── DEPENDENCIES ─────────────────────────────────────────────────────────────
+
+dependencies:
+  required_importers: []
+  # SiteImporter.super(dataMapper, persister) — no additional required importers.
+  #
+  # The Location / LocationType tables (tbl_locations, tbl_location_types) must
+  # be pre-populated with at least the "Country" and "Region" type rows before
+  # this importer runs, but that is schema-level setup, not an importer
+  # dependency in the bugs_import sense.
+
+# ── TRACING ──────────────────────────────────────────────────────────────────
+
+tracing:
+  bugs_table: TSite
+  sead_table: tbl_sites
+  identifier_expr: "source.trace_key()"
+  write_on: [insert, update]
+  # A trace row is also read during reconciliation rule 1 (trace_lookup).
+  # The trace write on update only fires when allow.site.updates = true and
+  # a field difference was actually detected and applied.
+
+# ── HELPERS ──────────────────────────────────────────────────────────────────
+
+helpers:
+  - name: float_to_decimal
+    signature: "float_to_decimal(value: float | None) -> Decimal | None"
+    description: >
+      Converts a Java Float (Python float | None) to a Decimal with the
+      precision used in the SEAD tbl_sites schema.  Mirrors
+      BigDecimalDefinition.convertToSeadContext() — round to 10 decimal
+      places (SEAD convention).  Returns None unchanged.
+    expression: "Decimal(str(round(value, 10))) if value is not None else None"
+    used_by: [latitude_dd, longitude_dd, altitude]
