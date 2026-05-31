@@ -49,7 +49,12 @@ public class RelativeDateDatasetUpdaterFixtureExecutionTest {
 		Map<String, Object> state = policyContext.containsKey("state") ? fixtureLoader.mapValue(policyContext.get("state"), scenarioName + ".policy_context.state") : null;
 		Dataset dataset = executeUpdaterForScenario(scenario, scenarioName);
 
+		assertEquals(fixtureLoader.booleanValue(expects.get("row_changed"), scenarioName + ".expects.row_changed"), rowChanged(dataset));
 		assertEquals(FixtureExpectationHelper.toNestedMap(fixtureLoader, expects.get("graph_result"), scenarioName + ".expects.graph_result"), actualGraphResult(dataset, state));
+	}
+
+	private boolean rowChanged(Dataset dataset) {
+		return dataset.getId() == null || dataset.isUpdated();
 	}
 
 	private Dataset executeUpdaterForScenario(Map<String, Object> scenario, String scenarioName) {

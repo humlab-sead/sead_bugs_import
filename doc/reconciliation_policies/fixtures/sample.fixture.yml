@@ -16,6 +16,7 @@ scenarios:
       step_hits: {}
     expects:
       related_outputs: [sample_dimensions]
+      row_changed: true
       graph_result:
         sample_dimensions:
           upper:
@@ -54,6 +55,7 @@ scenarios:
         existing_lower_dimension_value: 1
     expects:
       related_outputs: [sample_dimensions]
+      row_changed: true
       graph_result:
         sample_dimensions:
           upper:
@@ -92,6 +94,7 @@ scenarios:
         existing_lower_dimension_value: 2
     expects:
       related_outputs: [sample_dimensions]
+      row_changed: false
       graph_result:
         sample_dimensions:
           upper:
@@ -130,6 +133,7 @@ scenarios:
         existing_lower_dimension_value: 2
     expects:
       related_outputs: [sample_dimensions]
+      row_changed: true
       graph_result:
         sample_dimensions:
           upper:

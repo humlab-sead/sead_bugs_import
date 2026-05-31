@@ -245,6 +245,9 @@ public class SupportingOutputPolicyHarnessTest {
 		SupportingOutputPolicyHarness.SupportingOutputResult result = supportingOutputPolicyHarness.execute(policyName, args, state, sourceRow);
 
 		assertEquals(FixtureExpectationHelper.toStringList(fixtureLoader, expects.get("related_outputs"), scenarioName + ".expects.related_outputs"), result.getRelatedOutputs());
+		if (expects.containsKey("row_changed")) {
+			assertEquals(fixtureLoader.booleanValue(expects.get("row_changed"), scenarioName + ".expects.row_changed"), result.isRowChanged());
+		}
 		assertEquals(FixtureExpectationHelper.toNestedMap(fixtureLoader, expects.get("graph_result"), scenarioName + ".expects.graph_result"), result.getGraphResult());
 	}
 }

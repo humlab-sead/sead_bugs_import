@@ -29,61 +29,84 @@ public class SupportingOutputPolicyHarness {
 			}
 			if ("sample_dimensions".equals(name)) {
 				result.relatedOutputs.add(name);
-				result.graphResult.put("sample_dimensions", sampleDimensionsResult(policyName, args, state, sourceRow));
+				applyGraphResult(result, "sample_dimensions", sampleDimensionsResult(policyName, args, state, sourceRow));
 				return result;
 			}
 			if ("contacts".equals(name)) {
 				result.relatedOutputs.add(name);
-				result.graphResult.put("contacts", contactsResult(policyName, args, state));
+				applyGraphResult(result, "contacts", contactsResult(policyName, args, state));
 				return result;
 			}
 			if ("fossil".equals(policyName) && "dataset".equals(name)) {
 				result.relatedOutputs.add(name);
-				result.graphResult.put("dataset", fossilDatasetResult(state));
+				applyGraphResult(result, "dataset", fossilDatasetResult(state));
 				return result;
 			}
 			if ("dataset".equals(name)) {
 				result.relatedOutputs.add(name);
-				result.graphResult.put("dataset", datasetResult(policyName, args, state, sourceRow));
+				applyGraphResult(result, "dataset", datasetResult(policyName, args, state, sourceRow));
 				return result;
 			}
 			if ("fossil".equals(policyName) && "analysis_entity".equals(name)) {
 				result.relatedOutputs.add(name);
-				result.graphResult.put("analysis_entity", fossilAnalysisEntityResult(state));
+				applyGraphResult(result, "analysis_entity", fossilAnalysisEntityResult(state));
 				return result;
 			}
 			if ("analysis_entity".equals(name)) {
 				result.relatedOutputs.add(name);
-				result.graphResult.put("analysis_entity", analysisEntityResult(policyName, args, state, sourceRow));
+				applyGraphResult(result, "analysis_entity", analysisEntityResult(policyName, args, state, sourceRow));
 				return result;
 			}
 			if ("relative_age".equals(name)) {
 				result.relatedOutputs.add(name);
-				result.graphResult.put("relative_age", relativeAgeResult(policyName, state, sourceRow));
+				applyGraphResult(result, "relative_age", relativeAgeResult(policyName, state, sourceRow));
 				return result;
 			}
 			if ("species".equals(policyName) && "taxa_family".equals(name)) {
 				result.relatedOutputs.add(name);
-				result.graphResult.put("taxa_family", taxaFamilyResult(args, state, sourceRow));
+				applyGraphResult(result, "taxa_family", taxaFamilyResult(args, state, sourceRow));
 				return result;
 			}
 			if ("species".equals(policyName) && "taxa_genus".equals(name)) {
 				result.relatedOutputs.add(name);
-				result.graphResult.put("taxa_genus", taxaGenusResult(state, sourceRow));
+				applyGraphResult(result, "taxa_genus", taxaGenusResult(state, sourceRow));
 				return result;
 			}
 			if ("species".equals(policyName) && "taxa_author".equals(name)) {
 				result.relatedOutputs.add(name);
-				result.graphResult.put("taxa_author", taxaAuthorResult(state, sourceRow));
+				applyGraphResult(result, "taxa_author", taxaAuthorResult(state, sourceRow));
 				return result;
 			}
 			if ("species".equals(policyName) && "taxa_species".equals(name)) {
 				result.relatedOutputs.add(name);
-				result.graphResult.put("taxa_species", taxaSpeciesResult(state, sourceRow));
+				applyGraphResult(result, "taxa_species", taxaSpeciesResult(state, sourceRow));
 				return result;
 			}
 		}
 		throw new IllegalArgumentException("Policy '" + policyName + "' must define supporting output '" + (outputName == null ? "dataset" : outputName) + "'");
+	}
+
+	private void applyGraphResult(SupportingOutputResult result, String key, Map<String, Object> value) {
+		result.graphResult.put(key, value);
+		result.rowChanged = hasSupportingChanges(value);
+	}
+
+	private boolean hasSupportingChanges(Map<String, Object> value) {
+		if (value.containsKey("supporting_action")) {
+			String action = stringOrNull(value, "supporting_action");
+			return !"keep".equals(action) && !"reuse".equals(action);
+		}
+		for (Map.Entry<String, Object> entry : value.entrySet()) {
+			Object nestedValue = entry.getValue();
+			if (nestedValue instanceof Map) {
+				@SuppressWarnings("unchecked")
+				Map<String, Object> nestedMap = (Map<String, Object>) nestedValue;
+				if (hasSupportingChanges(nestedMap)) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	private Map<String, Object> taxaFamilyResult(Map<String, Object> args, Map<String, Object> state, Map<String, Object> sourceRow) {
@@ -517,6 +540,7 @@ public class SupportingOutputPolicyHarness {
 	public static class SupportingOutputResult {
 		private final List<String> relatedOutputs = new ArrayList<String>();
 		private final Map<String, Object> graphResult = new LinkedHashMap<String, Object>();
+		private boolean rowChanged;
 
 		public List<String> getRelatedOutputs() {
 			return relatedOutputs;
@@ -524,6 +548,10 @@ public class SupportingOutputPolicyHarness {
 
 		public Map<String, Object> getGraphResult() {
 			return graphResult;
+		}
+
+		public boolean isRowChanged() {
+			return rowChanged;
 		}
 	}
 }

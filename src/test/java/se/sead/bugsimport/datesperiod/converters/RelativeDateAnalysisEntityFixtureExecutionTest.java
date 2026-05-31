@@ -65,7 +65,12 @@ public class RelativeDateAnalysisEntityFixtureExecutionTest {
 		Map<String, Object> state = policyContext.containsKey("state") ? fixtureLoader.mapValue(policyContext.get("state"), scenarioName + ".policy_context.state") : null;
 		AnalysisEntity analysisEntity = executeUpdaterForScenario(scenario, scenarioName);
 
+		assertEquals(fixtureLoader.booleanValue(expects.get("row_changed"), scenarioName + ".expects.row_changed"), rowChanged(analysisEntity, state));
 		assertEquals(FixtureExpectationHelper.toNestedMap(fixtureLoader, expects.get("graph_result"), scenarioName + ".expects.graph_result"), actualGraphResult(analysisEntity, state));
+	}
+
+	private boolean rowChanged(AnalysisEntity analysisEntity, Map<String, Object> state) {
+		return !"keep".equals(analysisEntityAction(analysisEntity, state));
 	}
 
 	private AnalysisEntity executeUpdaterForScenario(Map<String, Object> scenario, String scenarioName) {

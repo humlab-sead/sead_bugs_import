@@ -71,7 +71,17 @@ public class DimensionUpdaterFixtureExecutionTest {
 		DimensionUpdater updater = createUpdater(sample.getDimensions());
 		updater.update(sample, createBugsSample(sourceRow, scenarioName));
 
+		assertEquals(fixtureLoader.booleanValue(expects.get("row_changed"), scenarioName + ".expects.row_changed"), rowChanged(sample, state));
 		assertEquals(FixtureExpectationHelper.toNestedMap(fixtureLoader, expects.get("graph_result"), scenarioName + ".expects.graph_result"), actualGraphResult(sample, state));
+	}
+
+	private boolean rowChanged(Sample sample, Map<String, Object> state) {
+		SampleDimension upper = findDimension(sample.getDimensions(), upperDimension);
+		if (upper != null && !"keep".equals(supportingAction(upper, integerOrNull(state, "existing_upper_sample_dimension_id"), doubleOrNull(state == null ? null : state.get("existing_upper_dimension_value"), "existing_upper_dimension_value"), upper.getValue() == null ? null : upper.getValue().doubleValue()))) {
+			return true;
+		}
+		SampleDimension lower = findDimension(sample.getDimensions(), lowerDimension);
+		return lower != null && !"keep".equals(supportingAction(lower, integerOrNull(state, "existing_lower_sample_dimension_id"), doubleOrNull(state == null ? null : state.get("existing_lower_dimension_value"), "existing_lower_dimension_value"), lower.getValue() == null ? null : lower.getValue().doubleValue()));
 	}
 
 	private DimensionUpdater createUpdater(List<SampleDimension> tracedDimensions) throws Exception {
