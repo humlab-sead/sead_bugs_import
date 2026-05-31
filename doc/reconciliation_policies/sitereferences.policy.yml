@@ -1,0 +1,106 @@
+# BugsCEP → SEAD Reconciliation Policy
+# Domain: SiteReferences (TSiteRef → tbl_site_references)
+
+meta:
+  format_version: "1.0"
+  generated_from: java_source
+  reviewed: false
+  notes: >
+    The converter first validates the site and bibliography reference. Existing
+    site-reference rows are deduplicated by the tuple of site_id and biblio_id;
+    matched rows are returned unchanged.
+
+policy:
+  domain: sitereferences
+  description: >
+    Imports site-reference rows from TSiteRef into tbl_site_references. The
+    importer resolves the site and bibliography first, returns an existing row
+    when the same site/reference tuple already exists, and creates a new row
+    otherwise.
+
+source:
+  system: bugscep
+  table: TSiteRef
+  sql: "SELECT SiteCODE, Ref FROM TSiteRef"
+  fields:
+    - name: SiteCODE
+      type: string
+      nullable: true
+      role: natural_key
+    - name: Ref
+      type: string
+      nullable: true
+      role: data
+  identity_key: SiteCODE
+  trace_key:
+    template: "{{SiteCODE},{Ref}}"
+
+target:
+  system: sead
+  table: tbl_site_references
+  identity:
+    column: site_reference_id
+    type: integer
+    strategy: sequence
+    sequence: tbl_site_references_site_reference_id_seq
+
+mappings:
+  - target_field: site_id
+    type: integer
+    nullable: true
+    transform:
+      type: call
+      helper: resolve_site_id
+      args: ["source.SiteCODE"]
+  - target_field: biblio_id
+    type: integer
+    nullable: true
+    transform:
+      type: call
+      helper: resolve_biblio_id
+      args: ["source.Ref"]
+
+reconciliation:
+  strategy: ordered_rules
+  prerequisite:
+    name: resolve_dependencies
+    description: Resolve the site by Bugs site code, require a non-empty Ref value, and resolve the bibliography reference case-insensitively before tuple matching.
+  rules:
+    - name: tuple_lookup
+      order: 1
+      type: database_query
+      description: Find an existing site-reference row by the resolved site and bibliography tuple.
+      table: tbl_site_references
+      where: "site_id = :site_id AND biblio_id = :biblio_id"
+      bind:
+        site_id: "resolve_site_id(source.SiteCODE)"
+        biblio_id: "resolve_biblio_id(source.Ref)"
+      on_match: return_as_is
+    - name: create_new
+      order: 2
+      type: create_new
+      description: No tuple match found; create a new site-reference row.
+      on_match: insert
+
+update_detection:
+  strategy: never
+  fields: []
+  on_change: ignore
+  comment: Existing site-reference rows are returned unchanged; SiteReferencesImporter does not update them.
+
+dependencies: [Bibliography, Site]
+
+tracing:
+  bugs_table: TSiteRef
+  sead_table: tbl_site_references
+  write_on: [insert, update]
+
+helpers:
+  - name: resolve_site_id
+    description: Resolve the Bugs site code to the traced SEAD site row, disallowing deleted sites.
+    signature: "resolve_site_id(site_code: str | None) -> int | None"
+    used_by: [site_id]
+  - name: resolve_biblio_id
+    description: Resolve the Bugs reference value to tbl_biblio.biblio_id using case-insensitive Bugs-reference matching.
+    signature: "resolve_biblio_id(reference: str | None) -> int | None"
+    used_by: [biblio_id]

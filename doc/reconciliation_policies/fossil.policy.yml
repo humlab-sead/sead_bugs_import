@@ -1,0 +1,250 @@
+# BugsCEP → SEAD Reconciliation Policy
+# Domain: Fossil (TFossil → tbl_abundances)
+
+meta:
+  format_version: "1.0"
+  generated_from: java_source
+  reviewed: false
+  notes: >
+    The importer is trace-first by FossilBugsCODE. Besides the abundance row, it
+    may create or reuse dataset and analysis-entity rows based on the traced
+    sample group and the countsheet type stored in that group's translated trace
+    data. Cache management is part of the runtime behavior.
+
+policy:
+  domain: fossil
+  description: >
+    Imports fossil abundances from TFossil into tbl_abundances. Matching is
+    trace-first by FossilBugsCODE with create-new fallback. The importer
+    resolves the species by Bugs code, resolves or creates the dataset and
+    analysis entity from the sample group, and always uses abundance element 5
+    (MNI).
+
+source:
+  system: bugscep
+  table: TFossil
+  sql: "SELECT FossilBugsCODE, CODE, SampleCODE, Abundance FROM TFossil"
+  fields:
+    - name: FossilBugsCODE
+      type: string
+      nullable: true
+      role: natural_key
+    - name: CODE
+      type: decimal
+      nullable: true
+      role: data
+    - name: SampleCODE
+      type: string
+      nullable: true
+      role: data
+    - name: Abundance
+      type: integer
+      nullable: true
+      role: data
+  identity_key: FossilBugsCODE
+  trace_key:
+    template: "{{FossilBugsCODE},{CODE},{SampleCODE},{Abundance}}"
+
+target:
+  system: sead
+  table: tbl_abundances
+  identity:
+    column: abundance_id
+    type: integer
+    strategy: sequence
+    sequence: tbl_abundances_abundance_id_seq
+
+related_outputs:
+  - name: dataset
+    table: tbl_datasets
+    mode: zero_or_one
+    relationship: supporting
+    persistence: cache_then_save
+    key_fields: [dataset_name, data_type_id, method_id, master_set_id]
+    identity:
+      column: dataset_id
+      type: integer
+      strategy: sequence
+      sequence: tbl_datasets_dataset_id_seq
+    mappings:
+      - target_field: dataset_name
+        type: string
+        nullable: true
+        transform:
+          type: expr
+          expr: "generated.dataset_name"
+      - target_field: data_type_id
+        type: integer
+        nullable: true
+        transform:
+          type: generated
+          field: data_type_id
+      - target_field: method_id
+        type: integer
+        nullable: true
+        transform:
+          type: generated
+          field: method_id
+      - target_field: master_set_id
+        type: integer
+        nullable: true
+        transform:
+          type: generated
+          field: master_set_id
+      - target_field: updated_dataset_id
+        type: integer
+        nullable: true
+        transform:
+          type: generated
+          field: updated_dataset_id
+    reconciliation:
+      existing_rows:
+        table: tbl_datasets
+        where: "dataset_name = :dataset_name AND data_type_id = :data_type_id AND method_id = :method_id AND master_set_id = :master_set_id"
+        bind:
+          dataset_name: "generated.dataset_name"
+          data_type_id: "generated.data_type_id"
+          method_id: "generated.method_id"
+          master_set_id: "generated.master_set_id"
+      compare_fields: [dataset_name, data_type_id, method_id, master_set_id, updated_dataset_id]
+      on_missing_generated: insert
+      on_missing_existing: keep
+      on_match: return_as_is
+      comment: DatasetManagerWithCreation reuses cached or stored datasets by these keys and only emits a new row when no dataset exists or when updates are disabled and a cloned updated_dataset row is required.
+    update_detection:
+      strategy: never
+      fields: []
+      on_change: ignore
+      config:
+        - name: allow_dataset_updates
+          property: allow.dataset.updates
+          default: true
+          description: When false, an existing dataset may be cloned through updated_dataset instead of reused directly.
+    comment: The dataset comes from the traced sample-group countsheet code and countsheet type, uses the fixed Palaeoentomology method, and may clone an existing dataset when updates are disabled.
+  - name: analysis_entity
+    table: tbl_analysis_entities
+    mode: zero_or_one
+    relationship: supporting
+    persistence: cache_then_link
+    key_fields: [physical_sample_id, dataset_id]
+    identity:
+      column: analysis_entity_id
+      type: integer
+      strategy: sequence
+      sequence: tbl_analysis_entities_analysis_entity_id_seq
+    mappings:
+      - target_field: physical_sample_id
+        type: integer
+        nullable: false
+        transform:
+          type: generated
+          field: physical_sample_id
+      - target_field: dataset_id
+        type: integer
+        nullable: false
+        transform:
+          type: generated
+          field: dataset_id
+    reconciliation:
+      existing_rows:
+        table: tbl_analysis_entities
+        where: "physical_sample_id = :physical_sample_id AND dataset_id = :dataset_id"
+        bind:
+          physical_sample_id: "generated.physical_sample_id"
+          dataset_id: "generated.dataset_id"
+      compare_fields: [physical_sample_id, dataset_id]
+      on_missing_generated: insert
+      on_missing_existing: keep
+      on_match: return_as_is
+      comment: AnalysisEntityManager reuses cache first, then repository rows by sample and dataset, and only creates a new row when no existing association is found.
+    update_detection:
+      strategy: never
+      fields: []
+      on_change: ignore
+    comment: AnalysisEntity rows are cached by sample and dataset to avoid duplicate rows during the import run.
+
+mappings:
+  - target_field: abundance
+    type: integer
+    nullable: true
+    source_field: Abundance
+  - target_field: abundance_element_id
+    type: integer
+    nullable: false
+    transform:
+      type: constant
+      value: 5
+  - target_field: analysis_entity_id
+    type: integer
+    nullable: true
+    transform:
+      type: call
+      helper: resolve_fossil_analysis_entity_id
+      args: ["source.SampleCODE"]
+  - target_field: taxon_id
+    type: integer
+    nullable: true
+    transform:
+      type: call
+      helper: resolve_taxon_id
+      args: ["source.CODE"]
+
+reconciliation:
+  strategy: ordered_rules
+  prerequisite:
+    description: Resolve the sample, sample group, dataset, and analysis entity before writing the abundance row.
+    config:
+      - name: allow_dataset_updates
+        property: allow.dataset.updates
+        default: true
+        description: When false, an existing dataset is cloned through updated_dataset instead of being reused directly when abundance-related output changes.
+  rules:
+    - name: trace_lookup
+      order: 1
+      type: trace_lookup
+      description: Look up the existing abundance row by FossilBugsCODE from bugs_trace.
+      bugs_table: TFossil
+      identifier_expr: "source.FossilBugsCODE"
+      on_match: update
+      on_error: skip
+    - name: create_new
+      order: 2
+      type: create_new
+      description: No traced abundance row exists; create a new abundance row.
+      on_match: insert
+
+update_detection:
+  strategy: field_comparison
+  fields:
+    - abundance
+    - abundance_element_id
+    - analysis_entity_id
+    - taxon_id
+  on_change: mark_updated
+  comment: Dataset and analysis-entity cache behavior is documented in related_outputs and helper notes rather than as direct abundance-column comparisons.
+
+dependencies: [Sample, Index]
+
+tracing:
+  bugs_table: TFossil
+  sead_table: tbl_abundances
+  write_on: [insert, update]
+  comment: FossilImporter clears the dataset cache after run() and reinitializes the analysis-entity cache before and after import.
+
+helpers:
+  - name: resolve_fossil_analysis_entity_id
+    description: Resolve or create the dataset and analysis entity for the traced sample using the sample-group trace, the countsheet-derived data type, the Bugs master set, and the fixed Palaeoentomology method.
+    signature: "resolve_fossil_analysis_entity_id(sample_code: str | None) -> int | None"
+    used_by: [analysis_entity_id]
+  - name: generate_fossil_dataset_items
+    description: Build the dataset candidate for the traced sample group, including a cloned updated_dataset row when dataset updates are disabled and abundance changes require a new dataset version.
+    signature: "generate_fossil_dataset_items(sample_code: str | None, abundance_changed: bool) -> list[FossilDatasetItem]"
+    expression: "[{'dataset_name': ..., 'data_type_id': ..., 'method_id': ..., 'master_set_id': ..., 'updated_dataset_id': ...}]"
+  - name: generate_fossil_analysis_entity_items
+    description: Build the analysis-entity candidate keyed by traced sample and resolved dataset.
+    signature: "generate_fossil_analysis_entity_items(sample_code: str | None) -> list[FossilAnalysisEntityItem]"
+    expression: "[{'physical_sample_id': ..., 'dataset_id': ...}]"
+  - name: resolve_taxon_id
+    description: Resolve the Bugs species code to tbl_taxa_tree_master.taxon_id.
+    signature: "resolve_taxon_id(code: float | None) -> int | None"
+    used_by: [taxon_id]

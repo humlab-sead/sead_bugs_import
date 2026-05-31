@@ -1,0 +1,364 @@
+fixture_version: "1.0"
+policy: datasetcontacts
+scenarios:
+  - name: create_identified_by_contact_when_unmatched
+    intent: supporting_output_result
+    source_rows:
+      - CountsheetCODE: CS_1
+        CountsheetName: Countsheet 1
+        SiteCODE: SITE_1
+        SheetContext: null
+        SheetType: null
+    policy_context:
+      args:
+        output_name: contacts
+        identified_by: Archer
+        specimen_repository: null
+      step_hits: {}
+    expects:
+      related_outputs: [contacts]
+      graph_result:
+        contacts:
+          contact_1:
+            result_kind: insert_new
+            source: generated_new
+            contact_id: null
+            first_name: null
+            last_name: Archer
+  - name: reuse_repository_contact_for_identified_by_name
+    intent: supporting_output_result
+    source_rows:
+      - CountsheetCODE: CS_2
+        CountsheetName: Countsheet 2
+        SiteCODE: SITE_2
+        SheetContext: null
+        SheetType: null
+    policy_context:
+      args:
+        output_name: contacts
+        identified_by: Archer
+        specimen_repository: null
+      step_hits: {}
+      state:
+        repository_contacts:
+          archer:
+            contact_id: 301
+            first_name: null
+            last_name: Archer
+    expects:
+      related_outputs: [contacts]
+      graph_result:
+        contacts:
+          contact_1:
+            result_kind: return_existing
+            source: repository
+            contact_id: 301
+            first_name: null
+            last_name: Archer
+  - name: reuse_cached_contact_before_repository_lookup
+    intent: supporting_output_result
+    source_rows:
+      - CountsheetCODE: CS_3
+        CountsheetName: Countsheet 3
+        SiteCODE: SITE_3
+        SheetContext: null
+        SheetType: null
+    policy_context:
+      args:
+        output_name: contacts
+        identified_by: Archer
+        specimen_repository: null
+      step_hits: {}
+      state:
+        cached_contacts:
+          archer_cache:
+            contact_id: 401
+            first_name: null
+            last_name: Archer
+        repository_contacts:
+          archer_repo:
+            contact_id: 999
+            first_name: null
+            last_name: Archer
+    expects:
+      related_outputs: [contacts]
+      graph_result:
+        contacts:
+          contact_1:
+            result_kind: return_existing
+            source: cache
+            contact_id: 401
+            first_name: null
+            last_name: Archer
+  - name: create_identified_by_and_specimen_contacts_in_parse_order
+    intent: supporting_output_result
+    source_rows:
+      - CountsheetCODE: CS_4
+        CountsheetName: Countsheet 4
+        SiteCODE: SITE_4
+        SheetContext: null
+        SheetType: null
+    policy_context:
+      args:
+        output_name: contacts
+        identified_by: Archer, Bookland
+        specimen_repository: University of Ottawa
+      step_hits: {}
+    expects:
+      related_outputs: [contacts]
+      graph_result:
+        contacts:
+          contact_1:
+            result_kind: insert_new
+            source: generated_new
+            contact_id: null
+            first_name: null
+            last_name: Archer
+          contact_2:
+            result_kind: insert_new
+            source: generated_new
+            contact_id: null
+            first_name: null
+            last_name: Bookland
+          contact_3:
+            result_kind: insert_new
+            source: generated_new
+            contact_id: null
+            first_name: University of Ottawa
+            last_name: null
+  - name: create_specimen_repository_contact_when_unmatched
+    intent: supporting_output_result
+    source_rows:
+      - CountsheetCODE: CS_4A
+        CountsheetName: Countsheet 4A
+        SiteCODE: SITE_4A
+        SheetContext: null
+        SheetType: null
+    policy_context:
+      args:
+        output_name: contacts
+        identified_by: null
+        specimen_repository: University of Helsinki
+      step_hits: {}
+    expects:
+      related_outputs: [contacts]
+      graph_result:
+        contacts:
+          contact_1:
+            result_kind: insert_new
+            source: generated_new
+            contact_id: null
+            first_name: University of Helsinki
+            last_name: null
+  - name: reuse_repository_specimen_repository_contact
+    intent: supporting_output_result
+    source_rows:
+      - CountsheetCODE: CS_4B
+        CountsheetName: Countsheet 4B
+        SiteCODE: SITE_4B
+        SheetContext: null
+        SheetType: null
+    policy_context:
+      args:
+        output_name: contacts
+        identified_by: null
+        specimen_repository: University of Helsinki
+      step_hits: {}
+      state:
+        repository_contacts:
+          specimen_repo:
+            contact_id: 302
+            first_name: University of Helsinki
+            last_name: null
+    expects:
+      related_outputs: [contacts]
+      graph_result:
+        contacts:
+          contact_1:
+            result_kind: return_existing
+            source: repository
+            contact_id: 302
+            first_name: University of Helsinki
+            last_name: null
+  - name: create_dataset_contacts_when_no_existing_rows
+    intent: output_result
+    source_rows:
+      - CountsheetCODE: CS_5
+        CountsheetName: Countsheet 5
+        SiteCODE: SITE_5
+        SheetContext: null
+        SheetType: null
+    policy_context:
+      args:
+        dataset_id: "201"
+        identified_by_type_id: "601"
+        specimen_repository_type_id: "602"
+        identified_by: Archer
+        specimen_repository: University of Ottawa
+      step_hits: {}
+      state:
+        repository_contacts:
+          archer:
+            contact_id: 301
+            first_name: null
+            last_name: Archer
+    expects:
+      output_result:
+        row_1:
+          result_kind: insert_new
+          dataset_contact_id: null
+          dataset_id: 201
+          contact_id: 301
+          contact_type_id: 601
+          first_name: null
+          last_name: Archer
+        row_2:
+          result_kind: insert_new
+          dataset_contact_id: null
+          dataset_id: 201
+          contact_id: null
+          contact_type_id: 602
+          first_name: University of Ottawa
+          last_name: null
+  - name: keep_existing_and_append_only_unmatched_generated_contacts
+    intent: output_result
+    source_rows:
+      - CountsheetCODE: CS_6
+        CountsheetName: Countsheet 6
+        SiteCODE: SITE_6
+        SheetContext: null
+        SheetType: null
+    policy_context:
+      args:
+        dataset_id: "202"
+        identified_by_type_id: "601"
+        specimen_repository_type_id: "602"
+        identified_by: Archer, Bookland
+        specimen_repository: University of Ottawa
+      step_hits: {}
+      state:
+        cached_contacts:
+          bookland:
+            contact_id: 302
+            first_name: null
+            last_name: Bookland
+        repository_contacts:
+          specimen_repo:
+            contact_id: 303
+            first_name: University of Ottawa
+            last_name: null
+        existing_dataset_contacts:
+          existing_archer:
+            dataset_contact_id: 701
+            contact_id: 501
+            contact_type_id: 601
+            first_name: null
+            last_name: Archer
+    expects:
+      output_result:
+        row_1:
+          result_kind: keep_existing
+          dataset_contact_id: 701
+          dataset_id: 202
+          contact_id: 501
+          contact_type_id: 601
+          first_name: null
+          last_name: Archer
+        row_2:
+          result_kind: insert_new
+          dataset_contact_id: null
+          dataset_id: 202
+          contact_id: 302
+          contact_type_id: 601
+          first_name: null
+          last_name: Bookland
+        row_3:
+          result_kind: insert_new
+          dataset_contact_id: null
+          dataset_id: 202
+          contact_id: 303
+          contact_type_id: 602
+          first_name: University of Ottawa
+          last_name: null
+  - name: keep_only_existing_contacts_when_all_generated_match
+    intent: output_result
+    source_rows:
+      - CountsheetCODE: CS_7
+        CountsheetName: Countsheet 7
+        SiteCODE: SITE_7
+        SheetContext: null
+        SheetType: null
+    policy_context:
+      args:
+        dataset_id: "203"
+        identified_by_type_id: "601"
+        specimen_repository_type_id: "602"
+        identified_by: Archer
+        specimen_repository: University of Ottawa
+      step_hits: {}
+      state:
+        existing_dataset_contacts:
+          existing_archer:
+            dataset_contact_id: 702
+            contact_id: 502
+            contact_type_id: 601
+            first_name: null
+            last_name: Archer
+          existing_specimen:
+            dataset_contact_id: 703
+            contact_id: 503
+            contact_type_id: 602
+            first_name: University of Ottawa
+            last_name: null
+    expects:
+      output_result:
+        row_1:
+          result_kind: keep_existing
+          dataset_contact_id: 702
+          dataset_id: 203
+          contact_id: 502
+          contact_type_id: 601
+          first_name: null
+          last_name: Archer
+        row_2:
+          result_kind: keep_existing
+          dataset_contact_id: 703
+          dataset_id: 203
+          contact_id: 503
+          contact_type_id: 602
+          first_name: University of Ottawa
+          last_name: null
+  - name: keep_existing_contacts_when_no_generated_contacts
+    intent: output_result
+    source_rows:
+      - CountsheetCODE: CS_8
+        CountsheetName: Countsheet 8
+        SiteCODE: SITE_8
+        SheetContext: null
+        SheetType: null
+    policy_context:
+      args:
+        dataset_id: "204"
+        identified_by_type_id: "601"
+        specimen_repository_type_id: "602"
+        identified_by: null
+        specimen_repository: null
+      step_hits: {}
+      state:
+        existing_dataset_contacts:
+          existing_archer:
+            dataset_contact_id: 704
+            contact_id: 504
+            contact_type_id: 601
+            first_name: null
+            last_name: Archer
+    expects:
+      output_result:
+        row_1:
+          result_kind: keep_existing
+          dataset_contact_id: 704
+          dataset_id: 204
+          contact_id: 504
+          contact_type_id: 601
+          first_name: null
+          last_name: Archer

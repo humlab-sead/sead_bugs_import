@@ -1,0 +1,84 @@
+fixture_version: "1.0"
+policy: rdb
+scenarios:
+  - name: trace_hit_updates_existing_rdb
+    intent: reconciliation_path
+    source_rows:
+      - CODE: 101
+        CountryCode: "SE"
+        RDBCode: 401
+    policy_context:
+      step_hits:
+        trace_lookup: true
+        updated_since_last_import_guard: false
+        repository_lookup: false
+      state:
+        existing_row_id: 81
+    expects:
+      reconciliation_path: [trace_lookup]
+      reconciliation_result:
+        result_kind: update_existing
+        source: trace_lookup
+        row_id: 81
+        rdb_code: 401
+  - name: history_conflict_guard_returns_error_carrier
+    intent: reconciliation_path
+    source_rows:
+      - CODE: 102
+        CountryCode: "NO"
+        RDBCode: 402
+    policy_context:
+      step_hits:
+        trace_lookup: false
+        updated_since_last_import_guard: true
+        repository_lookup: false
+      state:
+        guard_error_message: Sead data has been updated since last bugs import
+    expects:
+      reconciliation_path: [trace_lookup, updated_since_last_import_guard]
+      reconciliation_result:
+        result_kind: return_guard_error
+        source: updated_since_last_import_guard
+        row_id: null
+        rdb_code: 402
+        issue:
+          severity: error
+          message: Sead data has been updated since last bugs import
+  - name: repository_lookup_updates_existing_rdb
+    intent: reconciliation_path
+    source_rows:
+      - CODE: 103
+        CountryCode: "DK"
+        RDBCode: 403
+    policy_context:
+      step_hits:
+        trace_lookup: false
+        updated_since_last_import_guard: false
+        repository_lookup: true
+      state:
+        existing_row_id: 82
+    expects:
+      reconciliation_path: [trace_lookup, updated_since_last_import_guard, repository_lookup]
+      reconciliation_result:
+        result_kind: update_existing
+        source: repository_lookup
+        row_id: 82
+        rdb_code: 403
+  - name: create_new_rdb_when_no_match_exists
+    intent: reconciliation_path
+    source_rows:
+      - CODE: 104
+        CountryCode: "FI"
+        RDBCode: 404
+    policy_context:
+      step_hits:
+        trace_lookup: false
+        updated_since_last_import_guard: false
+        repository_lookup: false
+    expects:
+      reconciliation_path: [trace_lookup, updated_since_last_import_guard, repository_lookup, create_new]
+      reconciliation_result:
+        result_kind: insert_new
+        source: create_new
+        row_id: null
+        rdb_code: 404

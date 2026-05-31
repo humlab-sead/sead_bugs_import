@@ -1,0 +1,71 @@
+fixture_version: "1.0"
+policy: rdbsystem
+scenarios:
+  - name: trace_hit_updates_existing_rdb_system
+    intent: reconciliation_path
+    source_rows:
+      - RDBSystemCode: 71
+        RDBSystem: Swedish Red List
+        RDBVersion: "2020"
+        RDBSystemDate: 20200101
+        RDBFirstPublished: 20
+        Ref: Ref-R-1
+        CountryCode: "SE"
+    policy_context:
+      step_hits:
+        trace_lookup: true
+      state:
+        existing_row_id: 701
+    expects:
+      reconciliation_path: [trace_lookup]
+      reconciliation_result:
+        result_kind: update_existing
+        source: trace_lookup
+        row_id: 701
+        rdb_system_code: 71
+  - name: trace_hit_returns_existing_rdb_system_error
+    intent: reconciliation_path
+    source_rows:
+      - RDBSystemCode: 72
+        RDBSystem: Norwegian Red List
+        RDBVersion: "2015"
+        RDBSystemDate: 20150101
+        RDBFirstPublished: 15
+        Ref: Ref-R-2
+        CountryCode: "NO"
+    policy_context:
+      step_hits:
+        trace_lookup: true
+      state:
+        existing_row_id: 702
+        existing_error_message: Existing rdb system error
+    expects:
+      reconciliation_path: [trace_lookup]
+      reconciliation_result:
+        result_kind: return_existing_error
+        source: trace_lookup
+        row_id: 702
+        issue:
+          severity: error
+          message: Existing rdb system error
+        rdb_system_code: 72
+  - name: create_new_rdb_system_when_no_trace_exists
+    intent: reconciliation_path
+    source_rows:
+      - RDBSystemCode: 73
+        RDBSystem: Finnish Red List
+        RDBVersion: "2019"
+        RDBSystemDate: 20190101
+        RDBFirstPublished: 19
+        Ref: Ref-R-3
+        CountryCode: "FI"
+    policy_context:
+      step_hits:
+        trace_lookup: false
+    expects:
+      reconciliation_path: [trace_lookup, create_new]
+      reconciliation_result:
+        result_kind: insert_new
+        source: create_new
+        row_id: null
+        rdb_system_code: 73

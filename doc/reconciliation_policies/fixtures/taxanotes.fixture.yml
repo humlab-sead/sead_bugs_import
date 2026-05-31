@@ -1,0 +1,37 @@
+fixture_version: "1.0"
+policy: taxanotes
+scenarios:
+  - name: taxonomy_note_lookup_updates_existing_note
+    intent: reconciliation_path
+    source_rows:
+      - CODE: 201.0
+        Ref: REF-201
+        Data: Existing taxonomy note
+    policy_context:
+      step_hits:
+        taxonomy_note_lookup: true
+      state:
+        existing_row_id: 51
+    expects:
+      reconciliation_path: [taxonomy_note_lookup]
+      reconciliation_result:
+        result_kind: update_existing
+        source: taxonomy_note_lookup
+        row_id: 51
+        species_code: 201
+  - name: create_new_taxonomy_note_when_tuple_missing
+    intent: reconciliation_path
+    source_rows:
+      - CODE: 202.0
+        Ref: REF-202
+        Data: New taxonomy note
+    policy_context:
+      step_hits:
+        taxonomy_note_lookup: false
+    expects:
+      reconciliation_path: [taxonomy_note_lookup, create_new]
+      reconciliation_result:
+        result_kind: insert_new
+        source: create_new
+        row_id: null
+        species_code: 202

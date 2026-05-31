@@ -1,0 +1,142 @@
+fixture_version: "1.0"
+policy: sample
+scenarios:
+  - name: create_sample_dimensions_when_missing
+    intent: supporting_output_result
+    source_rows:
+      - SampleCODE: SAMPLE_1
+        ZorDepthTop: 1
+        ZorDepthBot: 2
+    policy_context:
+      args:
+        output_name: sample_dimensions
+        method_id: "501"
+        upper_dimension_id: "601"
+        lower_dimension_id: "602"
+      step_hits: {}
+    expects:
+      related_outputs: [sample_dimensions]
+      graph_result:
+        sample_dimensions:
+          upper:
+            result_kind: insert_new
+            sample_dimension_id: null
+            dimension_id: 601
+            method_id: 501
+            dimension_value: 1
+            marked_for_deletion: false
+          lower:
+            result_kind: insert_new
+            sample_dimension_id: null
+            dimension_id: 602
+            method_id: 501
+            dimension_value: 2
+            marked_for_deletion: false
+  - name: update_existing_sample_dimensions_when_values_change
+    intent: supporting_output_result
+    source_rows:
+      - SampleCODE: SAMPLE_2
+        ZorDepthTop: 1
+        ZorDepthBot: 2
+    policy_context:
+      args:
+        output_name: sample_dimensions
+        method_id: "501"
+        upper_dimension_id: "601"
+        lower_dimension_id: "602"
+      step_hits: {}
+      state:
+        existing_upper_sample_dimension_id: 701
+        existing_upper_dimension_value: 0
+        existing_lower_sample_dimension_id: 702
+        existing_lower_dimension_value: 1
+    expects:
+      related_outputs: [sample_dimensions]
+      graph_result:
+        sample_dimensions:
+          upper:
+            result_kind: update_existing
+            sample_dimension_id: 701
+            dimension_id: 601
+            method_id: 501
+            dimension_value: 1
+            marked_for_deletion: false
+          lower:
+            result_kind: update_existing
+            sample_dimension_id: 702
+            dimension_id: 602
+            method_id: 501
+            dimension_value: 2
+            marked_for_deletion: false
+  - name: keep_existing_sample_dimensions_when_values_match
+    intent: supporting_output_result
+    source_rows:
+      - SampleCODE: SAMPLE_3
+        ZorDepthTop: 1
+        ZorDepthBot: 2
+    policy_context:
+      args:
+        output_name: sample_dimensions
+        method_id: "501"
+        upper_dimension_id: "601"
+        lower_dimension_id: "602"
+      step_hits: {}
+      state:
+        existing_upper_sample_dimension_id: 703
+        existing_upper_dimension_value: 1
+        existing_lower_sample_dimension_id: 704
+        existing_lower_dimension_value: 2
+    expects:
+      related_outputs: [sample_dimensions]
+      graph_result:
+        sample_dimensions:
+          upper:
+            result_kind: keep_existing
+            sample_dimension_id: 703
+            dimension_id: 601
+            method_id: 501
+            dimension_value: 1
+            marked_for_deletion: false
+          lower:
+            result_kind: keep_existing
+            sample_dimension_id: 704
+            dimension_id: 602
+            method_id: 501
+            dimension_value: 2
+            marked_for_deletion: false
+  - name: delete_lower_sample_dimension_when_value_missing
+    intent: supporting_output_result
+    source_rows:
+      - SampleCODE: SAMPLE_4
+        ZorDepthTop: 1
+        ZorDepthBot: null
+    policy_context:
+      args:
+        output_name: sample_dimensions
+        method_id: "501"
+        upper_dimension_id: "601"
+        lower_dimension_id: "602"
+      step_hits: {}
+      state:
+        existing_upper_sample_dimension_id: 705
+        existing_upper_dimension_value: 1
+        existing_lower_sample_dimension_id: 706
+        existing_lower_dimension_value: 2
+    expects:
+      related_outputs: [sample_dimensions]
+      graph_result:
+        sample_dimensions:
+          upper:
+            result_kind: keep_existing
+            sample_dimension_id: 705
+            dimension_id: 601
+            method_id: 501
+            dimension_value: 1
+            marked_for_deletion: false
+          lower:
+            result_kind: delete_existing
+            sample_dimension_id: 706
+            dimension_id: 602
+            method_id: 501
+            dimension_value: null
+            marked_for_deletion: true

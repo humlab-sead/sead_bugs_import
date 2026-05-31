@@ -1,0 +1,190 @@
+fixture_version: "1.0"
+policy: siteotherproxies
+scenarios:
+  - name: create_site_other_records_when_none_exist
+    intent: output_result
+    source_rows:
+      - SiteCODE: SITE_1
+        HasPollen: true
+        HasPlantMacro: false
+        HasDiatoms: true
+        HasChironomids: false
+        HasSoilChemistry: false
+        HasIsotopes: false
+        HasAnimalBones: false
+        HasArchaeology: false
+        HasMolluscs: false
+    policy_context:
+      args:
+        site_id: "301"
+      step_hits: {}
+      state:
+        record_types:
+          Pollen:
+            record_type_id: 401
+            record_type_name: External pollen data
+          Diatoms:
+            record_type_id: 402
+            record_type_name: Diatoms
+    expects:
+      output_result:
+        row_1:
+          result_kind: insert_new
+          site_other_record_id: null
+          site_id: 301
+          record_type_id: 401
+          record_type_name: External pollen data
+          marked_for_deletion: false
+        row_2:
+          result_kind: insert_new
+          site_other_record_id: null
+          site_id: 301
+          record_type_id: 402
+          record_type_name: Diatoms
+          marked_for_deletion: false
+  - name: keep_existing_mark_missing_and_append_new_site_other_records
+    intent: output_result
+    source_rows:
+      - SiteCODE: SITE_2
+        HasPollen: true
+        HasPlantMacro: false
+        HasDiatoms: false
+        HasChironomids: true
+        HasSoilChemistry: false
+        HasIsotopes: false
+        HasAnimalBones: false
+        HasArchaeology: false
+        HasMolluscs: false
+    policy_context:
+      args:
+        site_id: "302"
+      step_hits: {}
+      state:
+        record_types:
+          Pollen:
+            record_type_id: 401
+            record_type_name: External pollen data
+          Diatoms:
+            record_type_id: 402
+            record_type_name: Diatoms
+          Chironomids:
+            record_type_id: 403
+            record_type_name: Chironomids
+        existing_site_other_records:
+          pollen_existing:
+            site_other_record_id: 501
+            record_type_id: 401
+            record_type_name: External pollen data
+          diatoms_existing:
+            site_other_record_id: 502
+            record_type_id: 402
+            record_type_name: Diatoms
+    expects:
+      output_result:
+        row_1:
+          result_kind: keep_existing
+          site_other_record_id: 501
+          site_id: 302
+          record_type_id: 401
+          record_type_name: External pollen data
+          marked_for_deletion: false
+        row_2:
+          result_kind: mark_for_deletion
+          site_other_record_id: 502
+          site_id: 302
+          record_type_id: 402
+          record_type_name: Diatoms
+          marked_for_deletion: true
+        row_3:
+          result_kind: insert_new
+          site_other_record_id: null
+          site_id: 302
+          record_type_id: 403
+          record_type_name: Chironomids
+          marked_for_deletion: false
+  - name: keep_existing_site_other_records_when_enabled_proxies_match
+    intent: output_result
+    source_rows:
+      - SiteCODE: SITE_3
+        HasPollen: true
+        HasPlantMacro: false
+        HasDiatoms: false
+        HasChironomids: false
+        HasSoilChemistry: false
+        HasIsotopes: false
+        HasAnimalBones: false
+        HasArchaeology: false
+        HasMolluscs: false
+    policy_context:
+      args:
+        site_id: "303"
+      step_hits: {}
+      state:
+        record_types:
+          Pollen:
+            record_type_id: 401
+            record_type_name: External pollen data
+        existing_site_other_records:
+          pollen_existing:
+            site_other_record_id: 503
+            record_type_id: 401
+            record_type_name: External pollen data
+    expects:
+      output_result:
+        row_1:
+          result_kind: keep_existing
+          site_other_record_id: 503
+          site_id: 303
+          record_type_id: 401
+          record_type_name: External pollen data
+          marked_for_deletion: false
+  - name: mark_existing_site_other_records_for_deletion_when_no_proxies_enabled
+    intent: output_result
+    source_rows:
+      - SiteCODE: SITE_4
+        HasPollen: false
+        HasPlantMacro: false
+        HasDiatoms: false
+        HasChironomids: false
+        HasSoilChemistry: false
+        HasIsotopes: false
+        HasAnimalBones: false
+        HasArchaeology: false
+        HasMolluscs: false
+    policy_context:
+      args:
+        site_id: "304"
+      step_hits: {}
+      state:
+        record_types:
+          Pollen:
+            record_type_id: 401
+            record_type_name: External pollen data
+          Diatoms:
+            record_type_id: 402
+            record_type_name: Diatoms
+        existing_site_other_records:
+          pollen_existing:
+            site_other_record_id: 504
+            record_type_id: 401
+            record_type_name: External pollen data
+          diatoms_existing:
+            site_other_record_id: 505
+            record_type_id: 402
+            record_type_name: Diatoms
+    expects:
+      output_result:
+        row_1:
+          result_kind: mark_for_deletion
+          site_other_record_id: 504
+          site_id: 304
+          record_type_id: 401
+          record_type_name: External pollen data
+          marked_for_deletion: true
+        row_2:
+          result_kind: mark_for_deletion
+          site_other_record_id: 505
+          site_id: 304
+          record_type_id: 402
+          record_type_name: Diatoms
+          marked_for_deletion: true

@@ -1,0 +1,305 @@
+fixture_version: "1.0"
+policy: datesradio
+scenarios:
+  - name: blank_lab_id_uses_unknown_shortcut
+    intent: resolver_path
+    source_rows:
+      - DateCODE: RAD_1
+        SampleCODE: SAMPLE_10
+        LabNr: LAB-1
+        Uncertainty: ""
+        Date: 4250
+        AgeErrorOrPlusError: 45
+        AgeErrorMinus: 45
+        DatingMethod: Radiocarbon
+        MaterialType: charcoal
+        LabID: ""
+        Notes: blank lab id
+    policy_context:
+      args:
+        lab_id: ""
+      step_hits:
+        unknown_shortcut: true
+    expects:
+      resolver: resolve_dating_lab_id
+      resolver_path: [unknown_shortcut]
+      target_field: dating_lab_id
+      resolver_result:
+        result_kind: return_entity
+        source: unknown_shortcut
+        lab_id: Unknown
+      related_outputs: [dataset, analysis_entity]
+      known_divergence_areas: [update_detection.age]
+  - name: direct_lookup_after_trace_miss
+    intent: resolver_path
+    source_rows:
+      - DateCODE: RAD_2
+        SampleCODE: SAMPLE_11
+        LabNr: LAB-2
+        Uncertainty: sigma
+        Date: 3820
+        AgeErrorOrPlusError: 30
+        AgeErrorMinus: 25
+        DatingMethod: Radiocarbon
+        MaterialType: bone
+        LabID: Ua-100
+        Notes: direct repository fallback
+    policy_context:
+      args:
+        lab_id: Ua-100
+      step_hits:
+        trace_lookup: false
+        direct_lookup: true
+    expects:
+      resolver: resolve_dating_lab_id
+      resolver_path: [trace_lookup, direct_lookup]
+      target_field: dating_lab_id
+      resolver_result:
+        result_kind: return_entity
+        source: direct_lookup
+        lab_id: Ua-100
+  - name: missing_lab_emits_error
+    intent: resolver_path
+    source_rows:
+      - DateCODE: RAD_3
+        SampleCODE: SAMPLE_12
+        LabNr: LAB-3
+        Uncertainty: sigma
+        Date: 3010
+        AgeErrorOrPlusError: 20
+        AgeErrorMinus: 20
+        DatingMethod: Radiocarbon
+        MaterialType: seed
+        LabID: MISSING-LAB
+        Notes: unresolved lab id
+    policy_context:
+      args:
+        lab_id: MISSING-LAB
+      step_hits:
+        trace_lookup: false
+        direct_lookup: false
+    expects:
+      resolver: resolve_dating_lab_id
+      resolver_path: [trace_lookup, direct_lookup, not_found]
+      target_field: dating_lab_id
+      resolver_result:
+        result_kind: empty_entity
+        source: not_found
+        issue:
+          severity: error
+          code: dating_lab_not_found
+          message: No lab found
+      emit_codes: [dating_lab_not_found]
+  - name: create_dataset_for_new_geochronology_row
+    intent: supporting_output_result
+    source_rows:
+      - DateCODE: RAD_DATASET_1
+        SampleCODE: SAMPLE_40
+        LabNr: LAB-40
+        Uncertainty: sigma
+        Date: 4100
+        AgeErrorOrPlusError: 40
+        AgeErrorMinus: 40
+        DatingMethod: Radiocarbon
+        MaterialType: charcoal
+        LabID: Ua-400
+        Notes: create geochronology dataset
+    policy_context:
+      args:
+        output_name: dataset
+        method_abbreviation: Radiocarbon
+        data_type_id: "61"
+        master_set_id: "71"
+      step_hits: {}
+    expects:
+      related_outputs: [dataset]
+      graph_result:
+        dataset:
+          dataset_id: null
+          dataset_name: RAD_DATASET_1
+          data_type_id: 61
+          method_abbreviation: Radiocarbon
+          master_set_id: 71
+          updated: false
+  - name: create_analysis_entity_for_new_geochronology_row
+    intent: supporting_output_result
+    source_rows:
+      - DateCODE: RAD_ANALYSIS_1
+        SampleCODE: SAMPLE_41
+        LabNr: LAB-41
+        Uncertainty: sigma
+        Date: 4110
+        AgeErrorOrPlusError: 40
+        AgeErrorMinus: 40
+        DatingMethod: Radiocarbon
+        MaterialType: charcoal
+        LabID: Ua-401
+        Notes: create geochronology analysis entity
+    policy_context:
+      args:
+        output_name: analysis_entity
+        physical_sample_id: "81"
+        method_abbreviation: Radiocarbon
+        data_type_id: "61"
+        master_set_id: "71"
+      step_hits: {}
+      state:
+        physical_sample_id: 81
+        method_abbreviation: Radiocarbon
+        data_type_id: 61
+        master_set_id: 71
+    expects:
+      related_outputs: [analysis_entity]
+      graph_result:
+        analysis_entity:
+          analysis_entity_id: null
+          physical_sample_id: 81
+          dataset_id: null
+  - name: create_related_output_graph_for_new_geochronology_row
+    intent: related_output_graph
+    source_rows:
+      - DateCODE: RAD_GRAPH_1
+        SampleCODE: SAMPLE_50
+        LabNr: LAB-50
+        Uncertainty: sigma
+        Date: 4050
+        AgeErrorOrPlusError: 35
+        AgeErrorMinus: 35
+        DatingMethod: Radiocarbon
+        MaterialType: bone
+        LabID: Ua-500
+        Notes: create geochronology graph
+    policy_context:
+      config: {}
+      state:
+        physical_sample_id: 81
+        method_abbreviation: Radiocarbon
+        data_type_id: 61
+        master_set_id: 71
+    expects:
+      related_outputs: [dataset, analysis_entity]
+      updates_target_fields: [analysis_entity_id]
+      row_changed: true
+      graph_result:
+        dataset:
+          dataset_id: null
+          dataset_name: RAD_GRAPH_1
+          data_type_id: 61
+          method_abbreviation: Radiocarbon
+          master_set_id: 71
+          updated: false
+        analysis_entity:
+          analysis_entity_id: null
+          physical_sample_id: 81
+          dataset_id: null
+  - name: missing_sample_emits_geochronology_graph_issue
+    intent: related_output_graph
+    source_rows:
+      - DateCODE: RAD_GRAPH_2
+        SampleCODE: SAMPLE_51
+        LabNr: LAB-51
+        Uncertainty: sigma
+        Date: 3990
+        AgeErrorOrPlusError: 30
+        AgeErrorMinus: 30
+        DatingMethod: Radiocarbon
+        MaterialType: bone
+        LabID: Ua-501
+        Notes: missing sample
+    policy_context:
+      config: {}
+      state:
+        physical_sample_id: 82
+        method_abbreviation: Radiocarbon
+        data_type_id: 61
+        master_set_id: 71
+        sample_found: false
+    expects:
+      related_outputs: [dataset, analysis_entity]
+      row_changed: false
+      graph_issue:
+        severity: error
+        message: No sample found
+  - name: missing_method_emits_geochronology_graph_issue
+    intent: related_output_graph
+    source_rows:
+      - DateCODE: RAD_GRAPH_3
+        SampleCODE: SAMPLE_52
+        LabNr: LAB-52
+        Uncertainty: sigma
+        Date: 3880
+        AgeErrorOrPlusError: 30
+        AgeErrorMinus: 30
+        DatingMethod: MissingMethod
+        MaterialType: charcoal
+        LabID: Ua-502
+        Notes: missing method
+    policy_context:
+      config: {}
+      state:
+        physical_sample_id: 83
+        method_found: false
+        method_abbreviation: Radiocarbon
+        data_type_id: 61
+        master_set_id: 71
+    expects:
+      related_outputs: [dataset, analysis_entity]
+      row_changed: true
+      graph_issue:
+        severity: error
+        message: No method found
+  - name: missing_date_emits_geochronology_graph_issue
+    intent: related_output_graph
+    source_rows:
+      - DateCODE: RAD_GRAPH_4
+        SampleCODE: SAMPLE_53
+        LabNr: LAB-53
+        Uncertainty: sigma
+        Date: null
+        AgeErrorOrPlusError: 25
+        AgeErrorMinus: 25
+        DatingMethod: Radiocarbon
+        MaterialType: charcoal
+        LabID: Ua-503
+        Notes: missing date
+    policy_context:
+      config: {}
+      state:
+        physical_sample_id: 84
+        method_abbreviation: Radiocarbon
+        data_type_id: 61
+        master_set_id: 71
+    expects:
+      related_outputs: [dataset, analysis_entity]
+      row_changed: true
+      graph_issue:
+        severity: error
+        message: No date found
+  - name: unknown_uncertainty_emits_geochronology_graph_issue
+    intent: related_output_graph
+    source_rows:
+      - DateCODE: RAD_GRAPH_5
+        SampleCODE: SAMPLE_54
+        LabNr: LAB-54
+        Uncertainty: "!"
+        Date: 3770
+        AgeErrorOrPlusError: 20
+        AgeErrorMinus: 20
+        DatingMethod: Radiocarbon
+        MaterialType: charcoal
+        LabID: Ua-504
+        Notes: unknown uncertainty
+    policy_context:
+      config: {}
+      state:
+        physical_sample_id: 85
+        method_abbreviation: Radiocarbon
+        data_type_id: 61
+        master_set_id: 71
+        uncertainty_found: false
+    expects:
+      related_outputs: [dataset, analysis_entity]
+      row_changed: true
+      graph_issue:
+        severity: error
+        message: Unknown uncertainty symbol

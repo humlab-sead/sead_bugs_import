@@ -1,0 +1,37 @@
+fixture_version: "1.0"
+policy: speciesdistribution
+scenarios:
+  - name: tuple_lookup_updates_existing_distribution
+    intent: reconciliation_path
+    source_rows:
+      - CODE: 101.0
+        Ref: REF-101
+        Data: North Atlantic coast
+    policy_context:
+      step_hits:
+        distribution_lookup: true
+      state:
+        existing_row_id: 41
+    expects:
+      reconciliation_path: [distribution_lookup]
+      reconciliation_result:
+        result_kind: update_existing
+        source: distribution_lookup
+        row_id: 41
+        species_code: 101.0
+  - name: create_new_distribution_when_tuple_missing
+    intent: reconciliation_path
+    source_rows:
+      - CODE: 102.0
+        Ref: REF-102
+        Data: Baltic inland
+    policy_context:
+      step_hits:
+        distribution_lookup: false
+    expects:
+      reconciliation_path: [distribution_lookup, create_new]
+      reconciliation_result:
+        result_kind: insert_new
+        source: create_new
+        row_id: null
+        species_code: 102.0

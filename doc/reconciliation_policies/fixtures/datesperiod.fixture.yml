@@ -1,0 +1,460 @@
+fixture_version: "1.0"
+policy: datesperiod
+scenarios:
+  - name: blank_method_uses_unknown_default
+    intent: resolver_path
+    source_rows:
+      - PeriodDateCODE: PERIOD_1
+        SampleCODE: SAMPLE_20
+        Uncertainty: ""
+        PeriodCODE: PERIOD-CAL-1
+        DatingMethod: ""
+        Notes: blank method
+    policy_context:
+      args:
+        dating_method: ""
+        period_years_type: Calendar
+      step_hits:
+        empty_default: true
+    expects:
+      resolver: resolve_relative_date_method
+      resolver_path: [empty_default]
+      target_field: analysis_entity_id
+      resolver_result:
+        result_kind: return_entity
+        source: empty_default
+        method_abbreviation: UnknownCal
+  - name: direct_method_lookup_uses_abbreviation
+    intent: resolver_path
+    source_rows:
+      - PeriodDateCODE: PERIOD_2
+        SampleCODE: SAMPLE_21
+        Uncertainty: sigma
+        PeriodCODE: PERIOD-CAL-2
+        DatingMethod: DirectMethod
+        Notes: direct method
+    policy_context:
+      args:
+        dating_method: DirectMethod
+        period_years_type: Calendar
+      step_hits:
+        direct_lookup: true
+    expects:
+      resolver: resolve_relative_date_method
+      resolver_path: [direct_lookup]
+      target_field: analysis_entity_id
+      resolver_result:
+        result_kind: return_entity
+        source: direct_lookup
+        method_abbreviation: DirectMethod
+  - name: computed_method_uses_period_year_type_suffix
+    intent: resolver_path
+    source_rows:
+      - PeriodDateCODE: PERIOD_3
+        SampleCODE: SAMPLE_22
+        Uncertainty: sigma
+        PeriodCODE: PERIOD-CAL-3
+        DatingMethod: Relative
+        Notes: computed method
+    policy_context:
+      args:
+        dating_method: Relative
+        period_years_type: Calendar
+      step_hits:
+        direct_lookup: false
+        computed_from_period_year_type: true
+    expects:
+      resolver: resolve_relative_date_method
+      resolver_path: [direct_lookup, computed_from_period_year_type]
+      target_field: analysis_entity_id
+      resolver_result:
+        result_kind: return_entity
+        source: computed_from_period_year_type
+        method_abbreviation: RelativeCal
+  - name: missing_method_emits_error
+    intent: resolver_path
+    source_rows:
+      - PeriodDateCODE: PERIOD_4
+        SampleCODE: SAMPLE_23
+        Uncertainty: sigma
+        PeriodCODE: PERIOD-CAL-4
+        DatingMethod: MissingMethod
+        Notes: unresolved method
+    policy_context:
+      args:
+        dating_method: MissingMethod
+        period_years_type: Calendar
+      step_hits:
+        direct_lookup: false
+        computed_from_period_year_type: false
+    expects:
+      resolver: resolve_relative_date_method
+      resolver_path: [direct_lookup, computed_from_period_year_type, not_found]
+      target_field: analysis_entity_id
+      resolver_result:
+        result_kind: empty_entity
+        source: not_found
+        issue:
+          severity: error
+          code: relative_date_method_not_found
+          message: No dating method found
+      emit_codes: [relative_date_method_not_found]
+  - name: create_dataset_when_missing
+    intent: supporting_output_result
+    source_rows:
+      - PeriodDateCODE: PERIOD_DATASET_1
+        SampleCODE: SAMPLE_30
+        Uncertainty: sigma
+        PeriodCODE: PERIOD-DATASET-1
+        DatingMethod: Relative
+        Notes: create dataset
+    policy_context:
+      args:
+        method_abbreviation: RelativeCal
+        data_type_id: "41"
+        master_set_id: "51"
+      step_hits: {}
+    expects:
+      related_outputs: [dataset]
+      graph_result:
+        dataset:
+          dataset_id: null
+          dataset_name: PERIOD_DATASET_1
+          data_type_id: 41
+          method_abbreviation: RelativeCal
+          master_set_id: 51
+          updated: true
+  - name: update_existing_dataset_when_values_change
+    intent: supporting_output_result
+    source_rows:
+      - PeriodDateCODE: PERIOD_DATASET_2
+        SampleCODE: SAMPLE_31
+        Uncertainty: sigma
+        PeriodCODE: PERIOD-DATASET-2
+        DatingMethod: Relative
+        Notes: update dataset
+    policy_context:
+      args:
+        method_abbreviation: RelativeCal
+        data_type_id: "41"
+        master_set_id: "51"
+      step_hits: {}
+      state:
+        existing_dataset_id: 61
+        existing_dataset_name: OLD_DATASET
+        existing_data_type_id: 40
+        existing_method_id: 70
+        existing_method_abbreviation: OldMethod
+        existing_master_set_id: 50
+    expects:
+      related_outputs: [dataset]
+      graph_result:
+        dataset:
+          dataset_id: 61
+          dataset_name: PERIOD_DATASET_2
+          data_type_id: 41
+          method_abbreviation: RelativeCal
+          master_set_id: 51
+          updated: true
+  - name: keep_existing_dataset_when_values_match
+    intent: supporting_output_result
+    source_rows:
+      - PeriodDateCODE: PERIOD_DATASET_3
+        SampleCODE: SAMPLE_32
+        Uncertainty: sigma
+        PeriodCODE: PERIOD-DATASET-3
+        DatingMethod: Relative
+        Notes: keep dataset
+    policy_context:
+      args:
+        method_abbreviation: RelativeCal
+        data_type_id: "41"
+        master_set_id: "51"
+      step_hits: {}
+      state:
+        existing_dataset_id: 62
+        existing_dataset_name: PERIOD_DATASET_3
+        existing_data_type_id: 41
+        existing_method_id: 71
+        existing_method_abbreviation: RelativeCal
+        existing_master_set_id: 51
+    expects:
+      related_outputs: [dataset]
+      graph_result:
+        dataset:
+          dataset_id: 62
+          dataset_name: PERIOD_DATASET_3
+          data_type_id: 41
+          method_abbreviation: RelativeCal
+          master_set_id: 51
+          updated: false
+  - name: create_analysis_entity_when_missing
+    intent: supporting_output_result
+    source_rows:
+      - PeriodDateCODE: PERIOD_ANALYSIS_1
+        SampleCODE: SAMPLE_40
+        Uncertainty: sigma
+        PeriodCODE: PERIOD-ANALYSIS-1
+        DatingMethod: Relative
+        Notes: analysis entity create
+    policy_context:
+      args:
+        output_name: analysis_entity
+        physical_sample_id: "81"
+        method_abbreviation: RelativeCal
+        data_type_id: "41"
+        master_set_id: "51"
+      step_hits: {}
+    expects:
+      related_outputs: [analysis_entity]
+      graph_result:
+        analysis_entity:
+          analysis_entity_id: null
+          physical_sample_id: 81
+          dataset_id: null
+  - name: update_existing_analysis_entity_when_values_change
+    intent: supporting_output_result
+    source_rows:
+      - PeriodDateCODE: PERIOD_ANALYSIS_2
+        SampleCODE: SAMPLE_41
+        Uncertainty: sigma
+        PeriodCODE: PERIOD-ANALYSIS-2
+        DatingMethod: Relative
+        Notes: analysis entity update
+    policy_context:
+      args:
+        output_name: analysis_entity
+        physical_sample_id: "83"
+        method_abbreviation: RelativeCal
+        data_type_id: "41"
+        master_set_id: "51"
+      step_hits: {}
+      state:
+        existing_analysis_entity_id: 91
+        existing_physical_sample_id: 80
+        existing_dataset_id: 61
+        existing_dataset_name: OLD_DATASET
+        existing_data_type_id: 40
+        existing_method_id: 70
+        existing_method_abbreviation: OldMethod
+        existing_master_set_id: 50
+    expects:
+      related_outputs: [analysis_entity]
+      graph_result:
+        analysis_entity:
+          analysis_entity_id: 91
+          physical_sample_id: 83
+          dataset_id: 61
+  - name: keep_existing_analysis_entity_when_values_match
+    intent: supporting_output_result
+    source_rows:
+      - PeriodDateCODE: PERIOD_ANALYSIS_3
+        SampleCODE: SAMPLE_42
+        Uncertainty: sigma
+        PeriodCODE: PERIOD-ANALYSIS-3
+        DatingMethod: Relative
+        Notes: analysis entity keep
+    policy_context:
+      args:
+        output_name: analysis_entity
+        physical_sample_id: "82"
+        method_abbreviation: RelativeCal
+        data_type_id: "41"
+        master_set_id: "51"
+      step_hits: {}
+      state:
+        existing_analysis_entity_id: 92
+        existing_physical_sample_id: 82
+        existing_dataset_id: 62
+        existing_dataset_name: PERIOD_ANALYSIS_3
+        existing_data_type_id: 41
+        existing_method_id: 71
+        existing_method_abbreviation: RelativeCal
+        existing_master_set_id: 51
+    expects:
+      related_outputs: [analysis_entity]
+      graph_result:
+        analysis_entity:
+          analysis_entity_id: 92
+          physical_sample_id: 82
+          dataset_id: 62
+  - name: create_related_output_graph_when_support_rows_missing
+    intent: related_output_graph
+    source_rows:
+      - PeriodDateCODE: PERIOD_GRAPH_1
+        SampleCODE: SAMPLE_50
+        Uncertainty: sigma
+        PeriodCODE: PERIOD-GRAPH-1
+        DatingMethod: Relative
+        Notes: graph create
+    policy_context:
+      config: {}
+      state:
+        physical_sample_id: 81
+        method_abbreviation: RelativeCal
+        data_type_id: 41
+        master_set_id: 51
+    expects:
+      related_outputs: [dataset, analysis_entity]
+      updates_target_fields: [analysis_entity_id]
+      row_changed: true
+      graph_result:
+        dataset:
+          dataset_id: null
+          dataset_name: PERIOD_GRAPH_1
+          data_type_id: 41
+          method_abbreviation: RelativeCal
+          master_set_id: 51
+          updated: true
+        analysis_entity:
+          analysis_entity_id: null
+          physical_sample_id: 81
+          dataset_id: null
+  - name: update_related_output_graph_when_values_change
+    intent: related_output_graph
+    source_rows:
+      - PeriodDateCODE: PERIOD_GRAPH_2
+        SampleCODE: SAMPLE_51
+        Uncertainty: sigma
+        PeriodCODE: PERIOD-GRAPH-2
+        DatingMethod: Relative
+        Notes: graph update
+    policy_context:
+      config: {}
+      state:
+        physical_sample_id: 83
+        method_abbreviation: RelativeCal
+        data_type_id: 41
+        master_set_id: 51
+        existing_analysis_entity_id: 91
+        existing_physical_sample_id: 80
+        existing_dataset_id: 61
+        existing_dataset_name: OLD_DATASET
+        existing_data_type_id: 40
+        existing_method_id: 70
+        existing_method_abbreviation: OldMethod
+        existing_master_set_id: 50
+    expects:
+      related_outputs: [dataset, analysis_entity]
+      updates_target_fields: [analysis_entity_id]
+      row_changed: true
+      graph_result:
+        dataset:
+          dataset_id: 61
+          dataset_name: PERIOD_GRAPH_2
+          data_type_id: 41
+          method_abbreviation: RelativeCal
+          master_set_id: 51
+          updated: true
+        analysis_entity:
+          analysis_entity_id: 91
+          physical_sample_id: 83
+          dataset_id: 61
+  - name: keep_related_output_graph_when_values_match
+    intent: related_output_graph
+    source_rows:
+      - PeriodDateCODE: PERIOD_GRAPH_3
+        SampleCODE: SAMPLE_52
+        Uncertainty: sigma
+        PeriodCODE: PERIOD-GRAPH-3
+        DatingMethod: Relative
+        Notes: graph keep
+    policy_context:
+      config: {}
+      state:
+        physical_sample_id: 82
+        method_abbreviation: RelativeCal
+        data_type_id: 41
+        master_set_id: 51
+        existing_analysis_entity_id: 92
+        existing_physical_sample_id: 82
+        existing_dataset_id: 62
+        existing_dataset_name: PERIOD_GRAPH_3
+        existing_data_type_id: 41
+        existing_method_id: 71
+        existing_method_abbreviation: RelativeCal
+        existing_master_set_id: 51
+    expects:
+      related_outputs: [dataset, analysis_entity]
+      updates_target_fields: [analysis_entity_id]
+      row_changed: false
+      graph_result:
+        dataset:
+          dataset_id: 62
+          dataset_name: PERIOD_GRAPH_3
+          data_type_id: 41
+          method_abbreviation: RelativeCal
+          master_set_id: 51
+          updated: false
+        analysis_entity:
+          analysis_entity_id: 92
+          physical_sample_id: 82
+          dataset_id: 62
+  - name: blank_sample_code_emits_datesperiod_graph_issue
+    intent: related_output_graph
+    source_rows:
+      - PeriodDateCODE: PERIOD_GRAPH_4
+        SampleCODE: ""
+        Uncertainty: sigma
+        PeriodCODE: PERIOD-GRAPH-4
+        DatingMethod: Relative
+        Notes: graph issue
+    policy_context:
+      config: {}
+      state:
+        physical_sample_id: 82
+        method_abbreviation: RelativeCal
+        data_type_id: 41
+        master_set_id: 51
+    expects:
+      related_outputs: [dataset, analysis_entity]
+      row_changed: false
+      graph_issue:
+        severity: error
+        message: No sample specified
+  - name: missing_sample_trace_emits_datesperiod_graph_issue
+    intent: related_output_graph
+    source_rows:
+      - PeriodDateCODE: PERIOD_GRAPH_5
+        SampleCODE: SAMPLE_999
+        Uncertainty: sigma
+        PeriodCODE: PERIOD-GRAPH-5
+        DatingMethod: Relative
+        Notes: missing traced sample
+    policy_context:
+      config: {}
+      state:
+        physical_sample_id: 82
+        method_abbreviation: RelativeCal
+        data_type_id: 41
+        master_set_id: 51
+        sample_found: false
+    expects:
+      related_outputs: [dataset, analysis_entity]
+      row_changed: false
+      graph_issue:
+        severity: error
+        message: No sample found for code
+  - name: unknown_uncertainty_emits_datesperiod_graph_issue
+    intent: related_output_graph
+    source_rows:
+      - PeriodDateCODE: PERIOD_GRAPH_6
+        SampleCODE: SAMPLE_53
+        Uncertainty: ERROR
+        PeriodCODE: PERIOD-GRAPH-6
+        DatingMethod: Relative
+        Notes: unknown uncertainty
+    policy_context:
+      config: {}
+      state:
+        physical_sample_id: 83
+        method_abbreviation: RelativeCal
+        data_type_id: 41
+        master_set_id: 51
+        uncertainty_found: false
+    expects:
+      related_outputs: [dataset, analysis_entity]
+      row_changed: false
+      graph_issue:
+        severity: error
+        message: No uncertainty found for definition

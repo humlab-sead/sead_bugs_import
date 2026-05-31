@@ -1,0 +1,65 @@
+fixture_version: "1.0"
+policy: ecocodedefinition_bugs
+scenarios:
+  - name: trace_hit_updates_existing_bugs_definition
+    intent: reconciliation_path
+    source_rows:
+      - BugsEcoCODE: BUGS-DEF-1
+        EcoLabel: Open ground
+        Definition: Open ground habitat
+        Notes: Existing bugs definition
+        SortOrder: 1
+    policy_context:
+      step_hits:
+        trace_lookup: true
+      state:
+        existing_row_id: 501
+    expects:
+      reconciliation_path: [trace_lookup]
+      reconciliation_result:
+        result_kind: update_existing
+        source: trace_lookup
+        row_id: 501
+        bugs_ecocode_code: BUGS-DEF-1
+  - name: trace_hit_returns_existing_bugs_definition_error
+    intent: reconciliation_path
+    source_rows:
+      - BugsEcoCODE: BUGS-DEF-2
+        EcoLabel: Wetland
+        Definition: Wetland habitat
+        Notes: Error bugs definition
+        SortOrder: 2
+    policy_context:
+      step_hits:
+        trace_lookup: true
+      state:
+        existing_row_id: 502
+        existing_error_message: Existing bugs definition error
+    expects:
+      reconciliation_path: [trace_lookup]
+      reconciliation_result:
+        result_kind: return_existing_error
+        source: trace_lookup
+        row_id: 502
+        issue:
+          severity: error
+          message: Existing bugs definition error
+        bugs_ecocode_code: BUGS-DEF-2
+  - name: create_new_bugs_definition_when_no_trace_exists
+    intent: reconciliation_path
+    source_rows:
+      - BugsEcoCODE: BUGS-DEF-3
+        EcoLabel: Woodland
+        Definition: Woodland habitat
+        Notes: New bugs definition
+        SortOrder: 3
+    policy_context:
+      step_hits:
+        trace_lookup: false
+    expects:
+      reconciliation_path: [trace_lookup, create_new]
+      reconciliation_result:
+        result_kind: insert_new
+        source: create_new
+        row_id: null
+        bugs_ecocode_code: BUGS-DEF-3

@@ -1,0 +1,358 @@
+# BugsCEP → SEAD Reconciliation Policy
+# Domain: BirmBeetleData (TbirmBEETLEdat → tbl_mcrdata_birmbeetledat)
+
+meta:
+  format_version: "1.0"
+  generated_from: java_source
+  reviewed: false
+  notes: >
+    This importer resolves a species from CODE, then looks up an existing row
+    by the composite key of taxon_id plus MCRRow. The mcr_data value is built
+    by concatenating the ordered Field1..Field60 values.
+
+policy:
+  domain: birmbeetledata
+  description: >
+    Imports Birmingham beetle MCR rows from TbirmBEETLEdat into
+    tbl_mcrdata_birmbeetledat. Reconciliation is a composite-key lookup on the
+    resolved species taxon_id and the row number; existing rows are returned
+    unchanged and missing rows are created.
+
+source:
+  system: bugscep
+  table: TbirmBEETLEdat
+  sql: >
+    SELECT MCRRow, CODE, Field1, Field2, Field3, Field4, Field5, Field6, Field7,
+           Field8, Field9, Field10, Field11, Field12, Field13, Field14, Field15,
+           Field16, Field17, Field18, Field19, Field20, Field21, Field22,
+           Field23, Field24, Field25, Field26, Field27, Field28, Field29,
+           Field30, Field31, Field32, Field33, Field34, Field35, Field36,
+           Field37, Field38, Field39, Field40, Field41, Field42, Field43,
+           Field44, Field45, Field46, Field47, Field48, Field49, Field50,
+           Field51, Field52, Field53, Field54, Field55, Field56, Field57,
+           Field58, Field59, Field60
+    FROM TbirmBEETLEdat
+  fields:
+    - name: MCRRow
+      type: integer
+      nullable: true
+      role: natural_key
+    - name: CODE
+      type: decimal
+      nullable: true
+      role: data
+    - name: Field1
+      type: string
+      nullable: true
+      role: data
+    - name: Field2
+      type: string
+      nullable: true
+      role: data
+    - name: Field3
+      type: string
+      nullable: true
+      role: data
+    - name: Field4
+      type: string
+      nullable: true
+      role: data
+    - name: Field5
+      type: string
+      nullable: true
+      role: data
+    - name: Field6
+      type: string
+      nullable: true
+      role: data
+    - name: Field7
+      type: string
+      nullable: true
+      role: data
+    - name: Field8
+      type: string
+      nullable: true
+      role: data
+    - name: Field9
+      type: string
+      nullable: true
+      role: data
+    - name: Field10
+      type: string
+      nullable: true
+      role: data
+    - name: Field11
+      type: string
+      nullable: true
+      role: data
+    - name: Field12
+      type: string
+      nullable: true
+      role: data
+    - name: Field13
+      type: string
+      nullable: true
+      role: data
+    - name: Field14
+      type: string
+      nullable: true
+      role: data
+    - name: Field15
+      type: string
+      nullable: true
+      role: data
+    - name: Field16
+      type: string
+      nullable: true
+      role: data
+    - name: Field17
+      type: string
+      nullable: true
+      role: data
+    - name: Field18
+      type: string
+      nullable: true
+      role: data
+    - name: Field19
+      type: string
+      nullable: true
+      role: data
+    - name: Field20
+      type: string
+      nullable: true
+      role: data
+    - name: Field21
+      type: string
+      nullable: true
+      role: data
+    - name: Field22
+      type: string
+      nullable: true
+      role: data
+    - name: Field23
+      type: string
+      nullable: true
+      role: data
+    - name: Field24
+      type: string
+      nullable: true
+      role: data
+    - name: Field25
+      type: string
+      nullable: true
+      role: data
+    - name: Field26
+      type: string
+      nullable: true
+      role: data
+    - name: Field27
+      type: string
+      nullable: true
+      role: data
+    - name: Field28
+      type: string
+      nullable: true
+      role: data
+    - name: Field29
+      type: string
+      nullable: true
+      role: data
+    - name: Field30
+      type: string
+      nullable: true
+      role: data
+    - name: Field31
+      type: string
+      nullable: true
+      role: data
+    - name: Field32
+      type: string
+      nullable: true
+      role: data
+    - name: Field33
+      type: string
+      nullable: true
+      role: data
+    - name: Field34
+      type: string
+      nullable: true
+      role: data
+    - name: Field35
+      type: string
+      nullable: true
+      role: data
+    - name: Field36
+      type: string
+      nullable: true
+      role: data
+    - name: Field37
+      type: string
+      nullable: true
+      role: data
+    - name: Field38
+      type: string
+      nullable: true
+      role: data
+    - name: Field39
+      type: string
+      nullable: true
+      role: data
+    - name: Field40
+      type: string
+      nullable: true
+      role: data
+    - name: Field41
+      type: string
+      nullable: true
+      role: data
+    - name: Field42
+      type: string
+      nullable: true
+      role: data
+    - name: Field43
+      type: string
+      nullable: true
+      role: data
+    - name: Field44
+      type: string
+      nullable: true
+      role: data
+    - name: Field45
+      type: string
+      nullable: true
+      role: data
+    - name: Field46
+      type: string
+      nullable: true
+      role: data
+    - name: Field47
+      type: string
+      nullable: true
+      role: data
+    - name: Field48
+      type: string
+      nullable: true
+      role: data
+    - name: Field49
+      type: string
+      nullable: true
+      role: data
+    - name: Field50
+      type: string
+      nullable: true
+      role: data
+    - name: Field51
+      type: string
+      nullable: true
+      role: data
+    - name: Field52
+      type: string
+      nullable: true
+      role: data
+    - name: Field53
+      type: string
+      nullable: true
+      role: data
+    - name: Field54
+      type: string
+      nullable: true
+      role: data
+    - name: Field55
+      type: string
+      nullable: true
+      role: data
+    - name: Field56
+      type: string
+      nullable: true
+      role: data
+    - name: Field57
+      type: string
+      nullable: true
+      role: data
+    - name: Field58
+      type: string
+      nullable: true
+      role: data
+    - name: Field59
+      type: string
+      nullable: true
+      role: data
+    - name: Field60
+      type: string
+      nullable: true
+      role: data
+  identity_key: MCRRow
+  trace_key:
+    template: "{{CODE},{MCRRow},{Field1..Field60 concatenated in order}}"
+    comment: compressToString() concatenates all Field1..Field60 values without separators between CODE and MCRRow.
+
+target:
+  system: sead
+  table: tbl_mcrdata_birmbeetledat
+  identity:
+    column: mcrdata_birmbeetledat_id
+    type: integer
+    strategy: sequence
+    sequence: tbl_mcrdata_birmbeetledat_mcrdata_birmbeetledat_id_seq
+
+mappings:
+  - target_field: mcr_data
+    type: string
+    nullable: true
+    transform:
+      type: call
+      helper: build_birm_mcr_data
+      args: ["source"]
+  - target_field: mcr_row
+    type: integer
+    nullable: false
+    source_field: MCRRow
+  - target_field: taxon_id
+    type: integer
+    nullable: false
+    transform:
+      type: call
+      helper: resolve_taxon_id
+      args: ["source.CODE"]
+
+reconciliation:
+  strategy: ordered_rules
+  rules:
+    - name: composite_lookup
+      order: 1
+      type: database_query
+      description: Find an existing Birmingham beetle row by taxon_id plus MCRRow.
+      table: tbl_mcrdata_birmbeetledat
+      where: "taxon_id = :taxon_id AND mcr_row = :mcr_row"
+      bind:
+        taxon_id: "resolve_taxon_id(source.CODE)"
+        mcr_row: "source.MCRRow"
+      on_match: return_as_is
+    - name: create_new
+      order: 2
+      type: create_new
+      description: No composite-key match found; create a new Birmingham beetle row.
+      on_match: insert
+
+update_detection:
+  strategy: never
+  fields: []
+  on_change: ignore
+  comment: Existing rows are returned unchanged; BirmBeetleDataImporter has no update path.
+
+dependencies: [Index]
+
+tracing:
+  bugs_table: TbirmBEETLEdat
+  sead_table: tbl_mcrdata_birmbeetledat
+  write_on: [insert, update]
+
+helpers:
+  - name: build_birm_mcr_data
+    description: Concatenate the ordered Field1..Field60 values exactly as BirmBeetleDat.compressFieldValues() does.
+    signature: "build_birm_mcr_data(source_row: object) -> str"
+    used_by: [mcr_data]
+  - name: resolve_taxon_id
+    description: Resolve the Bugs species code to tbl_taxa_tree_master.taxon_id.
+    signature: "resolve_taxon_id(code: float | None) -> int | None"
+    used_by: [taxon_id]

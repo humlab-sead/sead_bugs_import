@@ -1,0 +1,35 @@
+fixture_version: "1.0"
+policy: ecocodegroup
+scenarios:
+  - name: trace_hit_updates_existing_ecocode_group
+    intent: reconciliation_path
+    source_rows:
+      - EcoGroupCode: Upd
+        EcoName: Updated group
+    policy_context:
+      step_hits:
+        trace_lookup: true
+      state:
+        existing_row_id: 2
+    expects:
+      reconciliation_path: [trace_lookup]
+      reconciliation_result:
+        result_kind: update_existing
+        source: trace_lookup
+        row_id: 2
+        ecocode_group_code: Upd
+  - name: create_new_ecocode_group_when_no_trace_exists
+    intent: reconciliation_path
+    source_rows:
+      - EcoGroupCode: New
+        EcoName: New group
+    policy_context:
+      step_hits:
+        trace_lookup: false
+    expects:
+      reconciliation_path: [trace_lookup, create_new]
+      reconciliation_result:
+        result_kind: insert_new
+        source: create_new
+        row_id: null
+        ecocode_group_code: New

@@ -1,0 +1,103 @@
+fixture_version: "1.0"
+policy: sitereferences
+scenarios:
+  - name: missing_site_prerequisite_returns_guard_error
+    intent: reconciliation_path
+    source_rows:
+      - SiteCODE: SITE000011
+        Ref: Robinson (1979b)
+    policy_context:
+      step_hits:
+        tuple_lookup: false
+      state:
+        prerequisite_failed: true
+        guard_error_message: "Missing site: SITE000011"
+    expects:
+      reconciliation_path: [resolve_dependencies]
+      reconciliation_result:
+        result_kind: return_guard_error
+        source: resolve_dependencies
+        row_id: null
+        site_code: SITE000011
+        bugs_reference: Robinson (1979b)
+        issue:
+          severity: error
+          message: "Missing site: SITE000011"
+  - name: missing_reference_prerequisite_returns_guard_error
+    intent: reconciliation_path
+    source_rows:
+      - SiteCODE: SITE000010
+        Ref: ""
+    policy_context:
+      step_hits:
+        tuple_lookup: false
+      state:
+        prerequisite_failed: true
+        guard_error_message: No reference specified.
+    expects:
+      reconciliation_path: [resolve_dependencies]
+      reconciliation_result:
+        result_kind: return_guard_error
+        source: resolve_dependencies
+        row_id: null
+        site_code: SITE000010
+        bugs_reference: ""
+        issue:
+          severity: error
+          message: No reference specified.
+  - name: missing_bibliography_prerequisite_returns_guard_error
+    intent: reconciliation_path
+    source_rows:
+      - SiteCODE: SITE000010
+        Ref: Girling (1986a)
+    policy_context:
+      step_hits:
+        tuple_lookup: false
+      state:
+        prerequisite_failed: true
+        guard_error_message: "No reference found for ref: Girling (1986a)"
+    expects:
+      reconciliation_path: [resolve_dependencies]
+      reconciliation_result:
+        result_kind: return_guard_error
+        source: resolve_dependencies
+        row_id: null
+        site_code: SITE000010
+        bugs_reference: Girling (1986a)
+        issue:
+          severity: error
+          message: "No reference found for ref: Girling (1986a)"
+  - name: tuple_lookup_returns_existing_site_reference
+    intent: reconciliation_path
+    source_rows:
+      - SiteCODE: SITE000010
+        Ref: Panagiotakopulu & Buckland (1991)
+    policy_context:
+      step_hits:
+        tuple_lookup: true
+      state:
+        existing_row_id: 710
+    expects:
+      reconciliation_path: [tuple_lookup]
+      reconciliation_result:
+        result_kind: update_existing
+        source: tuple_lookup
+        row_id: 710
+        site_code: SITE000010
+        bugs_reference: Panagiotakopulu & Buckland (1991)
+  - name: create_new_site_reference_when_tuple_missing
+    intent: reconciliation_path
+    source_rows:
+      - SiteCODE: SITE000009
+        Ref: New reference 2024
+    policy_context:
+      step_hits:
+        tuple_lookup: false
+    expects:
+      reconciliation_path: [tuple_lookup, create_new]
+      reconciliation_result:
+        result_kind: insert_new
+        source: create_new
+        row_id: null
+        site_code: SITE000009
+        bugs_reference: New reference 2024

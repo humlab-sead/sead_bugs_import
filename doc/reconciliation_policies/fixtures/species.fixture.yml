@@ -1,0 +1,388 @@
+fixture_version: "1.0"
+policy: species
+scenarios:
+  - name: code_lookup_returns_existing_taxonomic_order
+    intent: reconciliation_path
+    source_rows:
+      - CODE: 10010020
+        FAMILY: CARABIDAE
+        GENUS: Cicindela
+        SPECIES: sylvatica
+        AUTHORITY: L.
+    policy_context:
+      step_hits:
+        code_lookup: true
+      state:
+        existing_row_id: 901
+    expects:
+      reconciliation_path: [code_lookup]
+      reconciliation_result:
+        result_kind: update_existing
+        source: code_lookup
+        row_id: 901
+        species_code: 10010020
+  - name: create_new_taxonomic_order_when_code_lookup_misses
+    intent: reconciliation_path
+    source_rows:
+      - CODE: 10010021
+        FAMILY: CARABIDAE
+        GENUS: Cicindela
+        SPECIES: campestris
+        AUTHORITY: L.
+    policy_context:
+      step_hits:
+        code_lookup: false
+    expects:
+      reconciliation_path: [code_lookup, create_new]
+      reconciliation_result:
+        result_kind: insert_new
+        source: create_new
+        row_id: null
+        species_code: 10010021
+  - name: create_taxa_family_when_missing
+    intent: supporting_output_result
+    source_rows:
+      - CODE: 10010020
+        FAMILY: CARABIDAE
+        GENUS: Cicindela
+        SPECIES: sylvatica
+        AUTHORITY: L.
+    policy_context:
+      args:
+        output_name: taxa_family
+        import_order_id: "701"
+      step_hits: {}
+    expects:
+      related_outputs: [taxa_family]
+      graph_result:
+        taxa_family:
+          result_kind: insert_new
+          family_id: null
+          family_name: CARABIDAE
+          order_id: 701
+  - name: reuse_existing_taxa_family
+    intent: supporting_output_result
+    source_rows:
+      - CODE: 10010020
+        FAMILY: CARABIDAE
+        GENUS: Cicindela
+        SPECIES: sylvatica
+        AUTHORITY: L.
+    policy_context:
+      args:
+        output_name: taxa_family
+        import_order_id: "701"
+      step_hits: {}
+      state:
+        existing_family_id: 801
+    expects:
+      related_outputs: [taxa_family]
+      graph_result:
+        taxa_family:
+          result_kind: return_existing
+          family_id: 801
+          family_name: CARABIDAE
+          order_id: 701
+  - name: create_taxa_genus_when_missing
+    intent: supporting_output_result
+    source_rows:
+      - CODE: 10010020
+        FAMILY: CARABIDAE
+        GENUS: Cicindela
+        SPECIES: sylvatica
+        AUTHORITY: L.
+    policy_context:
+      args:
+        output_name: taxa_genus
+      step_hits: {}
+      state:
+        existing_family_id: 801
+    expects:
+      related_outputs: [taxa_genus]
+      graph_result:
+        taxa_genus:
+          result_kind: insert_new
+          genus_id: null
+          genus_name: Cicindela
+          family_id: 801
+  - name: reuse_existing_taxa_genus
+    intent: supporting_output_result
+    source_rows:
+      - CODE: 10010020
+        FAMILY: CARABIDAE
+        GENUS: Cicindela
+        SPECIES: sylvatica
+        AUTHORITY: L.
+    policy_context:
+      args:
+        output_name: taxa_genus
+      step_hits: {}
+      state:
+        existing_family_id: 801
+        existing_genus_id: 802
+    expects:
+      related_outputs: [taxa_genus]
+      graph_result:
+        taxa_genus:
+          result_kind: return_existing
+          genus_id: 802
+          genus_name: Cicindela
+          family_id: 801
+  - name: create_taxa_author_when_missing
+    intent: supporting_output_result
+    source_rows:
+      - CODE: 10010020
+        FAMILY: CARABIDAE
+        GENUS: Cicindela
+        SPECIES: sylvatica
+        AUTHORITY: L.
+    policy_context:
+      args:
+        output_name: taxa_author
+      step_hits: {}
+    expects:
+      related_outputs: [taxa_author]
+      graph_result:
+        taxa_author:
+          result_kind: insert_new
+          author_id: null
+          author_name: L.
+  - name: reuse_existing_taxa_author
+    intent: supporting_output_result
+    source_rows:
+      - CODE: 10010020
+        FAMILY: CARABIDAE
+        GENUS: Cicindela
+        SPECIES: sylvatica
+        AUTHORITY: L.
+    policy_context:
+      args:
+        output_name: taxa_author
+      step_hits: {}
+      state:
+        existing_author_id: 803
+    expects:
+      related_outputs: [taxa_author]
+      graph_result:
+        taxa_author:
+          result_kind: return_existing
+          author_id: 803
+          author_name: L.
+  - name: return_null_taxa_author_when_authority_missing
+    intent: supporting_output_result
+    source_rows:
+      - CODE: 10010022
+        FAMILY: CARABIDAE
+        GENUS: Cicindela
+        SPECIES: germanica
+        AUTHORITY: null
+    policy_context:
+      args:
+        output_name: taxa_author
+      step_hits: {}
+    expects:
+      related_outputs: [taxa_author]
+      graph_result:
+        taxa_author:
+          result_kind: insert_new
+          author_id: null
+          author_name: null
+  - name: create_taxa_species_when_missing
+    intent: supporting_output_result
+    source_rows:
+      - CODE: 10010020
+        FAMILY: CARABIDAE
+        GENUS: Cicindela
+        SPECIES: sylvatica
+        AUTHORITY: L.
+    policy_context:
+      args:
+        output_name: taxa_species
+      step_hits: {}
+      state:
+        existing_family_id: 801
+        existing_genus_id: 802
+        existing_author_id: 803
+    expects:
+      related_outputs: [taxa_species]
+      graph_result:
+        taxa_species:
+          result_kind: insert_new
+          species_id: null
+          species: sylvatica
+          genus_id: 802
+          author_id: 803
+  - name: create_taxa_species_without_author_when_authority_missing
+    intent: supporting_output_result
+    source_rows:
+      - CODE: 10010022
+        FAMILY: CARABIDAE
+        GENUS: Cicindela
+        SPECIES: germanica
+        AUTHORITY: null
+    policy_context:
+      args:
+        output_name: taxa_species
+      step_hits: {}
+      state:
+        existing_family_id: 801
+        existing_genus_id: 802
+    expects:
+      related_outputs: [taxa_species]
+      graph_result:
+        taxa_species:
+          result_kind: insert_new
+          species_id: null
+          species: germanica
+          genus_id: 802
+          author_id: null
+  - name: reuse_existing_taxa_species
+    intent: supporting_output_result
+    source_rows:
+      - CODE: 10010020
+        FAMILY: CARABIDAE
+        GENUS: Cicindela
+        SPECIES: sylvatica
+        AUTHORITY: L.
+    policy_context:
+      args:
+        output_name: taxa_species
+      step_hits: {}
+      state:
+        existing_family_id: 801
+        existing_genus_id: 802
+        existing_author_id: 803
+        existing_species_id: 804
+    expects:
+      related_outputs: [taxa_species]
+      graph_result:
+        taxa_species:
+          result_kind: return_existing
+          species_id: 804
+          species: sylvatica
+          genus_id: 802
+          author_id: 803
+  - name: reuse_existing_taxa_species_without_author
+    intent: supporting_output_result
+    source_rows:
+      - CODE: 10010023
+        FAMILY: CARABIDAE
+        GENUS: Cicindela
+        SPECIES: hybrida
+        AUTHORITY: null
+    policy_context:
+      args:
+        output_name: taxa_species
+      step_hits: {}
+      state:
+        existing_family_id: 801
+        existing_genus_id: 802
+        existing_species_id: 806
+    expects:
+      related_outputs: [taxa_species]
+      graph_result:
+        taxa_species:
+          result_kind: return_existing
+          species_id: 806
+          species: hybrida
+          genus_id: 802
+          author_id: null
+  - name: reuse_no_data_taxa_species_shortcut
+    intent: supporting_output_result
+    source_rows:
+      - CODE: 9999.0000001
+        FAMILY: No data
+        GENUS: No data
+        SPECIES: No data
+        AUTHORITY: null
+    policy_context:
+      args:
+        output_name: taxa_species
+      step_hits: {}
+      state:
+        no_data_species_id: 905
+        no_data_genus_id: 904
+    expects:
+      related_outputs: [taxa_species]
+      graph_result:
+        taxa_species:
+          result_kind: return_existing
+          species_id: 905
+          species: No data
+          genus_id: 904
+          author_id: null
+  - name: create_species_related_output_graph_when_tree_missing
+    intent: related_output_graph
+    source_rows:
+      - CODE: 10010020
+        FAMILY: CARABIDAE
+        GENUS: Cicindela
+        SPECIES: sylvatica
+        AUTHORITY: L.
+    policy_context:
+      config:
+        import_order_id: 701
+    expects:
+      related_outputs: [taxa_family, taxa_genus, taxa_author, taxa_species]
+      updates_target_fields: [taxon_id]
+      graph_result:
+        taxa_family:
+          result_kind: insert_new
+          family_id: null
+          family_name: CARABIDAE
+          order_id: 701
+        taxa_genus:
+          result_kind: insert_new
+          genus_id: null
+          genus_name: Cicindela
+          family_id: null
+        taxa_author:
+          result_kind: insert_new
+          author_id: null
+          author_name: L.
+        taxa_species:
+          result_kind: insert_new
+          species_id: null
+          species: sylvatica
+          genus_id: null
+          author_id: null
+  - name: reuse_species_related_output_graph_when_tree_exists
+    intent: related_output_graph
+    source_rows:
+      - CODE: 10010020
+        FAMILY: CARABIDAE
+        GENUS: Cicindela
+        SPECIES: sylvatica
+        AUTHORITY: L.
+    policy_context:
+      config:
+        import_order_id: 701
+      state:
+        existing_family_id: 801
+        existing_genus_id: 802
+        existing_author_id: 803
+        existing_species_id: 804
+    expects:
+      related_outputs: [taxa_family, taxa_genus, taxa_author, taxa_species]
+      updates_target_fields: [taxon_id]
+      graph_result:
+        taxa_family:
+          result_kind: return_existing
+          family_id: 801
+          family_name: CARABIDAE
+          order_id: 701
+        taxa_genus:
+          result_kind: return_existing
+          genus_id: 802
+          genus_name: Cicindela
+          family_id: 801
+        taxa_author:
+          result_kind: return_existing
+          author_id: 803
+          author_name: L.
+        taxa_species:
+          result_kind: return_existing
+          species_id: 804
+          species: sylvatica
+          genus_id: 802
+          author_id: 803

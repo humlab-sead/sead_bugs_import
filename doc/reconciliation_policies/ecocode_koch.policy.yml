@@ -1,0 +1,101 @@
+# BugsCEP → SEAD Reconciliation Policy
+# Domain: KochEcocode (TEcoKoch → tbl_ecocodes)
+
+meta:
+  format_version: "1.0"
+  generated_from: java_source
+  reviewed: false
+  notes: >
+    This importer does not update matched rows. It checks trace by the full
+    compressed tuple and either returns the existing ecocode unchanged or
+    creates a new one from traced definition and species lookups.
+
+policy:
+  domain: ecocode_koch
+  description: >
+    Imports Koch ecocode assignments from TEcoKoch into tbl_ecocodes. Matching
+    is trace-only by the compressed CODE plus BugsKochCode tuple. If no trace
+    row exists, a new ecocode row is created.
+
+source:
+  system: bugscep
+  table: TEcoKoch
+  sql: "SELECT CODE, BugsKochCode FROM TEcoKoch"
+  fields:
+    - name: CODE
+      type: decimal
+      nullable: true
+      role: natural_key
+    - name: BugsKochCode
+      type: string
+      nullable: true
+      role: data
+  identity_key: CODE
+  trace_key:
+    template: "{{CODE},{BugsKochCode}}"
+    comment: Trace lookup uses compressToString(); there is no dedicated getBugsIdentifier() override.
+
+target:
+  system: sead
+  table: tbl_ecocodes
+  identity:
+    column: ecocode_id
+    type: integer
+    strategy: sequence
+    sequence: tbl_ecocodes_ecocode_id_seq
+
+mappings:
+  - target_field: ecocode_definition_id
+    type: integer
+    nullable: true
+    transform:
+      type: call
+      helper: resolve_koch_ecocode_definition_id
+      args: ["source.BugsKochCode"]
+  - target_field: taxon_id
+    type: integer
+    nullable: true
+    transform:
+      type: call
+      helper: resolve_taxon_id
+      args: ["source.CODE"]
+
+reconciliation:
+  strategy: ordered_rules
+  rules:
+    - name: trace_lookup
+      order: 1
+      type: trace_lookup
+      description: Look up the existing ecocode by the compressed CODE plus BugsKochCode tuple.
+      bugs_table: TEcoKoch
+      identifier_expr: "'{'+ str(source.CODE) + ',' + str(source.BugsKochCode) + '}'"
+      on_match: return_as_is
+      on_error: skip
+    - name: create_new
+      order: 2
+      type: create_new
+      description: No trace match found; create a new Koch ecocode row.
+      on_match: insert
+
+update_detection:
+  strategy: never
+  fields: []
+  on_change: ignore
+  comment: Matched rows are returned from trace unchanged; KochEcocodesImporter has no update path.
+
+dependencies: [KochDefinition]
+
+tracing:
+  bugs_table: TEcoKoch
+  sead_table: tbl_ecocodes
+  write_on: [insert, update]
+
+helpers:
+  - name: resolve_koch_ecocode_definition_id
+    description: Resolve the traced Koch ecocode definition imported from TEcoDefKoch to tbl_ecocode_definitions.ecocode_definition_id.
+    signature: "resolve_koch_ecocode_definition_id(koch_code: str | None) -> int | None"
+    used_by: [ecocode_definition_id]
+  - name: resolve_taxon_id
+    description: Resolve the Bugs species code to tbl_taxa_tree_master.taxon_id.
+    signature: "resolve_taxon_id(code: float | None) -> int | None"
+    used_by: [taxon_id]

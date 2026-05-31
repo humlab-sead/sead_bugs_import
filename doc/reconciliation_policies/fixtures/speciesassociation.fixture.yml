@@ -1,0 +1,77 @@
+fixture_version: "1.0"
+policy: speciesassociation
+scenarios:
+  - name: trace_hit_updates_existing_species_association
+    intent: reconciliation_path
+    source_rows:
+      - SpeciesAssociationID: 5001
+        CODE: 10010020
+        AssociatedSpeciesCODE: 10010050
+        AssociationType: host
+        Ref: Ref-301
+    policy_context:
+      step_hits:
+        trace_lookup: true
+      state:
+        existing_row_id: 301
+    expects:
+      reconciliation_path: [trace_lookup]
+      reconciliation_result:
+        result_kind: update_existing
+        source: trace_lookup
+        row_id: 301
+        species_association_id: 5001
+        species_code: 10010020
+        associated_species_code: 10010050
+        association_type: host
+        bugs_reference: Ref-301
+  - name: trace_hit_returns_existing_error_row
+    intent: reconciliation_path
+    source_rows:
+      - SpeciesAssociationID: 5002
+        CODE: 10010060
+        AssociatedSpeciesCODE: 10010080
+        AssociationType: parasite
+        Ref: Ref-302
+    policy_context:
+      step_hits:
+        trace_lookup: true
+      state:
+        existing_row_id: 302
+        existing_error_message: Existing species association error
+    expects:
+      reconciliation_path: [trace_lookup]
+      reconciliation_result:
+        result_kind: return_existing_error
+        source: trace_lookup
+        row_id: 302
+        issue:
+          severity: error
+          message: Existing species association error
+        species_association_id: 5002
+        species_code: 10010060
+        associated_species_code: 10010080
+        association_type: parasite
+        bugs_reference: Ref-302
+  - name: create_new_species_association_when_no_trace_exists
+    intent: reconciliation_path
+    source_rows:
+      - SpeciesAssociationID: 5003
+        CODE: 10010100
+        AssociatedSpeciesCODE: 10010120
+        AssociationType: pollinator
+        Ref: Ref-303
+    policy_context:
+      step_hits:
+        trace_lookup: false
+    expects:
+      reconciliation_path: [trace_lookup, create_new]
+      reconciliation_result:
+        result_kind: insert_new
+        source: create_new
+        row_id: null
+        species_association_id: 5003
+        species_code: 10010100
+        associated_species_code: 10010120
+        association_type: pollinator
+        bugs_reference: Ref-303

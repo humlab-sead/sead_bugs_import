@@ -1,0 +1,210 @@
+# BugsCEP → SEAD Reconciliation Policy
+# Domain: Sample (TSample → tbl_physical_samples)
+
+meta:
+  format_version: "1.0"
+  generated_from: java_source
+  reviewed: false
+  notes: >
+    The importer is trace-first by SampleCODE. Each sample row also manages up
+    to two child SampleDimension rows for upper and lower depth. X and Y are
+    not written; their presence only records an error because the importer
+    expects depth-based samples here.
+
+policy:
+  domain: sample
+  description: >
+    Imports physical samples from TSample into tbl_physical_samples. Matching is
+    trace-first by SampleCODE with create-new fallback. The importer assigns the
+    default Bugs sample type and alternative reference type on create, resolves
+    the sample group from CountsheetCODE, and then saves any generated sample
+    dimensions for ZorDepthTop and ZorDepthBot.
+
+source:
+  system: bugscep
+  table: TSample
+  sql: "SELECT SampleCODE, SiteCODE, X, Y, ZorDepthTop, ZorDepthBot, RefNrContext, CountsheetCODE FROM TSample"
+  fields:
+    - name: SampleCODE
+      type: string
+      nullable: true
+      role: natural_key
+    - name: SiteCODE
+      type: string
+      nullable: true
+      role: ignored
+      comment: Read into the Bugs object and trace key but not used by SampleUpdater.
+    - name: X
+      type: string
+      nullable: true
+      role: data
+      comment: Presence records an error; X is not written to SEAD.
+    - name: Y
+      type: string
+      nullable: true
+      role: data
+      comment: Presence records an error; Y is not written to SEAD.
+    - name: ZorDepthTop
+      type: decimal
+      nullable: true
+      role: data
+    - name: ZorDepthBot
+      type: decimal
+      nullable: true
+      role: data
+    - name: RefNrContext
+      type: string
+      nullable: true
+      role: data
+    - name: CountsheetCODE
+      type: string
+      nullable: true
+      role: data
+  identity_key: SampleCODE
+  trace_key:
+    template: "{{SampleCODE},{SiteCODE},{RefNrContext},{ZorDepthTop},{ZorDepthBot},{CountsheetCODE}}"
+    comment: compressToString() omits X and Y even though they can still add errors.
+
+target:
+  system: sead
+  table: tbl_physical_samples
+  identity:
+    column: physical_sample_id
+    type: integer
+    strategy: sequence
+    sequence: tbl_physical_samples_physical_sample_id_seq
+
+related_outputs:
+  - name: sample_dimensions
+    table: tbl_sample_dimensions
+    mode: one_to_many
+    relationship: child
+    item_helper: generate_sample_dimension_items
+    key_fields: [physical_sample_id, dimension_id, method_id]
+    persistence: save_or_update
+    identity:
+      column: sample_dimension_id
+      type: integer
+      strategy: sequence
+      sequence: tbl_sample_dimensions_sample_dimension_id_seq
+    mappings:
+      - target_field: physical_sample_id
+        type: integer
+        nullable: false
+        transform:
+          type: expr
+          expr: "parent.physical_sample_id"
+      - target_field: dimension_id
+        type: integer
+        nullable: false
+        transform:
+          type: generated
+          field: dimension_id
+      - target_field: method_id
+        type: integer
+        nullable: false
+        transform:
+          type: generated
+          field: method_id
+      - target_field: dimension_value
+        type: decimal
+        nullable: true
+        transform:
+          type: generated
+          field: dimension_value
+    reconciliation:
+      existing_rows:
+        table: tbl_sample_dimensions
+        where: "physical_sample_id = :physical_sample_id"
+        bind:
+          physical_sample_id: "parent.physical_sample_id"
+      compare_fields: [physical_sample_id, dimension_id, method_id]
+      on_missing_generated: insert
+      on_missing_existing: mark_for_deletion
+      on_match: update
+      comment: Existing rows are matched by sample, dimension, and method. Missing generated rows are deleted when the incoming depth becomes null.
+    update_detection:
+      strategy: field_comparison
+      fields: [dimension_value]
+      on_change: mark_updated
+      comment: DimensionUpdater compares numeric depth values and marks matched rows for deletion when the incoming value is null.
+    comment: The persister saves each generated dimension after the sample row and marks existing dimensions for deletion when an incoming depth becomes null.
+
+mappings:
+  - target_field: sample_name
+    type: string
+    nullable: true
+    source_field: RefNrContext
+  - target_field: sample_group_id
+    type: integer
+    nullable: true
+    transform:
+      type: call
+      helper: resolve_sample_group_id
+      args: ["source.CountsheetCODE"]
+  - target_field: alt_ref_type_id
+    type: integer
+    nullable: false
+    transform:
+      type: call
+      helper: resolve_default_alternative_reference_type_id
+      args: []
+  - target_field: sample_type_id
+    type: integer
+    nullable: false
+    transform:
+      type: call
+      helper: resolve_default_sample_type_id
+      args: []
+
+reconciliation:
+  strategy: ordered_rules
+  prerequisite:
+    description: Resolve the traced sample group from CountsheetCODE before writing the physical sample and generated dimensions.
+  rules:
+    - name: trace_lookup
+      order: 1
+      type: trace_lookup
+      description: Look up the existing sample row by SampleCODE from bugs_trace.
+      bugs_table: TSample
+      identifier_expr: "source.SampleCODE"
+      on_match: update
+      on_error: skip
+    - name: create_new
+      order: 2
+      type: create_new
+      description: No traced sample row exists; create a new sample with the default type and reference type.
+      on_match: insert
+
+update_detection:
+  strategy: field_comparison
+  fields:
+    - sample_name
+    - sample_group_id
+  on_change: mark_updated
+  comment: Default type and alternative reference type are assigned on create; depth changes are handled through the related sample-dimensions output.
+
+dependencies: [SampleGroup]
+
+tracing:
+  bugs_table: TSample
+  sead_table: tbl_physical_samples
+  write_on: [insert, update]
+
+helpers:
+  - name: resolve_sample_group_id
+    description: Resolve CountsheetCODE through SampleGroupBugsTraceReader to tbl_sample_groups.sample_group_id.
+    signature: "resolve_sample_group_id(countsheet_code: str | None) -> int | None"
+    used_by: [sample_group_id]
+  - name: resolve_default_alternative_reference_type_id
+    description: Return the fixed alternative reference type row from findOtherAlternativeSampleName().
+    signature: "resolve_default_alternative_reference_type_id() -> int"
+    used_by: [alt_ref_type_id]
+  - name: resolve_default_sample_type_id
+    description: Return the fixed unspecified sample type row from getUnspecifiedType().
+    signature: "resolve_default_sample_type_id() -> int"
+    used_by: [sample_type_id]
+  - name: generate_sample_dimension_items
+    description: Build upper and lower depth SampleDimension items using the fixed depth-from-datum method and the configured upper/lower dimensions.
+    signature: "generate_sample_dimension_items(sample_code: str | None, z_top: float | None, z_bottom: float | None) -> list[SampleDimensionItem]"
+    expression: "[{'dimension_id': ..., 'method_id': ..., 'dimension_value': ...}, ...]"

@@ -1,0 +1,154 @@
+# BugsCEP → SEAD Reconciliation Policy
+# Domain: MCRSummary (TMCRSummaryData → tbl_mcr_summary_data)
+
+meta:
+  format_version: "1.0"
+  generated_from: java_source
+  reviewed: false
+  notes: >
+    This importer resolves a species from the Bugs CODE value, then looks up an
+    existing summary row by taxon_id. If a row already exists it is returned
+    unchanged; otherwise a new summary row is created.
+
+policy:
+  domain: mcrsummary
+  description: >
+    Imports MCR summary rows from TMCRSummaryData into tbl_mcr_summary_data.
+    Reconciliation is species-key based rather than trace-based: the importer
+    resolves the species from CODE and returns the existing summary row for that
+    species if one already exists.
+
+source:
+  system: bugscep
+  table: TMCRSummaryData
+  sql: >
+    SELECT CODE, TMaxLo, TMaxHi, TMinLo, TMinHi, TRangeLo, TRangeHi,
+           COGMidTMax, COGMidTRange
+    FROM TMCRSummaryData
+  fields:
+    - name: CODE
+      type: decimal
+      nullable: true
+      role: natural_key
+    - name: TMaxLo
+      type: integer
+      nullable: true
+      role: data
+    - name: TMaxHi
+      type: integer
+      nullable: true
+      role: data
+    - name: TMinLo
+      type: integer
+      nullable: true
+      role: data
+    - name: TMinHi
+      type: integer
+      nullable: true
+      role: data
+    - name: TRangeLo
+      type: integer
+      nullable: true
+      role: data
+    - name: TRangeHi
+      type: integer
+      nullable: true
+      role: data
+    - name: COGMidTMax
+      type: integer
+      nullable: true
+      role: data
+    - name: COGMidTRange
+      type: integer
+      nullable: true
+      role: data
+  identity_key: CODE
+  trace_key:
+    template: "{{CODE},{TMaxLo},{TMaxHi},{TMinLo},{TMinHi},{TRangeLo},{TRangeHi},{COGMidTMax},{COGMidTRange}}"
+
+target:
+  system: sead
+  table: tbl_mcr_summary_data
+  identity:
+    column: mcr_summary_data_id
+    type: integer
+    strategy: sequence
+    sequence: tbl_mcr_summary_data_mcr_summary_data_id_seq
+
+mappings:
+  - target_field: tmax_lo
+    type: integer
+    nullable: true
+    source_field: TMaxLo
+  - target_field: tmax_hi
+    type: integer
+    nullable: true
+    source_field: TMaxHi
+  - target_field: tmin_lo
+    type: integer
+    nullable: true
+    source_field: TMinLo
+  - target_field: tmin_hi
+    type: integer
+    nullable: true
+    source_field: TMinHi
+  - target_field: trange_lo
+    type: integer
+    nullable: true
+    source_field: TRangeLo
+  - target_field: trange_hi
+    type: integer
+    nullable: true
+    source_field: TRangeHi
+  - target_field: cog_mid_tmax
+    type: integer
+    nullable: true
+    source_field: COGMidTMax
+  - target_field: cog_mid_trange
+    type: integer
+    nullable: true
+    source_field: COGMidTRange
+  - target_field: taxon_id
+    type: integer
+    nullable: true
+    transform:
+      type: call
+      helper: resolve_taxon_id
+      args: ["source.CODE"]
+
+reconciliation:
+  strategy: ordered_rules
+  rules:
+    - name: species_lookup
+      order: 1
+      type: database_query
+      description: Find an existing summary row by the resolved species taxon_id.
+      table: tbl_mcr_summary_data
+      where: "taxon_id = :taxon_id"
+      bind:
+        taxon_id: "resolve_taxon_id(source.CODE)"
+      on_match: return_as_is
+    - name: create_new
+      order: 2
+      type: create_new
+      description: No summary row exists for the resolved species; create a new one.
+      on_match: insert
+
+update_detection:
+  strategy: never
+  fields: []
+  on_change: ignore
+  comment: Existing summary rows are returned unchanged; MCRSummaryImporter has no update path.
+
+dependencies: [Index]
+
+tracing:
+  bugs_table: TMCRSummaryData
+  sead_table: tbl_mcr_summary_data
+  write_on: [insert, update]
+
+helpers:
+  - name: resolve_taxon_id
+    description: Resolve the Bugs species code to tbl_taxa_tree_master.taxon_id through TaxonomicOrderConverter.
+    signature: "resolve_taxon_id(code: float | None) -> int | None"
+    used_by: [taxon_id]

@@ -1,0 +1,51 @@
+fixture_version: "1.0"
+policy: speciessynonyms
+scenarios:
+  - name: trace_hit_returns_existing_synonym_association
+    intent: reconciliation_path
+    source_rows:
+      - CODE: 10010020
+        SynGenus: Cicindela
+        SynSpecies: sylvatica
+        SynAuthority: Linnaeus
+        Ref: Ref-401
+        Notes: Existing synonym notes
+    policy_context:
+      step_hits:
+        trace_lookup: true
+      state:
+        existing_row_id: 401
+    expects:
+      reconciliation_path: [trace_lookup]
+      reconciliation_result:
+        result_kind: update_existing
+        source: trace_lookup
+        row_id: 401
+        species_code: 10010020
+        synonym_genus: Cicindela
+        synonym_species: sylvatica
+        synonym_authority: Linnaeus
+        bugs_reference: Ref-401
+  - name: create_new_synonym_association_when_no_trace_exists
+    intent: reconciliation_path
+    source_rows:
+      - CODE: 10010050
+        SynGenus: Calosoma
+        SynSpecies: inquisitor
+        SynAuthority: Linnaeus
+        Ref: Ref-402
+        Notes: New synonym notes
+    policy_context:
+      step_hits:
+        trace_lookup: false
+    expects:
+      reconciliation_path: [trace_lookup, create_new]
+      reconciliation_result:
+        result_kind: insert_new
+        source: create_new
+        row_id: null
+        species_code: 10010050
+        synonym_genus: Calosoma
+        synonym_species: inquisitor
+        synonym_authority: Linnaeus
+        bugs_reference: Ref-402

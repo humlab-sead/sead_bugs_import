@@ -1,0 +1,68 @@
+fixture_version: "1.0"
+policy: ecocodedefinition_koch
+scenarios:
+  - name: trace_hit_updates_existing_koch_definition
+    intent: reconciliation_path
+    source_rows:
+      - BugsKochCode: KOCH-DEF-1
+        KochCode: K-1
+        FullName: Dry grassland
+        KochGroup: G1
+        Description: Dry grassland habitat
+        Notes: Existing koch definition
+    policy_context:
+      step_hits:
+        trace_lookup: true
+      state:
+        existing_row_id: 511
+    expects:
+      reconciliation_path: [trace_lookup]
+      reconciliation_result:
+        result_kind: update_existing
+        source: trace_lookup
+        row_id: 511
+        bugs_koch_code: KOCH-DEF-1
+  - name: trace_hit_returns_existing_koch_definition_error
+    intent: reconciliation_path
+    source_rows:
+      - BugsKochCode: KOCH-DEF-2
+        KochCode: K-2
+        FullName: River margin
+        KochGroup: G2
+        Description: River margin habitat
+        Notes: Error koch definition
+    policy_context:
+      step_hits:
+        trace_lookup: true
+      state:
+        existing_row_id: 512
+        existing_error_message: Existing koch definition error
+    expects:
+      reconciliation_path: [trace_lookup]
+      reconciliation_result:
+        result_kind: return_existing_error
+        source: trace_lookup
+        row_id: 512
+        issue:
+          severity: error
+          message: Existing koch definition error
+        bugs_koch_code: KOCH-DEF-2
+  - name: create_new_koch_definition_when_no_trace_exists
+    intent: reconciliation_path
+    source_rows:
+      - BugsKochCode: KOCH-DEF-3
+        KochCode: K-3
+        FullName: Heathland
+        KochGroup: G3
+        Description: Heathland habitat
+        Notes: New koch definition
+    policy_context:
+      step_hits:
+        trace_lookup: false
+    expects:
+      reconciliation_path: [trace_lookup, create_new]
+      reconciliation_result:
+        result_kind: insert_new
+        source: create_new
+        row_id: null
+        bugs_koch_code: KOCH-DEF-3

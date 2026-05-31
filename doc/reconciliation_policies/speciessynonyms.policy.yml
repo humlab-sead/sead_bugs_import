@@ -1,0 +1,143 @@
+# BugsCEP → SEAD Reconciliation Policy
+# Domain: Synonym (TSynonyms → tbl_species_associations)
+
+meta:
+  format_version: "1.0"
+  generated_from: java_source
+  reviewed: false
+  notes: >
+    SynonymImporter is trace-first only. If no trace row exists for the full
+    synonym record, it creates a new SpeciesAssociation plus any missing synonym
+    species, genus, and author rows required by the new source species.
+
+policy:
+  domain: speciessynonyms
+  description: >
+    Imports taxonomic synonym rows from TSynonyms into tbl_species_associations.
+    Existing rows are found through the ordered synonym-search chain; new rows
+    are inserted with a fixed synonym association type when no match exists.
+
+source:
+  system: bugscep
+  table: TSynonyms
+  sql: >
+    SELECT CODE, SynGenus, SynSpecies, SynAuthority, Ref, Notes
+    FROM TSynonyms
+  fields:
+    - name: CODE
+      type: decimal
+      nullable: true
+      role: natural_key
+      comment: Source taxon code.
+    - name: SynGenus
+      type: string
+      nullable: true
+      role: data
+    - name: SynSpecies
+      type: string
+      nullable: true
+      role: data
+    - name: SynAuthority
+      type: string
+      nullable: true
+      role: data
+    - name: Ref
+      type: string
+      nullable: true
+      role: data
+    - name: Notes
+      type: string
+      nullable: true
+      role: ignored
+      comment: Present in the Bugs row but not written by SynonymImporter.
+  identity_key: CODE
+  trace_key:
+    template: "{{CODE},{SynGenus},{SynSpecies},{SynAuthority},{Ref},{Notes}}"
+    comment: Synonym trace lookup uses compressToString(), not getBugsIdentifier().
+
+target:
+  system: sead
+  table: tbl_species_associations
+  identity:
+    column: species_association_id
+    type: integer
+    strategy: sequence
+    sequence: tbl_species_associations_species_association_id_seq
+
+mappings:
+  - target_field: taxon_id
+    type: integer
+    nullable: false
+    transform:
+      type: call
+      helper: resolve_synonym_taxon_id
+      args: ["source.SynGenus", "source.SynSpecies", "source.SynAuthority", "source.CODE"]
+  - target_field: associated_taxon_id
+    type: integer
+    nullable: false
+    transform:
+      type: call
+      helper: resolve_taxon_id
+      args: ["source.CODE"]
+  - target_field: association_type_id
+    type: integer
+    nullable: true
+    transform:
+      type: call
+      helper: resolve_synonym_association_type_id
+      args: []
+  - target_field: biblio_id
+    type: integer
+    nullable: true
+    transform:
+      type: call
+      helper: resolve_biblio_id
+      args: ["source.Ref"]
+
+reconciliation:
+  strategy: ordered_rules
+  rules:
+    - name: trace_lookup
+      order: 1
+      type: trace_lookup
+      description: Look up the existing synonym association by the full synonym trace key.
+      bugs_table: TSynonyms
+      identifier_expr: "'{'+ str(source.CODE) + ',' + str(source.SynGenus) + ',' + str(source.SynSpecies) + ',' + str(source.SynAuthority) + ',' + str(source.Ref) + ',' + str(source.Notes) + '}'"
+      on_match: return_as_is
+      on_error: skip
+    - name: create_new
+      order: 2
+      type: create_new
+      description: No trace match found; create a new synonym association row and persist any missing synonym species parts.
+      on_match: insert
+
+update_detection:
+  strategy: never
+  fields: []
+  on_change: ignore
+  comment: Matches are returned unchanged from trace; SynonymImporter does not update existing associations.
+
+dependencies: [Bibliography, Index]
+
+tracing:
+  bugs_table: TSynonyms
+  sead_table: tbl_species_associations
+  write_on: [insert, update]
+
+helpers:
+  - name: resolve_taxon_id
+    description: Resolve the source species code to tbl_taxa_tree_master.taxon_id.
+    signature: "resolve_taxon_id(code: float | None) -> int | None"
+    used_by: [associated_taxon_id]
+  - name: resolve_synonym_taxon_id
+    description: Resolve or create the synonym species from genus/species/authority using the target species from CODE as fallback context.
+    signature: "resolve_synonym_taxon_id(genus: str | None, species: str | None, authority: str | None, code: float | None) -> int | None"
+    used_by: [taxon_id]
+  - name: resolve_synonym_association_type_id
+    description: Return the fixed association type used for synonym rows, defaulting to the configured synonym.assocation.type.name value.
+    signature: "resolve_synonym_association_type_id() -> int | None"
+    used_by: [association_type_id]
+  - name: resolve_biblio_id
+    description: Resolve the reference code to tbl_biblio.biblio_id.
+    signature: "resolve_biblio_id(reference: str | None) -> int | None"
+    used_by: [biblio_id]

@@ -1,0 +1,39 @@
+fixture_version: "1.0"
+policy: birmbeetledata
+scenarios:
+  - name: composite_lookup_returns_existing_birm_data
+    intent: reconciliation_path
+    source_rows:
+      - CODE: 10010020
+        MCRRow: 8
+        Field1: 0
+        Field2: 1
+    policy_context:
+      step_hits:
+        composite_lookup: true
+      state:
+        existing_row_id: 1201
+    expects:
+      reconciliation_path: [composite_lookup]
+      reconciliation_result:
+        result_kind: update_existing
+        source: composite_lookup
+        row_id: 1201
+        species_code: 10010020
+  - name: create_new_birm_data_when_composite_lookup_misses
+    intent: reconciliation_path
+    source_rows:
+      - CODE: 10010021
+        MCRRow: 9
+        Field1: 1
+        Field2: 0
+    policy_context:
+      step_hits:
+        composite_lookup: false
+    expects:
+      reconciliation_path: [composite_lookup, create_new]
+      reconciliation_result:
+        result_kind: insert_new
+        source: create_new
+        row_id: null
+        species_code: 10010021

@@ -1,0 +1,181 @@
+fixture_version: "1.0"
+policy: lab
+scenarios:
+  - name: blank_country_emits_error
+    intent: resolver_path
+    source_rows:
+      - LabID: LAB_1
+        Labname: Lab one
+        Address: ignored
+        Country: ""
+        Telephone: ignored
+    policy_context:
+      args:
+        country_name: ""
+      step_hits: {}
+    expects:
+      resolver: resolve_country_id
+      resolver_path: [blank_country]
+      target_field: country_id
+      resolver_result:
+        result_kind: empty_entity
+        source: blank_country
+        issue:
+          severity: error
+          code: country_not_specified
+          message: No country specified
+      emit_codes: [country_not_specified]
+  - name: placeholder_country_is_ignored
+    intent: resolver_path
+    source_rows:
+      - LabID: LAB_2
+        Labname: Lab two
+        Address: ignored
+        Country: Country
+        Telephone: ignored
+    policy_context:
+      args:
+        country_name: Country
+      step_hits: {}
+    expects:
+      resolver: resolve_country_id
+      resolver_path: [placeholder_country]
+      target_field: country_id
+      resolver_result:
+        result_kind: empty_entity
+        source: placeholder_country
+        issue:
+          severity: ignored
+          code: country_placeholder_ignored
+          message: "IGNORED: "
+      emit_codes: [country_placeholder_ignored]
+  - name: country_lookup_returns_entity
+    intent: resolver_path
+    source_rows:
+      - LabID: LAB_3
+        Labname: Lab three
+        Address: ignored
+        Country: Sweden
+        Telephone: ignored
+    policy_context:
+      args:
+        country_name: Sweden
+      step_hits:
+        direct_lookup: true
+    expects:
+      resolver: resolve_country_id
+      resolver_path: [direct_lookup]
+      target_field: country_id
+      resolver_result:
+        result_kind: return_entity
+        source: direct_lookup
+        country_name: Sweden
+  - name: missing_country_emits_error
+    intent: resolver_path
+    source_rows:
+      - LabID: LAB_4
+        Labname: Lab four
+        Address: ignored
+        Country: Atlantis
+        Telephone: ignored
+    policy_context:
+      args:
+        country_name: Atlantis
+      step_hits:
+        direct_lookup: false
+    expects:
+      resolver: resolve_country_id
+      resolver_path: [direct_lookup, not_found]
+      target_field: country_id
+      resolver_result:
+        result_kind: empty_entity
+        source: not_found
+        issue:
+          severity: error
+          code: country_not_found
+          message: No country found
+      emit_codes: [country_not_found]
+  - name: trace_hit_updates_existing_lab
+    intent: reconciliation_path
+    source_rows:
+      - LabID: LAB_TRACE
+        Labname: Trace Lab Updated
+        Address: ignored
+        Country: Sweden
+        Telephone: ignored
+    policy_context:
+      step_hits:
+        trace_lookup: true
+      state:
+        existing_row_id: 10
+    expects:
+      reconciliation_path: [trace_lookup]
+      reconciliation_result:
+        result_kind: update_existing
+        source: trace_lookup
+        row_id: 10
+        lab_id: LAB_TRACE
+  - name: trace_hit_returns_existing_error_row
+    intent: reconciliation_path
+    source_rows:
+      - LabID: LAB_ERROR
+        Labname: Trace Lab Ignored Update
+        Address: ignored
+        Country: Sweden
+        Telephone: ignored
+    policy_context:
+      step_hits:
+        trace_lookup: true
+      state:
+        existing_row_id: 11
+        existing_error_message: Existing trace error
+    expects:
+      reconciliation_path: [trace_lookup]
+      reconciliation_result:
+        result_kind: return_existing_error
+        source: trace_lookup
+        row_id: 11
+        lab_id: LAB_ERROR
+        issue:
+          severity: error
+          message: Existing trace error
+  - name: lab_id_lookup_updates_existing_lab
+    intent: reconciliation_path
+    source_rows:
+      - LabID: LAB_EXISTING
+        Labname: Existing Lab Updated
+        Address: ignored
+        Country: Sweden
+        Telephone: ignored
+    policy_context:
+      step_hits:
+        trace_lookup: false
+        international_lab_id_lookup: true
+      state:
+        existing_row_id: 20
+    expects:
+      reconciliation_path: [trace_lookup, international_lab_id_lookup]
+      reconciliation_result:
+        result_kind: update_existing
+        source: international_lab_id_lookup
+        row_id: 20
+        lab_id: LAB_EXISTING
+  - name: create_new_lab_when_no_match_exists
+    intent: reconciliation_path
+    source_rows:
+      - LabID: LAB_NEW
+        Labname: New Lab
+        Address: ignored
+        Country: Sweden
+        Telephone: ignored
+    policy_context:
+      step_hits:
+        trace_lookup: false
+        international_lab_id_lookup: false
+    expects:
+      reconciliation_path: [trace_lookup, international_lab_id_lookup, create_new]
+      reconciliation_result:
+        result_kind: insert_new
+        source: create_new
+        row_id: null
+        lab_id: LAB_NEW

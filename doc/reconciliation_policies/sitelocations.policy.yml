@@ -1,0 +1,123 @@
+# BugsCEP → SEAD Reconciliation Policy
+# Domain: SiteLocations (TSite → tbl_site_locations)
+
+meta:
+  format_version: "1.0"
+  generated_from: java_source
+  reviewed: false
+  notes: >
+    One Bugs row can yield multiple SiteLocation rows. The converter resolves the
+    site, expands country and region into one or more location candidates, then
+    compares that generated list with all stored site-location rows. Missing old
+    rows are marked for deletion and new rows are emitted.
+
+policy:
+  domain: sitelocations
+  description: >
+    Imports site-location links from TSite into tbl_site_locations. Reconciliation
+    is list-based by site: the importer loads all existing rows for the site,
+    expands the Bugs country and region values into location candidates, and
+    emits a cleared list containing deletions plus new rows when the lists differ.
+
+source:
+  system: bugscep
+  table: TSite
+  sql: "SELECT SiteCODE, Country, Region FROM TSite"
+  fields:
+    - name: SiteCODE
+      type: string
+      nullable: true
+      role: natural_key
+    - name: Country
+      type: string
+      nullable: true
+      role: data
+    - name: Region
+      type: string
+      nullable: true
+      role: data
+  identity_key: SiteCODE
+  trace_key:
+    template: "{{SiteCODE}}"
+    comment: compressToString() and getBugsIdentifier() both use SiteCODE only.
+
+target:
+  system: sead
+  table: tbl_site_locations
+  identity:
+    column: site_location_id
+    type: integer
+    strategy: sequence
+    sequence: tbl_site_locations_site_location_id_seq
+
+output:
+  mode: one_to_many
+  item_helper: generate_site_location_items
+  compare_fields: [site_id, location_id]
+  on_missing_generated: insert
+  on_missing_existing: mark_for_deletion
+  on_match: return_as_is
+  comment: One Bugs site row expands to one or more SiteLocation items before stored rows are compared.
+
+mappings:
+  - target_field: site_id
+    type: integer
+    nullable: true
+    transform:
+      type: call
+      helper: resolve_site_id
+      args: ["source.SiteCODE"]
+  - target_field: location_id
+    type: integer
+    nullable: true
+    transform:
+      type: generated
+      field: location_id
+    comment: Each generated item carries one resolved location_id.
+
+reconciliation:
+  strategy: ordered_rules
+  prerequisite:
+    description: Resolve the site, expand country and region through the location manager, and load all existing site-location rows before comparing lists.
+  rules:
+    - name: site_location_list_lookup
+      order: 1
+      type: database_query
+      description: Load all existing site-location rows for the resolved site and compare them with the generated location list.
+      table: tbl_site_locations
+      where: "site_id = :site_id"
+      bind:
+        site_id: "resolve_site_id(source.SiteCODE)"
+      on_match: update
+      comment: If the generated and stored lists differ, old rows are marked for deletion and new rows are emitted.
+    - name: create_new
+      order: 2
+      type: create_new
+      description: No stored site-location rows exist for the site; create rows for the generated location list.
+      on_match: insert
+
+update_detection:
+  strategy: field_comparison
+  fields:
+    - site_id
+    - location_id
+  on_change: mark_updated
+  comment: List comparison is handled outside the field list; this section documents the per-item shape only.
+
+dependencies: [Site]
+
+tracing:
+  bugs_table: TSite
+  sead_table: tbl_site_locations
+  write_on: [insert, update]
+  comment: SiteLocationImporter also clears location-manager caches after run().
+
+helpers:
+  - name: resolve_site_id
+    description: Resolve the Bugs site code to the traced SEAD site row, disallowing deleted sites.
+    signature: "resolve_site_id(site_code: str | None) -> int | None"
+    used_by: [site_id]
+  - name: generate_site_location_items
+    description: Resolve country and region to the location list emitted for this site, including error items when location lookup fails.
+    signature: "generate_site_location_items(site_code: str | None, country: str | None, region: str | None) -> list[SiteLocationItem]"
+    expression: "[{'location_id': ...}, ...]"

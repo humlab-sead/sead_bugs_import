@@ -1,0 +1,765 @@
+fixture_version: "1.0"
+policy: datescalendar
+scenarios:
+  - name: merge_from_to_range
+    intent: postprocess_merge
+    source_rows:
+      - SampleCODE: SAMPLE_1
+        Uncertainty: From
+        CalendarCODE: CAL_A
+        Date: 1200
+        BCADBP: AD
+        DatingMethod: Calendar date
+        Notes: ""
+      - SampleCODE: SAMPLE_1
+        Uncertainty: To
+        CalendarCODE: CAL_B
+        Date: 1400
+        BCADBP: AD
+        DatingMethod: Calendar date
+        Notes: paired note
+    expects:
+      postprocess: merge_calendar_ranges
+      retained_row: left_when_present_else_right
+      updates_target_fields: [relative_age_id, dating_uncertainty_id, notes]
+      postprocess_result:
+        retained_calendar_code: CAL_A
+        paired_calendar_code: CAL_B
+        relative_age_range:
+          older_date: 1200
+          older_era: AD
+          younger_date: 1400
+          younger_era: AD
+        dating_uncertainty_state: cleared
+        dating_uncertainty_name: null
+        notes: paired note
+      related_outputs: [relative_age, dataset, analysis_entity]
+  - name: merge_fromca_toca_range
+    intent: postprocess_merge
+    source_rows:
+      - SampleCODE: SAMPLE_3
+        Uncertainty: FromCa
+        CalendarCODE: CAL_F
+        Date: 900
+        BCADBP: BC
+        DatingMethod: Calendar date
+        Notes: ""
+      - SampleCODE: SAMPLE_3
+        Uncertainty: ToCa
+        CalendarCODE: CAL_G
+        Date: 850
+        BCADBP: BC
+        DatingMethod: Calendar date
+        Notes: ""
+    expects:
+      postprocess: merge_calendar_ranges
+      retained_row: left_when_present_else_right
+      updates_target_fields: [relative_age_id, dating_uncertainty_id]
+      postprocess_result:
+        retained_calendar_code: CAL_F
+        paired_calendar_code: CAL_G
+        relative_age_range:
+          older_date: 900
+          older_era: BC
+          younger_date: 850
+          younger_era: BC
+        dating_uncertainty_state: normalized_to_standard
+        dating_uncertainty_name: Ca
+        notes: ""
+      related_outputs: [relative_age, dataset, analysis_entity]
+  - name: conflict_too_many_same_kind_uncertainties
+    intent: postprocess_conflict
+    source_rows:
+      - SampleCODE: SAMPLE_2
+        Uncertainty: From
+        CalendarCODE: CAL_C
+        Date: 800
+        BCADBP: BC
+        DatingMethod: Calendar date
+        Notes: first from
+      - SampleCODE: SAMPLE_2
+        Uncertainty: From
+        CalendarCODE: CAL_D
+        Date: 780
+        BCADBP: BC
+        DatingMethod: Calendar date
+        Notes: second from
+      - SampleCODE: SAMPLE_2
+        Uncertainty: To
+        CalendarCODE: CAL_E
+        Date: 760
+        BCADBP: BC
+        DatingMethod: Calendar date
+        Notes: to row
+    expects:
+      postprocess: merge_calendar_ranges
+      emit_codes: [too_many_uncertainties_same_kind]
+      related_outputs: [relative_age]
+  - name: retain_open_ended_from_range
+    intent: postprocess_merge
+    source_rows:
+      - SampleCODE: SAMPLE_4
+        Uncertainty: From
+        CalendarCODE: CAL_H
+        Date: 1100
+        BCADBP: AD
+        DatingMethod: Calendar date
+        Notes: ""
+    expects:
+      postprocess: merge_calendar_ranges
+      retained_row: left_when_present_else_right
+      updates_target_fields: [relative_age_id, dating_uncertainty_id]
+      postprocess_result:
+        retained_calendar_code: CAL_H
+        paired_calendar_code: null
+        relative_age_range:
+          older_date: 1100
+          older_era: AD
+          younger_date: null
+          younger_era: null
+        dating_uncertainty_state: retained
+        dating_uncertainty_name: From
+        notes: ""
+      related_outputs: [relative_age, dataset, analysis_entity]
+  - name: retain_open_ended_to_range
+    intent: postprocess_merge
+    source_rows:
+      - SampleCODE: SAMPLE_5
+        Uncertainty: To
+        CalendarCODE: CAL_I
+        Date: 950
+        BCADBP: BC
+        DatingMethod: Calendar date
+        Notes: terminal note
+    expects:
+      postprocess: merge_calendar_ranges
+      retained_row: left_when_present_else_right
+      updates_target_fields: [relative_age_id, dating_uncertainty_id]
+      postprocess_result:
+        retained_calendar_code: CAL_I
+        paired_calendar_code: null
+        relative_age_range:
+          older_date: null
+          older_era: null
+          younger_date: 950
+          younger_era: BC
+        dating_uncertainty_state: retained
+        dating_uncertainty_name: To
+        notes: terminal note
+      related_outputs: [relative_age, dataset, analysis_entity]
+  - name: retain_open_ended_fromca_range
+    intent: postprocess_merge
+    source_rows:
+      - SampleCODE: SAMPLE_6
+        Uncertainty: FromCa
+        CalendarCODE: CAL_J
+        Date: 1250
+        BCADBP: AD
+        DatingMethod: Calendar date
+        Notes: ""
+    expects:
+      postprocess: merge_calendar_ranges
+      retained_row: left_when_present_else_right
+      updates_target_fields: [relative_age_id, dating_uncertainty_id]
+      postprocess_result:
+        retained_calendar_code: CAL_J
+        paired_calendar_code: null
+        relative_age_range:
+          older_date: 1250
+          older_era: AD
+          younger_date: null
+          younger_era: null
+        dating_uncertainty_state: normalized_to_standard
+        dating_uncertainty_name: Ca
+        notes: ""
+      related_outputs: [relative_age, dataset, analysis_entity]
+  - name: retain_open_ended_toca_range
+    intent: postprocess_merge
+    source_rows:
+      - SampleCODE: SAMPLE_7
+        Uncertainty: ToCa
+        CalendarCODE: CAL_K
+        Date: 875
+        BCADBP: BC
+        DatingMethod: Calendar date
+        Notes: open ca note
+    expects:
+      postprocess: merge_calendar_ranges
+      retained_row: left_when_present_else_right
+      updates_target_fields: [relative_age_id, dating_uncertainty_id]
+      postprocess_result:
+        retained_calendar_code: CAL_K
+        paired_calendar_code: null
+        relative_age_range:
+          older_date: null
+          older_era: null
+          younger_date: 875
+          younger_era: BC
+        dating_uncertainty_state: normalized_to_standard
+        dating_uncertainty_name: Ca
+        notes: open ca note
+      related_outputs: [relative_age, dataset, analysis_entity]
+  - name: retain_ca_and_standard_pairs_separately
+    intent: postprocess_merge
+    source_rows:
+      - SampleCODE: SAMPLE_8
+        Uncertainty: FromCa
+        CalendarCODE: CAL_L
+        Date: 1500
+        BCADBP: AD
+        DatingMethod: Calendar date
+        Notes: ""
+      - SampleCODE: SAMPLE_8
+        Uncertainty: ToCa
+        CalendarCODE: CAL_M
+        Date: 1525
+        BCADBP: AD
+        DatingMethod: Calendar date
+        Notes: ""
+      - SampleCODE: SAMPLE_8
+        Uncertainty: From
+        CalendarCODE: CAL_N
+        Date: 1400
+        BCADBP: AD
+        DatingMethod: Calendar date
+        Notes: ""
+      - SampleCODE: SAMPLE_8
+        Uncertainty: To
+        CalendarCODE: CAL_O
+        Date: 1450
+        BCADBP: AD
+        DatingMethod: Calendar date
+        Notes: ""
+    expects:
+      postprocess: merge_calendar_ranges
+      retained_row: left_when_present_else_right
+      retained_row_indexes: [0, 2]
+      updates_target_fields: [relative_age_id, dating_uncertainty_id]
+      postprocess_results:
+        - retained_calendar_code: CAL_L
+          paired_calendar_code: CAL_M
+          relative_age_range:
+            older_date: 1500
+            older_era: AD
+            younger_date: 1525
+            younger_era: AD
+          dating_uncertainty_state: normalized_to_standard
+          dating_uncertainty_name: Ca
+          notes: ""
+        - retained_calendar_code: CAL_N
+          paired_calendar_code: CAL_O
+          relative_age_range:
+            older_date: 1400
+            older_era: AD
+            younger_date: 1450
+            younger_era: AD
+          dating_uncertainty_state: cleared
+          dating_uncertainty_name: null
+          notes: ""
+      related_outputs: [relative_age, dataset, analysis_entity]
+  - name: retain_open_fromca_and_open_to_separately
+    intent: postprocess_merge
+    source_rows:
+      - SampleCODE: SAMPLE_9
+        Uncertainty: To
+        CalendarCODE: CAL_P
+        Date: 910
+        BCADBP: BC
+        DatingMethod: Calendar date
+        Notes: late note
+      - SampleCODE: SAMPLE_9
+        Uncertainty: FromCa
+        CalendarCODE: CAL_Q
+        Date: 1000
+        BCADBP: BC
+        DatingMethod: Calendar date
+        Notes: ""
+    expects:
+      postprocess: merge_calendar_ranges
+      retained_row: left_when_present_else_right
+      retained_row_indexes: [1, 0]
+      updates_target_fields: [relative_age_id, dating_uncertainty_id]
+      postprocess_results:
+        - retained_calendar_code: CAL_Q
+          paired_calendar_code: null
+          relative_age_range:
+            older_date: 1000
+            older_era: BC
+            younger_date: null
+            younger_era: null
+          dating_uncertainty_state: normalized_to_standard
+          dating_uncertainty_name: Ca
+          notes: ""
+        - retained_calendar_code: CAL_P
+          paired_calendar_code: null
+          relative_age_range:
+            older_date: null
+            older_era: null
+            younger_date: 910
+            younger_era: BC
+          dating_uncertainty_state: retained
+          dating_uncertainty_name: To
+          notes: late note
+      related_outputs: [relative_age, dataset, analysis_entity]
+  - name: partition_by_note_group_for_closed_and_open_rows
+    intent: postprocess_merge
+    source_rows:
+      - SampleCODE: SAMPLE_10
+        Uncertainty: To
+        CalendarCODE: CAL_R
+        Date: 980
+        BCADBP: BC
+        DatingMethod: Calendar date
+        Notes: First
+      - SampleCODE: SAMPLE_10
+        Uncertainty: From
+        CalendarCODE: CAL_S
+        Date: 1000
+        BCADBP: BC
+        DatingMethod: Calendar date
+        Notes: First
+      - SampleCODE: SAMPLE_10
+        Uncertainty: To
+        CalendarCODE: CAL_T
+        Date: 960
+        BCADBP: BC
+        DatingMethod: Calendar date
+        Notes: ""
+    expects:
+      postprocess: merge_calendar_ranges
+      retained_row: left_when_present_else_right
+      retained_row_indexes: [2, 1]
+      updates_target_fields: [relative_age_id, dating_uncertainty_id]
+      postprocess_results:
+        - retained_calendar_code: CAL_T
+          paired_calendar_code: null
+          relative_age_range:
+            older_date: null
+            older_era: null
+            younger_date: 960
+            younger_era: BC
+          dating_uncertainty_state: retained
+          dating_uncertainty_name: To
+          notes: ""
+        - retained_calendar_code: CAL_S
+          paired_calendar_code: CAL_R
+          relative_age_range:
+            older_date: 1000
+            older_era: BC
+            younger_date: 980
+            younger_era: BC
+          dating_uncertainty_state: cleared
+          dating_uncertainty_name: null
+          notes: First
+      related_outputs: [relative_age, dataset, analysis_entity]
+  - name: partition_by_note_group_for_two_closed_pairs
+    intent: postprocess_merge
+    source_rows:
+      - SampleCODE: SAMPLE_11
+        Uncertainty: From
+        CalendarCODE: CAL_U
+        Date: 1200
+        BCADBP: AD
+        DatingMethod: Calendar date
+        Notes: First
+      - SampleCODE: SAMPLE_11
+        Uncertainty: To
+        CalendarCODE: CAL_V
+        Date: 1250
+        BCADBP: AD
+        DatingMethod: Calendar date
+        Notes: First
+      - SampleCODE: SAMPLE_11
+        Uncertainty: From
+        CalendarCODE: CAL_W
+        Date: 1300
+        BCADBP: AD
+        DatingMethod: Calendar date
+        Notes: Second
+      - SampleCODE: SAMPLE_11
+        Uncertainty: To
+        CalendarCODE: CAL_X
+        Date: 1350
+        BCADBP: AD
+        DatingMethod: Calendar date
+        Notes: Second
+    expects:
+      postprocess: merge_calendar_ranges
+      retained_row: left_when_present_else_right
+      retained_row_indexes: [2, 0]
+      updates_target_fields: [relative_age_id, dating_uncertainty_id]
+      postprocess_results:
+        - retained_calendar_code: CAL_W
+          paired_calendar_code: CAL_X
+          relative_age_range:
+            older_date: 1300
+            older_era: AD
+            younger_date: 1350
+            younger_era: AD
+          dating_uncertainty_state: cleared
+          dating_uncertainty_name: null
+          notes: Second
+        - retained_calendar_code: CAL_U
+          paired_calendar_code: CAL_V
+          relative_age_range:
+            older_date: 1200
+            older_era: AD
+            younger_date: 1250
+            younger_era: AD
+          dating_uncertainty_state: cleared
+          dating_uncertainty_name: null
+          notes: First
+      related_outputs: [relative_age, dataset, analysis_entity]
+  - name: partition_by_dating_method_for_closed_and_open_rows
+    intent: postprocess_merge
+    source_rows:
+      - SampleCODE: SAMPLE_12
+        Uncertainty: From
+        CalendarCODE: CAL_Y
+        Date: 1100
+        BCADBP: AD
+        DatingMethod: Method 1
+        Notes: ""
+      - SampleCODE: SAMPLE_12
+        Uncertainty: To
+        CalendarCODE: CAL_Z
+        Date: 1110
+        BCADBP: AD
+        DatingMethod: Method 1
+        Notes: ""
+      - SampleCODE: SAMPLE_12
+        Uncertainty: To
+        CalendarCODE: CAL_AA
+        Date: 1090
+        BCADBP: AD
+        DatingMethod: Method 2
+        Notes: method two note
+    expects:
+      postprocess: merge_calendar_ranges
+      retained_row: left_when_present_else_right
+      retained_row_indexes: [2, 0]
+      updates_target_fields: [relative_age_id, dating_uncertainty_id]
+      postprocess_results:
+        - retained_calendar_code: CAL_AA
+          paired_calendar_code: null
+          relative_age_range:
+            older_date: null
+            older_era: null
+            younger_date: 1090
+            younger_era: AD
+          dating_uncertainty_state: retained
+          dating_uncertainty_name: To
+          notes: method two note
+        - retained_calendar_code: CAL_Y
+          paired_calendar_code: CAL_Z
+          relative_age_range:
+            older_date: 1100
+            older_era: AD
+            younger_date: 1110
+            younger_era: AD
+          dating_uncertainty_state: cleared
+          dating_uncertainty_name: null
+          notes: ""
+      related_outputs: [relative_age, dataset, analysis_entity]
+  - name: create_single_relative_age_when_missing
+    intent: supporting_output_result
+    source_rows:
+      - SampleCODE: SAMPLE_60
+        Uncertainty: From
+        CalendarCODE: CAL_60
+        Date: 1200
+        BCADBP: BC
+        DatingMethod: Calendar date
+        Notes: single relative age
+    policy_context:
+      args:
+        output_name: relative_age
+      step_hits: {}
+    expects:
+      related_outputs: [relative_age]
+      graph_result:
+        relative_age:
+          relative_age_id: null
+          abbreviation: CAL_1200_BC
+          name: CAL_1200_BC
+          type_name: Calendar date
+  - name: reuse_single_relative_age_when_present
+    intent: supporting_output_result
+    source_rows:
+      - SampleCODE: SAMPLE_60B
+        Uncertainty: To
+        CalendarCODE: CAL_60B
+        Date: 1450
+        BCADBP: AD
+        DatingMethod: Calendar date
+        Notes: existing relative age
+    policy_context:
+      args:
+        output_name: relative_age
+      step_hits: {}
+      state:
+        existing_relative_age_id: 71
+    expects:
+      related_outputs: [relative_age]
+      graph_result:
+        relative_age:
+          relative_age_id: 71
+          abbreviation: CAL_1450_AD
+          name: CAL_1450_AD
+          type_name: Calendar date
+  - name: create_calendar_dataset_when_missing
+    intent: supporting_output_result
+    source_rows:
+      - SampleCODE: SAMPLE_61
+        Uncertainty: " "
+        CalendarCODE: CAL_DATASET_1
+        Date: 1200
+        BCADBP: AD
+        DatingMethod: Calendar
+        Notes: dataset create
+    policy_context:
+      args:
+        output_name: dataset
+        method_abbreviation: CalendarCal
+        data_type_id: "41"
+        master_set_id: "51"
+      step_hits: {}
+      state:
+        physical_sample_id: 81
+        method_abbreviation: CalendarCal
+        data_type_id: 41
+        master_set_id: 51
+    expects:
+      related_outputs: [dataset]
+      graph_result:
+        dataset:
+          dataset_id: null
+          dataset_name: CAL_DATASET_1
+          data_type_id: 41
+          method_abbreviation: CalendarCal
+          master_set_id: 51
+          updated: true
+  - name: update_existing_calendar_dataset_when_values_change
+    intent: supporting_output_result
+    source_rows:
+      - SampleCODE: SAMPLE_62
+        Uncertainty: " "
+        CalendarCODE: CAL_DATASET_2
+        Date: 1210
+        BCADBP: AD
+        DatingMethod: Calendar
+        Notes: dataset update
+    policy_context:
+      args:
+        output_name: dataset
+        method_abbreviation: CalendarCal
+        data_type_id: "41"
+        master_set_id: "51"
+      step_hits: {}
+      state:
+        physical_sample_id: 83
+        method_abbreviation: CalendarCal
+        data_type_id: 41
+        master_set_id: 51
+        existing_analysis_entity_id: 91
+        existing_physical_sample_id: 83
+        existing_dataset_id: 61
+        existing_dataset_name: OLD_CAL_DATASET
+        existing_data_type_id: 40
+        existing_method_id: 70
+        existing_method_abbreviation: OldMethod
+        existing_master_set_id: 50
+    expects:
+      related_outputs: [dataset]
+      graph_result:
+        dataset:
+          dataset_id: 61
+          dataset_name: CAL_DATASET_2
+          data_type_id: 41
+          method_abbreviation: CalendarCal
+          master_set_id: 51
+          updated: true
+  - name: keep_existing_calendar_dataset_when_values_match
+    intent: supporting_output_result
+    source_rows:
+      - SampleCODE: SAMPLE_63
+        Uncertainty: " "
+        CalendarCODE: CAL_DATASET_3
+        Date: 1220
+        BCADBP: AD
+        DatingMethod: Calendar
+        Notes: dataset keep
+    policy_context:
+      args:
+        output_name: dataset
+        method_abbreviation: CalendarCal
+        data_type_id: "41"
+        master_set_id: "51"
+      step_hits: {}
+      state:
+        physical_sample_id: 82
+        method_abbreviation: CalendarCal
+        data_type_id: 41
+        master_set_id: 51
+        existing_analysis_entity_id: 92
+        existing_physical_sample_id: 82
+        existing_dataset_id: 62
+        existing_dataset_name: CAL_DATASET_3
+        existing_data_type_id: 41
+        existing_method_id: 71
+        existing_method_abbreviation: CalendarCal
+        existing_master_set_id: 51
+    expects:
+      related_outputs: [dataset]
+      graph_result:
+        dataset:
+          dataset_id: 62
+          dataset_name: CAL_DATASET_3
+          data_type_id: 41
+          method_abbreviation: CalendarCal
+          master_set_id: 51
+          updated: false
+  - name: create_calendar_analysis_entity_when_missing
+    intent: supporting_output_result
+    source_rows:
+      - SampleCODE: SAMPLE_64
+        Uncertainty: " "
+        CalendarCODE: CAL_ANALYSIS_1
+        Date: 1230
+        BCADBP: AD
+        DatingMethod: Calendar
+        Notes: analysis create
+    policy_context:
+      args:
+        output_name: analysis_entity
+        physical_sample_id: "81"
+        method_abbreviation: CalendarCal
+        data_type_id: "41"
+        master_set_id: "51"
+      step_hits: {}
+      state:
+        physical_sample_id: 81
+        method_abbreviation: CalendarCal
+        data_type_id: 41
+        master_set_id: 51
+    expects:
+      related_outputs: [analysis_entity]
+      graph_result:
+        analysis_entity:
+          analysis_entity_id: null
+          physical_sample_id: 81
+          dataset_id: null
+  - name: update_existing_calendar_analysis_entity_when_values_change
+    intent: supporting_output_result
+    source_rows:
+      - SampleCODE: SAMPLE_65
+        Uncertainty: " "
+        CalendarCODE: CAL_ANALYSIS_2
+        Date: 1240
+        BCADBP: AD
+        DatingMethod: Calendar
+        Notes: analysis update
+    policy_context:
+      args:
+        output_name: analysis_entity
+        physical_sample_id: "83"
+        method_abbreviation: CalendarCal
+        data_type_id: "41"
+        master_set_id: "51"
+      step_hits: {}
+      state:
+        physical_sample_id: 83
+        method_abbreviation: CalendarCal
+        data_type_id: 41
+        master_set_id: 51
+        existing_analysis_entity_id: 91
+        existing_physical_sample_id: 80
+        existing_dataset_id: 61
+        existing_dataset_name: OLD_CAL_DATASET
+        existing_data_type_id: 40
+        existing_method_id: 70
+        existing_method_abbreviation: OldMethod
+        existing_master_set_id: 50
+    expects:
+      related_outputs: [analysis_entity]
+      graph_result:
+        analysis_entity:
+          analysis_entity_id: 91
+          physical_sample_id: 83
+          dataset_id: 61
+  - name: keep_existing_calendar_analysis_entity_when_values_match
+    intent: supporting_output_result
+    source_rows:
+      - SampleCODE: SAMPLE_66
+        Uncertainty: " "
+        CalendarCODE: CAL_ANALYSIS_3
+        Date: 1250
+        BCADBP: AD
+        DatingMethod: Calendar
+        Notes: analysis keep
+    policy_context:
+      args:
+        output_name: analysis_entity
+        physical_sample_id: "82"
+        method_abbreviation: CalendarCal
+        data_type_id: "41"
+        master_set_id: "51"
+      step_hits: {}
+      state:
+        physical_sample_id: 82
+        method_abbreviation: CalendarCal
+        data_type_id: 41
+        master_set_id: 51
+        existing_analysis_entity_id: 92
+        existing_physical_sample_id: 82
+        existing_dataset_id: 62
+        existing_dataset_name: CAL_ANALYSIS_3
+        existing_data_type_id: 41
+        existing_method_id: 71
+        existing_method_abbreviation: CalendarCal
+        existing_master_set_id: 51
+    expects:
+      related_outputs: [analysis_entity]
+      graph_result:
+        analysis_entity:
+          analysis_entity_id: 92
+          physical_sample_id: 82
+          dataset_id: 62
+  - name: create_related_output_graph_for_new_calendar_row
+    intent: related_output_graph
+    source_rows:
+      - SampleCODE: SAMPLE_61
+        Uncertainty: " "
+        CalendarCODE: CAL_GRAPH_1
+        Date: 1200
+        BCADBP: AD
+        DatingMethod: Calendar
+        Notes: graph create
+    policy_context:
+      config: {}
+      state:
+        physical_sample_id: 81
+        method_abbreviation: CalendarCal
+        data_type_id: 41
+        master_set_id: 51
+    expects:
+      related_outputs: [relative_age, dataset, analysis_entity]
+      updates_target_fields: [analysis_entity_id]
+      row_changed: true
+      graph_result:
+        relative_age:
+          relative_age_id: null
+          abbreviation: CAL_1200_AD
+          name: CAL_1200_AD
+          type_name: Calendar date
+        dataset:
+          dataset_id: null
+          dataset_name: CAL_GRAPH_1
+          data_type_id: 41
+          method_abbreviation: CalendarCal
+          master_set_id: 51
+          updated: true
+        analysis_entity:
+          analysis_entity_id: null
+          physical_sample_id: 81
+          dataset_id: null

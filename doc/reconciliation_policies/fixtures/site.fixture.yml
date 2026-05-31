@@ -1,0 +1,207 @@
+fixture_version: "1.0"
+policy: site
+scenarios:
+  - name: missing_country_prerequisite_returns_guard_error
+    intent: reconciliation_path
+    source_rows:
+      - SiteCODE: SITE000023
+        SiteName: Fail on no country
+        Region: Antrim
+        Country: null
+        NGR: SU 123123
+        LatDD: 0.0
+        LongDD: 0.0
+        Alt: 0.0
+        IDBy: Blay
+        Interp: Site has no country specified
+        Specimens: null
+    policy_context:
+      step_hits:
+        trace_lookup: false
+        name_location_lookup: false
+      state:
+        prerequisite_failed: true
+        guard_error_message: No country exists for site
+    expects:
+      reconciliation_path: [resolve_locations]
+      reconciliation_result:
+        result_kind: return_guard_error
+        source: resolve_locations
+        row_id: null
+        site_code: SITE000023
+        issue:
+          severity: error
+          message: No country exists for site
+  - name: trace_hit_updates_disallowed_returns_guard_error
+    intent: reconciliation_path
+    source_rows:
+      - SiteCODE: SITE000025
+        SiteName: Changed name and ngr
+        Region: Santorini
+        Country: Greece
+        NGR: ABCD 123
+        LatDD: 0.0
+        LongDD: 0.0
+        Alt: 0.0
+        IDBy: Blay
+        Interp: Site changes name and national identifier
+        Specimens: null
+    policy_context:
+      step_hits:
+        trace_lookup: true
+        name_location_lookup: false
+      state:
+        existing_row_id: 925
+        guard_error_message: Bugs data is updated but updates are disallowed.
+    expects:
+      reconciliation_path: [trace_lookup]
+      reconciliation_result:
+        result_kind: return_guard_error
+        source: trace_lookup
+        row_id: null
+        site_code: SITE000025
+        issue:
+          severity: error
+          message: Bugs data is updated but updates are disallowed.
+  - name: trace_hit_updates_existing_site
+    intent: reconciliation_path
+    source_rows:
+      - SiteCODE: SITE001
+        SiteName: Fyrplatsen
+        Region: Uppland
+        Country: Sweden
+        NGR: NGR-1
+        LatDD: 59.1
+        LongDD: 18.2
+        Alt: 12.0
+        IDBy: Analyst
+        Interp: A site
+        Specimens: Notes
+    policy_context:
+      step_hits:
+        trace_lookup: true
+        name_location_lookup: false
+      state:
+        existing_row_id: 901
+    expects:
+      reconciliation_path: [trace_lookup]
+      reconciliation_result:
+        result_kind: update_existing
+        source: trace_lookup
+        row_id: 901
+        site_code: SITE001
+  - name: trace_hit_returns_existing_error_row
+    intent: reconciliation_path
+    source_rows:
+      - SiteCODE: SITE002
+        SiteName: Fyrplatsen
+        Region: Uppland
+        Country: Sweden
+        NGR: NGR-2
+        LatDD: 59.2
+        LongDD: 18.3
+        Alt: 13.0
+        IDBy: Analyst
+        Interp: A site
+        Specimens: Notes
+    policy_context:
+      step_hits:
+        trace_lookup: true
+        name_location_lookup: false
+      state:
+        existing_error_message: Sead data has been updated since last bugs import
+    expects:
+      reconciliation_path: [trace_lookup]
+      reconciliation_result:
+        result_kind: return_existing_error
+        source: trace_lookup
+        row_id: null
+        site_code: SITE002
+        issue:
+          severity: error
+          message: Sead data has been updated since last bugs import
+  - name: name_location_lookup_returns_site_exists_error
+    intent: reconciliation_path
+    source_rows:
+      - SiteCODE: SITE003
+        SiteName: Fyrplatsen
+        Region: Uppland
+        Country: Sweden
+        NGR: NGR-3
+        LatDD: 59.3
+        LongDD: 18.4
+        Alt: 14.0
+        IDBy: Analyst
+        Interp: A site
+        Specimens: Notes
+    policy_context:
+      step_hits:
+        trace_lookup: false
+        name_location_lookup: true
+      state:
+        existing_error_message: Site name exists for non-imported site
+    expects:
+      reconciliation_path: [trace_lookup, name_location_lookup]
+      reconciliation_result:
+        result_kind: return_existing_error
+        source: name_location_lookup
+        row_id: null
+        site_code: SITE003
+        issue:
+          severity: error
+          message: Site name exists for non-imported site
+  - name: name_location_lookup_returns_multiple_sites_error
+    intent: reconciliation_path
+    source_rows:
+      - SiteCODE: SITE004
+        SiteName: Fyrplatsen
+        Region: Uppland
+        Country: Sweden
+        NGR: NGR-4
+        LatDD: 59.4
+        LongDD: 18.5
+        Alt: 15.0
+        IDBy: Analyst
+        Interp: A site
+        Specimens: Notes
+    policy_context:
+      step_hits:
+        trace_lookup: false
+        name_location_lookup: true
+      state:
+        existing_error_message: More than one site found by name and location
+    expects:
+      reconciliation_path: [trace_lookup, name_location_lookup]
+      reconciliation_result:
+        result_kind: return_existing_error
+        source: name_location_lookup
+        row_id: null
+        site_code: SITE004
+        issue:
+          severity: error
+          message: More than one site found by name and location
+  - name: create_new_site_when_no_match_exists
+    intent: reconciliation_path
+    source_rows:
+      - SiteCODE: SITE005
+        SiteName: Fyrplatsen
+        Region: Uppland
+        Country: Sweden
+        NGR: NGR-5
+        LatDD: 59.5
+        LongDD: 18.6
+        Alt: 16.0
+        IDBy: Analyst
+        Interp: A site
+        Specimens: Notes
+    policy_context:
+      step_hits:
+        trace_lookup: false
+        name_location_lookup: false
+    expects:
+      reconciliation_path: [trace_lookup, name_location_lookup, create_new]
+      reconciliation_result:
+        result_kind: insert_new
+        source: create_new
+        row_id: null
+        site_code: SITE005

@@ -1,0 +1,103 @@
+# BugsCEP → SEAD Reconciliation Policy
+# Domain: EcocodeGroup (TEcoDefGroups → tbl_ecocode_groups)
+
+meta:
+  format_version: "1.0"
+  generated_from: java_source
+  reviewed: false
+  notes: >
+    Simple leaf importer with a trace-first reconciliation path. The trace
+    helper is implemented as an inner class in the row converter.
+
+policy:
+  domain: ecocodegroup
+  description: >
+    Imports ecocode group definitions from TEcoDefGroups into
+    tbl_ecocode_groups. Reconciliation is trace-first and falls through to
+    create a new row when no prior import trace exists.
+
+source:
+  system: bugscep
+  table: TEcoDefGroups
+  sql: "SELECT EcoGroupCode, EcoName FROM TEcoDefGroups"
+  fields:
+    - name: EcoGroupCode
+      type: string
+      nullable: true
+      role: natural_key
+    - name: EcoName
+      type: string
+      nullable: true
+      role: data
+  identity_key: EcoGroupCode
+  trace_key:
+    template: "{{{EcoGroupCode},{EcoName}}}"
+
+target:
+  system: sead
+  table: tbl_ecocode_groups
+  identity:
+    column: ecocode_group_id
+    type: integer
+    strategy: sequence
+    sequence: tbl_ecocode_groups_ecocode_group_id_seq
+
+mappings:
+  - target_field: definition
+    type: string
+    nullable: true
+    source_field: EcoName
+  - target_field: name
+    type: string
+    nullable: true
+    source_field: EcoName
+  - target_field: abbreviation
+    type: string
+    nullable: true
+    source_field: EcoGroupCode
+  - target_field: ecocode_system_id
+    type: integer
+    nullable: true
+    transform:
+      type: call
+      helper: resolve_ecocode_system_id
+      args: ["source.EcoGroupCode", "source.EcoName"]
+
+reconciliation:
+  strategy: ordered_rules
+  rules:
+    - name: trace_lookup
+      order: 1
+      type: trace_lookup
+      description: Look up the ecocode group by its last bugs trace using EcoGroupCode.
+      bugs_table: TEcoDefGroups
+      identifier_expr: "source.EcoGroupCode"
+      on_match: update
+      on_error: skip
+    - name: create_new
+      order: 2
+      type: create_new
+      description: No trace match found; create a new ecocode group row.
+      on_match: insert
+
+update_detection:
+  strategy: field_comparison
+  fields:
+    - definition
+    - name
+    - abbreviation
+    - ecocode_system_id
+  on_change: mark_updated
+
+dependencies: []
+
+tracing:
+  bugs_table: TEcoDefGroups
+  sead_table: tbl_ecocode_groups
+  write_on: [insert, update]
+
+helpers:
+  - name: resolve_ecocode_system_id
+    description: Resolve the ecocode system row used by the ecocode-group importer.
+    signature: "resolve_ecocode_system_id(group_code: str | None, group_name: str | None) -> int | None"
+    used_by: [ecocode_system_id]

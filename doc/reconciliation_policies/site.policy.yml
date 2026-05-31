@@ -42,6 +42,7 @@ policy:
 # ── SOURCE ───────────────────────────────────────────────────────────────────
 
 source:
+  system: bugscep
   table: TSite
   sql: >
     SELECT SiteCODE, SiteName, Region, Country, NGR,
@@ -51,27 +52,31 @@ source:
   fields:
     - name: SiteCODE
       type: string
-      role: identity
-      note: >
+      nullable: true
+      role: natural_key
+      comment: >
         Business key.  Used as bugs_identifier in bugs_trace and as the
         primary handle for all reconciliation lookups.
 
     - name: SiteName
       type: string
+      nullable: true
       role: data
-      note: Required; a site without a name triggers an error.
+      comment: Required; a site without a name triggers an error.
 
     - name: Region
       type: string
-      role: location
-      note: >
+      nullable: true
+      role: data
+      comment: >
         Resolved to a tbl_locations row (type = "Region") before site
         reconciliation.  Not written directly to tbl_sites.
 
     - name: Country
       type: string
-      role: location
-      note: >
+      nullable: true
+      role: data
+      comment: >
         Resolved to a tbl_locations row (type = "Country") before site
         reconciliation.  A missing country record blocks the entire site row.
         Whether a missing country is auto-created is controlled by the
@@ -79,46 +84,53 @@ source:
 
     - name: NGR
       type: string
+      nullable: true
       role: data
-      note: National Grid Reference; maps to national_site_identifier.
+      comment: National Grid Reference; maps to national_site_identifier.
 
     - name: LatDD
       type: float
+      nullable: true
       role: data
-      note: Decimal-degrees latitude; converted to BigDecimal for tbl_sites.
+      comment: Decimal-degrees latitude; converted to BigDecimal for tbl_sites.
 
     - name: LongDD
       type: float
+      nullable: true
       role: data
-      note: Decimal-degrees longitude; converted to BigDecimal for tbl_sites.
+      comment: Decimal-degrees longitude; converted to BigDecimal for tbl_sites.
 
     - name: Alt
       type: float
+      nullable: true
       role: data
-      note: Altitude in metres; converted to BigDecimal for tbl_sites.
+      comment: Altitude in metres; converted to BigDecimal for tbl_sites.
 
     - name: IDBy
       type: string
+      nullable: true
       role: ignored
-      note: >
+      comment: >
         Identified-by field.  Read from Access but not written to tbl_sites
         (no column exists in the SEAD schema for it).
 
     - name: Interp
       type: string
+      nullable: true
       role: data
-      note: Interpretation / description; maps to site_description.
+      comment: Interpretation / description; maps to site_description.
 
     - name: Specimens
       type: string
+      nullable: true
       role: ignored
-      note: >
+      comment: >
         Specimen notes.  Read from Access but not written to tbl_sites
         (no column exists in the SEAD schema for it).
 
   trace_key:
     template: "{{{SiteCODE},{SiteName},{Region},{Country},{NGR},{LatDD},{LongDD},{Alt},{IDBy},{Interp},{Specimens}}}"
-    note: >
+    comment: >
       Python .format()-style template.  {{ and }} are literal braces; the
       entire value is wrapped in curly braces to match the Java
       compressToString() output.  Python None renders as the string "None".
@@ -129,9 +141,13 @@ source:
 # ── TARGET ───────────────────────────────────────────────────────────────────
 
 target:
+  system: sead
   table: tbl_sites
-  pk: site_id
-  sequence: tbl_sites_site_id_seq
+  identity:
+    column: site_id
+    type: integer
+    strategy: sequence
+    sequence: tbl_sites_site_id_seq
 
 # ── MAPPINGS ─────────────────────────────────────────────────────────────────
 #
@@ -140,47 +156,59 @@ target:
 # not appear as tbl_sites columns.  IDBy and Specimens are ignored entirely.
 
 mappings:
-  - source_field: SiteName
-    target_field: site_name
+  - target_field: site_name
     type: string
-    note: >
+    nullable: false
+    source_field: SiteName
+    comment: >
       Required.  SeadSiteCreator adds an error to the entity if SiteName is
       empty or null; the Persister will then record a bugs_error and skip the
       DB write.
 
-  - source_field: NGR
-    target_field: national_site_identifier
+  - target_field: national_site_identifier
     type: string
+    nullable: true
+    source_field: NGR
 
-  - source_field: Interp
-    target_field: site_description
+  - target_field: site_description
     type: string
-    note: >
+    nullable: true
+    source_field: Interp
+    comment: >
       Windows line endings (\r\n) are normalised to \n in the equality
       check inside SeadSite.equals(), so the update-detection comparison
       must apply the same normalisation before deciding whether an update
       is needed.
 
-  - source_field: LatDD
-    target_field: latitude_dd
+  - target_field: latitude_dd
     type: decimal
-    transform: "float_to_decimal(source.lat_dd)"
-    note: >
+    nullable: true
+    transform:
+      type: call
+      helper: float_to_decimal
+      args: ["source.LatDD"]
+    comment: >
       Float → BigDecimal via BigDecimalDefinition.convertToSeadContext().
       A null source value maps to null; the update is suppressed if the
       new value is null (see update_detection notes below).
 
-  - source_field: LongDD
-    target_field: longitude_dd
+  - target_field: longitude_dd
     type: decimal
-    transform: "float_to_decimal(source.long_dd)"
-    note: Same null-suppression behaviour as latitude_dd.
+    nullable: true
+    transform:
+      type: call
+      helper: float_to_decimal
+      args: ["source.LongDD"]
+    comment: Same null-suppression behaviour as latitude_dd.
 
-  - source_field: Alt
-    target_field: altitude
+  - target_field: altitude
     type: decimal
-    transform: "float_to_decimal(source.alt)"
-    note: Same null-suppression behaviour as latitude_dd.
+    nullable: true
+    transform:
+      type: call
+      helper: float_to_decimal
+      args: ["source.Alt"]
+    comment: Same null-suppression behaviour as latitude_dd.
 
 # ── RECONCILIATION ───────────────────────────────────────────────────────────
 #
@@ -191,25 +219,28 @@ mappings:
 # error rather than continuing to rule 1.
 
 reconciliation:
+  strategy: ordered_rules
 
   prerequisite:
+    name: resolve_locations
     description: >
       Resolve Region and Country to Location rows in tbl_locations before
       entering the rule chain.  If no Country location can be found or
       created, emit error "No country exists for site" and skip remaining
       rules.
     config:
-      allow_create_country:
+      - name: allow_create_country
         property: allow.create.country
         default: true
-        note: >
+        description: >
           When true, an unrecognised Country string creates a new tbl_locations
           row of type "Country".  When false, a missing country is always an
           error.
 
   rules:
-    - order: 1
-      strategy: trace_lookup
+    - name: trace_lookup
+      order: 1
+      type: trace_lookup
       description: >
         Look up the most recent bugs_trace row for this SiteCODE.  If found,
         fetch the tbl_sites row by its PK.  If the tbl_sites row was
@@ -218,19 +249,18 @@ reconciliation:
         return the (error-flagged) site unchanged.  If the trace row
         indicates a prior error (has_error = true), return the site unchanged
         without re-processing (on_error: skip).
-      query: >
-        SELECT sead_reference_id, has_error, change_date
-        FROM bugs_import.bugs_trace
-        WHERE bugs_table = 'TSite' AND bugs_identifier = %s
-        ORDER BY change_date DESC
-        LIMIT 1
-      bind: ["source.code"]
+      bugs_table: TSite
+      identifier_expr: "source.SiteCODE"
+      allow_deleted: false
+      on_match: update
       on_error: skip
-      on_external_edit: error
-      external_edit_message: "Sead data has been updated since last bugs import"
+      external_edit:
+        on_conflict: error
+        message: "Sead data has been updated since last bugs import"
 
-    - order: 2
-      strategy: database_query
+    - name: name_location_lookup
+      order: 2
+      type: database_query
       description: >
         Name + location join: if no new Location rows were just created
         during prerequisite resolution, use the precise name+locations query;
@@ -240,32 +270,41 @@ reconciliation:
         More than 1 result → error "More than one site found by name and location".
         0 results → fall through to rule 3.
       variants:
-        - condition: "not any_created_locations"
+        - name: name_and_locations
+          condition: "not any_created_locations"
           query: >
             SELECT s.*
             FROM tbl_sites s
             JOIN tbl_site_locations sl ON sl.site_id = s.site_id
-            WHERE s.site_name = %s
-              AND sl.location_id = ANY(%s)
+            WHERE s.site_name = :site_name
+              AND sl.location_id = ANY(:location_ids)
             GROUP BY s.site_id
-            HAVING COUNT(*) = %s
-          bind: ["source.name", "location_ids", "len(location_ids)"]
-        - condition: "any_created_locations"
+            HAVING COUNT(*) = :location_count
+          bind:
+            site_name: "source.SiteName"
+            location_ids: "location_ids"
+            location_count: "len(location_ids)"
+        - name: name_only
+          condition: "any_created_locations"
           query: >
-            SELECT * FROM tbl_sites WHERE site_name = %s
-          bind: ["source.name"]
+            SELECT * FROM tbl_sites WHERE site_name = :site_name
+          bind:
+            site_name: "source.SiteName"
       result_handling:
-        count_zero: null      # fall through to create_new
-        count_one:  error     # "Site name exists for non-imported site"
-        count_many: error     # "More than one site found by name and location"
+        count_zero: fall_through
+        count_one: error
+        count_many: error
 
-    - order: 3
-      strategy: create_new
+    - name: create_new
+      order: 3
+      type: create_new
       description: No existing record found; allocate a new site_id and insert.
+      on_match: insert
 
 # ── UPDATE DETECTION ─────────────────────────────────────────────────────────
 
 update_detection:
+  strategy: field_comparison
   fields:
     - national_site_identifier   # NGR
     - site_description           # Interp  — compare after \r\n → \n normalisation
@@ -273,8 +312,9 @@ update_detection:
     - longitude_dd               # LongDD  — BigDecimal numeric equality
     - altitude                   # Alt     — BigDecimal numeric equality
     - site_name                  # SiteName
+  on_change: mark_updated
 
-  notes: >
+  comment: >
     BigDecimal fields use numeric equality (scale-insensitive), not
     Object.equals().  Null incoming values do NOT overwrite existing
     non-null values (null-suppression during doUpdates).
@@ -283,17 +323,16 @@ update_detection:
     rejected with error "Bugs data is updated but updates are disallowed."
 
   config:
-    allow_site_updates:
+    - name: allow_site_updates
       property: allow.site.updates
       default: false
-      note: >
+      description: >
         Set to true to permit overwriting existing tbl_sites rows when
         BugsCEP data has changed since the last import.
 
 # ── DEPENDENCIES ─────────────────────────────────────────────────────────────
 
-dependencies:
-  required_importers: []
+dependencies: []
   # SiteImporter.super(dataMapper, persister) — no additional required importers.
   #
   # The Location / LocationType tables (tbl_locations, tbl_location_types) must
@@ -306,11 +345,11 @@ dependencies:
 tracing:
   bugs_table: TSite
   sead_table: tbl_sites
-  identifier_expr: "source.trace_key()"
   write_on: [insert, update]
-  # A trace row is also read during reconciliation rule 1 (trace_lookup).
-  # The trace write on update only fires when allow.site.updates = true and
-  # a field difference was actually detected and applied.
+  comment: >
+    A trace row is also read during reconciliation rule 1 (trace_lookup).
+    The trace write on update only fires when allow.site.updates = true and
+    a field difference was actually detected and applied.
 
 # ── HELPERS ──────────────────────────────────────────────────────────────────
 

@@ -1,0 +1,146 @@
+# BugsCEP → SEAD Reconciliation Policy
+# Domain: RdbSystem (TRDBSystems → tbl_rdb_systems)
+
+meta:
+  format_version: "1.0"
+  generated_from: java_source
+  reviewed: false
+  notes: >
+    Leaf importer with support dependencies on BibliographyImporter and
+    CountryImporter. The importer updates target fields in place after a
+    trace lookup and resolves reference and country through helper logic.
+
+policy:
+  domain: rdbsystem
+  description: >
+    Imports RDB system definitions from TRDBSystems into tbl_rdb_systems.
+    Reconciliation is trace-first. On a trace miss the importer creates a new
+    RDB system row and resolves reference and location through supporting
+    lookup logic.
+
+source:
+  system: bugscep
+  table: TRDBSystems
+  sql: >
+    SELECT RDBSystemCode, RDBSystem, RDBVersion, RDBSystemDate,
+           RDBFirstPublished, Ref, CountryCode
+    FROM TRDBSystems
+  fields:
+    - name: RDBSystemCode
+      type: string
+      nullable: true
+      role: natural_key
+      comment: Stable business identifier for the RDB system.
+    - name: RDBSystem
+      type: string
+      nullable: true
+      role: data
+    - name: RDBVersion
+      type: string
+      nullable: true
+      role: data
+    - name: RDBSystemDate
+      type: date
+      nullable: true
+      role: data
+    - name: RDBFirstPublished
+      type: date
+      nullable: true
+      role: data
+    - name: Ref
+      type: string
+      nullable: true
+      role: data
+    - name: CountryCode
+      type: string
+      nullable: true
+      role: data
+  identity_key: RDBSystemCode
+  trace_key:
+    template: "{{{RDBSystemCode},{RDBSystem}}}"
+
+target:
+  system: sead
+  table: tbl_rdb_systems
+  identity:
+    column: rdb_system_id
+    type: integer
+    strategy: sequence
+    sequence: tbl_rdb_systems_rdb_system_id_seq
+
+mappings:
+  - target_field: rdb_first_published
+    type: date
+    nullable: true
+    source_field: RDBFirstPublished
+  - target_field: rdb_system
+    type: string
+    nullable: true
+    source_field: RDBSystem
+  - target_field: rdb_system_date
+    type: date
+    nullable: true
+    source_field: RDBSystemDate
+  - target_field: rdb_version
+    type: string
+    nullable: true
+    source_field: RDBVersion
+  - target_field: biblio_id
+    type: integer
+    nullable: true
+    transform:
+      type: call
+      helper: resolve_biblio_id
+      args: ["source.Ref"]
+  - target_field: location_id
+    type: integer
+    nullable: true
+    transform:
+      type: call
+      helper: resolve_location_id
+      args: ["source.CountryCode"]
+
+reconciliation:
+  strategy: ordered_rules
+  rules:
+    - name: trace_lookup
+      order: 1
+      type: trace_lookup
+      description: Look up the existing RDB system by bugs trace using the system code.
+      bugs_table: TRDBSystems
+      identifier_expr: "source.RDBSystemCode"
+      on_match: update
+      on_error: skip
+    - name: create_new
+      order: 2
+      type: create_new
+      description: No trace match found; create a new RDB system row.
+      on_match: insert
+
+update_detection:
+  strategy: field_comparison
+  fields:
+    - rdb_first_published
+    - rdb_system
+    - rdb_system_date
+    - rdb_version
+    - biblio_id
+    - location_id
+  on_change: mark_updated
+
+dependencies: [Bibliography, Country]
+
+tracing:
+  bugs_table: TRDBSystems
+  sead_table: tbl_rdb_systems
+  write_on: [insert, update]
+
+helpers:
+  - name: resolve_biblio_id
+    description: Resolve the Bugs reference value to tbl_biblio.biblio_id.
+    signature: "resolve_biblio_id(reference: str | None) -> int | None"
+    used_by: [biblio_id]
+  - name: resolve_location_id
+    description: Resolve the Bugs country code to tbl_locations.location_id.
+    signature: "resolve_location_id(country_code: str | None) -> int | None"
+    used_by: [location_id]

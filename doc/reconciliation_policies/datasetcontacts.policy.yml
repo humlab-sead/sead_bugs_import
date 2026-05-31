@@ -1,0 +1,183 @@
+# BugsCEP → SEAD Reconciliation Policy
+# Domain: DatasetContacts (TCountsheet → tbl_dataset_contacts)
+
+meta:
+  format_version: "1.0"
+  generated_from: java_source
+  reviewed: false
+  notes: >
+    One countsheet row can yield zero or more dataset-contact rows. The importer
+    resolves the dataset from the countsheet code through the existing fossil
+    dataset logic, then reads `IDBy` and `Specimens` from TSite by SiteCODE and
+    parses those strings into generated contact items.
+
+policy:
+  domain: datasetcontacts
+  description: >
+    Imports dataset contacts from TCountsheet into tbl_dataset_contacts.
+    Reconciliation is list-based by dataset: the importer resolves the dataset
+    for the countsheet, reads and parses site contact strings from TSite, drops
+    generated contacts that already exist for the dataset by contact type and
+    contact names, and inserts only the remaining new rows.
+
+source:
+  system: bugscep
+  table: TCountsheet
+  sql: "SELECT CountsheetCODE, CountsheetName, SiteCODE, SheetContext, SheetType FROM TCountsheet"
+  fields:
+    - name: CountsheetCODE
+      type: string
+      nullable: true
+      role: natural_key
+    - name: CountsheetName
+      type: string
+      nullable: true
+      role: ignored
+      comment: Present in the row and trace key but not used by DatasetContactImporter.
+    - name: SiteCODE
+      type: string
+      nullable: true
+      role: data
+      comment: Used to read `IDBy` and `Specimens` from TSite before parsing generated contacts.
+    - name: SheetContext
+      type: string
+      nullable: true
+      role: ignored
+    - name: SheetType
+      type: string
+      nullable: true
+      role: ignored
+  identity_key: CountsheetCODE
+  trace_key:
+    template: "{{CountsheetCODE},{CountsheetName},{SiteCODE},{SheetContext},{SheetType}}"
+
+target:
+  system: sead
+  table: tbl_dataset_contacts
+  identity:
+    column: dataset_contact_id
+    type: integer
+    strategy: sequence
+    sequence: tbl_dataset_contacts_dataset_contact_id_seq
+
+output:
+  mode: one_to_many
+  item_helper: generate_dataset_contact_items
+  compare_fields: [dataset_id, contact_id, contact_type_id]
+  on_missing_generated: insert
+  on_missing_existing: keep
+  on_match: return_as_is
+  comment: Existing dataset-contact rows are kept. Only generated contacts not already present for the dataset are emitted.
+
+related_outputs:
+  - name: contacts
+    table: tbl_contacts
+    mode: zero_or_one
+    relationship: supporting
+    persistence: cache_then_save
+    key_fields: [first_name, last_name]
+    identity:
+      column: contact_id
+      type: integer
+      strategy: sequence
+      sequence: tbl_contacts_contact_id_seq
+    mappings:
+      - target_field: first_name
+        type: string
+        nullable: true
+        transform:
+          type: generated
+          field: first_name
+      - target_field: last_name
+        type: string
+        nullable: true
+        transform:
+          type: generated
+          field: last_name
+    reconciliation:
+      existing_rows:
+        table: tbl_contacts
+        where: "first_name = :first_name AND last_name = :last_name"
+        bind:
+          first_name: "generated.first_name"
+          last_name: "generated.last_name"
+      compare_fields: [first_name, last_name]
+      on_missing_generated: insert
+      on_missing_existing: keep
+      on_match: return_as_is
+      comment: ContactCacheAndRepositoryAccessor checks cache first, then repository lookup by first and last name, and only emits new contacts when no stored match exists.
+    update_detection:
+      strategy: never
+      fields: []
+      on_change: ignore
+    comment: Generated contacts are resolved from cache or repository by first and last name, and new contacts are saved indirectly when new dataset-contact rows are persisted.
+
+mappings:
+  - target_field: dataset_id
+    type: integer
+    nullable: false
+    transform:
+      type: call
+      helper: resolve_dataset_id_from_countsheet_code
+      args: ["source.CountsheetCODE"]
+  - target_field: contact_id
+    type: integer
+    nullable: false
+    transform:
+      type: generated
+      field: contact_id
+  - target_field: contact_type_id
+    type: integer
+    nullable: false
+    transform:
+      type: generated
+      field: contact_type_id
+
+reconciliation:
+  strategy: ordered_rules
+  prerequisite:
+    description: Resolve the dataset from CountsheetCODE, read `IDBy` and `Specimens` from TSite using SiteCODE, and parse those strings into generated contact items before list comparison.
+  rules:
+    - name: dataset_contact_list_lookup
+      order: 1
+      type: database_query
+      description: Load all existing dataset-contact rows for the resolved dataset and compare them with the generated contact list.
+      table: tbl_dataset_contacts
+      where: "dataset_id = :dataset_id"
+      bind:
+        dataset_id: "resolve_dataset_id_from_countsheet_code(source.CountsheetCODE)"
+      on_match: update
+      comment: Matching uses contact type plus contact first and last name; matching rows are retained unchanged and only unmatched generated rows are inserted.
+    - name: create_new
+      order: 2
+      type: create_new
+      description: No stored dataset-contact rows exist for the dataset; create rows for all generated contact items.
+      on_match: insert
+
+update_detection:
+  strategy: never
+  fields: []
+  on_change: ignore
+  comment: Existing dataset-contact rows are never updated or deleted by this importer. New parsed contacts are appended only when no type-and-name match already exists.
+
+dependencies: [Fossil]
+
+tracing:
+  bugs_table: TCountsheet
+  sead_table: tbl_dataset_contacts
+  write_on: [insert, update]
+  comment: Trace rows are written per inserted dataset-contact row even though the converter does not perform a trace lookup.
+
+helpers:
+  - name: resolve_dataset_id_from_countsheet_code
+    description: Resolve the dataset for the countsheet through DatasetManagerNoCreation using the sample-group trace and the fossil dataset naming rules.
+    signature: "resolve_dataset_id_from_countsheet_code(countsheet_code: str | None) -> int | None"
+    used_by: [dataset_id]
+  - name: generate_dataset_contact_items
+    description: Read `IDBy` and `Specimens` from TSite for the supplied SiteCODE, parse the strings into identified-by and specimen-repository contacts, resolve or create contacts by first and last name, and return generated items with `contact_id` and `contact_type_id`.
+    signature: "generate_dataset_contact_items(site_code: str | None) -> list[DatasetContactItem]"
+    expression: "[{'contact_id': ..., 'contact_type_id': ...}, ...]"
+  - name: generate_contact_items
+    description: Read `IDBy` and `Specimens` from TSite for the supplied SiteCODE and parse them into unique contact-name items before repository or cache resolution.
+    signature: "generate_contact_items(site_code: str | None) -> list[ContactItem]"
+    expression: "[{'first_name': ..., 'last_name': ...}, ...]"

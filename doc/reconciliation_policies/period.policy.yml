@@ -1,0 +1,209 @@
+# BugsCEP → SEAD Reconciliation Policy
+# Domain: Period (TPeriods → tbl_relative_ages)
+
+meta:
+  format_version: "1.0"
+  generated_from: java_source
+  reviewed: false
+  notes: >
+    Leaf importer with one support dependency on CountryImporter for geography
+    resolution. YearsType and BC/AD flags decide whether begin/end values map
+    to c14 or calendar age columns.
+
+policy:
+  domain: period
+  description: >
+    Imports relative-age definitions from the BugsCEP TPeriods table into
+    tbl_relative_ages. Reconciliation is trace-first. On a trace miss the
+    importer creates a new relative age and updates it in place on later runs.
+
+source:
+  system: bugscep
+  table: TPeriods
+  sql: >
+    SELECT PeriodCODE, PeriodName, PeriodType, PeriodDesc, PeriodRef, PeriodGeog,
+           Begin, BeginBCAD, End, EndBCAD, YearsType
+    FROM TPeriods
+  fields:
+    - name: PeriodCODE
+      type: string
+      nullable: true
+      role: natural_key
+      comment: Business key used for trace lookup and importer identity.
+    - name: PeriodName
+      type: string
+      nullable: true
+      role: data
+    - name: PeriodType
+      type: string
+      nullable: true
+      role: data
+      comment: Drives the relative_age_type lookup.
+    - name: PeriodDesc
+      type: string
+      nullable: true
+      role: data
+    - name: PeriodRef
+      type: string
+      nullable: true
+      role: data
+      comment: Used as the notes value written to tbl_relative_ages.
+    - name: PeriodGeog
+      type: string
+      nullable: true
+      role: data
+      comment: Used to resolve the optional location_id.
+    - name: Begin
+      type: decimal
+      nullable: true
+      role: data
+    - name: BeginBCAD
+      type: string
+      nullable: true
+      role: data
+    - name: End
+      type: decimal
+      nullable: true
+      role: data
+    - name: EndBCAD
+      type: string
+      nullable: true
+      role: data
+    - name: YearsType
+      type: string
+      nullable: true
+      role: data
+      comment: Decides whether Begin/End map to c14 or calendar columns.
+  identity_key: PeriodCODE
+  trace_key:
+    template: "{{{PeriodCODE},{PeriodName}}}"
+
+target:
+  system: sead
+  table: tbl_relative_ages
+  identity:
+    column: relative_age_id
+    type: integer
+    strategy: sequence
+    sequence: tbl_relative_ages_relative_age_id_seq
+
+mappings:
+  - target_field: relative_age_name
+    type: string
+    nullable: true
+    transform:
+      type: conditional
+      condition: "source.PeriodName is None or source.PeriodName == ''"
+      if_true: "source.PeriodCODE"
+      if_false: "source.PeriodName"
+  - target_field: description
+    type: string
+    nullable: true
+    source_field: PeriodDesc
+  - target_field: c14_age_older
+    type: decimal
+    nullable: true
+    transform:
+      type: conditional
+      condition: "source.YearsType == 'C14'"
+      if_true: "source.Begin"
+      if_false: null
+  - target_field: c14_age_younger
+    type: decimal
+    nullable: true
+    transform:
+      type: conditional
+      condition: "source.YearsType == 'C14'"
+      if_true: "source.End"
+      if_false: null
+  - target_field: cal_age_older
+    type: decimal
+    nullable: true
+    transform:
+      type: conditional
+      condition: "source.YearsType in ['Calendar', 'Calender', 'Radiometric']"
+      if_true: "source.Begin"
+      if_false: null
+  - target_field: cal_age_younger
+    type: decimal
+    nullable: true
+    transform:
+      type: conditional
+      condition: "source.YearsType in ['Calendar', 'Calender', 'Radiometric']"
+      if_true: "source.End"
+      if_false: null
+  - target_field: notes
+    type: string
+    nullable: true
+    source_field: PeriodRef
+  - target_field: Abbreviation
+    type: string
+    nullable: true
+    source_field: PeriodCODE
+  - target_field: relative_age_type_id
+    type: integer
+    nullable: true
+    transform:
+      type: call
+      helper: resolve_relative_age_type_id
+      args: ["source.PeriodType"]
+  - target_field: location_id
+    type: integer
+    nullable: true
+    transform:
+      type: call
+      helper: resolve_location_id
+      args: ["source.PeriodGeog"]
+
+reconciliation:
+  strategy: ordered_rules
+  prerequisite:
+    name: ignore_unknown_period_code
+    description: Return an ignored-item error when PeriodCODE is '?'.
+  rules:
+    - name: trace_lookup
+      order: 1
+      type: trace_lookup
+      description: Look up the existing relative age by Bugs period code in bugs_trace.
+      bugs_table: TPeriods
+      identifier_expr: "source.PeriodCODE"
+      on_match: update
+      on_error: skip
+    - name: create_new
+      order: 2
+      type: create_new
+      description: No trace match found; create a new relative-age row.
+      on_match: insert
+
+update_detection:
+  strategy: field_comparison
+  fields:
+    - relative_age_name
+    - description
+    - c14_age_older
+    - c14_age_younger
+    - cal_age_older
+    - cal_age_younger
+    - notes
+    - Abbreviation
+    - relative_age_type_id
+    - location_id
+  on_change: mark_updated
+  comment: RelativeAgeUpdater compares all writable fields directly.
+
+dependencies: [Country]
+
+tracing:
+  bugs_table: TPeriods
+  sead_table: tbl_relative_ages
+  write_on: [insert, update]
+
+helpers:
+  - name: resolve_relative_age_type_id
+    description: Resolve the Bugs PeriodType value to tbl_relative_age_types.relative_age_type_id.
+    signature: "resolve_relative_age_type_id(period_type: str | None) -> int | None"
+    used_by: [relative_age_type_id]
+  - name: resolve_location_id
+    description: Resolve the Bugs geography value to tbl_locations.location_id using the Java geography lookup rules.
+    signature: "resolve_location_id(geography_name: str | None) -> int | None"
+    used_by: [location_id]

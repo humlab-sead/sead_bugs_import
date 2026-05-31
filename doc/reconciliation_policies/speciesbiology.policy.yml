@@ -1,0 +1,113 @@
+# BugsCEP → SEAD Reconciliation Policy
+# Domain: SpeciesBiology (TBiol → tbl_text_biology)
+
+meta:
+  format_version: "1.0"
+  generated_from: java_source
+  reviewed: false
+  notes: >
+    This importer uses a custom repository lookup on biology text, species,
+    and reference rather than a trace helper.
+
+policy:
+  domain: speciesbiology
+  description: >
+    Imports free-text biology rows from TBiol into tbl_text_biology. Existing
+    rows are found by the tuple of biology text, species, and bibliography
+    reference.
+
+source:
+  system: bugscep
+  table: TBiol
+  sql: "SELECT CODE, Ref, Data FROM TBiol"
+  fields:
+    - name: CODE
+      type: string
+      nullable: true
+      role: natural_key
+      comment: Species code used in the repository lookup tuple.
+    - name: Ref
+      type: string
+      nullable: true
+      role: data
+    - name: Data
+      type: string
+      nullable: true
+      role: data
+  identity_key: CODE
+  trace_key:
+    template: "{{{CODE},{Ref},{Data}}}"
+
+target:
+  system: sead
+  table: tbl_text_biology
+  identity:
+    column: biology_id
+    type: integer
+    strategy: sequence
+    sequence: tbl_text_biology_biology_id_seq
+
+mappings:
+  - target_field: biology_text
+    type: string
+    nullable: false
+    source_field: Data
+  - target_field: taxon_id
+    type: integer
+    nullable: false
+    transform:
+      type: call
+      helper: resolve_taxon_id
+      args: ["source.CODE"]
+  - target_field: biblio_id
+    type: integer
+    nullable: true
+    transform:
+      type: call
+      helper: resolve_biblio_id
+      args: ["source.Ref"]
+
+reconciliation:
+  strategy: ordered_rules
+  rules:
+    - name: biology_lookup
+      order: 1
+      type: database_query
+      description: Find an existing biology-text row by text, species, and reference.
+      table: tbl_text_biology
+      where: "biology_text = :biology_text AND taxon_id = :taxon_id AND biblio_id = :biblio_id"
+      bind:
+        biology_text: "source.Data"
+        taxon_id: "resolve_taxon_id(source.CODE)"
+        biblio_id: "resolve_biblio_id(source.Ref)"
+      on_match: update
+    - name: create_new
+      order: 2
+      type: create_new
+      description: No tuple match found; create a new text biology row.
+      on_match: insert
+
+update_detection:
+  strategy: field_comparison
+  fields:
+    - biology_text
+    - taxon_id
+    - biblio_id
+  on_change: mark_updated
+
+dependencies: [Bibliography, Index]
+
+tracing:
+  bugs_table: TBiol
+  sead_table: tbl_text_biology
+  write_on: [insert, update]
+
+helpers:
+  - name: resolve_taxon_id
+    description: Resolve the Bugs species code to tbl_taxa_tree_master.taxon_id.
+    signature: "resolve_taxon_id(code: str | None) -> int | None"
+    used_by: [taxon_id]
+  - name: resolve_biblio_id
+    description: Resolve the reference code to tbl_biblio.biblio_id.
+    signature: "resolve_biblio_id(reference: str | None) -> int | None"
+    used_by: [biblio_id]

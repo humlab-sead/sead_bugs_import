@@ -1,0 +1,83 @@
+fixture_version: "1.0"
+policy: bibliography
+scenarios:
+  - name: trace_hit_updates_existing_biblio
+    intent: reconciliation_path
+    source_rows:
+      - REFERENCE: REF_TRACE
+        AUTHOR: Trace Author
+        TITLE: Trace Title
+        Notes: ignored
+    policy_context:
+      step_hits:
+        trace_lookup: true
+      state:
+        existing_row_id: 31
+    expects:
+      reconciliation_path: [trace_lookup]
+      reconciliation_result:
+        result_kind: update_existing
+        source: trace_lookup
+        row_id: 31
+        bugs_reference: REF_TRACE
+  - name: trace_hit_returns_existing_error_row
+    intent: reconciliation_path
+    source_rows:
+      - REFERENCE: REF_TRACE_ERROR
+        AUTHOR: Trace Author Error
+        TITLE: Trace Error Title
+        Notes: ignored
+    policy_context:
+      step_hits:
+        trace_lookup: true
+      state:
+        existing_row_id: 32
+        existing_error_message: Existing bibliography trace error
+    expects:
+      reconciliation_path: [trace_lookup]
+      reconciliation_result:
+        result_kind: return_existing_error
+        source: trace_lookup
+        row_id: 32
+        bugs_reference: REF_TRACE_ERROR
+        issue:
+          severity: error
+          message: Existing bibliography trace error
+  - name: database_lookup_updates_existing_biblio
+    intent: reconciliation_path
+    source_rows:
+      - REFERENCE: REF_DB
+        AUTHOR: Db Author
+        TITLE: Db Title
+        Notes: ignored
+    policy_context:
+      step_hits:
+        trace_lookup: false
+        database_lookup: true
+      state:
+        existing_row_id: 33
+    expects:
+      reconciliation_path: [trace_lookup, database_lookup]
+      reconciliation_result:
+        result_kind: update_existing
+        source: database_lookup
+        row_id: 33
+        bugs_reference: REF_DB
+  - name: create_new_biblio_when_no_match_exists
+    intent: reconciliation_path
+    source_rows:
+      - REFERENCE: REF_NEW
+        AUTHOR: New Author
+        TITLE: New Title
+        Notes: ignored
+    policy_context:
+      step_hits:
+        trace_lookup: false
+        database_lookup: false
+    expects:
+      reconciliation_path: [trace_lookup, database_lookup, create_new]
+      reconciliation_result:
+        result_kind: insert_new
+        source: create_new
+        row_id: null
+        bugs_reference: REF_NEW

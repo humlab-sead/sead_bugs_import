@@ -1,0 +1,67 @@
+fixture_version: "1.0"
+policy: mcrnames
+scenarios:
+  - name: trace_lookup_updates_existing_mcr_name
+    intent: reconciliation_path
+    source_rows:
+      - CODE: 10010020
+        CompareStatus: matched
+        MCRName: Cicindela sylvatica
+        MCRNameTrim: Cicindela sylvatica
+        MCRNumber: 12
+        tempCODE: 10010020
+    policy_context:
+      step_hits:
+        trace_lookup: true
+        species_value_lookup: false
+      state:
+        existing_row_id: 1001
+    expects:
+      reconciliation_path: [trace_lookup]
+      reconciliation_result:
+        result_kind: update_existing
+        source: trace_lookup
+        row_id: 1001
+        species_code: 10010020
+  - name: species_value_lookup_updates_existing_mcr_name
+    intent: reconciliation_path
+    source_rows:
+      - CODE: 10010021
+        CompareStatus: synonym
+        MCRName: Calosoma inquisitor
+        MCRNameTrim: Calosoma inquisitor
+        MCRNumber: 13
+        tempCODE: 10010021
+    policy_context:
+      step_hits:
+        trace_lookup: false
+        species_value_lookup: true
+      state:
+        existing_row_id: 1002
+    expects:
+      reconciliation_path: [trace_lookup, species_value_lookup]
+      reconciliation_result:
+        result_kind: update_existing
+        source: species_value_lookup
+        row_id: 1002
+        species_code: 10010021
+  - name: create_new_mcr_name_when_search_chain_misses
+    intent: reconciliation_path
+    source_rows:
+      - CODE: 10010022
+        CompareStatus: new
+        MCRName: Bembidion properans
+        MCRNameTrim: Bembidion properans
+        MCRNumber: 14
+        tempCODE: 10010022
+    policy_context:
+      step_hits:
+        trace_lookup: false
+        species_value_lookup: false
+    expects:
+      reconciliation_path: [trace_lookup, species_value_lookup, create_new]
+      reconciliation_result:
+        result_kind: insert_new
+        source: create_new
+        row_id: null
+        species_code: 10010022

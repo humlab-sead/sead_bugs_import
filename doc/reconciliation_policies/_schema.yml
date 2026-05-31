@@ -11,7 +11,14 @@
 #     None checks, ternary `x if cond else y`
 #   - source.<field>  — access a field of the BugsCEP source record
 #   - target.<field>  — access a field of the current SEAD target record
-#   - Callable helpers listed per-policy in the helpers section
+#   - parent.<field> — access a field of the current main target row when
+#     evaluating a runnable related output
+#   - generated.<field> — access a field of one generated item from
+#     output.item_helper or related_outputs[*].item_helper
+#   - related.<output_name>.<field> — access a field from another runnable
+#     related output after that output has been evaluated
+#   - Callable helpers or resolvers listed per-policy in the helpers or
+#     resolvers sections
 #
 # ─────────────────────────────────────────────────────────────────────────────
 
@@ -19,6 +26,7 @@ meta:
   format_version: "1.0"
   generated_from: java_source   # java_source | manual | llm_extracted
   reviewed: false               # set to true after human review
+  notes: <string>               # optional domain-level summary or caveats
 
 policy:
   domain: <string>              # e.g. bibliography, site, fossil
@@ -31,7 +39,7 @@ source:
   sql: <string>                 # Full SELECT used to read all rows
   fields:
     - name: <string>            # Access column name (case-sensitive)
-      type: string|integer|decimal|boolean|date
+      type: string|integer|decimal|float|boolean|date
       nullable: true|false
       role: natural_key         # natural_key | data | ignored
       comment: <string>         # optional
@@ -39,6 +47,7 @@ source:
   trace_key:
     # Template for compressToString(); field names wrapped in {}
     template: <string>          # e.g. "{reference},{author},{title},{notes}"
+    comment: <string>           # optional
 
 # ── TARGET ───────────────────────────────────────────────────────────────────
 target:
@@ -50,6 +59,7 @@ target:
     strategy: sequence|identity_service|provided
     sequence: <string>          # PostgreSQL sequence name (if strategy=sequence)
     identity_service_endpoint: <string>  # REST endpoint (if strategy=identity_service)
+    comment: <string>           # optional
 
 # ── MAPPINGS ─────────────────────────────────────────────────────────────────
 # Each mapping rule writes one target column.  Exactly one of source_field or
@@ -61,7 +71,7 @@ mappings:
     source_field: <string>      # direct copy from this BugsCEP field (no transform)
     # OR, for derived fields:
     transform:
-      type: conditional|concat|call|coerce|constant
+      type: conditional|concat|call|coerce|constant|generated|expr
       # conditional:
       condition: <expr>         # boolean expr; if true, use if_true value
       if_true:  <expr>
@@ -70,43 +80,203 @@ mappings:
       parts: [<expr>, ...]
       separator: <string>
       # call:
-      helper: <helper_name>
+      helper: <helper_or_resolver_name>
       args: [<expr>, ...]
       # coerce:
       input: <expr>
       output_type: <type>
       # constant:
       value: <literal>
+      # generated:
+      field: <string>          # field name in one generated item from output.item_helper
+      # expr:
+      expr: <expr>
+    comment: <string>           # optional
+
+# ── OUTPUT ───────────────────────────────────────────────────────────────────
+# Optional. Use when one Bugs row expands to multiple target rows.
+output:
+  mode: one_to_one|one_to_many
+  item_helper: <helper_name>    # required for one_to_many; expands source row to generated items
+  compare_fields: [<target_field>, ...]  # required for one_to_many; item equality fields
+  on_missing_generated: insert|ignore
+  on_missing_existing: mark_for_deletion|keep
+  on_match: return_as_is|update
+  comment: <string>
+
+# ── RELATED OUTPUTS ──────────────────────────────────────────────────────────
+# Optional. Use when one importer also persists helper-created or child rows in
+# other SEAD tables besides target.table.
+related_outputs:
+  - name: <string>
+    table: <string>
+    mode: one_to_one|zero_or_one|one_to_many
+    relationship: child|supporting
+    phase: before_parent|after_parent
+    item_helper: <helper_name>
+    key_fields: [<string>, ...]
+    persistence: save_or_update|cascade|cache_then_save|cache_then_link
+    identity:
+      column: <string>
+      type: integer|bigint|uuid
+      strategy: sequence|identity_service|provided
+      sequence: <string>
+      identity_service_endpoint: <string>
+      comment: <string>
+    mappings:
+      - target_field: <string>
+        type: string|integer|decimal|boolean|date|timestamp
+        nullable: true|false
+        source_field: <string>
+        transform:
+          type: conditional|concat|call|coerce|constant|generated|expr
+          condition: <expr>
+          if_true: <expr>
+          if_false: <expr>
+          parts: [<expr>, ...]
+          separator: <string>
+          helper: <helper_name>
+          args: [<expr>, ...]
+          input: <expr>
+          output_type: <type>
+          value: <literal>
+          field: <string>
+          expr: <expr>
+        comment: <string>
+    reconciliation:
+      existing_rows:
+        table: <string>
+        where: <sql_fragment>
+        query: <sql_string>
+        bind:
+          <name>: <expr>
+      compare_fields: [<target_field>, ...]
+      on_missing_generated: insert|ignore
+      on_missing_existing: mark_for_deletion|keep
+      on_match: return_as_is|update
+      comment: <string>
+    update_detection:
+      strategy: field_comparison|always|never
+      fields: [<target_field>, ...]
+      on_change: mark_updated|ignore
+      comment: <string>
+      config:
+        - name: <string>
+          property: <string>
+          default: <literal>
+          description: <string>
+    tracing:
+      bugs_table: <string>
+      sead_table: <string>
+      write_on: [insert, update]
+      comment: <string>
+    comment: <string>
 
 # ── RECONCILIATION ───────────────────────────────────────────────────────────
-# Rules are evaluated in order.  First rule that returns a non-null match wins.
+# Rules are evaluated in order. First rule that returns a non-null match wins.
+# Use search_chain when the Java importer iterates an ordered list of strategy
+# objects and stops on the first one that returns a match or an error carrier.
 reconciliation:
   strategy: ordered_rules
+  prerequisite:
+    description: <string>       # optional pre-rule work or guard condition
+    config:
+      - name: <string>
+        property: <string>
+        default: <literal>
+        description: <string>
   rules:
     - name: <string>
       order: <integer>          # lower = higher priority
-      type: trace_lookup|database_query|create_new
+      type: trace_lookup|database_query|create_new|search_chain
       description: <string>
 
       # type: trace_lookup
       bugs_table: <string>      # must match source.table
       identifier_expr: <expr>   # expression yielding the bugs_identifier value
+      allow_deleted: true|false # optional; false means deleted traced rows fall through
+      external_edit:
+        on_conflict: error|skip|return_as_is
+        message: <string>
 
       # type: database_query
-      table: <string>
-      where: <sql_fragment>     # parameterised, :name placeholders
+      table: <string>           # optional when using a raw query
+      where: <sql_fragment>     # optional; use with table + named placeholders
+      query: <sql_string>       # optional full SQL statement with named placeholders
       bind:                     # map placeholder → expression
         <name>: <expr>
+      variants:
+        - name: <string>
+          condition: <expr>
+          table: <string>
+          where: <sql_fragment>
+          query: <sql_string>
+          bind:
+            <name>: <expr>
+      result_handling:
+        count_zero: fall_through|error|skip|return_as_is
+        count_one: on_match|error|skip|return_as_is
+        count_many: error|on_match|skip|return_as_is
+
+      # type: search_chain
+      steps:
+        - name: <string>
+          order: <integer>      # lower = higher priority inside the chain
+          type: trace_lookup|database_query|history_check
+          description: <string>
+
+          # step.type: trace_lookup
+          bugs_table: <string>
+          identifier_expr: <expr>
+          allow_deleted: true|false
+          external_edit:
+            on_conflict: error|skip|return_as_is
+            message: <string>
+
+          # step.type: database_query
+          table: <string>
+          where: <sql_fragment>
+          query: <sql_string>
+          bind:
+            <name>: <expr>
+          variants:
+            - name: <string>
+              condition: <expr>
+              table: <string>
+              where: <sql_fragment>
+              query: <sql_string>
+              bind:
+                <name>: <expr>
+          result_handling:
+            count_zero: fall_through|error|skip|return_as_is
+            count_one: on_match|error|skip|return_as_is
+            count_many: error|on_match|skip|return_as_is
+
+          # step.type: history_check
+          match_condition: <string>
+
+          # all step types
+          on_match: update|return_as_is|skip
+          on_error: skip|raise|return_as_is
+          comment: <string>
+      on_no_match: fall_through|error|skip|return_as_is
 
       # All types
-      on_match: update|return_as_is|skip
-      on_error: skip|raise      # if match found but has prior trace error
+      on_match: update|return_as_is|skip|insert  # required except when database_query.result_handling fully defines match outcomes
+      on_error: skip|raise|return_as_is      # if match found but has prior trace error
+      comment: <string>         # optional
 
 # ── UPDATE DETECTION ─────────────────────────────────────────────────────────
 update_detection:
   strategy: field_comparison|always|never
   fields: [<target_field>, ...]  # compared old vs new; any diff → mark updated
-  on_change: mark_updated        # mark_updated | ignore
+  on_change: mark_updated|ignore
+  comment: <string>            # optional comparison notes or caveats
+  config:
+    - name: <string>
+      property: <string>
+      default: <literal>
+      description: <string>
 
 # ── DEPENDENCIES ─────────────────────────────────────────────────────────────
 dependencies: []                 # list of domain names that must run first
@@ -116,11 +286,91 @@ tracing:
   bugs_table: <string>          # written to bugs_import.bugs_trace.bugs_table
   sead_table: <string>          # written to bugs_import.bugs_trace.sead_table
   write_on: [insert, update]    # when to write a trace row
+  comment: <string>             # optional
+
+# ── SHARED EMIT SHAPE ───────────────────────────────────────────────────────
+# Reusable structured outcome block for errors, warnings, ignored items, or
+# flagged rows. Used today by resolver steps and postprocess conflict handling.
+# Additional sections may reuse the same shape later.
+# emit:
+#   severity: error|warning|ignored|flag
+#   code: <string>
+#   message: <string>
+#   set_flagged: true|false
+
+# ── POSTPROCESS ──────────────────────────────────────────────────────────────
+# Optional grouped row merge behavior applied after provisional row mapping but
+# before final persistence. Keep this narrowly scoped to observed importer
+# patterns such as DatesCalendar From/To range merging.
+postprocess: []
+#  - name: <string>
+#    phase: after_row_mapping_before_persist
+#    mode: pair_merge
+#    description: <string>
+#    group_by: [<expr>, ...]
+#    partition_by: [<expr>, ...]
+#    pair_rules:
+#      left: <expr>
+#      right: <expr>
+#      include_singletons: true|false
+#    retain_row: left_when_present_else_right
+#    actions:
+#      - type: use_pair_range_relative_age|normalize_pair_uncertainty|copy_if_empty
+#        target: <target_field>
+#        from_paired_field: <target_field>
+#        clear_when_closed_range: true|false
+#        convert_ca_pair_to_standard: true|false
+#        comment: <string>
+#    on_conflict: <emit>
+#    comment: <string>
+
+# ── KNOWN DIVERGENCES ────────────────────────────────────────────────────────
+# Optional records of deliberate policy-versus-Java differences or places where
+# the current Java behavior is likely wrong or ambiguous.
+known_divergences: []
+#  - area: <string>
+#    status: java_bug_suspected|behavior_ambiguous|schema_limit
+#    description: <string>
+#    policy_choice: match_java_runtime|match_intended_behavior|defer_exact_parity
+
+# ── RESOLVERS ────────────────────────────────────────────────────────────────
+# Named ordered lookup or fallback definitions referenced by transform.call.
+# Prefer resolvers when the Java helper does more than one simple lookup or
+# when it emits specific fallback outcomes.
+resolvers: []
+#  - name: <string>
+#    description: <string>
+#    returns: scalar|entity_ref|list
+#    args: [<arg_name>, ...]
+#    config:
+#      - name: <string>
+#        property: <string>
+#        default: <literal>
+#        description: <string>
+#    steps:
+#      - name: <string>
+#        when: <expr>
+#        action: trace_lookup|database_query|emit_issue
+#        bugs_table: <string>
+#        identifier_expr: <expr>
+#        table: <string>
+#        where: <sql_fragment>
+#        query: <sql_string>
+#        bind:
+#          <name>: <expr>
+#        emit: <emit>
+#        return: continue|return_entity|return_value|empty_entity|none
+#        comment: <string>
+#    used_by: [<target_field>, ...]
+#    comment: <string>
 
 # ── HELPERS ──────────────────────────────────────────────────────────────────
 # Named helper functions referenced in transform.call.
-# These must be implemented in the generated code; descriptions guide the LLM.
+# Use helpers for simple reusable computations. Use resolvers for ordered
+# lookup or fallback behavior.
 helpers: []
 #  - name: <string>
 #    description: <string>
 #    signature: <string>        # Python type annotation hint
+#    expression: <string>       # optional implementation sketch
+#    used_by: [<target_field>, ...]

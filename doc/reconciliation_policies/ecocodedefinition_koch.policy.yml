@@ -1,0 +1,127 @@
+# BugsCEP → SEAD Reconciliation Policy
+# Domain: KochDefinition (TEcoDefKoch → tbl_ecocode_definitions)
+
+meta:
+  format_version: "1.0"
+  generated_from: java_source
+  reviewed: false
+  notes: >
+    Trace lookup is case-insensitive for the Bugs identifier. The updater maps
+    the incoming Koch group abbreviation to a group row within the Koch system.
+
+policy:
+  domain: ecocodedefinition_koch
+  description: >
+    Imports Koch ecocode definitions from TEcoDefKoch into
+    tbl_ecocode_definitions. Matching is trace-first and case-insensitive by
+    BugsKochCode; traced rows are updated in place and otherwise a new row is
+    created.
+
+source:
+  system: bugscep
+  table: TEcoDefKoch
+  sql: "SELECT BugsKochCode, KochCode, FullName, KochGroup, Description, Notes FROM TEcoDefKoch"
+  fields:
+    - name: BugsKochCode
+      type: string
+      nullable: true
+      role: natural_key
+    - name: KochCode
+      type: string
+      nullable: true
+      role: ignored
+      comment: Present in the row but not written directly; BugsKochCode becomes the SEAD abbreviation.
+    - name: FullName
+      type: string
+      nullable: true
+      role: data
+    - name: KochGroup
+      type: string
+      nullable: true
+      role: data
+    - name: Description
+      type: string
+      nullable: true
+      role: data
+    - name: Notes
+      type: string
+      nullable: true
+      role: data
+  identity_key: BugsKochCode
+  trace_key:
+    template: "{{BugsKochCode},{KochCode},{FullName},{KochGroup},{Description},{Notes}}"
+
+target:
+  system: sead
+  table: tbl_ecocode_definitions
+  identity:
+    column: ecocode_definition_id
+    type: integer
+    strategy: sequence
+    sequence: tbl_ecocode_definitions_ecocode_definition_id_seq
+
+mappings:
+  - target_field: abbreviation
+    type: string
+    nullable: true
+    source_field: BugsKochCode
+  - target_field: definition
+    type: string
+    nullable: true
+    source_field: Description
+  - target_field: name
+    type: string
+    nullable: true
+    source_field: FullName
+  - target_field: notes
+    type: string
+    nullable: true
+    source_field: Notes
+  - target_field: ecocode_group_id
+    type: integer
+    nullable: true
+    transform:
+      type: call
+      helper: resolve_koch_ecocode_group_id
+      args: ["source.KochGroup"]
+
+reconciliation:
+  strategy: ordered_rules
+  rules:
+    - name: trace_lookup
+      order: 1
+      type: trace_lookup
+      description: Look up the existing ecocode definition by BugsKochCode using the case-insensitive trace helper.
+      bugs_table: TEcoDefKoch
+      identifier_expr: "source.BugsKochCode"
+      on_match: update
+      on_error: skip
+      comment: Uses IgnoreCaseBugsIdentifierWithSeadDataTable in the Java trace helper.
+    - name: create_new
+      order: 2
+      type: create_new
+      description: No trace match found; create a new Koch ecocode definition row.
+      on_match: insert
+
+update_detection:
+  strategy: field_comparison
+  fields:
+    - abbreviation
+    - definition
+    - name
+    - notes
+    - ecocode_group_id
+  on_change: mark_updated
+
+dependencies: [EcocodeGroup]
+
+tracing:
+  bugs_table: TEcoDefKoch
+  sead_table: tbl_ecocode_definitions
+  write_on: [insert, update]
+
+helpers:
+  - name: resolve_koch_ecocode_group_id
+    description: Resolve the Koch group abbreviation within the Koch ecocode system to tbl_ecocode_groups.ecocode_group_id.
+    signature: "resolve_koch_ecocode_group_id(koch_group: str | None) -> int | None"
+    used_by: [ecocode_group_id]

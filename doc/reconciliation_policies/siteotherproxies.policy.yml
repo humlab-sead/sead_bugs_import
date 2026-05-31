@@ -1,0 +1,154 @@
+# BugsCEP → SEAD Reconciliation Policy
+# Domain: SiteOtherProxies (TSiteOtherProxies → tbl_site_other_records)
+
+meta:
+  format_version: "1.0"
+  generated_from: java_source
+  reviewed: false
+  notes: >
+    One Bugs row can yield multiple SiteOtherRecord rows. The converter resolves
+    the site from the imported site trace, expands the enabled proxy flags into
+    SEAD record types, and either creates a new list or updates the stored list
+    by adding new types and marking missing ones for deletion.
+
+policy:
+  domain: siteotherproxies
+  description: >
+    Imports non-beetle proxy availability from TSiteOtherProxies into
+    tbl_site_other_records. Reconciliation is list-based by site: the importer
+    resolves the site, expands enabled proxy flags into SEAD record types, and
+    updates the stored list of site_other_records for that site.
+
+source:
+  system: bugscep
+  table: TSiteOtherProxies
+  sql: >
+    SELECT SiteCODE, HasPollen, HasPlantMacro, HasDiatoms, HasChironomids,
+           HasSoilChemistry, HasIsotopes, HasAnimalBones, HasArchaeology,
+           HasMolluscs
+    FROM TSiteOtherProxies
+  fields:
+    - name: SiteCODE
+      type: string
+      nullable: true
+      role: natural_key
+    - name: HasPollen
+      type: boolean
+      nullable: true
+      role: data
+    - name: HasPlantMacro
+      type: boolean
+      nullable: true
+      role: data
+    - name: HasDiatoms
+      type: boolean
+      nullable: true
+      role: data
+    - name: HasChironomids
+      type: boolean
+      nullable: true
+      role: data
+    - name: HasSoilChemistry
+      type: boolean
+      nullable: true
+      role: data
+    - name: HasIsotopes
+      type: boolean
+      nullable: true
+      role: data
+    - name: HasAnimalBones
+      type: boolean
+      nullable: true
+      role: data
+    - name: HasArchaeology
+      type: boolean
+      nullable: true
+      role: data
+    - name: HasMolluscs
+      type: boolean
+      nullable: true
+      role: data
+  identity_key: SiteCODE
+  trace_key:
+    template: "{{SiteCODE}:{enabled proxy names joined with |}}"
+    comment: compressToString() joins the enum names of all enabled proxies.
+
+target:
+  system: sead
+  table: tbl_site_other_records
+  identity:
+    column: site_other_records_id
+    type: integer
+    strategy: sequence
+    sequence: tbl_site_other_records_site_other_records_id_seq
+
+output:
+  mode: one_to_many
+  item_helper: generate_site_other_record_items
+  compare_fields: [site_id, record_type_id]
+  on_missing_generated: insert
+  on_missing_existing: mark_for_deletion
+  on_match: return_as_is
+  comment: One Bugs proxy row expands to one SiteOtherRecord item per enabled proxy type.
+
+mappings:
+  - target_field: site_id
+    type: integer
+    nullable: true
+    transform:
+      type: call
+      helper: resolve_site_id
+      args: ["source.SiteCODE"]
+  - target_field: record_type_id
+    type: integer
+    nullable: true
+    transform:
+      type: generated
+      field: record_type_id
+    comment: Each generated item carries one resolved record_type_id.
+
+reconciliation:
+  strategy: ordered_rules
+  prerequisite:
+    description: Resolve the site from the imported site trace and expand enabled proxy flags to SEAD record types before list comparison.
+  rules:
+    - name: site_other_record_list_lookup
+      order: 1
+      type: database_query
+      description: Load all existing site-other-record rows for the resolved site and compare them with the generated proxy list.
+      table: tbl_site_other_records
+      where: "site_id = :site_id"
+      bind:
+        site_id: "resolve_site_id(source.SiteCODE)"
+      on_match: update
+      comment: Existing rows not present in the generated proxy set are marked for deletion; missing generated rows are appended.
+    - name: create_new
+      order: 2
+      type: create_new
+      description: No stored site-other-record rows exist for the site; create rows for all enabled proxies.
+      on_match: insert
+
+update_detection:
+  strategy: field_comparison
+  fields:
+    - site_id
+    - record_type_id
+  on_change: mark_updated
+  comment: List comparison is handled outside the field list; this section documents the per-item shape only.
+
+dependencies: [Site]
+
+tracing:
+  bugs_table: TSiteOtherProxies
+  sead_table: tbl_site_other_records
+  write_on: [insert, update]
+
+helpers:
+  - name: resolve_site_id
+    description: Resolve the Bugs site code to the traced SEAD site row from the Site importer trace.
+    signature: "resolve_site_id(site_code: str | None) -> int | None"
+    used_by: [site_id]
+  - name: generate_site_other_record_items
+    description: Expand enabled proxy flags to the SEAD record_type_id values used for emitted SiteOtherRecord rows.
+    signature: "generate_site_other_record_items(source_row: object) -> list[SiteOtherRecordItem]"
+    expression: "[{'record_type_id': ...}, ...]"

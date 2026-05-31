@@ -1,0 +1,41 @@
+fixture_version: "1.0"
+policy: speciesbiology
+scenarios:
+  - name: biology_lookup_returns_existing_text_biology
+    intent: reconciliation_path
+    source_rows:
+      - CODE: 10010020
+        Ref: Ref-101
+        Data: Existing biology note
+    policy_context:
+      step_hits:
+        biology_lookup: true
+      state:
+        existing_row_id: 101
+    expects:
+      reconciliation_path: [biology_lookup]
+      reconciliation_result:
+        result_kind: update_existing
+        source: biology_lookup
+        row_id: 101
+        species_code: 10010020
+        bugs_reference: Ref-101
+        text_value: Existing biology note
+  - name: create_new_text_biology_when_tuple_missing
+    intent: reconciliation_path
+    source_rows:
+      - CODE: 10010050
+        Ref: Ref-102
+        Data: New biology note
+    policy_context:
+      step_hits:
+        biology_lookup: false
+    expects:
+      reconciliation_path: [biology_lookup, create_new]
+      reconciliation_result:
+        result_kind: insert_new
+        source: create_new
+        row_id: null
+        species_code: 10010050
+        bugs_reference: Ref-102
+        text_value: New biology note

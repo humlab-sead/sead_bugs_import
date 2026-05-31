@@ -1,0 +1,344 @@
+# BugsCEP → SEAD Reconciliation Policy
+# Domain: Geochronology (TDatesRadio → tbl_geochronology)
+
+meta:
+  format_version: "1.0"
+  generated_from: java_source
+  reviewed: false
+  notes: >
+    The updater creates an analysis entity only once and then updates lab,
+    numeric age values, notes, and uncertainty. Lab resolution may flag the
+    output row, and uncertainty accepts blank values but errors on unknown
+    non-blank symbols. The importer does not create labs or uncertainty rows;
+    it only creates the geochronology row plus its cascaded dataset and
+    analysis entity when the row is first inserted.
+
+policy:
+  domain: datesradio
+  description: >
+    Imports radiocarbon and related laboratory dates from TDatesRadio into
+    tbl_geochronology. Matching is trace-first by DateCODE. Traced rows are
+    updated in place; otherwise a new geochronology row is created.
+    Supporting dataset and analysis-entity rows are created only when the
+    geochronology row is first inserted; later updates keep the existing child
+    graph and only update the geochronology fields.
+
+source:
+  system: bugscep
+  table: TDatesRadio
+  sql: >
+    SELECT DateCODE, SampleCODE, LabNr, Uncertainty, Date, AgeErrorOrPlusError,
+           AgeErrorMinus, DatingMethod, MaterialType, LabID, Notes
+    FROM TDatesRadio
+  fields:
+    - name: DateCODE
+      type: string
+      nullable: true
+      role: natural_key
+    - name: SampleCODE
+      type: string
+      nullable: true
+      role: data
+    - name: LabNr
+      type: string
+      nullable: true
+      role: data
+    - name: Uncertainty
+      type: string
+      nullable: true
+      role: data
+    - name: Date
+      type: integer
+      nullable: true
+      role: data
+    - name: AgeErrorOrPlusError
+      type: integer
+      nullable: true
+      role: data
+    - name: AgeErrorMinus
+      type: integer
+      nullable: true
+      role: data
+    - name: DatingMethod
+      type: string
+      nullable: true
+      role: data
+    - name: MaterialType
+      type: string
+      nullable: true
+      role: data
+    - name: LabID
+      type: string
+      nullable: true
+      role: data
+    - name: Notes
+      type: string
+      nullable: true
+      role: data
+  identity_key: DateCODE
+  trace_key:
+    template: "{{DateCODE},{SampleCODE},{LabNr},{Uncertainty},{Date},{AgeErrorOrPlusError},{AgeErrorMinus},{DatingMethod},{MaterialType},{LabID},{Notes}}"
+
+target:
+  system: sead
+  table: tbl_geochronology
+  identity:
+    column: geochron_id
+    type: integer
+    strategy: sequence
+    sequence: tbl_geochronology_geochron_id_seq
+
+related_outputs:
+  - name: dataset
+    table: tbl_datasets
+    mode: zero_or_one
+    relationship: supporting
+    item_helper: generate_geochronology_dataset_items
+    persistence: cascade
+    key_fields: [dataset_id, dataset_name, data_type_id, method_id, master_set_id]
+    identity:
+      column: dataset_id
+      type: integer
+      strategy: sequence
+      sequence: tbl_datasets_dataset_id_seq
+    mappings:
+      - target_field: dataset_name
+        type: string
+        nullable: true
+        transform:
+          type: generated
+          field: dataset_name
+      - target_field: data_type_id
+        type: integer
+        nullable: true
+        transform:
+          type: generated
+          field: data_type_id
+      - target_field: method_id
+        type: integer
+        nullable: true
+        transform:
+          type: generated
+          field: method_id
+      - target_field: master_set_id
+        type: integer
+        nullable: true
+        transform:
+          type: generated
+          field: master_set_id
+    reconciliation:
+      existing_rows:
+        table: tbl_datasets
+        where: "dataset_id = :dataset_id"
+        bind:
+          dataset_id: "generated.dataset_id"
+      compare_fields: [dataset_name, data_type_id, method_id, master_set_id]
+      on_missing_generated: insert
+      on_missing_existing: keep
+      on_match: return_as_is
+      comment: GeochronologyDatasetCreator builds a fresh dataset only when a new geochronology row is created. Traced rows keep their existing dataset attachment and do not mutate it during updates.
+    update_detection:
+      strategy: never
+      fields: []
+      on_change: ignore
+    comment: Dataset creation uses the fixed Bugs geochronology data type, the Bugs master set, DateCODE as dataset name, and the method resolved by GeochronologyMethodManager.
+  - name: analysis_entity
+    table: tbl_analysis_entities
+    mode: zero_or_one
+    relationship: supporting
+    item_helper: generate_geochronology_analysis_entity_items
+    persistence: cascade
+    key_fields: [analysis_entity_id, physical_sample_id, dataset_id]
+    identity:
+      column: analysis_entity_id
+      type: integer
+      strategy: sequence
+      sequence: tbl_analysis_entities_analysis_entity_id_seq
+    mappings:
+      - target_field: physical_sample_id
+        type: integer
+        nullable: false
+        transform:
+          type: generated
+          field: physical_sample_id
+      - target_field: dataset_id
+        type: integer
+        nullable: true
+        transform:
+          type: generated
+          field: dataset_id
+    reconciliation:
+      existing_rows:
+        table: tbl_analysis_entities
+        where: "analysis_entity_id = :analysis_entity_id"
+        bind:
+          analysis_entity_id: "generated.analysis_entity_id"
+      compare_fields: [physical_sample_id, dataset_id]
+      on_missing_generated: insert
+      on_missing_existing: keep
+      on_match: return_as_is
+      comment: GeochronologyUpdater creates the analysis entity only when the geochronology row has no existing child. Traced rows keep the stored analysis entity unchanged.
+    update_detection:
+      strategy: never
+      fields: []
+      on_change: ignore
+    comment: AnalysisEntity creation links the traced sample to the generated dataset and is only part of the insert path.
+
+mappings:
+  - target_field: age
+    type: decimal
+    nullable: true
+    transform:
+      type: coerce
+      input: "source.Date"
+      output_type: decimal
+  - target_field: error_older
+    type: decimal
+    nullable: true
+    transform:
+      type: coerce
+      input: "source.AgeErrorOrPlusError"
+      output_type: decimal
+  - target_field: error_younger
+    type: decimal
+    nullable: true
+    transform:
+      type: conditional
+      condition: "source.AgeErrorMinus is not None"
+      if_true: "source.AgeErrorMinus"
+      if_false: "source.AgeErrorOrPlusError"
+  - target_field: notes
+    type: string
+    nullable: true
+    source_field: Notes
+  - target_field: lab_number
+    type: string
+    nullable: true
+    source_field: LabNr
+  - target_field: dating_lab_id
+    type: integer
+    nullable: true
+    transform:
+      type: call
+      helper: resolve_dating_lab_id
+      args: ["source.LabID"]
+  - target_field: dating_uncertainty_id
+    type: integer
+    nullable: true
+    transform:
+      type: call
+      helper: resolve_dating_uncertainty_id
+      args: ["source.Uncertainty"]
+  - target_field: analysis_entity_id
+    type: integer
+    nullable: true
+    transform:
+      type: call
+      helper: resolve_geochronology_analysis_entity_id
+      args: ["source.SampleCODE", "source.DatingMethod", "source.MaterialType", "source.DateCODE"]
+
+reconciliation:
+  strategy: ordered_rules
+  rules:
+    - name: trace_lookup
+      order: 1
+      type: trace_lookup
+      description: Look up the existing geochronology row by DateCODE from bugs_trace.
+      bugs_table: TDatesRadio
+      identifier_expr: "source.DateCODE"
+      on_match: update
+      on_error: skip
+    - name: create_new
+      order: 2
+      type: create_new
+      description: No trace match found; create a new geochronology row.
+      on_match: insert
+
+update_detection:
+  strategy: field_comparison
+  fields:
+    - age
+    - error_older
+    - error_younger
+    - notes
+    - lab_number
+    - dating_lab_id
+    - dating_uncertainty_id
+    - analysis_entity_id
+  on_change: mark_updated
+  comment: Numeric comparisons use BigDecimalDefinition numeric equality in Java. Dataset and analysis-entity changes are not part of the update path after the row has been created.
+
+dependencies: [Sample, Lab]
+
+tracing:
+  bugs_table: TDatesRadio
+  sead_table: tbl_geochronology
+  write_on: [insert, update]
+
+known_divergences:
+  - area: update_detection.age
+    status: java_bug_suspected
+    description: GeochronologyUpdater.setAge() returns numeric equality instead of difference, so the Java updater can leave the row unchanged when the numeric age differs and mark it updated when the numeric age is equal.
+    policy_choice: match_intended_behavior
+
+resolvers:
+  - name: resolve_dating_lab_id
+    description: Resolve a dating lab through unknown-lab shortcut, trace lookup, direct repository lookup, or a not-found error container.
+    returns: entity_ref
+    args: [lab_id]
+    config:
+      - name: unknown_sead_lab_identifier
+        property: sead.unknown.lab.identifier
+        default: Unknown
+        description: SEAD lab ID returned for blank or configured unknown Bugs lab identifiers.
+      - name: unknown_bugs_lab_identifier
+        property: bugs.unknown.lab.identifier
+        default: Unknown
+        description: Bugs lab identifier treated as the unknown-lab sentinel.
+    steps:
+      - name: unknown_shortcut
+        when: "lab_id is None or lab_id.strip() == '' or lab_id == config.unknown_bugs_lab_identifier"
+        action: database_query
+        table: tbl_dating_labs
+        where: "lab_id = :lab_id"
+        bind:
+          lab_id: "config.unknown_sead_lab_identifier"
+        return: return_entity
+      - name: trace_lookup
+        action: trace_lookup
+        bugs_table: TLab
+        identifier_expr: "lab_id"
+        return: return_entity
+      - name: direct_lookup
+        action: database_query
+        table: tbl_dating_labs
+        where: "lab_id = :lab_id"
+        bind:
+          lab_id: "lab_id"
+        return: return_entity
+      - name: not_found
+        action: emit_issue
+        emit:
+          severity: error
+          code: dating_lab_not_found
+          message: "No lab found"
+        return: empty_entity
+    used_by: [dating_lab_id]
+
+helpers:
+  - name: resolve_dating_uncertainty_id
+    description: Resolve a non-blank uncertainty symbol to tbl_dating_uncertainty.dating_uncertainty_id.
+    signature: "resolve_dating_uncertainty_id(uncertainty: str | None) -> int | None"
+    used_by: [dating_uncertainty_id]
+  - name: resolve_geochronology_analysis_entity_id
+    description: Resolve or create the AnalysisEntity and Dataset for this geochronology row using the traced sample and GeochronologyDatasetCreator.
+    signature: "resolve_geochronology_analysis_entity_id(sample_code: str | None, dating_method: str | None, material_type: str | None, date_code: str | None) -> int | None"
+    used_by: [analysis_entity_id]
+  - name: generate_geochronology_dataset_items
+    description: Emit the dataset attached to the geochronology row, preserving the traced dataset_id for existing rows and using DateCODE as the dataset name for inserts.
+    signature: "generate_geochronology_dataset_items(sample_code: str | None, date_code: str | None, dating_method: str | None, material_type: str | None) -> list[GeochronologyDatasetItem]"
+    expression: "[{'dataset_id': ..., 'dataset_name': ..., 'data_type_id': ..., 'method_id': ..., 'master_set_id': ...}]"
+  - name: generate_geochronology_analysis_entity_items
+    description: Emit the analysis entity attached to the geochronology row, preserving the traced analysis_entity_id for existing rows and linking the traced sample to the generated dataset on insert.
+    signature: "generate_geochronology_analysis_entity_items(sample_code: str | None, date_code: str | None, dating_method: str | None) -> list[GeochronologyAnalysisEntityItem]"
+    expression: "[{'analysis_entity_id': ..., 'physical_sample_id': ..., 'dataset_id': ...}]"

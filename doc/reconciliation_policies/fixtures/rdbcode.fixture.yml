@@ -1,0 +1,86 @@
+fixture_version: "1.0"
+policy: rdbcode
+scenarios:
+  - name: trace_hit_updates_existing_rdb_code
+    intent: reconciliation_path
+    source_rows:
+      - RDBCode: 101
+        Category: A1
+        RDBDefinition: Updated by trace
+        RDBSystemCode: 5
+    policy_context:
+      step_hits:
+        trace_lookup: true
+      state:
+        existing_row_id: 71
+    expects:
+      reconciliation_path: [trace_lookup]
+      reconciliation_result:
+        result_kind: update_existing
+        source: trace_lookup
+        row_id: 71
+        rdb_code: 101
+  - name: trace_hit_returns_existing_error_row
+    intent: reconciliation_path
+    source_rows:
+      - RDBCode: 102
+        Category: A2
+        RDBDefinition: Existing error row
+        RDBSystemCode: 5
+    policy_context:
+      step_hits:
+        trace_lookup: true
+      state:
+        existing_row_id: 72
+        existing_error_message: Existing RDB trace error
+    expects:
+      reconciliation_path: [trace_lookup]
+      reconciliation_result:
+        result_kind: return_existing_error
+        source: trace_lookup
+        row_id: 72
+        rdb_code: 102
+        issue:
+          severity: error
+          message: Existing RDB trace error
+  - name: duplicate_value_guard_returns_error_carrier
+    intent: reconciliation_path
+    source_rows:
+      - RDBCode: 103
+        Category: A3
+        RDBDefinition: Duplicate values
+        RDBSystemCode: 5
+    policy_context:
+      step_hits:
+        trace_lookup: false
+        duplicate_value_guard: true
+      state:
+        guard_error_message: Sead data matches values
+    expects:
+      reconciliation_path: [trace_lookup, duplicate_value_guard]
+      reconciliation_result:
+        result_kind: return_guard_error
+        source: duplicate_value_guard
+        row_id: null
+        rdb_code: 103
+        issue:
+          severity: error
+          message: Sead data matches values
+  - name: create_new_rdb_code_when_no_match_exists
+    intent: reconciliation_path
+    source_rows:
+      - RDBCode: 104
+        Category: A4
+        RDBDefinition: Brand new
+        RDBSystemCode: 5
+    policy_context:
+      step_hits:
+        trace_lookup: false
+        duplicate_value_guard: false
+    expects:
+      reconciliation_path: [trace_lookup, duplicate_value_guard, create_new]
+      reconciliation_result:
+        result_kind: insert_new
+        source: create_new
+        row_id: null
+        rdb_code: 104

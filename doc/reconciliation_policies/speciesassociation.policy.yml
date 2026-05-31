@@ -1,0 +1,140 @@
+# BugsCEP → SEAD Reconciliation Policy
+# Domain: SpeciesAssociation (TSpeciesAssociations → tbl_species_associations)
+
+meta:
+  format_version: "1.0"
+  generated_from: java_source
+  reviewed: false
+  notes: >
+    This importer resolves two taxon references, an association type, and an
+    optional bibliography reference. Reconciliation is trace-first.
+
+policy:
+  domain: speciesassociation
+  description: >
+    Imports species-association rows from TSpeciesAssociations into
+    tbl_species_associations. The importer checks trace first, then creates a
+    new association when no prior bugs_trace row exists.
+
+source:
+  system: bugscep
+  table: TSpeciesAssociations
+  sql: >
+    SELECT SpeciesAssociationID, CODE, AssociatedSpeciesCODE, AssociationType, Ref
+    FROM TSpeciesAssociations
+  fields:
+    - name: SpeciesAssociationID
+      type: string
+      nullable: true
+      role: natural_key
+    - name: CODE
+      type: string
+      nullable: true
+      role: data
+      comment: Source taxon code.
+    - name: AssociatedSpeciesCODE
+      type: string
+      nullable: true
+      role: data
+      comment: Associated taxon code.
+    - name: AssociationType
+      type: string
+      nullable: true
+      role: data
+    - name: Ref
+      type: string
+      nullable: true
+      role: data
+  identity_key: SpeciesAssociationID
+  trace_key:
+    template: "{{{CODE},{AssociatedSpeciesCODE},{AssociationType}}}"
+
+target:
+  system: sead
+  table: tbl_species_associations
+  identity:
+    column: species_association_id
+    type: integer
+    strategy: sequence
+    sequence: tbl_species_associations_species_association_id_seq
+
+mappings:
+  - target_field: taxon_id
+    type: integer
+    nullable: false
+    transform:
+      type: call
+      helper: resolve_taxon_id
+      args: ["source.CODE"]
+  - target_field: associated_taxon_id
+    type: integer
+    nullable: false
+    transform:
+      type: call
+      helper: resolve_associated_taxon_id
+      args: ["source.AssociatedSpeciesCODE"]
+  - target_field: association_type_id
+    type: integer
+    nullable: true
+    transform:
+      type: call
+      helper: resolve_association_type_id
+      args: ["source.AssociationType"]
+  - target_field: biblio_id
+    type: integer
+    nullable: true
+    transform:
+      type: call
+      helper: resolve_biblio_id
+      args: ["source.Ref"]
+
+reconciliation:
+  strategy: ordered_rules
+  rules:
+    - name: trace_lookup
+      order: 1
+      type: trace_lookup
+      description: Look up the species association by its last Bugs trace.
+      bugs_table: TSpeciesAssociations
+      identifier_expr: "source.SpeciesAssociationID"
+      on_match: update
+      on_error: skip
+    - name: create_new
+      order: 2
+      type: create_new
+      description: No trace match found; create a new species association.
+      on_match: insert
+
+update_detection:
+  strategy: field_comparison
+  fields:
+    - taxon_id
+    - associated_taxon_id
+    - association_type_id
+    - biblio_id
+  on_change: mark_updated
+
+dependencies: [Bibliography, Index]
+
+tracing:
+  bugs_table: TSpeciesAssociations
+  sead_table: tbl_species_associations
+  write_on: [insert, update]
+
+helpers:
+  - name: resolve_taxon_id
+    description: Resolve the source species code to tbl_taxa_tree_master.taxon_id.
+    signature: "resolve_taxon_id(code: str | None) -> int | None"
+    used_by: [taxon_id]
+  - name: resolve_associated_taxon_id
+    description: Resolve the associated species code to tbl_taxa_tree_master.taxon_id.
+    signature: "resolve_associated_taxon_id(code: str | None) -> int | None"
+    used_by: [associated_taxon_id]
+  - name: resolve_association_type_id
+    description: Resolve the Bugs association type to tbl_species_association_types.association_type_id.
+    signature: "resolve_association_type_id(association_type: str | None) -> int | None"
+    used_by: [association_type_id]
+  - name: resolve_biblio_id
+    description: Resolve the reference code to tbl_biblio.biblio_id.
+    signature: "resolve_biblio_id(reference: str | None) -> int | None"
+    used_by: [biblio_id]

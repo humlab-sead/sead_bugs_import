@@ -1,0 +1,148 @@
+# BugsCEP → SEAD Reconciliation Policy
+# Domain: SampleGroup (TCountsheet → tbl_sample_groups)
+
+meta:
+  format_version: "1.0"
+  generated_from: java_source
+  reviewed: false
+  notes: >
+    The converter resolves site and sampling context before reconciliation.
+    Matching is trace-first by CountsheetCODE, followed by a duplicate-name
+    guard for the same site. The sampling method comes from MethodManager and
+    is set on create but not compared during updates. This importer does not
+    persist child or supporting rows; site, sampling context, and method are
+    resolved lookup dependencies only.
+
+policy:
+  domain: samplegroup
+  description: >
+    Imports countsheet sample groups from TCountsheet into tbl_sample_groups.
+    A traced row is updated in place. If no trace exists, the importer checks
+    for an existing sample-group name at the same site and returns an error
+    carrier on collision; otherwise it creates a new row.
+
+source:
+  system: bugscep
+  table: TCountsheet
+  sql: "SELECT CountsheetCODE, CountsheetName, SiteCODE, SheetContext, SheetType FROM TCountsheet"
+  fields:
+    - name: CountsheetCODE
+      type: string
+      nullable: true
+      role: natural_key
+    - name: CountsheetName
+      type: string
+      nullable: true
+      role: data
+    - name: SiteCODE
+      type: string
+      nullable: true
+      role: data
+    - name: SheetContext
+      type: string
+      nullable: true
+      role: data
+    - name: SheetType
+      type: string
+      nullable: true
+      role: ignored
+      comment: Present in the row but not written by SampleGroupCreator or SampleGroupUpdater.
+  identity_key: CountsheetCODE
+  trace_key:
+    template: "{{CountsheetCODE},{CountsheetName},{SiteCODE},{SheetContext},{SheetType}}"
+
+target:
+  system: sead
+  table: tbl_sample_groups
+  identity:
+    column: sample_group_id
+    type: integer
+    strategy: sequence
+    sequence: tbl_sample_groups_sample_group_id_seq
+
+mappings:
+  - target_field: sample_group_name
+    type: string
+    nullable: false
+    source_field: CountsheetName
+  - target_field: site_id
+    type: integer
+    nullable: true
+    transform:
+      type: call
+      helper: resolve_site_id
+      args: ["source.SiteCODE"]
+  - target_field: sampling_context_id
+    type: integer
+    nullable: true
+    transform:
+      type: call
+      helper: resolve_sampling_context_id
+      args: ["source.SheetContext"]
+  - target_field: method_id
+    type: integer
+    nullable: true
+    transform:
+      type: call
+      helper: resolve_sampling_method_id
+      args: []
+
+reconciliation:
+  strategy: ordered_rules
+  prerequisite:
+    description: Resolve the site by SiteCODE and the sampling context by SheetContext before matching.
+  rules:
+    - name: trace_lookup
+      order: 1
+      type: trace_lookup
+      description: Look up the existing sample group by CountsheetCODE from bugs_trace.
+      bugs_table: TCountsheet
+      identifier_expr: "source.CountsheetCODE"
+      on_match: update
+      on_error: skip
+    - name: duplicate_name_guard
+      order: 2
+      type: database_query
+      description: Check for an existing sample group with the same site and name when no trace exists.
+      table: tbl_sample_groups
+      where: "site_id = :site_id AND LOWER(sample_group_name) = LOWER(:sample_group_name)"
+      bind:
+        site_id: "resolve_site_id(source.SiteCODE)"
+        sample_group_name: "source.CountsheetName"
+      on_match: return_as_is
+      comment: Mirrors the Java error carrier for a name collision without a Bugs import marker.
+    - name: create_new
+      order: 3
+      type: create_new
+      description: No trace or name collision found; create a new sample-group row.
+      on_match: insert
+
+update_detection:
+  strategy: field_comparison
+  fields:
+    - sample_group_name
+    - site_id
+    - sampling_context_id
+  on_change: mark_updated
+  comment: SampleGroupUpdater compares name, site, and sampling context only.
+
+dependencies: [Site]
+
+tracing:
+  bugs_table: TCountsheet
+  sead_table: tbl_sample_groups
+  write_on: [insert, update]
+
+helpers:
+  - name: resolve_site_id
+    description: Resolve the Bugs site code to the traced SEAD site row, disallowing deleted sites.
+    signature: "resolve_site_id(site_code: str | None) -> int | None"
+    used_by: [site_id]
+  - name: resolve_sampling_context_id
+    description: Resolve SheetContext to tbl_sampling_contexts.sampling_context_id using case-insensitive name matching.
+    signature: "resolve_sampling_context_id(context_name: str | None) -> int | None"
+    used_by: [sampling_context_id]
+  - name: resolve_sampling_method_id
+    description: Return the fixed sampling method row selected by MethodManager.getSamplingMethodName().
+    signature: "resolve_sampling_method_id() -> int | None"
+    used_by: [method_id]

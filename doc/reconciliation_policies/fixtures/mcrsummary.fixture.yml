@@ -1,0 +1,49 @@
+fixture_version: "1.0"
+policy: mcrsummary
+scenarios:
+  - name: species_lookup_returns_existing_summary_as_is
+    intent: reconciliation_path
+    source_rows:
+      - CODE: 10010020
+        TMaxLo: 10
+        TMaxHi: 20
+        TMinLo: 1
+        TMinHi: 5
+        TRangeLo: 9
+        TRangeHi: 19
+        COGMidTMax: 15
+        COGMidTRange: 14
+    policy_context:
+      step_hits:
+        species_lookup: true
+      state:
+        existing_row_id: 901
+    expects:
+      reconciliation_path: [species_lookup]
+      reconciliation_result:
+        result_kind: return_as_is
+        source: species_lookup
+        row_id: 901
+        species_code: 10010020
+  - name: create_new_summary_when_species_lookup_misses
+    intent: reconciliation_path
+    source_rows:
+      - CODE: 10010021
+        TMaxLo: 11
+        TMaxHi: 21
+        TMinLo: 2
+        TMinHi: 6
+        TRangeLo: 10
+        TRangeHi: 20
+        COGMidTMax: 16
+        COGMidTRange: 15
+    policy_context:
+      step_hits:
+        species_lookup: false
+    expects:
+      reconciliation_path: [species_lookup, create_new]
+      reconciliation_result:
+        result_kind: insert_new
+        source: create_new
+        row_id: null
+        species_code: 10010021

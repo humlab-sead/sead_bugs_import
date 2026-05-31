@@ -1,0 +1,246 @@
+fixture_version: "1.0"
+policy: sitelocations
+scenarios:
+  - name: create_site_locations_when_none_exist
+    intent: output_result
+    source_rows:
+      - SiteCODE: SITE_1
+        Country: Sweden
+        Region: Skane
+    policy_context:
+      args:
+        site_id: "501"
+        generated_location_ids: "601,602"
+      step_hits: {}
+      state:
+        generated_locations:
+          region:
+            location_id: 601
+            location_name: Skane
+          country:
+            location_id: 602
+            location_name: Sweden
+    expects:
+      output_result:
+        row_1:
+          result_kind: insert_new
+          site_location_id: null
+          site_id: 501
+          location_id: 601
+          location_name: Skane
+          marked_for_deletion: false
+          is_error: false
+          error_message: null
+        row_2:
+          result_kind: insert_new
+          site_location_id: null
+          site_id: 501
+          location_id: 602
+          location_name: Sweden
+          marked_for_deletion: false
+          is_error: false
+          error_message: null
+  - name: mark_missing_and_append_new_site_locations_when_lists_differ
+    intent: output_result
+    source_rows:
+      - SiteCODE: SITE_2
+        Country: Sweden
+        Region: Blekinge
+    policy_context:
+      args:
+        site_id: "502"
+        generated_location_ids: "603,604"
+      step_hits: {}
+      state:
+        generated_locations:
+          region:
+            location_id: 603
+            location_name: Blekinge
+          country:
+            location_id: 604
+            location_name: Sweden
+        existing_site_locations:
+          old_region:
+            site_location_id: 701
+            location_id: 605
+            location_name: Smaland
+          old_country:
+            site_location_id: 702
+            location_id: 604
+            location_name: Sweden
+    expects:
+      output_result:
+        row_1:
+          result_kind: mark_for_deletion
+          site_location_id: 701
+          site_id: 502
+          location_id: 605
+          location_name: Smaland
+          marked_for_deletion: true
+          is_error: false
+          error_message: null
+        row_2:
+          result_kind: insert_new
+          site_location_id: null
+          site_id: 502
+          location_id: 603
+          location_name: Blekinge
+          marked_for_deletion: false
+          is_error: false
+          error_message: null
+  - name: keep_existing_site_locations_when_lists_match
+    intent: output_result
+    source_rows:
+      - SiteCODE: SITE_3
+        Country: Norway
+        Region: Nordland
+    policy_context:
+      args:
+        site_id: "503"
+        generated_location_ids: "606,607"
+      step_hits: {}
+      state:
+        generated_locations:
+          region:
+            location_id: 606
+            location_name: Nordland
+          country:
+            location_id: 607
+            location_name: Norway
+        existing_site_locations:
+          region:
+            site_location_id: 703
+            location_id: 606
+            location_name: Nordland
+          country:
+            site_location_id: 704
+            location_id: 607
+            location_name: Norway
+    expects:
+      output_result:
+        row_1:
+          result_kind: keep_existing
+          site_location_id: 703
+          site_id: 503
+          location_id: 606
+          location_name: Nordland
+          marked_for_deletion: false
+          is_error: false
+          error_message: null
+        row_2:
+          result_kind: keep_existing
+          site_location_id: 704
+          site_id: 503
+          location_id: 607
+          location_name: Norway
+          marked_for_deletion: false
+          is_error: false
+          error_message: null
+  - name: mark_all_existing_site_locations_for_deletion_when_generated_empty
+    intent: output_result
+    source_rows:
+      - SiteCODE: SITE_4
+        Country: null
+        Region: null
+    policy_context:
+      args:
+        site_id: "504"
+        generated_location_ids: ""
+      step_hits: {}
+      state:
+        existing_site_locations:
+          region:
+            site_location_id: 705
+            location_id: 608
+            location_name: Uppland
+          country:
+            site_location_id: 706
+            location_id: 609
+            location_name: Sweden
+    expects:
+      output_result:
+        row_1:
+          result_kind: mark_for_deletion
+          site_location_id: 705
+          site_id: 504
+          location_id: 608
+          location_name: Uppland
+          marked_for_deletion: true
+          is_error: false
+          error_message: null
+        row_2:
+          result_kind: mark_for_deletion
+          site_location_id: 706
+          site_id: 504
+          location_id: 609
+          location_name: Sweden
+          marked_for_deletion: true
+          is_error: false
+          error_message: null
+  - name: return_single_error_row_when_imported_site_missing
+    intent: output_result
+    source_rows:
+      - SiteCODE: SITE_5
+        Country: Sweden
+        Region: Uppland
+    policy_context:
+      args:
+        site_id: null
+        generated_location_ids: ""
+      step_hits: {}
+      state:
+        site_lookup:
+          status: missing_imported_site
+          error_message: Could not find imported site
+    expects:
+      output_result:
+        row_1:
+          result_kind: error
+          site_location_id: null
+          site_id: null
+          location_id: null
+          location_name: null
+          marked_for_deletion: false
+          is_error: true
+          error_message: Could not find imported site
+  - name: return_generated_rows_when_location_manager_reports_error
+    intent: output_result
+    source_rows:
+      - SiteCODE: SITE_6
+        Country: null
+        Region: Halland
+    policy_context:
+      args:
+        site_id: "505"
+        generated_location_ids: "610"
+      step_hits: {}
+      state:
+        generated_locations:
+          country:
+            location_id: null
+            location_name: null
+            error_message: Location name cannot be empty
+          region:
+            location_id: 610
+            location_name: Halland
+            error_message: null
+    expects:
+      output_result:
+        row_1:
+          result_kind: error
+          site_location_id: null
+          site_id: 505
+          location_id: null
+          location_name: null
+          marked_for_deletion: false
+          is_error: true
+          error_message: Location name cannot be empty
+        row_2:
+          result_kind: return_generated
+          site_location_id: null
+          site_id: 505
+          location_id: 610
+          location_name: Halland
+          marked_for_deletion: false
+          is_error: false
+          error_message: null

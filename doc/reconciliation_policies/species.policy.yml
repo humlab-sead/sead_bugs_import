@@ -1,0 +1,313 @@
+# BugsCEP → SEAD Reconciliation Policy
+# Domain: Species / Index (INDEX → tbl_taxonomic_order)
+
+meta:
+  format_version: "1.0"
+  generated_from: java_source
+  reviewed: false
+  notes: >
+    The importer keys the main reconciliation on Bugs taxonomic code inside the
+    fixed Bugs taxonomic-order system. New rows may also create or reuse family,
+    genus, author, and species rows before the taxonomic-order row is saved.
+
+policy:
+  domain: species
+  description: >
+    Imports Bugs taxonomy-code rows from INDEX into tbl_taxonomic_order.
+    Matching is by taxonomic code in the Bugs order system. Existing taxonomic
+    order rows are returned unchanged; only new rows build or reuse the related
+    family, genus, author, and species records before persistence.
+
+source:
+  system: bugscep
+  table: INDEX
+  sql: "SELECT CODE, FAMILY, GENUS, SPECIES, AUTHORITY FROM INDEX"
+  fields:
+    - name: CODE
+      type: decimal
+      nullable: false
+      role: natural_key
+    - name: FAMILY
+      type: string
+      nullable: true
+      role: data
+    - name: GENUS
+      type: string
+      nullable: true
+      role: data
+    - name: SPECIES
+      type: string
+      nullable: true
+      role: data
+    - name: AUTHORITY
+      type: string
+      nullable: true
+      role: data
+  identity_key: CODE
+  trace_key:
+    template: "{{CODE},{FAMILY},{GENUS},{SPECIES},{AUTHORITY}}"
+    comment: compressToString() omits the trailing authority fragment when AUTHORITY is null.
+
+target:
+  system: sead
+  table: tbl_taxonomic_order
+  identity:
+    column: taxonomic_order_id
+    type: integer
+    strategy: sequence
+    sequence: tbl_taxonomic_order_taxonomic_order_id_seq
+
+related_outputs:
+  - name: taxa_family
+    table: tbl_taxa_tree_families
+    mode: zero_or_one
+    relationship: supporting
+    item_helper: generate_taxa_family_item
+    persistence: cascade
+    key_fields: [family_name, order_id]
+    identity:
+      column: family_id
+      type: integer
+      strategy: sequence
+      sequence: tbl_taxa_tree_families_family_id_seq
+    mappings:
+      - target_field: family_name
+        type: string
+        nullable: true
+        transform:
+          type: generated
+          field: family_name
+      - target_field: order_id
+        type: integer
+        nullable: true
+        transform:
+          type: call
+          helper: resolve_import_order_id
+          args: []
+    reconciliation:
+      existing_rows:
+        table: tbl_taxa_tree_families
+        where: "family_name = :family_name AND order_id = :order_id"
+        bind:
+          family_name: "generated.family_name"
+          order_id: "resolve_import_order_id()"
+      compare_fields: [family_name, order_id]
+      on_missing_generated: insert
+      on_missing_existing: keep
+      on_match: return_as_is
+      comment: Family rows are reused by name within the default import order and are only created when no stored family exists.
+    update_detection:
+      strategy: never
+      fields: []
+      on_change: ignore
+    comment: A new family row is created only when no family exists for the default import order.
+  - name: taxa_genus
+    table: tbl_taxa_tree_genera
+    mode: zero_or_one
+    relationship: supporting
+    item_helper: generate_taxa_genus_item
+    persistence: cascade
+    key_fields: [genus_name, family_id]
+    identity:
+      column: genus_id
+      type: integer
+      strategy: sequence
+      sequence: tbl_taxa_tree_genera_genus_id_seq
+    mappings:
+      - target_field: genus_name
+        type: string
+        nullable: true
+        transform:
+          type: generated
+          field: genus_name
+      - target_field: family_id
+        type: integer
+        nullable: true
+        transform:
+          type: generated
+          field: family_id
+    reconciliation:
+      existing_rows:
+        table: tbl_taxa_tree_genera
+        where: "genus_name = :genus_name AND family_id = :family_id"
+        bind:
+          genus_name: "generated.genus_name"
+          family_id: "generated.family_id"
+      compare_fields: [genus_name, family_id]
+      on_missing_generated: insert
+      on_missing_existing: keep
+      on_match: return_as_is
+      comment: Genus rows are reused by genus name plus family and are only emitted when family resolution succeeds and no stored genus exists.
+    update_detection:
+      strategy: never
+      fields: []
+      on_change: ignore
+    comment: A new genus row is created only when no genus exists for the resolved family.
+  - name: taxa_author
+    table: tbl_taxa_tree_authors
+    mode: zero_or_one
+    relationship: supporting
+    item_helper: generate_taxa_author_item
+    persistence: cache_then_link
+    key_fields: [author_name]
+    identity:
+      column: author_id
+      type: integer
+      strategy: sequence
+      sequence: tbl_taxa_tree_authors_author_id_seq
+    mappings:
+      - target_field: author_name
+        type: string
+        nullable: true
+        transform:
+          type: generated
+          field: author_name
+    reconciliation:
+      existing_rows:
+        table: tbl_taxa_tree_authors
+        where: "author_name = :author_name"
+        bind:
+          author_name: "generated.author_name"
+      compare_fields: [author_name]
+      on_missing_generated: insert
+      on_missing_existing: keep
+      on_match: return_as_is
+      comment: Author rows are optional and are reused by name when present.
+    update_detection:
+      strategy: never
+      fields: []
+      on_change: ignore
+    comment: Author rows are optional and are reused by name when present.
+  - name: taxa_species
+    table: tbl_taxa_tree_master
+    mode: zero_or_one
+    relationship: supporting
+    item_helper: generate_taxa_species_item
+    persistence: cache_then_link
+    key_fields: [species, genus_id, author_id]
+    identity:
+      column: taxon_id
+      type: integer
+      strategy: sequence
+      sequence: tbl_taxa_tree_master_taxon_id_seq
+    mappings:
+      - target_field: species
+        type: string
+        nullable: true
+        transform:
+          type: generated
+          field: species
+      - target_field: genus_id
+        type: integer
+        nullable: true
+        transform:
+          type: generated
+          field: genus_id
+      - target_field: author_id
+        type: integer
+        nullable: true
+        transform:
+          type: generated
+          field: author_id
+    reconciliation:
+      existing_rows:
+        table: tbl_taxa_tree_master
+        where: "species = :species AND genus_id = :genus_id AND ((author_id IS NULL AND :author_id IS NULL) OR author_id = :author_id)"
+        bind:
+          species: "generated.species"
+          genus_id: "generated.genus_id"
+          author_id: "generated.author_id"
+      compare_fields: [species, genus_id, author_id]
+      on_missing_generated: insert
+      on_missing_existing: keep
+      on_match: return_as_is
+      comment: Species rows are reused by species name, genus, and optional author. The no-data species path yields no generated family/genus/author/species items because an existing canonical no-data taxon is linked directly.
+    update_detection:
+      strategy: never
+      fields: []
+      on_change: ignore
+    comment: No-data species short-circuits normal family/genus/author creation.
+
+mappings:
+  - target_field: taxonomic_code
+    type: decimal
+    nullable: false
+    transform:
+      type: coerce
+      input: "source.CODE"
+      output_type: decimal
+  - target_field: taxon_id
+    type: integer
+    nullable: true
+    transform:
+      type: call
+      helper: resolve_species_taxon_id
+      args: ["source.FAMILY", "source.GENUS", "source.SPECIES", "source.AUTHORITY"]
+  - target_field: taxonomic_order_system_id
+    type: integer
+    nullable: false
+    transform:
+      type: call
+      helper: resolve_bugs_taxonomic_order_system_id
+      args: []
+
+reconciliation:
+  strategy: ordered_rules
+  rules:
+    - name: code_lookup
+      order: 1
+      type: database_query
+      description: Find an existing Bugs taxonomic-order row by taxonomic code in the Bugs order system.
+      table: tbl_taxonomic_order
+      where: "taxonomic_code = :taxonomic_code AND taxonomic_order_system_id = :taxonomic_order_system_id"
+      bind:
+        taxonomic_code: "source.CODE"
+        taxonomic_order_system_id: "resolve_bugs_taxonomic_order_system_id()"
+      on_match: return_as_is
+    - name: create_new
+      order: 2
+      type: create_new
+      description: No Bugs taxonomic-order row exists for this code; create a new row and attach the resolved species tree.
+      on_match: insert
+
+update_detection:
+  strategy: never
+  fields: []
+  on_change: ignore
+  comment: Existing taxonomic-order rows are returned unchanged; the persister only enriches newly created rows.
+
+dependencies: []
+
+tracing:
+  bugs_table: INDEX
+  sead_table: tbl_taxonomic_order
+  write_on: [insert, update]
+
+helpers:
+  - name: resolve_species_taxon_id
+    description: Resolve or create the nested family, genus, author, and species rows used by the taxonomic-order row, including the no-data species shortcut.
+    signature: "resolve_species_taxon_id(family: str | None, genus: str | None, species: str | None, authority: str | None) -> int | None"
+    used_by: [taxon_id]
+  - name: resolve_bugs_taxonomic_order_system_id
+    description: Return the fixed Bugs taxonomic-order system row from TaxonomicOrderSystemRepository.getBugsSystem().
+    signature: "resolve_bugs_taxonomic_order_system_id() -> int"
+    used_by: [taxonomic_order_system_id]
+  - name: resolve_import_order_id
+    description: Return the fixed default import taxonomic order row from TaxaOrderRepository.getImportOrder().
+    signature: "resolve_import_order_id() -> int | None"
+  - name: generate_taxa_family_item
+    description: Emit the family candidate for this INDEX row when family creation is part of the normal species path.
+    signature: "generate_taxa_family_item(family: str | None, code: float | None, species: str | None) -> list[TaxaFamilyItem]"
+    expression: "[{'family_name': ...}] or []"
+  - name: generate_taxa_genus_item
+    description: Emit the genus candidate keyed by genus name and resolved family when genus creation is part of the normal species path.
+    signature: "generate_taxa_genus_item(genus: str | None, family: str | None, code: float | None, species: str | None) -> list[TaxaGenusItem]"
+    expression: "[{'genus_name': ..., 'family_id': ...}] or []"
+  - name: generate_taxa_author_item
+    description: Emit the optional author candidate when authority text is present and the row is not using the no-data species shortcut.
+    signature: "generate_taxa_author_item(authority: str | None, code: float | None) -> list[TaxaAuthorItem]"
+    expression: "[{'author_name': ...}] or []"
+  - name: generate_taxa_species_item
+    description: Emit the species candidate keyed by species name, resolved genus, and optional author when the row is not using the no-data species shortcut.
+    signature: "generate_taxa_species_item(species: str | None, genus: str | None, authority: str | None, code: float | None) -> list[TaxaSpeciesItem]"
+    expression: "[{'species': ..., 'genus_id': ..., 'author_id': ...}] or []"

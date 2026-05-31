@@ -1,0 +1,55 @@
+fixture_version: "1.0"
+policy: country
+scenarios:
+  - name: trace_hit_updates_existing_country
+    intent: reconciliation_path
+    source_rows:
+      - CountryCode: C001
+        Country: Sweden
+    policy_context:
+      step_hits:
+        trace_lookup: true
+        existing_country_lookup: false
+      state:
+        existing_row_id: 801
+    expects:
+      reconciliation_path: [trace_lookup]
+      reconciliation_result:
+        result_kind: update_existing
+        source: trace_lookup
+        row_id: 801
+        country_code: C001
+  - name: existing_country_lookup_updates_existing_country
+    intent: reconciliation_path
+    source_rows:
+      - CountryCode: C002
+        Country: Norway
+    policy_context:
+      step_hits:
+        trace_lookup: false
+        existing_country_lookup: true
+      state:
+        existing_row_id: 802
+    expects:
+      reconciliation_path: [trace_lookup, existing_country_lookup]
+      reconciliation_result:
+        result_kind: update_existing
+        source: existing_country_lookup
+        row_id: 802
+        country_code: C002
+  - name: create_new_country_when_no_match_exists
+    intent: reconciliation_path
+    source_rows:
+      - CountryCode: C003
+        Country: Denmark
+    policy_context:
+      step_hits:
+        trace_lookup: false
+        existing_country_lookup: false
+    expects:
+      reconciliation_path: [trace_lookup, existing_country_lookup, create_new]
+      reconciliation_result:
+        result_kind: insert_new
+        source: create_new
+        row_id: null
+        country_code: C003

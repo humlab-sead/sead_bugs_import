@@ -1,0 +1,37 @@
+fixture_version: "1.0"
+policy: ecocode_koch
+scenarios:
+  - name: trace_hit_returns_existing_koch_ecocode
+    intent: reconciliation_path
+    source_rows:
+      - CODE: 10010020
+        BugsKochCode: KOCH-1
+    policy_context:
+      step_hits:
+        trace_lookup: true
+      state:
+        existing_row_id: 91
+    expects:
+      reconciliation_path: [trace_lookup]
+      reconciliation_result:
+        result_kind: update_existing
+        source: trace_lookup
+        row_id: 91
+        species_code: 10010020
+        bugs_koch_code: KOCH-1
+  - name: create_new_koch_ecocode_when_no_trace_exists
+    intent: reconciliation_path
+    source_rows:
+      - CODE: 10010060
+        BugsKochCode: KOCH-2
+    policy_context:
+      step_hits:
+        trace_lookup: false
+    expects:
+      reconciliation_path: [trace_lookup, create_new]
+      reconciliation_result:
+        result_kind: insert_new
+        source: create_new
+        row_id: null
+        species_code: 10010060
+        bugs_koch_code: KOCH-2

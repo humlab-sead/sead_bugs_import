@@ -1,0 +1,41 @@
+fixture_version: "1.0"
+policy: specieskeys
+scenarios:
+  - name: identification_key_lookup_returns_existing_text_key
+    intent: reconciliation_path
+    source_rows:
+      - CODE: 10010020
+        Ref: Ref-201
+        Data: Existing key text
+    policy_context:
+      step_hits:
+        identification_key_lookup: true
+      state:
+        existing_row_id: 201
+    expects:
+      reconciliation_path: [identification_key_lookup]
+      reconciliation_result:
+        result_kind: update_existing
+        source: identification_key_lookup
+        row_id: 201
+        species_code: 10010020
+        bugs_reference: Ref-201
+        text_value: Existing key text
+  - name: create_new_text_key_when_tuple_missing
+    intent: reconciliation_path
+    source_rows:
+      - CODE: 10010060
+        Ref: Ref-202
+        Data: New key text
+    policy_context:
+      step_hits:
+        identification_key_lookup: false
+    expects:
+      reconciliation_path: [identification_key_lookup, create_new]
+      reconciliation_result:
+        result_kind: insert_new
+        source: create_new
+        row_id: null
+        species_code: 10010060
+        bugs_reference: Ref-202
+        text_value: New key text

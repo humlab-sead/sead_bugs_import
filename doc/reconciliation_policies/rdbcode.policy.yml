@@ -1,0 +1,126 @@
+# BugsCEP → SEAD Reconciliation Policy
+# Domain: RdbCode (TRDBCodes → tbl_rdb_codes)
+
+meta:
+  format_version: "1.0"
+  generated_from: java_source
+  reviewed: false
+  notes: >
+    The row converter runs two ordered search strategies before create: trace
+    lookup by RDBCode, then a duplicate-value guard that checks category,
+    definition, and traced RDB system. A value match returns an error carrier,
+    not the existing row.
+
+policy:
+  domain: rdbcode
+  description: >
+    Imports RDB code rows from TRDBCodes into tbl_rdb_codes. Reconciliation is
+    an ordered search chain: trace match first, duplicate-value guard second,
+    then create new. Trace matches are updated in place.
+
+source:
+  system: bugscep
+  table: TRDBCodes
+  sql: "SELECT RDBCode, Category, RDBDefinition, RDBSystemCode FROM TRDBCodes"
+  fields:
+    - name: RDBCode
+      type: integer
+      nullable: true
+      role: natural_key
+    - name: Category
+      type: string
+      nullable: true
+      role: data
+    - name: RDBDefinition
+      type: string
+      nullable: true
+      role: data
+    - name: RDBSystemCode
+      type: integer
+      nullable: true
+      role: data
+  identity_key: RDBCode
+  trace_key:
+    template: "{{RDBCode},{Category},{RDBDefinition},{RDBSystemCode}}"
+
+target:
+  system: sead
+  table: tbl_rdb_codes
+  identity:
+    column: rdb_code_id
+    type: integer
+    strategy: sequence
+    sequence: tbl_rdb_codes_rdb_code_id_seq
+
+mappings:
+  - target_field: rdb_category
+    type: string
+    nullable: true
+    source_field: Category
+  - target_field: rdb_definition
+    type: string
+    nullable: true
+    source_field: RDBDefinition
+  - target_field: rdb_system_id
+    type: integer
+    nullable: true
+    transform:
+      type: call
+      helper: resolve_rdb_system_id
+      args: ["source.RDBSystemCode"]
+
+reconciliation:
+  strategy: ordered_rules
+  rules:
+    - name: search_rule_chain
+      order: 1
+      type: search_chain
+      description: Apply the ordered RdbCode search strategies.
+      steps:
+        - name: trace_lookup
+          order: 1
+          type: trace_lookup
+          description: Look up the last trace row by Bugs RDBCode.
+          bugs_table: TRDBCodes
+          identifier_expr: "source.RDBCode"
+          on_match: update
+          on_error: skip
+        - name: duplicate_value_guard
+          order: 2
+          type: database_query
+          description: Check whether a SEAD RDB code already exists for category, definition, and traced RDB system.
+          table: tbl_rdb_codes
+          where: "rdb_category = :rdb_category AND rdb_definition = :rdb_definition AND rdb_system_id = :rdb_system_id"
+          bind:
+            rdb_category: "source.Category"
+            rdb_definition: "source.RDBDefinition"
+            rdb_system_id: "resolve_rdb_system_id(source.RDBSystemCode)"
+          on_match: return_as_is
+          comment: Mirrors RdbCodeByValues, which returns an error carrier with 'Sead data matches values'.
+      on_no_match: fall_through
+    - name: create_new
+      order: 2
+      type: create_new
+      description: No trace or duplicate-value match found; create a new RDB code row.
+      on_match: insert
+
+update_detection:
+  strategy: field_comparison
+  fields:
+    - rdb_category
+    - rdb_definition
+    - rdb_system_id
+  on_change: mark_updated
+
+dependencies: [RdbSystem]
+
+tracing:
+  bugs_table: TRDBCodes
+  sead_table: tbl_rdb_codes
+  write_on: [insert, update]
+
+helpers:
+  - name: resolve_rdb_system_id
+    description: Resolve the traced RDB system imported from TRDBSystems to tbl_rdb_systems.rdb_system_id.
+    signature: "resolve_rdb_system_id(rdb_system_code: int | None) -> int | None"
+    used_by: [rdb_system_id]

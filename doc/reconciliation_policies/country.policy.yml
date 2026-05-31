@@ -1,0 +1,105 @@
+# BugsCEP → SEAD Reconciliation Policy
+# Domain: Country (TCountry → tbl_locations)
+
+meta:
+  format_version: "1.0"
+  generated_from: java_source
+  reviewed: false
+  notes: >
+    This policy covers the standalone TCountry importer only. Other importer
+    paths can still create country locations internally, but CountryImporter
+    itself follows the normal BugsTable → row converter → persister pattern.
+
+policy:
+  domain: country
+  description: >
+    Imports country rows from TCountry into tbl_locations as country-type
+    locations. Matching is trace-first by CountryCode, then by existing country
+    name. If an existing country name is found, the importer marks that row as
+    updated so the import is associated through trace logging without changing
+    the business fields.
+
+source:
+  system: bugscep
+  table: TCountry
+  sql: "SELECT CountryCode, Country FROM TCountry"
+  fields:
+    - name: CountryCode
+      type: string
+      nullable: true
+      role: natural_key
+    - name: Country
+      type: string
+      nullable: true
+      role: data
+  identity_key: CountryCode
+  trace_key:
+    template: "{{CountryCode},{Country}}"
+
+target:
+  system: sead
+  table: tbl_locations
+  identity:
+    column: location_id
+    type: integer
+    strategy: sequence
+    sequence: tbl_locations_location_id_seq
+
+mappings:
+  - target_field: location_name
+    type: string
+    nullable: false
+    source_field: Country
+  - target_field: location_type_id
+    type: integer
+    nullable: true
+    transform:
+      type: call
+      helper: resolve_country_type_id
+      args: []
+
+reconciliation:
+  strategy: ordered_rules
+  rules:
+    - name: trace_lookup
+      order: 1
+      type: trace_lookup
+      description: Return the previously traced country location by CountryCode.
+      bugs_table: TCountry
+      identifier_expr: "source.CountryCode"
+      on_match: return_as_is
+    - name: existing_country_lookup
+      order: 2
+      type: database_query
+      description: Find an existing country location by name and country type when no trace exists.
+      table: tbl_locations
+      where: "location_name = :location_name AND location_type_id = :location_type_id"
+      bind:
+        location_name: "source.Country"
+        location_type_id: "resolve_country_type_id()"
+      on_match: update
+      comment: CountryRowConverter marks the found row updated only so persistence writes a new trace association.
+    - name: create_new
+      order: 3
+      type: create_new
+      description: No traced or existing country location found; create a new country location row.
+      on_match: insert
+
+update_detection:
+  strategy: never
+  fields: []
+  on_change: ignore
+  comment: The importer does not compare fields. A name match without a trace is saved only to attach the Bugs row to the existing location through trace logging.
+
+dependencies: []
+
+tracing:
+  bugs_table: TCountry
+  sead_table: tbl_locations
+  write_on: [insert, update]
+
+helpers:
+  - name: resolve_country_type_id
+    description: Return the fixed country location type row from LocationTypeRepository.getCountryType().
+    signature: "resolve_country_type_id() -> int | None"
+    used_by: [location_type_id]

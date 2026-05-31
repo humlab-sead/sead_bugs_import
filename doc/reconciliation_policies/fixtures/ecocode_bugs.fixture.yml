@@ -1,0 +1,37 @@
+fixture_version: "1.0"
+policy: ecocode_bugs
+scenarios:
+  - name: trace_hit_returns_existing_bugs_ecocode
+    intent: reconciliation_path
+    source_rows:
+      - CODE: 10010020
+        BugsEcoCODE: BUGS-1
+    policy_context:
+      step_hits:
+        trace_lookup: true
+      state:
+        existing_row_id: 81
+    expects:
+      reconciliation_path: [trace_lookup]
+      reconciliation_result:
+        result_kind: update_existing
+        source: trace_lookup
+        row_id: 81
+        species_code: 10010020
+        bugs_ecocode_code: BUGS-1
+  - name: create_new_bugs_ecocode_when_no_trace_exists
+    intent: reconciliation_path
+    source_rows:
+      - CODE: 10010050
+        BugsEcoCODE: BUGS-2
+    policy_context:
+      step_hits:
+        trace_lookup: false
+    expects:
+      reconciliation_path: [trace_lookup, create_new]
+      reconciliation_result:
+        result_kind: insert_new
+        source: create_new
+        row_id: null
+        species_code: 10010050
+        bugs_ecocode_code: BUGS-2

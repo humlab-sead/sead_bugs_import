@@ -1,0 +1,123 @@
+# BugsCEP → SEAD Reconciliation Policy
+# Domain: BugsDefinition (TEcoDefBugs → tbl_ecocode_definitions)
+
+meta:
+  format_version: "1.0"
+  generated_from: java_source
+  reviewed: false
+  notes: >
+    Trace lookup is case-insensitive for the Bugs identifier. The updater always
+    writes the fixed Bugs ecocode group rather than deriving it from row data.
+
+policy:
+  domain: ecocodedefinition_bugs
+  description: >
+    Imports Bugs ecocode definitions from TEcoDefBugs into
+    tbl_ecocode_definitions. Matching is trace-first and case-insensitive by
+    BugsEcoCODE; traced rows are updated in place and otherwise a new row is
+    created.
+
+source:
+  system: bugscep
+  table: TEcoDefBugs
+  sql: "SELECT BugsEcoCODE, EcoLabel, Definition, Notes, SortOrder FROM TEcoDefBugs"
+  fields:
+    - name: BugsEcoCODE
+      type: string
+      nullable: true
+      role: natural_key
+    - name: EcoLabel
+      type: string
+      nullable: true
+      role: data
+    - name: Definition
+      type: string
+      nullable: true
+      role: data
+    - name: Notes
+      type: string
+      nullable: true
+      role: data
+    - name: SortOrder
+      type: integer
+      nullable: true
+      role: ignored
+      comment: Present in the Bugs row but not written to the SEAD ecocode definition.
+  identity_key: BugsEcoCODE
+  trace_key:
+    template: "{{BugsEcoCODE},{Definition},{Notes},{EcoLabel},{SortOrder}}"
+
+target:
+  system: sead
+  table: tbl_ecocode_definitions
+  identity:
+    column: ecocode_definition_id
+    type: integer
+    strategy: sequence
+    sequence: tbl_ecocode_definitions_ecocode_definition_id_seq
+
+mappings:
+  - target_field: abbreviation
+    type: string
+    nullable: true
+    source_field: BugsEcoCODE
+  - target_field: definition
+    type: string
+    nullable: true
+    source_field: Definition
+  - target_field: name
+    type: string
+    nullable: true
+    source_field: EcoLabel
+  - target_field: notes
+    type: string
+    nullable: true
+    source_field: Notes
+  - target_field: ecocode_group_id
+    type: integer
+    nullable: true
+    transform:
+      type: call
+      helper: resolve_bugs_ecocode_group_id
+      args: []
+
+reconciliation:
+  strategy: ordered_rules
+  rules:
+    - name: trace_lookup
+      order: 1
+      type: trace_lookup
+      description: Look up the existing ecocode definition by BugsEcoCODE using the case-insensitive trace helper.
+      bugs_table: TEcoDefBugs
+      identifier_expr: "source.BugsEcoCODE"
+      on_match: update
+      on_error: skip
+      comment: Uses IgnoreCaseBugsIdentifierWithSeadDataTable in the Java trace helper.
+    - name: create_new
+      order: 2
+      type: create_new
+      description: No trace match found; create a new Bugs ecocode definition row.
+      on_match: insert
+
+update_detection:
+  strategy: field_comparison
+  fields:
+    - abbreviation
+    - definition
+    - name
+    - notes
+    - ecocode_group_id
+  on_change: mark_updated
+
+dependencies: [EcocodeGroup]
+
+tracing:
+  bugs_table: TEcoDefBugs
+  sead_table: tbl_ecocode_definitions
+  write_on: [insert, update]
+
+helpers:
+  - name: resolve_bugs_ecocode_group_id
+    description: Return the fixed Bugs ecocode group row used by BugsDefinitionUpdater.
+    signature: "resolve_bugs_ecocode_group_id() -> int | None"
+    used_by: [ecocode_group_id]

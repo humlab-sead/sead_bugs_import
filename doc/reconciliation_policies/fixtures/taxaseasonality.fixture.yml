@@ -1,0 +1,84 @@
+fixture_version: "1.0"
+policy: taxaseasonality
+scenarios:
+  - name: trace_lookup_updates_existing_taxa_seasonality
+    intent: reconciliation_path
+    source_rows:
+      - CODE: 10010020
+        HSeason: summer
+        CountryCode: "SE"
+    policy_context:
+      step_hits:
+        trace_lookup: true
+        updated_since_last_import_guard: false
+        repository_lookup: false
+      state:
+        existing_row_id: 1101
+    expects:
+      reconciliation_path: [trace_lookup]
+      reconciliation_result:
+        result_kind: update_existing
+        source: trace_lookup
+        row_id: 1101
+        species_code: 10010020
+  - name: history_guard_returns_error_carrier
+    intent: reconciliation_path
+    source_rows:
+      - CODE: 10010021
+        HSeason: autumn
+        CountryCode: "NO"
+    policy_context:
+      step_hits:
+        trace_lookup: false
+        updated_since_last_import_guard: true
+        repository_lookup: false
+      state:
+        guard_error_message: Sead data has been updated since last bugs import
+    expects:
+      reconciliation_path: [trace_lookup, updated_since_last_import_guard]
+      reconciliation_result:
+        result_kind: return_guard_error
+        source: updated_since_last_import_guard
+        row_id: null
+        issue:
+          severity: error
+          message: Sead data has been updated since last bugs import
+        species_code: 10010021
+  - name: repository_lookup_updates_existing_taxa_seasonality
+    intent: reconciliation_path
+    source_rows:
+      - CODE: 10010022
+        HSeason: spring
+        CountryCode: "FI"
+    policy_context:
+      step_hits:
+        trace_lookup: false
+        updated_since_last_import_guard: false
+        repository_lookup: true
+      state:
+        existing_row_id: 1103
+    expects:
+      reconciliation_path: [trace_lookup, updated_since_last_import_guard, repository_lookup]
+      reconciliation_result:
+        result_kind: update_existing
+        source: repository_lookup
+        row_id: 1103
+        species_code: 10010022
+  - name: create_new_taxa_seasonality_when_search_chain_misses
+    intent: reconciliation_path
+    source_rows:
+      - CODE: 10010023
+        HSeason: winter
+        CountryCode: "DK"
+    policy_context:
+      step_hits:
+        trace_lookup: false
+        updated_since_last_import_guard: false
+        repository_lookup: false
+    expects:
+      reconciliation_path: [trace_lookup, updated_since_last_import_guard, repository_lookup, create_new]
+      reconciliation_result:
+        result_kind: insert_new
+        source: create_new
+        row_id: null
+        species_code: 10010023

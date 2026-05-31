@@ -1,0 +1,374 @@
+# BugsCEP → SEAD Reconciliation Policy
+# Domain: DatesCalendar (TDatesCalendar → tbl_relative_dates)
+
+meta:
+  format_version: "1.0"
+  generated_from: java_source
+  reviewed: false
+  notes: >
+    Each row first maps to a provisional RelativeDate, but the mapper then groups
+    rows by sample and merges matching From/To uncertainty pairs into a single
+    persisted RelativeDate when possible by replacing the provisional single-date
+    relative age with a generated range relative age and normalizing uncertainty.
+    RelativeAgeCache is cleared after the import.
+
+policy:
+  domain: datescalendar
+  description: >
+    Imports calendar dates from TDatesCalendar into tbl_relative_dates.
+    Matching is trace-first by CalendarCODE with create-new fallback for each
+    provisional row. After conversion, the mapper groups rows by sample and may
+    merge paired uncertainties into one persisted relative-date row with a
+    generated calendar-date range relative age. Supporting relative-age,
+    dataset, and analysis-entity rows are created or updated as part of the
+    persisted RelativeDate graph.
+
+source:
+  system: bugscep
+  table: TDatesCalendar
+  sql: "SELECT SampleCODE, Uncertainty, CalendarCODE, Date, BCADBP, DatingMethod, Notes FROM TDatesCalendar"
+  fields:
+    - name: SampleCODE
+      type: string
+      nullable: true
+      role: data
+    - name: Uncertainty
+      type: string
+      nullable: true
+      role: data
+    - name: CalendarCODE
+      type: string
+      nullable: true
+      role: natural_key
+    - name: Date
+      type: integer
+      nullable: true
+      role: data
+    - name: BCADBP
+      type: string
+      nullable: true
+      role: data
+    - name: DatingMethod
+      type: string
+      nullable: true
+      role: data
+    - name: Notes
+      type: string
+      nullable: true
+      role: data
+  identity_key: CalendarCODE
+  trace_key:
+    template: "{{SampleCODE},{Uncertainty},{CalendarCODE},{Date},{BCADBP},{DatingMethod},{Notes}}"
+
+target:
+  system: sead
+  table: tbl_relative_dates
+  identity:
+    column: relative_date_id
+    type: integer
+    strategy: sequence
+    sequence: tbl_relative_dates_relative_date_id_seq
+
+related_outputs:
+  - name: relative_age
+    table: tbl_relative_ages
+    mode: zero_or_one
+    relationship: supporting
+    item_helper: generate_calendar_relative_age_items
+    persistence: cache_then_save
+    key_fields: [abbreviation]
+    identity:
+      column: relative_age_id
+      type: integer
+      strategy: sequence
+      sequence: tbl_relative_ages_relative_age_id_seq
+    mappings:
+      - target_field: name
+        type: string
+        nullable: true
+        transform:
+          type: generated
+          field: name
+      - target_field: description
+        type: string
+        nullable: true
+        transform:
+          type: generated
+          field: description
+      - target_field: cal_age_older
+        type: decimal
+        nullable: true
+        transform:
+          type: generated
+          field: cal_age_older
+      - target_field: cal_age_younger
+        type: decimal
+        nullable: true
+        transform:
+          type: generated
+          field: cal_age_younger
+      - target_field: abbreviation
+        type: string
+        nullable: true
+        transform:
+          type: generated
+          field: abbreviation
+      - target_field: relative_age_type_id
+        type: integer
+        nullable: true
+        transform:
+          type: generated
+          field: relative_age_type_id
+    reconciliation:
+      existing_rows:
+        table: tbl_relative_ages
+        where: "abbreviation = :abbreviation"
+        bind:
+          abbreviation: "generated.abbreviation"
+      compare_fields: [name, description, cal_age_older, cal_age_younger, abbreviation, relative_age_type_id]
+      on_missing_generated: insert
+      on_missing_existing: keep
+      on_match: return_as_is
+      comment: RelativeAgeManager and RelativeRangeAgeManager both reuse cached or stored relative ages by abbreviation and only create a new row when the abbreviation is unknown.
+    update_detection:
+      strategy: never
+      fields: []
+      on_change: ignore
+    comment: The generated item may represent either a single calendar date or a merged range date after the mapper pairs From/To uncertainties.
+  - name: dataset
+    table: tbl_datasets
+    mode: zero_or_one
+    relationship: supporting
+    item_helper: generate_calendar_dataset_items
+    persistence: cascade
+    key_fields: [dataset_id, dataset_name, data_type_id, method_id, master_set_id]
+    identity:
+      column: dataset_id
+      type: integer
+      strategy: sequence
+      sequence: tbl_datasets_dataset_id_seq
+    mappings:
+      - target_field: dataset_name
+        type: string
+        nullable: true
+        transform:
+          type: generated
+          field: dataset_name
+      - target_field: data_type_id
+        type: integer
+        nullable: true
+        transform:
+          type: generated
+          field: data_type_id
+      - target_field: method_id
+        type: integer
+        nullable: true
+        transform:
+          type: generated
+          field: method_id
+      - target_field: master_set_id
+        type: integer
+        nullable: true
+        transform:
+          type: generated
+          field: master_set_id
+    reconciliation:
+      existing_rows:
+        table: tbl_datasets
+        where: "dataset_id = :dataset_id"
+        bind:
+          dataset_id: "generated.dataset_id"
+      compare_fields: [dataset_name, data_type_id, method_id, master_set_id]
+      on_missing_generated: insert
+      on_missing_existing: keep
+      on_match: update
+      comment: BaseRelativeDateUpdater mutates the dataset already attached to a traced RelativeDate in place; new RelativeDate rows create a fresh dataset and rely on JPA cascade persistence rather than repository lookup.
+    update_detection:
+      strategy: field_comparison
+      fields:
+        - dataset_name
+        - data_type_id
+        - method_id
+        - master_set_id
+      on_change: mark_updated
+    comment: Dataset creation uses the configured Calendar dates data type, the relative-date method manager, the retained CalendarCODE, and the Bugs master set.
+  - name: analysis_entity
+    table: tbl_analysis_entities
+    mode: zero_or_one
+    relationship: supporting
+    item_helper: generate_calendar_analysis_entity_items
+    persistence: cascade
+    key_fields: [analysis_entity_id, physical_sample_id, dataset_id]
+    identity:
+      column: analysis_entity_id
+      type: integer
+      strategy: sequence
+      sequence: tbl_analysis_entities_analysis_entity_id_seq
+    mappings:
+      - target_field: physical_sample_id
+        type: integer
+        nullable: false
+        transform:
+          type: generated
+          field: physical_sample_id
+      - target_field: dataset_id
+        type: integer
+        nullable: true
+        transform:
+          type: generated
+          field: dataset_id
+    reconciliation:
+      existing_rows:
+        table: tbl_analysis_entities
+        where: "analysis_entity_id = :analysis_entity_id"
+        bind:
+          analysis_entity_id: "generated.analysis_entity_id"
+      compare_fields: [physical_sample_id, dataset_id]
+      on_missing_generated: insert
+      on_missing_existing: keep
+      on_match: update
+      comment: Traced RelativeDate rows reuse and update their attached analysis entity; new RelativeDate rows create a fresh analysis entity tied to the traced sample and generated dataset.
+    update_detection:
+      strategy: field_comparison
+      fields:
+        - physical_sample_id
+        - dataset_id
+      on_change: mark_updated
+    comment: AnalysisEntity rows are not repository-matched in this importer; they are created or mutated through the persisted RelativeDate graph.
+
+mappings:
+  - target_field: notes
+    type: string
+    nullable: true
+    source_field: Notes
+  - target_field: relative_age_id
+    type: integer
+    nullable: true
+    transform:
+      type: call
+      helper: resolve_calendar_relative_age_id
+      args: ["source.Date", "source.BCADBP"]
+  - target_field: dating_uncertainty_id
+    type: integer
+    nullable: true
+    transform:
+      type: call
+      helper: resolve_dating_uncertainty_id
+      args: ["source.Uncertainty"]
+  - target_field: analysis_entity_id
+    type: integer
+    nullable: true
+    transform:
+      type: call
+      helper: resolve_calendar_analysis_entity_id
+      args: ["source.SampleCODE", "source.DatingMethod", "source.CalendarCODE"]
+
+reconciliation:
+  strategy: ordered_rules
+  prerequisite:
+    description: Build provisional RelativeDate rows first, then group them by sample and merge From/To uncertainty pairs before persistence.
+    config:
+      - name: relative_calendar_date_data_type
+        property: relative.calendar.date.data.type
+        default: Calendar dates
+        description: DataType name used for provisional calendar-date datasets.
+      - name: relative_date_type
+        property: relative.date.type
+        default: Calendar date
+        description: RelativeAge type used for single calendar-date relative ages.
+      - name: relative_date_range_type
+        property: relative.date.range.type
+        default: Calendar date range
+        description: RelativeAge type used when From/To uncertainty pairs are merged into a calendar-date range.
+  rules:
+    - name: trace_lookup
+      order: 1
+      type: trace_lookup
+      description: Look up the existing provisional relative-date row by CalendarCODE from bugs_trace.
+      bugs_table: TDatesCalendar
+      identifier_expr: "source.CalendarCODE"
+      on_match: update
+      on_error: skip
+    - name: create_new
+      order: 2
+      type: create_new
+      description: No traced provisional row exists; create a new calendar-date relative-date row.
+      on_match: insert
+
+postprocess:
+  - name: merge_calendar_ranges
+    phase: after_row_mapping_before_persist
+    mode: pair_merge
+    description: Group provisional RelativeDate rows by sample, then split them by dating method, note group, and CA versus non-CA uncertainty family before merging From/To pairs.
+    group_by: ["source.SampleCODE"]
+    partition_by:
+      - "source.DatingMethod"
+      - "normalized.note_group"
+      - "normalized.uncertainty_family"
+    pair_rules:
+      left: "normalized.uncertainty_side == 'from'"
+      right: "normalized.uncertainty_side == 'to'"
+      include_singletons: true
+    retain_row: left_when_present_else_right
+    actions:
+      - type: use_pair_range_relative_age
+        target: relative_age_id
+        comment: Replace the retained provisional single-date age with the final relative age generated from the paired From and To dates.
+      - type: normalize_pair_uncertainty
+        target: dating_uncertainty_id
+        clear_when_closed_range: true
+        convert_ca_pair_to_standard: true
+        comment: CA ranges convert back to the matching non-CA uncertainty; closed non-CA ranges clear the uncertainty.
+      - type: copy_if_empty
+        target: notes
+        from_paired_field: notes
+        comment: Copy notes from the discarded pair row only when the retained row has no notes.
+    on_conflict:
+      severity: error
+      code: too_many_uncertainties_same_kind
+      message: "Too many uncertainties of same type for a single sample."
+    comment: Mirrors RelativeDateMerger and UncertaintyDatesCalendarContainerManager by retaining the From row when present, falling back to the To row, and surfacing same-kind uncertainty conflicts as row errors.
+
+update_detection:
+  strategy: field_comparison
+  fields:
+    - notes
+    - relative_age_id
+    - dating_uncertainty_id
+    - analysis_entity_id
+  on_change: mark_updated
+  comment: Final persistence may merge two provisional rows into one stored RelativeDate and may replace the provisional relative age and uncertainty with range values.
+
+dependencies: [Sample]
+
+tracing:
+  bugs_table: TDatesCalendar
+  sead_table: tbl_relative_dates
+  write_on: [insert, update]
+  comment: DatesCalendarPersister updates RelativeAgeCache when newly created relative ages are stored.
+
+helpers:
+  - name: resolve_calendar_relative_age_id
+    description: Resolve or create the provisional single-date RelativeAge row identified by CAL_<Date>_<BCADBP> through RelativeAgeManager before optional range merging.
+    signature: "resolve_calendar_relative_age_id(date_value: int | None, bcadbp: str | None) -> int | None"
+    used_by: [relative_age_id]
+  - name: resolve_dating_uncertainty_id
+    description: Resolve a non-blank uncertainty symbol to tbl_dating_uncertainty.dating_uncertainty_id.
+    signature: "resolve_dating_uncertainty_id(uncertainty: str | None) -> int | None"
+    used_by: [dating_uncertainty_id]
+  - name: resolve_calendar_analysis_entity_id
+    description: Resolve or create the AnalysisEntity and Dataset for this calendar-date row using the traced sample and the configured Calendar dates data type.
+    signature: "resolve_calendar_analysis_entity_id(sample_code: str | None, dating_method: str | None, calendar_code: str | None) -> int | None"
+    used_by: [analysis_entity_id]
+  - name: generate_calendar_relative_age_items
+    description: Emit the final persisted relative-age item for this row after mapper grouping, using a single-date abbreviation for unpaired rows or a range abbreviation for merged From/To uncertainty pairs.
+    signature: "generate_calendar_relative_age_items(sample_code: str | None, calendar_code: str | None, date_value: int | None, bcadbp: str | None, uncertainty: str | None, dating_method: str | None, notes: str | None) -> list[CalendarRelativeAgeItem]"
+    expression: "[{'name': ..., 'description': 'Autocreated from bugs import', 'cal_age_older': ..., 'cal_age_younger': ..., 'abbreviation': ..., 'relative_age_type_id': ...}]"
+  - name: generate_calendar_dataset_items
+    description: Emit the dataset attached to the final persisted RelativeDate row, preserving the traced dataset_id for updates and using the retained CalendarCODE, configured Calendar dates data type, derived method, and Bugs master set.
+    signature: "generate_calendar_dataset_items(sample_code: str | None, calendar_code: str | None, dating_method: str | None, uncertainty: str | None) -> list[CalendarDatasetItem]"
+    expression: "[{'dataset_id': ..., 'dataset_name': ..., 'data_type_id': ..., 'method_id': ..., 'master_set_id': ...}]"
+  - name: generate_calendar_analysis_entity_items
+    description: Emit the analysis entity attached to the final persisted RelativeDate row, preserving the traced analysis_entity_id for updates and linking the traced sample to the generated dataset.
+    signature: "generate_calendar_analysis_entity_items(sample_code: str | None, calendar_code: str | None, dating_method: str | None) -> list[CalendarAnalysisEntityItem]"
+    expression: "[{'analysis_entity_id': ..., 'physical_sample_id': ..., 'dataset_id': ...}]"

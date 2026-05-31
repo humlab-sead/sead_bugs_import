@@ -1,0 +1,204 @@
+fixture_version: "1.0"
+policy: fossil
+scenarios:
+  - name: clone_fossil_dataset_when_updates_disabled
+    intent: supporting_output_result
+    source_rows:
+      - FossilBugsCODE: FOSSIL_SD_1
+        CODE: 12
+        SampleCODE: SAMPLE_FOSSIL_SD_1
+        Abundance: 4
+    policy_context:
+      args:
+        output_name: dataset
+      step_hits: {}
+      state:
+        allow_dataset_updates: false
+    expects:
+      related_outputs: [dataset]
+      graph_result:
+        dataset:
+          dataset_id: null
+          updated_dataset_id: 20
+  - name: reuse_existing_fossil_dataset_when_updates_enabled
+    intent: supporting_output_result
+    source_rows:
+      - FossilBugsCODE: FOSSIL_SD_2
+        CODE: 12
+        SampleCODE: SAMPLE_FOSSIL_SD_2
+        Abundance: 7
+    policy_context:
+      args:
+        output_name: dataset
+      step_hits: {}
+      state:
+        allow_dataset_updates: true
+    expects:
+      related_outputs: [dataset]
+      graph_result:
+        dataset:
+          dataset_id: 20
+          updated_dataset_id: null
+  - name: create_fossil_analysis_entity_when_missing
+    intent: supporting_output_result
+    source_rows:
+      - FossilBugsCODE: FOSSIL_SA_1
+        CODE: 12
+        SampleCODE: SAMPLE_FOSSIL_SA_1
+        Abundance: 9
+    policy_context:
+      args:
+        output_name: analysis_entity
+      step_hits: {}
+      state:
+        allow_dataset_updates: true
+    expects:
+      related_outputs: [analysis_entity]
+      graph_result:
+        analysis_entity:
+          physical_sample_id: 10
+          dataset_id: 20
+  - name: reuse_existing_fossil_analysis_entity_when_present
+    intent: supporting_output_result
+    source_rows:
+      - FossilBugsCODE: FOSSIL_SA_2
+        CODE: 12
+        SampleCODE: SAMPLE_FOSSIL_SA_2
+        Abundance: 9
+    policy_context:
+      args:
+        output_name: analysis_entity
+      step_hits: {}
+      state:
+        allow_dataset_updates: true
+        existing_analysis_entity_id: 30
+    expects:
+      related_outputs: [analysis_entity]
+      graph_result:
+        analysis_entity:
+          analysis_entity_id: 30
+          physical_sample_id: 10
+          dataset_id: 20
+  - name: clone_dataset_when_updates_disabled
+    intent: related_output_graph
+    source_rows:
+      - FossilBugsCODE: FOSSIL_1
+        CODE: 12
+        SampleCODE: SAMPLE_FOSSIL_1
+        Abundance: 4
+    policy_context:
+      config:
+        allow_dataset_updates: false
+    expects:
+      related_outputs: [dataset, analysis_entity]
+      updates_target_fields: [analysis_entity_id]
+      dataset_link_mode: clone_updated_dataset
+      graph_result:
+        dataset:
+          dataset_id: null
+          updated_dataset_id: 20
+        analysis_entity:
+          physical_sample_id: 10
+          dataset_id: null
+      comment: Existing datasets should be cloned through updated_dataset when dataset updates are disabled and abundance data changed.
+  - name: reuse_dataset_when_updates_enabled
+    intent: related_output_graph
+    source_rows:
+      - FossilBugsCODE: FOSSIL_2
+        CODE: 12
+        SampleCODE: SAMPLE_FOSSIL_2
+        Abundance: 7
+    policy_context:
+      config:
+        allow_dataset_updates: true
+    expects:
+      related_outputs: [dataset, analysis_entity]
+      updates_target_fields: [analysis_entity_id]
+      dataset_link_mode: reuse_existing_dataset
+      graph_result:
+        dataset:
+          dataset_id: 20
+          updated_dataset_id: null
+        analysis_entity:
+          physical_sample_id: 10
+          dataset_id: 20
+      comment: Existing datasets should be reused directly when dataset updates are enabled.
+  - name: reuse_existing_analysis_entity_when_present
+    intent: related_output_graph
+    source_rows:
+      - FossilBugsCODE: FOSSIL_3
+        CODE: 12
+        SampleCODE: SAMPLE_FOSSIL_3
+        Abundance: 9
+    policy_context:
+      config:
+        allow_dataset_updates: true
+      state:
+        existing_analysis_entity_id: 30
+    expects:
+      related_outputs: [dataset, analysis_entity]
+      updates_target_fields: [analysis_entity_id]
+      dataset_link_mode: reuse_existing_dataset
+      graph_result:
+        dataset:
+          dataset_id: 20
+          updated_dataset_id: null
+        analysis_entity:
+          analysis_entity_id: 30
+          physical_sample_id: 10
+          dataset_id: 20
+      comment: Existing analysis entities should be reused when the sample and dataset already match a stored row.
+  - name: missing_sample_trace_emits_graph_issue
+    intent: related_output_graph
+    source_rows:
+      - FossilBugsCODE: FOSSIL_4
+        CODE: 12
+        SampleCODE: SAMPLE_FOSSIL_4
+        Abundance: 2
+    policy_context:
+      config:
+        allow_dataset_updates: true
+      state:
+        sample_found: false
+    expects:
+      related_outputs: [dataset, analysis_entity]
+      graph_issue:
+        severity: error
+        message: No sample found for code
+      comment: Missing sample traces should stop graph creation and report the same error on the abundance row.
+  - name: duplicate_analysis_entities_emit_graph_issue
+    intent: related_output_graph
+    source_rows:
+      - FossilBugsCODE: FOSSIL_5
+        CODE: 12
+        SampleCODE: SAMPLE_FOSSIL_5
+        Abundance: 3
+    policy_context:
+      config:
+        allow_dataset_updates: true
+      state:
+        matching_analysis_entity_count: 2
+    expects:
+      related_outputs: [dataset, analysis_entity]
+      dataset_link_mode: reuse_existing_dataset
+      graph_issue:
+        severity: error
+        message: More than one analysis entity found for same dataset and sample
+      comment: Duplicate analysis entities for the same sample and dataset should stop graph creation and report the current Java error.
+  - name: missing_sample_code_emits_graph_issue
+    intent: related_output_graph
+    source_rows:
+      - FossilBugsCODE: FOSSIL_6
+        CODE: 12
+        SampleCODE: ""
+        Abundance: 5
+    policy_context:
+      config:
+        allow_dataset_updates: true
+    expects:
+      related_outputs: [dataset, analysis_entity]
+      row_changed: true
+      graph_issue:
+        severity: error
+        message: No sample specified
+      comment: Blank sample codes should stop before trace lookup, emit the current Java error, and still return a changed result from AnalysisEntityManager.

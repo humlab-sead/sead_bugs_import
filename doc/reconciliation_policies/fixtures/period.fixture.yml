@@ -1,0 +1,112 @@
+fixture_version: "1.0"
+policy: period
+scenarios:
+  - name: ignore_unknown_period_code_before_trace_lookup
+    intent: reconciliation_path
+    source_rows:
+      - PeriodCODE: "?"
+        PeriodName: Unknown period
+        PeriodType: Modern
+        PeriodDesc: Ignored placeholder period
+        PeriodRef: Ref-P-0
+        PeriodGeog: Sweden
+        Begin: 0
+        BeginBCAD: AD
+        End: 0
+        EndBCAD: AD
+        YearsType: Calendar
+    policy_context:
+      step_hits: {}
+      state:
+        prerequisite_failed: true
+        guard_error_message: "IGNORED: This item is ignored"
+    expects:
+      reconciliation_path: [ignore_unknown_period_code]
+      reconciliation_result:
+        result_kind: return_guard_error
+        source: ignore_unknown_period_code
+        row_id: null
+        issue:
+          severity: error
+          message: "IGNORED: This item is ignored"
+        period_code: "?"
+  - name: trace_hit_updates_existing_period
+    intent: reconciliation_path
+    source_rows:
+      - PeriodCODE: P-100
+        PeriodName: Roman
+        PeriodType: Calendar
+        PeriodDesc: Roman period
+        PeriodRef: Ref-P-1
+        PeriodGeog: Britain
+        Begin: 100
+        BeginBCAD: AD
+        End: 400
+        EndBCAD: AD
+        YearsType: Calendar
+    policy_context:
+      step_hits:
+        trace_lookup: true
+      state:
+        existing_row_id: 601
+    expects:
+      reconciliation_path: [trace_lookup]
+      reconciliation_result:
+        result_kind: update_existing
+        source: trace_lookup
+        row_id: 601
+        period_code: P-100
+  - name: trace_hit_returns_existing_period_error
+    intent: reconciliation_path
+    source_rows:
+      - PeriodCODE: P-200
+        PeriodName: Bronze Age
+        PeriodType: Calendar
+        PeriodDesc: Bronze age period
+        PeriodRef: Ref-P-2
+        PeriodGeog: Denmark
+        Begin: 1800
+        BeginBCAD: BC
+        End: 500
+        EndBCAD: BC
+        YearsType: Calendar
+    policy_context:
+      step_hits:
+        trace_lookup: true
+      state:
+        existing_row_id: 602
+        existing_error_message: Existing period error
+    expects:
+      reconciliation_path: [trace_lookup]
+      reconciliation_result:
+        result_kind: return_existing_error
+        source: trace_lookup
+        row_id: 602
+        issue:
+          severity: error
+          message: Existing period error
+        period_code: P-200
+  - name: create_new_period_when_no_trace_exists
+    intent: reconciliation_path
+    source_rows:
+      - PeriodCODE: P-300
+        PeriodName: Iron Age
+        PeriodType: Calendar
+        PeriodDesc: Iron age period
+        PeriodRef: Ref-P-3
+        PeriodGeog: Norway
+        Begin: 500
+        BeginBCAD: BC
+        End: 1
+        EndBCAD: AD
+        YearsType: Calendar
+    policy_context:
+      step_hits:
+        trace_lookup: false
+    expects:
+      reconciliation_path: [trace_lookup, create_new]
+      reconciliation_result:
+        result_kind: insert_new
+        source: create_new
+        row_id: null
+        period_code: P-300
