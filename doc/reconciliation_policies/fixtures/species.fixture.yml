@@ -54,6 +54,7 @@ scenarios:
       step_hits: {}
     expects:
       related_outputs: [taxa_family]
+      row_changed: true
       graph_result:
         taxa_family:
           result_kind: insert_new
@@ -78,6 +79,7 @@ scenarios:
         existing_family_id: 801
     expects:
       related_outputs: [taxa_family]
+      row_changed: false
       graph_result:
         taxa_family:
           result_kind: return_existing
@@ -101,6 +103,7 @@ scenarios:
         existing_family_id: 801
     expects:
       related_outputs: [taxa_genus]
+      row_changed: true
       graph_result:
         taxa_genus:
           result_kind: insert_new
@@ -125,6 +128,7 @@ scenarios:
         existing_genus_id: 802
     expects:
       related_outputs: [taxa_genus]
+      row_changed: false
       graph_result:
         taxa_genus:
           result_kind: return_existing
@@ -146,6 +150,7 @@ scenarios:
       step_hits: {}
     expects:
       related_outputs: [taxa_author]
+      row_changed: true
       graph_result:
         taxa_author:
           result_kind: insert_new
@@ -168,6 +173,7 @@ scenarios:
         existing_author_id: 803
     expects:
       related_outputs: [taxa_author]
+      row_changed: false
       graph_result:
         taxa_author:
           result_kind: return_existing
@@ -188,6 +194,7 @@ scenarios:
       step_hits: {}
     expects:
       related_outputs: [taxa_author]
+      row_changed: true
       graph_result:
         taxa_author:
           result_kind: insert_new
@@ -212,6 +219,7 @@ scenarios:
         existing_author_id: 803
     expects:
       related_outputs: [taxa_species]
+      row_changed: true
       graph_result:
         taxa_species:
           result_kind: insert_new
@@ -237,6 +245,7 @@ scenarios:
         existing_genus_id: 802
     expects:
       related_outputs: [taxa_species]
+      row_changed: true
       graph_result:
         taxa_species:
           result_kind: insert_new
@@ -264,6 +273,7 @@ scenarios:
         existing_species_id: 804
     expects:
       related_outputs: [taxa_species]
+      row_changed: false
       graph_result:
         taxa_species:
           result_kind: return_existing
@@ -290,6 +300,7 @@ scenarios:
         existing_species_id: 806
     expects:
       related_outputs: [taxa_species]
+      row_changed: false
       graph_result:
         taxa_species:
           result_kind: return_existing
@@ -315,6 +326,7 @@ scenarios:
         no_data_genus_id: 904
     expects:
       related_outputs: [taxa_species]
+      row_changed: false
       graph_result:
         taxa_species:
           result_kind: return_existing
