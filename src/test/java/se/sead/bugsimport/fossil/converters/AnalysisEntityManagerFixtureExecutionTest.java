@@ -216,10 +216,12 @@ public class AnalysisEntityManagerFixtureExecutionTest {
 		Map<String, Object> dataset = new LinkedHashMap<String, Object>();
 		dataset.put("dataset_id", abundance.getAnalysisEntity().getDataset().getId());
 		dataset.put("updated_dataset_id", abundance.getAnalysisEntity().getDataset().getUpdatedDataset() == null ? null : abundance.getAnalysisEntity().getDataset().getUpdatedDataset().getId());
+		dataset.put("supporting_action", abundance.getAnalysisEntity().getDataset().getId() == null ? "create" : "reuse");
 		Map<String, Object> analysisEntity = new LinkedHashMap<String, Object>();
 		if (abundance.getAnalysisEntity().getId() != null) {
 			analysisEntity.put("analysis_entity_id", abundance.getAnalysisEntity().getId());
 		}
+		analysisEntity.put("supporting_action", abundance.getAnalysisEntity().getId() == null ? "create" : "reuse");
 		analysisEntity.put("physical_sample_id", abundance.getAnalysisEntity().getSample().getId());
 		analysisEntity.put("dataset_id", abundance.getAnalysisEntity().getDataset().getId());
 		result.put("dataset", dataset);

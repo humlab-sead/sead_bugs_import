@@ -83,15 +83,18 @@ public class RelatedOutputPolicyHarness {
 		if (allowDatasetUpdates) {
 			datasetResult.put("dataset_id", DEFAULT_EXISTING_DATASET_ID);
 			datasetResult.put("updated_dataset_id", null);
+			datasetResult.put("supporting_action", "reuse");
 		} else {
 			datasetResult.put("dataset_id", null);
 			datasetResult.put("updated_dataset_id", DEFAULT_EXISTING_DATASET_ID);
+			datasetResult.put("supporting_action", "create");
 		}
 
 		Map<String, Object> analysisEntityResult = new LinkedHashMap<String, Object>();
 		if (stateOverrides != null && stateOverrides.containsKey("existing_analysis_entity_id")) {
 			analysisEntityResult.put("analysis_entity_id", integerValue(stateOverrides.get("existing_analysis_entity_id"), "existing_analysis_entity_id"));
 		}
+		analysisEntityResult.put("supporting_action", stateOverrides != null && stateOverrides.containsKey("existing_analysis_entity_id") ? "reuse" : "create");
 		analysisEntityResult.put("physical_sample_id", DEFAULT_PHYSICAL_SAMPLE_ID);
 		analysisEntityResult.put("dataset_id", datasetResult.get("dataset_id"));
 

@@ -20,6 +20,7 @@ scenarios:
         dataset:
           dataset_id: null
           updated_dataset_id: 20
+          supporting_action: create
   - name: reuse_existing_fossil_dataset_when_updates_enabled
     intent: supporting_output_result
     source_rows:
@@ -39,6 +40,7 @@ scenarios:
         dataset:
           dataset_id: 20
           updated_dataset_id: null
+          supporting_action: reuse
   - name: create_fossil_analysis_entity_when_missing
     intent: supporting_output_result
     source_rows:
@@ -56,6 +58,7 @@ scenarios:
       related_outputs: [analysis_entity]
       graph_result:
         analysis_entity:
+          supporting_action: create
           physical_sample_id: 10
           dataset_id: 20
   - name: reuse_existing_fossil_analysis_entity_when_present
@@ -77,6 +80,7 @@ scenarios:
       graph_result:
         analysis_entity:
           analysis_entity_id: 30
+          supporting_action: reuse
           physical_sample_id: 10
           dataset_id: 20
   - name: clone_dataset_when_updates_disabled
@@ -92,12 +96,15 @@ scenarios:
     expects:
       related_outputs: [dataset, analysis_entity]
       updates_target_fields: [analysis_entity_id]
+      row_changed: true
       dataset_link_mode: clone_updated_dataset
       graph_result:
         dataset:
           dataset_id: null
           updated_dataset_id: 20
+          supporting_action: create
         analysis_entity:
+          supporting_action: create
           physical_sample_id: 10
           dataset_id: null
       comment: Existing datasets should be cloned through updated_dataset when dataset updates are disabled and abundance data changed.
@@ -114,12 +121,15 @@ scenarios:
     expects:
       related_outputs: [dataset, analysis_entity]
       updates_target_fields: [analysis_entity_id]
+      row_changed: true
       dataset_link_mode: reuse_existing_dataset
       graph_result:
         dataset:
           dataset_id: 20
           updated_dataset_id: null
+          supporting_action: reuse
         analysis_entity:
+          supporting_action: create
           physical_sample_id: 10
           dataset_id: 20
       comment: Existing datasets should be reused directly when dataset updates are enabled.
@@ -138,13 +148,16 @@ scenarios:
     expects:
       related_outputs: [dataset, analysis_entity]
       updates_target_fields: [analysis_entity_id]
+      row_changed: true
       dataset_link_mode: reuse_existing_dataset
       graph_result:
         dataset:
           dataset_id: 20
           updated_dataset_id: null
+          supporting_action: reuse
         analysis_entity:
           analysis_entity_id: 30
+          supporting_action: reuse
           physical_sample_id: 10
           dataset_id: 20
       comment: Existing analysis entities should be reused when the sample and dataset already match a stored row.
@@ -162,6 +175,7 @@ scenarios:
         sample_found: false
     expects:
       related_outputs: [dataset, analysis_entity]
+      row_changed: false
       graph_issue:
         severity: error
         message: No sample found for code
@@ -181,6 +195,7 @@ scenarios:
     expects:
       related_outputs: [dataset, analysis_entity]
       dataset_link_mode: reuse_existing_dataset
+      row_changed: false
       graph_issue:
         severity: error
         message: More than one analysis entity found for same dataset and sample

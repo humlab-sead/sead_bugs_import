@@ -266,6 +266,7 @@ public class SupportingOutputPolicyHarness {
 		boolean allowDatasetUpdates = state == null || !state.containsKey("allow_dataset_updates") || Boolean.TRUE.equals(state.get("allow_dataset_updates"));
 		result.put("dataset_id", allowDatasetUpdates ? Integer.valueOf(20) : null);
 		result.put("updated_dataset_id", allowDatasetUpdates ? null : Integer.valueOf(20));
+		result.put("supporting_action", allowDatasetUpdates ? "reuse" : "create");
 		return result;
 	}
 
@@ -276,6 +277,7 @@ public class SupportingOutputPolicyHarness {
 			result.put("analysis_entity_id", analysisEntityId);
 		}
 		boolean allowDatasetUpdates = state == null || !state.containsKey("allow_dataset_updates") || Boolean.TRUE.equals(state.get("allow_dataset_updates"));
+		result.put("supporting_action", analysisEntityId == null ? "create" : "reuse");
 		result.put("physical_sample_id", integerOrDefault(state, "physical_sample_id", Integer.valueOf(10)));
 		result.put("dataset_id", allowDatasetUpdates ? Integer.valueOf(20) : null);
 		return result;
