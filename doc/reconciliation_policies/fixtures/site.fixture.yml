@@ -26,6 +26,7 @@ scenarios:
       reconciliation_path: [resolve_locations]
       reconciliation_result:
         result_kind: return_guard_error
+        persisted_action: stop_before_write
         source: resolve_locations
         row_id: null
         site_code: SITE000023
@@ -57,6 +58,7 @@ scenarios:
       reconciliation_path: [trace_lookup]
       reconciliation_result:
         result_kind: return_guard_error
+        persisted_action: stop_before_write
         source: trace_lookup
         row_id: null
         site_code: SITE000025
@@ -114,6 +116,7 @@ scenarios:
       reconciliation_path: [trace_lookup]
       reconciliation_result:
         result_kind: return_existing_error
+        persisted_action: keep_existing_error
         source: trace_lookup
         row_id: null
         site_code: SITE002
@@ -144,6 +147,7 @@ scenarios:
       reconciliation_path: [trace_lookup, name_location_lookup]
       reconciliation_result:
         result_kind: return_existing_error
+        persisted_action: keep_existing_error
         source: name_location_lookup
         row_id: null
         site_code: SITE003
@@ -174,6 +178,7 @@ scenarios:
       reconciliation_path: [trace_lookup, name_location_lookup]
       reconciliation_result:
         result_kind: return_existing_error
+        persisted_action: keep_existing_error
         source: name_location_lookup
         row_id: null
         site_code: SITE004

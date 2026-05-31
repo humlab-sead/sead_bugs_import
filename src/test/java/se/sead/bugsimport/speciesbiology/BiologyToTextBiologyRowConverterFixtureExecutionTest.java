@@ -51,6 +51,11 @@ public class BiologyToTextBiologyRowConverterFixtureExecutionTest {
 	}
 
 	@Test
+	public void biologyLookupErrorFixtureMatchesCurrentJavaBehavior() throws Exception {
+		assertScenarioMatchesCurrentJavaBehavior("biology_lookup_returns_existing_error_row");
+	}
+
+	@Test
 	public void createNewFixtureMatchesCurrentJavaBehavior() throws Exception {
 		assertScenarioMatchesCurrentJavaBehavior("create_new_text_biology_when_tuple_missing");
 	}
@@ -79,8 +84,12 @@ public class BiologyToTextBiologyRowConverterFixtureExecutionTest {
 		taxonomicOrderRepository.setSpecies(species);
 		biblioRepository.setReference(reference);
 		if (state != null && state.containsKey("existing_row_id")) {
-			biologyRepository.setExisting(new FixtureTextBiology(fixtureLoader.integerValue(state.get("existing_row_id"), scenarioName + ".policy_context.state.existing_row_id"), species, reference,
-					fixtureLoader.stringValue(sourceRow.get("Data"), scenarioName + ".source_rows[0].Data")));
+			FixtureTextBiology existing = new FixtureTextBiology(fixtureLoader.integerValue(state.get("existing_row_id"), scenarioName + ".policy_context.state.existing_row_id"), species, reference,
+					fixtureLoader.stringValue(sourceRow.get("Data"), scenarioName + ".source_rows[0].Data"));
+			if (state.containsKey("existing_error_message")) {
+				existing.addError(fixtureLoader.stringValue(state.get("existing_error_message"), scenarioName + ".policy_context.state.existing_error_message"));
+			}
+			biologyRepository.setExisting(existing);
 		}
 	}
 
@@ -103,7 +112,15 @@ public class BiologyToTextBiologyRowConverterFixtureExecutionTest {
 
 	private Map<String, Object> actualReconciliationResult(TextBiology result, Map<String, Object> sourceRow) {
 		Map<String, Object> reconciliationResult = new LinkedHashMap<String, Object>();
-		if (result.getId() == null) {
+		if (!result.isErrorFree()) {
+			reconciliationResult.put("result_kind", "return_existing_error");
+			reconciliationResult.put("persisted_action", "keep_existing_error");
+			reconciliationResult.put("source", "biology_lookup");
+			Map<String, Object> issue = new LinkedHashMap<String, Object>();
+			issue.put("severity", "error");
+			issue.put("message", result.getErrorMessages().get(0));
+			reconciliationResult.put("issue", issue);
+		} else if (result.getId() == null) {
 			reconciliationResult.put("result_kind", "insert_new");
 			reconciliationResult.put("persisted_action", "create");
 			reconciliationResult.put("source", "create_new");

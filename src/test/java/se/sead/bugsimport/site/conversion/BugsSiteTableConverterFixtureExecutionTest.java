@@ -183,12 +183,15 @@ public class BugsSiteTableConverterFixtureExecutionTest {
 			String errorMessage = result.getErrorMessages().get(0);
 			if ("No country exists for site".equals(errorMessage)) {
 				reconciliationResult.put("result_kind", "return_guard_error");
+				reconciliationResult.put("persisted_action", "stop_before_write");
 				reconciliationResult.put("source", "resolve_locations");
 			} else if ("Bugs data is updated but updates are disallowed.".equals(errorMessage)) {
 				reconciliationResult.put("result_kind", "return_guard_error");
+				reconciliationResult.put("persisted_action", "stop_before_write");
 				reconciliationResult.put("source", matchedRuleName);
 			} else {
 				reconciliationResult.put("result_kind", "return_existing_error");
+				reconciliationResult.put("persisted_action", "keep_existing_error");
 				reconciliationResult.put("source", matchedRuleName);
 			}
 			Map<String, Object> issue = new LinkedHashMap<String, Object>();

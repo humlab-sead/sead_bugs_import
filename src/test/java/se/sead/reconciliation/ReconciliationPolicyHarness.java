@@ -144,6 +144,10 @@ public class ReconciliationPolicyHarness {
 				|| "bibliography".equals(policyName)
 				|| "rdbcode".equals(policyName)
 				|| "rdbsystem".equals(policyName)
+				|| "rdb".equals(policyName)
+				|| "site".equals(policyName)
+				|| "sitereferences".equals(policyName)
+				|| "taxaseasonality".equals(policyName)
 				|| "ecocodedefinition_bugs".equals(policyName)
 				|| "ecocodedefinition_koch".equals(policyName);
 	}

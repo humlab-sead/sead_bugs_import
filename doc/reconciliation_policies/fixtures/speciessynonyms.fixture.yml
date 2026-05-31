@@ -27,6 +27,36 @@ scenarios:
         synonym_species: sylvatica
         synonym_authority: Linnaeus
         bugs_reference: Ref-401
+  - name: trace_hit_returns_existing_synonym_error
+    intent: reconciliation_path
+    source_rows:
+      - CODE: 10010030
+        SynGenus: Carabus
+        SynSpecies: problematicus
+        SynAuthority: Dejean
+        Ref: Ref-401E
+        Notes: Existing synonym error notes
+    policy_context:
+      step_hits:
+        trace_lookup: true
+      state:
+        existing_row_id: 411
+        existing_error_message: Existing synonym association error
+    expects:
+      reconciliation_path: [trace_lookup]
+      reconciliation_result:
+        result_kind: return_existing_error
+        persisted_action: keep_existing_error
+        source: trace_lookup
+        row_id: 411
+        issue:
+          severity: error
+          message: Existing synonym association error
+        species_code: 10010030
+        synonym_genus: Carabus
+        synonym_species: problematicus
+        synonym_authority: Dejean
+        bugs_reference: Ref-401E
   - name: create_new_synonym_association_when_no_trace_exists
     intent: reconciliation_path
     source_rows:

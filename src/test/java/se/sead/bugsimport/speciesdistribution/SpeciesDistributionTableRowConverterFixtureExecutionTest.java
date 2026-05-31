@@ -52,6 +52,11 @@ public class SpeciesDistributionTableRowConverterFixtureExecutionTest {
 	}
 
 	@Test
+	public void tupleLookupErrorFixtureMatchesCurrentJavaBehavior() throws Exception {
+		assertScenarioMatchesCurrentJavaBehavior("tuple_lookup_returns_existing_error_row");
+	}
+
+	@Test
 	public void createNewFixtureMatchesCurrentJavaBehavior() throws Exception {
 		assertScenarioMatchesCurrentJavaBehavior("create_new_distribution_when_tuple_missing");
 	}
@@ -76,12 +81,16 @@ public class SpeciesDistributionTableRowConverterFixtureExecutionTest {
 	private void configureRepository(Map<String, Object> sourceRow, Map<String, Object> stepHits, Map<String, Object> state, String scenarioName) {
 		distributionRepository.reset();
 		if (Boolean.TRUE.equals(stepHits.get("distribution_lookup"))) {
-			distributionRepository.setMatch(TestTextDistribution.create(
+			TextDistribution distribution = TestTextDistribution.create(
 					fixtureLoader.integerValue(state.get("existing_row_id"), scenarioName + ".policy_context.state.existing_row_id"),
 					species,
 					reference,
 					fixtureLoader.stringValue(sourceRow.get("Data"), scenarioName + ".source_rows[0].Data")
-			));
+			);
+			if (state.containsKey("existing_error_message")) {
+				distribution.addError(fixtureLoader.stringValue(state.get("existing_error_message"), scenarioName + ".policy_context.state.existing_error_message"));
+			}
+			distributionRepository.setMatch(distribution);
 		}
 	}
 
@@ -105,7 +114,15 @@ public class SpeciesDistributionTableRowConverterFixtureExecutionTest {
 
 	private Map<String, Object> actualReconciliationResult(TextDistribution result, Distrib bugsData) {
 		Map<String, Object> reconciliationResult = new LinkedHashMap<String, Object>();
-		if (result.getId() == null) {
+		if (!result.isErrorFree()) {
+			reconciliationResult.put("result_kind", "return_existing_error");
+			reconciliationResult.put("persisted_action", "keep_existing_error");
+			reconciliationResult.put("source", "distribution_lookup");
+			Map<String, Object> issue = new LinkedHashMap<String, Object>();
+			issue.put("severity", "error");
+			issue.put("message", result.getErrorMessages().get(0));
+			reconciliationResult.put("issue", issue);
+		} else if (result.getId() == null) {
 			reconciliationResult.put("result_kind", "insert_new");
 			reconciliationResult.put("persisted_action", "create");
 			reconciliationResult.put("source", "create_new");

@@ -20,6 +20,29 @@ scenarios:
         source: distribution_lookup
         row_id: 41
         species_code: 101.0
+  - name: tuple_lookup_returns_existing_error_row
+    intent: reconciliation_path
+    source_rows:
+      - CODE: 101.5
+        Ref: REF-101E
+        Data: Existing distribution error
+    policy_context:
+      step_hits:
+        distribution_lookup: true
+      state:
+        existing_row_id: 42
+        existing_error_message: Existing distribution error
+    expects:
+      reconciliation_path: [distribution_lookup]
+      reconciliation_result:
+        result_kind: return_existing_error
+        persisted_action: keep_existing_error
+        source: distribution_lookup
+        row_id: 42
+        issue:
+          severity: error
+          message: Existing distribution error
+        species_code: 101.5
   - name: create_new_distribution_when_tuple_missing
     intent: reconciliation_path
     source_rows:

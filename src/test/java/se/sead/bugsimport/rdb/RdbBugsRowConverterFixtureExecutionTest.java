@@ -164,8 +164,10 @@ public class RdbBugsRowConverterFixtureExecutionTest {
 		if (!result.isErrorFree()) {
 			if ("updated_since_last_import_guard".equals(matchedRuleName) && result.getId() == null) {
 				reconciliationResult.put("result_kind", "return_guard_error");
+				reconciliationResult.put("persisted_action", "stop_before_write");
 			} else {
 				reconciliationResult.put("result_kind", "return_existing_error");
+				reconciliationResult.put("persisted_action", "keep_existing_error");
 			}
 			reconciliationResult.put("source", matchedRuleName);
 			Map<String, Object> issue = new LinkedHashMap<String, Object>();

@@ -119,6 +119,7 @@ public class TaxaSeasonalityBugsTableRowConverterFixtureExecutionTest {
 				: (historyGuard.didMatch() ? "updated_since_last_import_guard" : (repositoryLookup.didMatch() ? "repository_lookup" : "create_new"));
 		if (!result.isErrorFree()) {
 			reconciliationResult.put("result_kind", "return_guard_error");
+			reconciliationResult.put("persisted_action", "stop_before_write");
 			Map<String, Object> issue = new LinkedHashMap<String, Object>();
 			issue.put("severity", "error");
 			issue.put("message", result.getErrorMessages().get(0));

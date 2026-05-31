@@ -136,6 +136,7 @@ public class SiteReferenceBugsTableRowConverterFixtureExecutionTest {
 		Map<String, Object> reconciliationResult = new LinkedHashMap<String, Object>();
 		if (!result.isErrorFree()) {
 			reconciliationResult.put("result_kind", "return_guard_error");
+			reconciliationResult.put("persisted_action", "stop_before_write");
 			reconciliationResult.put("source", "resolve_dependencies");
 			Map<String, Object> issue = new LinkedHashMap<String, Object>();
 			issue.put("severity", "error");

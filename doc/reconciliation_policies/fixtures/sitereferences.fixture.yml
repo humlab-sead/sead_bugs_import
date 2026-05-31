@@ -16,6 +16,7 @@ scenarios:
       reconciliation_path: [resolve_dependencies]
       reconciliation_result:
         result_kind: return_guard_error
+        persisted_action: stop_before_write
         source: resolve_dependencies
         row_id: null
         site_code: SITE000011
@@ -38,6 +39,7 @@ scenarios:
       reconciliation_path: [resolve_dependencies]
       reconciliation_result:
         result_kind: return_guard_error
+        persisted_action: stop_before_write
         source: resolve_dependencies
         row_id: null
         site_code: SITE000010
@@ -60,6 +62,7 @@ scenarios:
       reconciliation_path: [resolve_dependencies]
       reconciliation_result:
         result_kind: return_guard_error
+        persisted_action: stop_before_write
         source: resolve_dependencies
         row_id: null
         site_code: SITE000010

@@ -22,6 +22,31 @@ scenarios:
         species_code: 10010020
         bugs_reference: Ref-201
         text_value: Existing key text
+  - name: identification_key_lookup_returns_existing_error_row
+    intent: reconciliation_path
+    source_rows:
+      - CODE: 10010021
+        Ref: Ref-201E
+        Data: Existing key error text
+    policy_context:
+      step_hits:
+        identification_key_lookup: true
+      state:
+        existing_row_id: 211
+        existing_error_message: Existing identification key error
+    expects:
+      reconciliation_path: [identification_key_lookup]
+      reconciliation_result:
+        result_kind: return_existing_error
+        persisted_action: keep_existing_error
+        source: identification_key_lookup
+        row_id: 211
+        issue:
+          severity: error
+          message: Existing identification key error
+        species_code: 10010021
+        bugs_reference: Ref-201E
+        text_value: Existing key error text
   - name: create_new_text_key_when_tuple_missing
     intent: reconciliation_path
     source_rows:

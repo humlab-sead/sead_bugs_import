@@ -38,6 +38,7 @@ scenarios:
       reconciliation_path: [trace_lookup, updated_since_last_import_guard]
       reconciliation_result:
         result_kind: return_guard_error
+        persisted_action: stop_before_write
         source: updated_since_last_import_guard
         row_id: null
         issue:
