@@ -1,0 +1,14 @@
+# Country domain — policy authoring decisions
+
+Recorded while creating `country.policy.yml` from the Java source.
+
+| Policy section | Java source | Decision |
+|---|---|---|
+| `source.identity_key` | `Country.getBugsIdentifier()` | Use `CountryCode` as the natural key and trace identifier |
+| `trace_key.template` | `Country.compressToString()` | Preserve the literal `{CountryCode,Country}` order |
+| `target.table` and identity | `Location` JPA annotations | Map the importer to `tbl_locations` with sequence `tbl_locations_location_id_seq` |
+| `mappings.location_type_id` | `CountryRowConverter(LocationTypeRepository)` creates `new LocationCreator(locationTypeRepository.getCountryType())` | Treat country type as a fixed helper-resolved target value |
+| `reconciliation.rules[1]` | `CountryRowConverter.convertForDataRow()` returns `fromLastTrace` directly | Model traced matches as `return_as_is`, not an update |
+| `reconciliation.rules[2]` | `CountryRowConverter.create()` checks `locationRepository.findCountryByName()` | Add a database lookup by `location_name` plus country type before create-new |
+| `reconciliation.rules[2]` semantics | `associateImportWithExistingLocationThroughLog()` sets `dateUpdated` and `updated=true` without changing fields | Represent the name match as `on_match: update` with a comment that it is trace association, not a business-field update |
+| importer classification | `CountryImporter` + `CountryBugsTable` + `CountryPersister` | Treat `CountryImporter` as a standard importer policy, even though some other code paths can create countries internally |
