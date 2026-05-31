@@ -52,6 +52,11 @@ public class TaxoNotesTableRowConverterFixtureExecutionTest {
 	}
 
 	@Test
+	public void taxonomyNoteLookupErrorFixtureMatchesCurrentJavaBehavior() throws Exception {
+		assertScenarioMatchesCurrentJavaBehavior("taxonomy_note_lookup_returns_existing_error_row");
+	}
+
+	@Test
 	public void createNewTaxonomyNoteFixtureMatchesCurrentJavaBehavior() throws Exception {
 		assertScenarioMatchesCurrentJavaBehavior("create_new_taxonomy_note_when_tuple_missing");
 	}
@@ -76,12 +81,16 @@ public class TaxoNotesTableRowConverterFixtureExecutionTest {
 	private void configureRepository(Map<String, Object> sourceRow, Map<String, Object> stepHits, Map<String, Object> state, String scenarioName) {
 		taxonomicNotesRepository.reset();
 		if (Boolean.TRUE.equals(stepHits.get("taxonomy_note_lookup"))) {
-			taxonomicNotesRepository.setMatch(TestTaxonomicNotes.create(
+			TaxonomicNotes match = TestTaxonomicNotes.create(
 					fixtureLoader.integerValue(state.get("existing_row_id"), scenarioName + ".policy_context.state.existing_row_id"),
 					reference,
 					species,
 					fixtureLoader.stringValue(sourceRow.get("Data"), scenarioName + ".source_rows[0].Data")
-			));
+			);
+			if (state != null && state.containsKey("existing_error_message")) {
+				match.addError(fixtureLoader.stringValue(state.get("existing_error_message"), scenarioName + ".policy_context.state.existing_error_message"));
+			}
+			taxonomicNotesRepository.setMatch(match);
 		}
 	}
 
@@ -105,7 +114,15 @@ public class TaxoNotesTableRowConverterFixtureExecutionTest {
 
 	private Map<String, Object> actualReconciliationResult(TaxonomicNotes result, TaxoNotes bugsData) {
 		Map<String, Object> reconciliationResult = new LinkedHashMap<String, Object>();
-		if (result.getId() == null) {
+		if (!result.isErrorFree()) {
+			reconciliationResult.put("result_kind", "return_existing_error");
+			reconciliationResult.put("persisted_action", "keep_existing_error");
+			reconciliationResult.put("source", "taxonomy_note_lookup");
+			Map<String, Object> issue = new LinkedHashMap<String, Object>();
+			issue.put("severity", "error");
+			issue.put("message", result.getErrorMessages().get(0));
+			reconciliationResult.put("issue", issue);
+		} else if (result.getId() == null) {
 			reconciliationResult.put("result_kind", "insert_new");
 			reconciliationResult.put("source", "create_new");
 		} else {

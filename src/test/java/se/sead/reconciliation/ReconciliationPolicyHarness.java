@@ -139,14 +139,17 @@ public class ReconciliationPolicyHarness {
 
 	private boolean supportsNoWritePersistedAction(String policyName) {
 		return supportsWritePersistedAction(policyName)
+				|| "country".equals(policyName)
 				|| "period".equals(policyName)
 				|| "lab".equals(policyName)
 				|| "bibliography".equals(policyName)
+				|| "mcrnames".equals(policyName)
 				|| "rdbcode".equals(policyName)
 				|| "rdbsystem".equals(policyName)
 				|| "rdb".equals(policyName)
 				|| "site".equals(policyName)
 				|| "sitereferences".equals(policyName)
+				|| "taxanotes".equals(policyName)
 				|| "taxaseasonality".equals(policyName)
 				|| "ecocodedefinition_bugs".equals(policyName)
 				|| "ecocodedefinition_koch".equals(policyName);

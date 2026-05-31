@@ -37,6 +37,29 @@ scenarios:
         source: existing_country_lookup
         row_id: 802
         country_code: C002
+  - name: existing_country_lookup_returns_existing_error
+    intent: reconciliation_path
+    source_rows:
+      - CountryCode: C002E
+        Country: Norway
+    policy_context:
+      step_hits:
+        trace_lookup: false
+        existing_country_lookup: true
+      state:
+        existing_row_id: 803
+        existing_error_message: Existing country lookup error
+    expects:
+      reconciliation_path: [trace_lookup, existing_country_lookup]
+      reconciliation_result:
+        result_kind: return_existing_error
+        persisted_action: keep_existing_error
+        source: existing_country_lookup
+        row_id: 803
+        issue:
+          severity: error
+          message: Existing country lookup error
+        country_code: C002E
   - name: create_new_country_when_no_match_exists
     intent: reconciliation_path
     source_rows:

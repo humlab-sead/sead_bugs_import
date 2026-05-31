@@ -45,6 +45,33 @@ scenarios:
         source: species_value_lookup
         row_id: 1002
         species_code: 10010021
+  - name: species_value_lookup_returns_existing_error_row
+    intent: reconciliation_path
+    source_rows:
+      - CODE: 10010023
+        CompareStatus: synonym
+        MCRName: Pterostichus errorus
+        MCRNameTrim: Pterostichus errorus
+        MCRNumber: 15
+        tempCODE: 10010023
+    policy_context:
+      step_hits:
+        trace_lookup: false
+        species_value_lookup: true
+      state:
+        existing_row_id: 1003
+        existing_error_message: Existing MCR name error
+    expects:
+      reconciliation_path: [trace_lookup, species_value_lookup]
+      reconciliation_result:
+        result_kind: return_existing_error
+        persisted_action: keep_existing_error
+        source: species_value_lookup
+        row_id: 1003
+        issue:
+          severity: error
+          message: Existing MCR name error
+        species_code: 10010023
   - name: create_new_mcr_name_when_search_chain_misses
     intent: reconciliation_path
     source_rows:

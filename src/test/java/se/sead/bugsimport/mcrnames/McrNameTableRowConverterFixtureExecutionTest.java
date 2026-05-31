@@ -47,6 +47,11 @@ public class McrNameTableRowConverterFixtureExecutionTest {
 	}
 
 	@Test
+	public void speciesValueLookupErrorFixtureMatchesCurrentJavaBehavior() throws Exception {
+		assertScenarioMatchesCurrentJavaBehavior("species_value_lookup_returns_existing_error_row");
+	}
+
+	@Test
 	public void createNewFixtureMatchesCurrentJavaBehavior() throws Exception {
 		assertScenarioMatchesCurrentJavaBehavior("create_new_mcr_name_when_search_chain_misses");
 	}
@@ -71,10 +76,18 @@ public class McrNameTableRowConverterFixtureExecutionTest {
 		traceLookup.reset();
 		speciesValueLookup.reset();
 		if (Boolean.TRUE.equals(stepHits.get("trace_lookup"))) {
-			traceLookup.setMatch(TestMCRName.create(fixtureLoader.integerValue(state.get("existing_row_id"), scenarioName + ".policy_context.state.existing_row_id"), null, null, null, null));
+			MCRName match = TestMCRName.create(fixtureLoader.integerValue(state.get("existing_row_id"), scenarioName + ".policy_context.state.existing_row_id"), null, null, null, null);
+			if (state != null && state.containsKey("existing_error_message")) {
+				match.addError(fixtureLoader.stringValue(state.get("existing_error_message"), scenarioName + ".policy_context.state.existing_error_message"));
+			}
+			traceLookup.setMatch(match);
 		}
 		if (Boolean.TRUE.equals(stepHits.get("species_value_lookup"))) {
-			speciesValueLookup.setMatch(TestMCRName.create(fixtureLoader.integerValue(state.get("existing_row_id"), scenarioName + ".policy_context.state.existing_row_id"), null, null, null, null));
+			MCRName match = TestMCRName.create(fixtureLoader.integerValue(state.get("existing_row_id"), scenarioName + ".policy_context.state.existing_row_id"), null, null, null, null);
+			if (state != null && state.containsKey("existing_error_message")) {
+				match.addError(fixtureLoader.stringValue(state.get("existing_error_message"), scenarioName + ".policy_context.state.existing_error_message"));
+			}
+			speciesValueLookup.setMatch(match);
 		}
 		traceLookup.setCurrentCode(integerCode(sourceRow));
 		speciesValueLookup.setCurrentCode(integerCode(sourceRow));
@@ -104,12 +117,21 @@ public class McrNameTableRowConverterFixtureExecutionTest {
 	private Map<String, Object> actualReconciliationResult(MCRName result, Map<String, Object> sourceRow) {
 		Map<String, Object> reconciliationResult = new LinkedHashMap<String, Object>();
 		String source = traceLookup.didMatch() ? "trace_lookup" : (speciesValueLookup.didMatch() ? "species_value_lookup" : "create_new");
-		if (result.getId() == null) {
+		if (!result.isErrorFree()) {
+			reconciliationResult.put("result_kind", "return_existing_error");
+			reconciliationResult.put("persisted_action", "keep_existing_error");
+		} else if (result.getId() == null) {
 			reconciliationResult.put("result_kind", "insert_new");
 		} else {
 			reconciliationResult.put("result_kind", "update_existing");
 		}
 		reconciliationResult.put("source", source);
+		if (!result.isErrorFree()) {
+			Map<String, Object> issue = new LinkedHashMap<String, Object>();
+			issue.put("severity", "error");
+			issue.put("message", result.getErrorMessages().get(0));
+			reconciliationResult.put("issue", issue);
+		}
 		reconciliationResult.put("row_id", result.getId());
 		reconciliationResult.put("species_code", integerCode(sourceRow));
 		return reconciliationResult;

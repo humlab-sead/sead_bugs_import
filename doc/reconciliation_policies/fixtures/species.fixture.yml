@@ -406,3 +406,45 @@ scenarios:
           species: sylvatica
           genus_id: 802
           author_id: 803
+  - name: mixed_species_related_output_graph_when_upper_tree_exists
+    intent: related_output_graph
+    source_rows:
+      - CODE: 10010030
+        FAMILY: CARABIDAE
+        GENUS: Carabus
+        SPECIES: problematicus
+        AUTHORITY: Dejean
+    policy_context:
+      config:
+        import_order_id: 701
+      state:
+        existing_family_id: 811
+        existing_genus_id: 812
+    expects:
+      related_outputs: [taxa_family, taxa_genus, taxa_author, taxa_species]
+      updates_target_fields: [taxon_id]
+      graph_result:
+        taxa_family:
+          result_kind: return_existing
+          supporting_action: reuse
+          family_id: 811
+          family_name: CARABIDAE
+          order_id: 701
+        taxa_genus:
+          result_kind: return_existing
+          supporting_action: reuse
+          genus_id: 812
+          genus_name: Carabus
+          family_id: 811
+        taxa_author:
+          result_kind: insert_new
+          supporting_action: create
+          author_id: null
+          author_name: Dejean
+        taxa_species:
+          result_kind: insert_new
+          supporting_action: create
+          species_id: null
+          species: problematicus
+          genus_id: 812
+          author_id: null

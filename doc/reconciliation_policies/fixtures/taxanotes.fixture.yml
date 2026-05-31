@@ -19,6 +19,29 @@ scenarios:
         source: taxonomy_note_lookup
         row_id: 51
         species_code: 201
+  - name: taxonomy_note_lookup_returns_existing_error_row
+    intent: reconciliation_path
+    source_rows:
+      - CODE: 201.5
+        Ref: REF-201E
+        Data: Existing taxonomy note error
+    policy_context:
+      step_hits:
+        taxonomy_note_lookup: true
+      state:
+        existing_row_id: 52
+        existing_error_message: Existing taxonomy note error
+    expects:
+      reconciliation_path: [taxonomy_note_lookup]
+      reconciliation_result:
+        result_kind: return_existing_error
+        persisted_action: keep_existing_error
+        source: taxonomy_note_lookup
+        row_id: 52
+        issue:
+          severity: error
+          message: Existing taxonomy note error
+        species_code: 201
   - name: create_new_taxonomy_note_when_tuple_missing
     intent: reconciliation_path
     source_rows:

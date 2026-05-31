@@ -49,6 +49,11 @@ public class CountryRowConverterFixtureExecutionTest {
 	}
 
 	@Test
+	public void existingLookupErrorFixtureMatchesCurrentJavaBehavior() throws Exception {
+		assertScenarioMatchesCurrentJavaBehavior("existing_country_lookup_returns_existing_error");
+	}
+
+	@Test
 	public void createNewFixtureMatchesCurrentJavaBehavior() throws Exception {
 		assertScenarioMatchesCurrentJavaBehavior("create_new_country_when_no_match_exists");
 	}
@@ -81,11 +86,15 @@ public class CountryRowConverterFixtureExecutionTest {
 	}
 
 	private Location existingLocation(Map<String, Object> sourceRow, Map<String, Object> state, String scenarioName) {
-		return TestLocation.create(
+		Location location = TestLocation.create(
 				state == null ? null : fixtureLoader.integerValue(state.get("existing_row_id"), scenarioName + ".policy_context.state.existing_row_id"),
 				fixtureLoader.stringValue(sourceRow.get("Country"), scenarioName + ".source_rows[0].Country"),
 				null
 		);
+		if (state != null && state.containsKey("existing_error_message")) {
+			location.addError(fixtureLoader.stringValue(state.get("existing_error_message"), scenarioName + ".policy_context.state.existing_error_message"));
+		}
+		return location;
 	}
 
 	private Country createCountry(Map<String, Object> sourceRow, String scenarioName) {
@@ -108,7 +117,15 @@ public class CountryRowConverterFixtureExecutionTest {
 	private Map<String, Object> actualReconciliationResult(Location result) {
 		Map<String, Object> reconciliationResult = new LinkedHashMap<String, Object>();
 		String matchedRuleName = matchedRuleName();
-		if (result.getId() == null && result.isErrorFree()) {
+		if (!result.isErrorFree()) {
+			reconciliationResult.put("result_kind", "return_existing_error");
+			reconciliationResult.put("persisted_action", "keep_existing_error");
+			reconciliationResult.put("source", matchedRuleName);
+			Map<String, Object> issue = new LinkedHashMap<String, Object>();
+			issue.put("severity", "error");
+			issue.put("message", result.getErrorMessages().get(0));
+			reconciliationResult.put("issue", issue);
+		} else if (result.getId() == null && result.isErrorFree()) {
 			reconciliationResult.put("result_kind", "insert_new");
 			reconciliationResult.put("source", "create_new");
 		} else {
