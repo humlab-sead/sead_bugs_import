@@ -44,6 +44,7 @@ public class ReconciliationPolicyHarness {
 			result.path.add(ruleName);
 			if ("create_new".equals(ruleType)) {
 				result.reconciliationResult.put("result_kind", "insert_new");
+				applyPersistedAction(result.reconciliationResult, policyName, "insert_new");
 				result.reconciliationResult.put("source", ruleName);
 				result.reconciliationResult.put("row_id", null);
 				applySourceIdentity(result.reconciliationResult, sourceRow, policyName);
@@ -102,9 +103,27 @@ public class ReconciliationPolicyHarness {
 			applySourceIdentity(reconciliationResult, sourceRow, policyName);
 		} else {
 			reconciliationResult.put("result_kind", "update_existing");
+			applyPersistedAction(reconciliationResult, policyName, "update_existing");
 			reconciliationResult.put("source", ruleName);
 			reconciliationResult.put("row_id", state == null ? null : state.get("existing_row_id"));
 			applySourceIdentity(reconciliationResult, sourceRow, policyName);
+		}
+	}
+
+	private void applyPersistedAction(Map<String, Object> reconciliationResult, String policyName, String resultKind) {
+		if (!("speciesassociation".equals(policyName)
+				|| "speciesbiology".equals(policyName)
+				|| "specieskeys".equals(policyName)
+				|| "speciessynonyms".equals(policyName)
+				|| "speciesdistribution".equals(policyName))) {
+			return;
+		}
+		if ("insert_new".equals(resultKind)) {
+			reconciliationResult.put("persisted_action", "create");
+			return;
+		}
+		if ("update_existing".equals(resultKind)) {
+			reconciliationResult.put("persisted_action", "update");
 		}
 	}
 

@@ -19,6 +19,7 @@ scenarios:
       reconciliation_path: [trace_lookup]
       reconciliation_result:
         result_kind: update_existing
+        persisted_action: update
         source: trace_lookup
         row_id: 401
         species_code: 10010020
@@ -42,6 +43,7 @@ scenarios:
       reconciliation_path: [trace_lookup, create_new]
       reconciliation_result:
         result_kind: insert_new
+        persisted_action: create
         source: create_new
         row_id: null
         species_code: 10010050

@@ -107,9 +107,11 @@ public class SpeciesDistributionTableRowConverterFixtureExecutionTest {
 		Map<String, Object> reconciliationResult = new LinkedHashMap<String, Object>();
 		if (result.getId() == null) {
 			reconciliationResult.put("result_kind", "insert_new");
+			reconciliationResult.put("persisted_action", "create");
 			reconciliationResult.put("source", "create_new");
 		} else {
 			reconciliationResult.put("result_kind", "update_existing");
+			reconciliationResult.put("persisted_action", "update");
 			reconciliationResult.put("source", "distribution_lookup");
 		}
 		reconciliationResult.put("row_id", result.getId());

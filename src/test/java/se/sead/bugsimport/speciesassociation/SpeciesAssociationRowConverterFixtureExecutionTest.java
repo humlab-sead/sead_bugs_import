@@ -118,9 +118,11 @@ public class SpeciesAssociationRowConverterFixtureExecutionTest {
 			reconciliationResult.put("issue", issue);
 		} else if (result.getId() == null) {
 			reconciliationResult.put("result_kind", "insert_new");
+			reconciliationResult.put("persisted_action", "create");
 			reconciliationResult.put("source", "create_new");
 		} else {
 			reconciliationResult.put("result_kind", "update_existing");
+			reconciliationResult.put("persisted_action", "update");
 			reconciliationResult.put("source", "trace_lookup");
 		}
 		reconciliationResult.put("row_id", result.getId());
