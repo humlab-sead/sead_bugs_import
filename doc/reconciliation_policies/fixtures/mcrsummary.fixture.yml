@@ -22,9 +22,39 @@ scenarios:
       reconciliation_path: [species_lookup]
       reconciliation_result:
         result_kind: return_as_is
+        persisted_action: keep_existing
         source: species_lookup
         row_id: 901
         species_code: 10010020
+  - name: species_lookup_returns_existing_summary_error_as_is
+    intent: reconciliation_path
+    source_rows:
+      - CODE: 10010022
+        TMaxLo: 12
+        TMaxHi: 22
+        TMinLo: 3
+        TMinHi: 7
+        TRangeLo: 11
+        TRangeHi: 21
+        COGMidTMax: 17
+        COGMidTRange: 16
+    policy_context:
+      step_hits:
+        species_lookup: true
+      state:
+        existing_row_id: 902
+        existing_error_message: Existing summary error
+    expects:
+      reconciliation_path: [species_lookup]
+      reconciliation_result:
+        result_kind: return_as_is
+        persisted_action: keep_existing_error
+        source: species_lookup
+        row_id: 902
+        issue:
+          severity: error
+          message: Existing summary error
+        species_code: 10010022
   - name: create_new_summary_when_species_lookup_misses
     intent: reconciliation_path
     source_rows:

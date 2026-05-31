@@ -21,6 +21,7 @@ scenarios:
         contacts:
           contact_1:
             result_kind: insert_new
+            supporting_action: create
             source: generated_new
             contact_id: null
             first_name: null
@@ -51,6 +52,7 @@ scenarios:
         contacts:
           contact_1:
             result_kind: return_existing
+            supporting_action: reuse
             source: repository
             contact_id: 301
             first_name: null
@@ -86,6 +88,7 @@ scenarios:
         contacts:
           contact_1:
             result_kind: return_existing
+            supporting_action: reuse
             source: cache
             contact_id: 401
             first_name: null
@@ -110,18 +113,21 @@ scenarios:
         contacts:
           contact_1:
             result_kind: insert_new
+            supporting_action: create
             source: generated_new
             contact_id: null
             first_name: null
             last_name: Archer
           contact_2:
             result_kind: insert_new
+            supporting_action: create
             source: generated_new
             contact_id: null
             first_name: null
             last_name: Bookland
           contact_3:
             result_kind: insert_new
+            supporting_action: create
             source: generated_new
             contact_id: null
             first_name: University of Ottawa
@@ -146,6 +152,7 @@ scenarios:
         contacts:
           contact_1:
             result_kind: insert_new
+            supporting_action: create
             source: generated_new
             contact_id: null
             first_name: University of Helsinki
@@ -176,6 +183,7 @@ scenarios:
         contacts:
           contact_1:
             result_kind: return_existing
+            supporting_action: reuse
             source: repository
             contact_id: 302
             first_name: University of Helsinki

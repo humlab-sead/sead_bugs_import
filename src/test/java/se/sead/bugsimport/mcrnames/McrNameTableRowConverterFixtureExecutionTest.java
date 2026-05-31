@@ -42,6 +42,11 @@ public class McrNameTableRowConverterFixtureExecutionTest {
 	}
 
 	@Test
+	public void traceLookupErrorFixtureMatchesCurrentJavaBehavior() throws Exception {
+		assertScenarioMatchesCurrentJavaBehavior("trace_lookup_returns_existing_error_row");
+	}
+
+	@Test
 	public void speciesValueLookupFixtureMatchesCurrentJavaBehavior() throws Exception {
 		assertScenarioMatchesCurrentJavaBehavior("species_value_lookup_updates_existing_mcr_name");
 	}

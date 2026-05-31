@@ -19,6 +19,29 @@ scenarios:
         source: trace_lookup
         row_id: 801
         country_code: C001
+  - name: trace_hit_returns_existing_country_error
+    intent: reconciliation_path
+    source_rows:
+      - CountryCode: C001E
+        Country: Sweden
+    policy_context:
+      step_hits:
+        trace_lookup: true
+        existing_country_lookup: false
+      state:
+        existing_row_id: 804
+        existing_error_message: Existing country trace error
+    expects:
+      reconciliation_path: [trace_lookup]
+      reconciliation_result:
+        result_kind: return_existing_error
+        persisted_action: keep_existing_error
+        source: trace_lookup
+        row_id: 804
+        issue:
+          severity: error
+          message: Existing country trace error
+        country_code: C001E
   - name: existing_country_lookup_updates_existing_country
     intent: reconciliation_path
     source_rows:

@@ -162,6 +162,7 @@ public class SupportingOutputPolicyHarness {
 
 			Map<String, Object> contactResult = new LinkedHashMap<String, Object>();
 			contactResult.put("result_kind", "generated_new".equals(source) ? "insert_new" : "return_existing");
+			contactResult.put("supporting_action", "generated_new".equals(source) ? "create" : "reuse");
 			contactResult.put("source", source);
 			contactResult.put("contact_id", integerOrNull(resolvedContact, "contact_id"));
 			contactResult.put("first_name", stringOrNull(resolvedContact, "first_name"));
@@ -210,6 +211,7 @@ public class SupportingOutputPolicyHarness {
 		}
 		Map<String, Object> result = new LinkedHashMap<String, Object>();
 		result.put("result_kind", sampleDimensionResultKind(existingId, existingValue, incomingValue));
+		result.put("supporting_action", sampleDimensionAction(existingId, existingValue, incomingValue));
 		result.put("sample_dimension_id", existingId);
 		result.put("dimension_id", dimensionId);
 		result.put("method_id", methodId);
@@ -229,6 +231,19 @@ public class SupportingOutputPolicyHarness {
 			return "keep_existing";
 		}
 		return "update_existing";
+	}
+
+	private String sampleDimensionAction(Integer existingId, Double existingValue, Double incomingValue) {
+		if (existingId == null) {
+			return "create";
+		}
+		if (incomingValue == null && existingValue != null) {
+			return "delete";
+		}
+		if (numericEquals(existingValue, incomingValue)) {
+			return "keep";
+		}
+		return "update";
 	}
 
 	private Map<String, Object> relativeAgeResult(String policyName, Map<String, Object> state, Map<String, Object> sourceRow) {

@@ -23,6 +23,33 @@ scenarios:
         source: trace_lookup
         row_id: 1001
         species_code: 10010020
+  - name: trace_lookup_returns_existing_error_row
+    intent: reconciliation_path
+    source_rows:
+      - CODE: 10010024
+        CompareStatus: matched
+        MCRName: Cicindela errora
+        MCRNameTrim: Cicindela errora
+        MCRNumber: 16
+        tempCODE: 10010024
+    policy_context:
+      step_hits:
+        trace_lookup: true
+        species_value_lookup: false
+      state:
+        existing_row_id: 1004
+        existing_error_message: Existing trace MCR name error
+    expects:
+      reconciliation_path: [trace_lookup]
+      reconciliation_result:
+        result_kind: return_existing_error
+        persisted_action: keep_existing_error
+        source: trace_lookup
+        row_id: 1004
+        issue:
+          severity: error
+          message: Existing trace MCR name error
+        species_code: 10010024
   - name: species_value_lookup_updates_existing_mcr_name
     intent: reconciliation_path
     source_rows:

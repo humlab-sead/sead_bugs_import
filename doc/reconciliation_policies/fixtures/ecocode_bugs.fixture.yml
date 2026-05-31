@@ -19,6 +19,29 @@ scenarios:
         row_id: 81
         species_code: 10010020
         bugs_ecocode_code: BUGS-1
+  - name: trace_hit_returns_existing_bugs_ecocode_error
+    intent: reconciliation_path
+    source_rows:
+      - CODE: 10010021
+        BugsEcoCODE: BUGS-ERR
+    policy_context:
+      step_hits:
+        trace_lookup: true
+      state:
+        existing_row_id: 82
+        existing_error_message: Existing bugs ecocode error
+    expects:
+      reconciliation_path: [trace_lookup]
+      reconciliation_result:
+        result_kind: return_existing_error
+        persisted_action: keep_existing_error
+        source: trace_lookup
+        row_id: 82
+        issue:
+          severity: error
+          message: Existing bugs ecocode error
+        species_code: 10010021
+        bugs_ecocode_code: BUGS-ERR
   - name: create_new_bugs_ecocode_when_no_trace_exists
     intent: reconciliation_path
     source_rows:

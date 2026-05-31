@@ -45,6 +45,11 @@ public class MCRSummaryTableRowConverterFixtureExecutionTest {
 	}
 
 	@Test
+	public void speciesLookupErrorFixtureMatchesCurrentJavaBehavior() throws Exception {
+		assertScenarioMatchesCurrentJavaBehavior("species_lookup_returns_existing_summary_error_as_is");
+	}
+
+	@Test
 	public void createNewFixtureMatchesCurrentJavaBehavior() throws Exception {
 		assertScenarioMatchesCurrentJavaBehavior("create_new_summary_when_species_lookup_misses");
 	}
@@ -70,7 +75,7 @@ public class MCRSummaryTableRowConverterFixtureExecutionTest {
 		orderConverter.setSpecies(species);
 		summaryRepository.reset();
 		if (Boolean.TRUE.equals(stepHits.get("species_lookup"))) {
-			summaryRepository.setMatch(TestMCRSummary.create(
+			MCRSummary match = TestMCRSummary.create(
 					fixtureLoader.integerValue(state.get("existing_row_id"), scenarioName + ".policy_context.state.existing_row_id"),
 					species,
 					fixtureLoader.integerValue(sourceRow.get("TMaxLo"), scenarioName + ".source_rows[0].TMaxLo"),
@@ -80,7 +85,11 @@ public class MCRSummaryTableRowConverterFixtureExecutionTest {
 					fixtureLoader.integerValue(sourceRow.get("TRangeLo"), scenarioName + ".source_rows[0].TRangeLo"),
 					fixtureLoader.integerValue(sourceRow.get("TRangeHi"), scenarioName + ".source_rows[0].TRangeHi"),
 					fixtureLoader.integerValue(sourceRow.get("COGMidTMax"), scenarioName + ".source_rows[0].COGMidTMax"),
-					fixtureLoader.integerValue(sourceRow.get("COGMidTRange"), scenarioName + ".source_rows[0].COGMidTRange")));
+					fixtureLoader.integerValue(sourceRow.get("COGMidTRange"), scenarioName + ".source_rows[0].COGMidTRange"));
+			if (state != null && state.containsKey("existing_error_message")) {
+				match.addError(fixtureLoader.stringValue(state.get("existing_error_message"), scenarioName + ".policy_context.state.existing_error_message"));
+			}
+			summaryRepository.setMatch(match);
 		}
 	}
 
@@ -109,11 +118,20 @@ public class MCRSummaryTableRowConverterFixtureExecutionTest {
 
 	private Map<String, Object> actualReconciliationResult(MCRSummary result, Map<String, Object> sourceRow) {
 		Map<String, Object> reconciliationResult = new LinkedHashMap<String, Object>();
-		if (result.getId() == null) {
+		if (!result.isErrorFree()) {
+			reconciliationResult.put("result_kind", "return_as_is");
+			reconciliationResult.put("persisted_action", "keep_existing_error");
+			reconciliationResult.put("source", "species_lookup");
+			Map<String, Object> issue = new LinkedHashMap<String, Object>();
+			issue.put("severity", "error");
+			issue.put("message", result.getErrorMessages().get(0));
+			reconciliationResult.put("issue", issue);
+		} else if (result.getId() == null) {
 			reconciliationResult.put("result_kind", "insert_new");
 			reconciliationResult.put("source", "create_new");
 		} else {
 			reconciliationResult.put("result_kind", "return_as_is");
+			reconciliationResult.put("persisted_action", "keep_existing");
 			reconciliationResult.put("source", "species_lookup");
 		}
 		reconciliationResult.put("row_id", result.getId());

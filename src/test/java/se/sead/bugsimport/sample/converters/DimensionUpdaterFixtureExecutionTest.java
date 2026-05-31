@@ -134,6 +134,7 @@ public class DimensionUpdaterFixtureExecutionTest {
 		Double existingValue = doubleOrNull(state == null ? null : state.get(valueKey), valueKey);
 		Double currentValue = dimension.getValue() == null ? null : dimension.getValue().doubleValue();
 		result.put("result_kind", resultKind(dimension, existingId, existingValue, currentValue));
+		result.put("supporting_action", supportingAction(dimension, existingId, existingValue, currentValue));
 		result.put("sample_dimension_id", dimension.getId());
 		result.put("dimension_id", dimension.getDimension().getId());
 		result.put("method_id", dimension.getMethod().getId());
@@ -153,6 +154,19 @@ public class DimensionUpdaterFixtureExecutionTest {
 			return "keep_existing";
 		}
 		return "update_existing";
+	}
+
+	private String supportingAction(SampleDimension dimension, Integer existingId, Double existingValue, Double currentValue) {
+		if (dimension.isMarkedForDeletion()) {
+			return "delete";
+		}
+		if (dimension.isNewItem()) {
+			return "create";
+		}
+		if (Objects.equals(existingId, dimension.getId()) && numericEquals(existingValue, currentValue)) {
+			return "keep";
+		}
+		return "update";
 	}
 
 	private SampleDimension findDimension(List<SampleDimension> dimensions, Dimension expectedDimension) {

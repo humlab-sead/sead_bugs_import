@@ -19,6 +19,29 @@ scenarios:
         row_id: 91
         species_code: 10010020
         bugs_koch_code: KOCH-1
+  - name: trace_hit_returns_existing_koch_ecocode_error
+    intent: reconciliation_path
+    source_rows:
+      - CODE: 10010021
+        BugsKochCode: KOCH-ERR
+    policy_context:
+      step_hits:
+        trace_lookup: true
+      state:
+        existing_row_id: 92
+        existing_error_message: Existing koch ecocode error
+    expects:
+      reconciliation_path: [trace_lookup]
+      reconciliation_result:
+        result_kind: return_existing_error
+        persisted_action: keep_existing_error
+        source: trace_lookup
+        row_id: 92
+        issue:
+          severity: error
+          message: Existing koch ecocode error
+        species_code: 10010021
+        bugs_koch_code: KOCH-ERR
   - name: create_new_koch_ecocode_when_no_trace_exists
     intent: reconciliation_path
     source_rows:

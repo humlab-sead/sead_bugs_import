@@ -448,3 +448,128 @@ scenarios:
           species: problematicus
           genus_id: 812
           author_id: null
+  - name: reuse_family_then_create_species_related_output_graph
+    intent: related_output_graph
+    source_rows:
+      - CODE: 10010031
+        FAMILY: CARABIDAE
+        GENUS: Notiophilus
+        SPECIES: biguttatus
+        AUTHORITY: Fabricius
+    policy_context:
+      config:
+        import_order_id: 701
+      state:
+        existing_family_id: 821
+    expects:
+      related_outputs: [taxa_family, taxa_genus, taxa_author, taxa_species]
+      updates_target_fields: [taxon_id]
+      graph_result:
+        taxa_family:
+          result_kind: return_existing
+          supporting_action: reuse
+          family_id: 821
+          family_name: CARABIDAE
+          order_id: 701
+        taxa_genus:
+          result_kind: insert_new
+          supporting_action: create
+          genus_id: null
+          genus_name: Notiophilus
+          family_id: 821
+        taxa_author:
+          result_kind: insert_new
+          supporting_action: create
+          author_id: null
+          author_name: Fabricius
+        taxa_species:
+          result_kind: insert_new
+          supporting_action: create
+          species_id: null
+          species: biguttatus
+          genus_id: null
+          author_id: null
+  - name: reuse_upper_tree_without_author_in_species_related_output_graph
+    intent: related_output_graph
+    source_rows:
+      - CODE: 10010032
+        FAMILY: CARABIDAE
+        GENUS: Cicindela
+        SPECIES: hybrida
+        AUTHORITY: null
+    policy_context:
+      config:
+        import_order_id: 701
+      state:
+        existing_family_id: 801
+        existing_genus_id: 802
+    expects:
+      related_outputs: [taxa_family, taxa_genus, taxa_author, taxa_species]
+      updates_target_fields: [taxon_id]
+      graph_result:
+        taxa_family:
+          result_kind: return_existing
+          supporting_action: reuse
+          family_id: 801
+          family_name: CARABIDAE
+          order_id: 701
+        taxa_genus:
+          result_kind: return_existing
+          supporting_action: reuse
+          genus_id: 802
+          genus_name: Cicindela
+          family_id: 801
+        taxa_author:
+          result_kind: insert_new
+          supporting_action: create
+          author_id: null
+          author_name: null
+        taxa_species:
+          result_kind: insert_new
+          supporting_action: create
+          species_id: null
+          species: hybrida
+          genus_id: 802
+          author_id: null
+  - name: reuse_no_data_species_related_output_graph_shortcut
+    intent: related_output_graph
+    source_rows:
+      - CODE: 9999.0000001
+        FAMILY: No data
+        GENUS: No data
+        SPECIES: No data
+        AUTHORITY: null
+    policy_context:
+      config:
+        import_order_id: 701
+      state:
+        no_data_species_id: 905
+        no_data_genus_id: 904
+    expects:
+      related_outputs: [taxa_family, taxa_genus, taxa_author, taxa_species]
+      updates_target_fields: [taxon_id]
+      graph_result:
+        taxa_family:
+          result_kind: return_existing
+          supporting_action: reuse
+          family_id: 903
+          family_name: No data
+          order_id: 701
+        taxa_genus:
+          result_kind: return_existing
+          supporting_action: reuse
+          genus_id: 904
+          genus_name: No data
+          family_id: 903
+        taxa_author:
+          result_kind: insert_new
+          supporting_action: create
+          author_id: null
+          author_name: null
+        taxa_species:
+          result_kind: return_existing
+          supporting_action: reuse
+          species_id: 905
+          species: No data
+          genus_id: 904
+          author_id: null

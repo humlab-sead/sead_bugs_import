@@ -81,6 +81,7 @@ public class ReconciliationPolicyHarness {
 		String existingErrorMessage = existingErrorMessage(state);
 		if ("mcrsummary".equals(policyName) && "species_lookup".equals(ruleName)) {
 			reconciliationResult.put("result_kind", "return_as_is");
+			reconciliationResult.put("persisted_action", existingErrorMessage != null ? "keep_existing_error" : "keep_existing");
 			reconciliationResult.put("source", ruleName);
 			reconciliationResult.put("row_id", state == null ? null : state.get("existing_row_id"));
 			if (guardErrorMessage != null || existingErrorMessage != null) {

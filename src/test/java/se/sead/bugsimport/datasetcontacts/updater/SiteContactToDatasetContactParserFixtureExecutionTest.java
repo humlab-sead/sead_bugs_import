@@ -95,6 +95,7 @@ public class SiteContactToDatasetContactParserFixtureExecutionTest {
 			RecordingContactAccessor.Resolution resolution = resolutions.get(i);
 			Map<String, Object> contactResult = new LinkedHashMap<String, Object>();
 			contactResult.put("result_kind", "generated_new".equals(resolution.source) ? "insert_new" : "return_existing");
+			contactResult.put("supporting_action", "generated_new".equals(resolution.source) ? "create" : "reuse");
 			contactResult.put("source", resolution.source);
 			contactResult.put("contact_id", datasetContact.getContact().getId());
 			contactResult.put("first_name", datasetContact.getContact().getFirstName());

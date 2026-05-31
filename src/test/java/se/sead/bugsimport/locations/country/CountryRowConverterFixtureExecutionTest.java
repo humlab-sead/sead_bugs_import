@@ -44,6 +44,11 @@ public class CountryRowConverterFixtureExecutionTest {
 	}
 
 	@Test
+	public void traceHitErrorFixtureMatchesCurrentJavaBehavior() throws Exception {
+		assertScenarioMatchesCurrentJavaBehavior("trace_hit_returns_existing_country_error");
+	}
+
+	@Test
 	public void existingLookupFixtureMatchesCurrentJavaBehavior() throws Exception {
 		assertScenarioMatchesCurrentJavaBehavior("existing_country_lookup_updates_existing_country");
 	}

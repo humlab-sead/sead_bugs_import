@@ -20,6 +20,7 @@ scenarios:
         sample_dimensions:
           upper:
             result_kind: insert_new
+            supporting_action: create
             sample_dimension_id: null
             dimension_id: 601
             method_id: 501
@@ -27,6 +28,7 @@ scenarios:
             marked_for_deletion: false
           lower:
             result_kind: insert_new
+            supporting_action: create
             sample_dimension_id: null
             dimension_id: 602
             method_id: 501
@@ -56,6 +58,7 @@ scenarios:
         sample_dimensions:
           upper:
             result_kind: update_existing
+            supporting_action: update
             sample_dimension_id: 701
             dimension_id: 601
             method_id: 501
@@ -63,6 +66,7 @@ scenarios:
             marked_for_deletion: false
           lower:
             result_kind: update_existing
+            supporting_action: update
             sample_dimension_id: 702
             dimension_id: 602
             method_id: 501
@@ -92,6 +96,7 @@ scenarios:
         sample_dimensions:
           upper:
             result_kind: keep_existing
+            supporting_action: keep
             sample_dimension_id: 703
             dimension_id: 601
             method_id: 501
@@ -99,6 +104,7 @@ scenarios:
             marked_for_deletion: false
           lower:
             result_kind: keep_existing
+            supporting_action: keep
             sample_dimension_id: 704
             dimension_id: 602
             method_id: 501
@@ -128,6 +134,7 @@ scenarios:
         sample_dimensions:
           upper:
             result_kind: keep_existing
+            supporting_action: keep
             sample_dimension_id: 705
             dimension_id: 601
             method_id: 501
@@ -135,6 +142,7 @@ scenarios:
             marked_for_deletion: false
           lower:
             result_kind: delete_existing
+            supporting_action: delete
             sample_dimension_id: 706
             dimension_id: 602
             method_id: 501

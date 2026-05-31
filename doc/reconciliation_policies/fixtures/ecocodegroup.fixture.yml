@@ -18,6 +18,28 @@ scenarios:
         source: trace_lookup
         row_id: 2
         ecocode_group_code: Upd
+  - name: trace_hit_returns_existing_ecocode_group_error
+    intent: reconciliation_path
+    source_rows:
+      - EcoGroupCode: Err
+        EcoName: Error group
+    policy_context:
+      step_hits:
+        trace_lookup: true
+      state:
+        existing_row_id: 3
+        existing_error_message: Existing ecocode group error
+    expects:
+      reconciliation_path: [trace_lookup]
+      reconciliation_result:
+        result_kind: return_existing_error
+        persisted_action: keep_existing_error
+        source: trace_lookup
+        row_id: 3
+        issue:
+          severity: error
+          message: Existing ecocode group error
+        ecocode_group_code: Err
   - name: create_new_ecocode_group_when_no_trace_exists
     intent: reconciliation_path
     source_rows:

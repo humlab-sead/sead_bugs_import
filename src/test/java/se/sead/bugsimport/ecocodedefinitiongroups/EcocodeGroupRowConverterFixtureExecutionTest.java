@@ -42,6 +42,11 @@ public class EcocodeGroupRowConverterFixtureExecutionTest {
 	}
 
 	@Test
+	public void traceHitErrorFixtureMatchesCurrentJavaBehavior() throws Exception {
+		assertScenarioMatchesCurrentJavaBehavior("trace_hit_returns_existing_ecocode_group_error");
+	}
+
+	@Test
 	public void createNewFixtureMatchesCurrentJavaBehavior() throws Exception {
 		assertScenarioMatchesCurrentJavaBehavior("create_new_ecocode_group_when_no_trace_exists");
 	}
@@ -65,12 +70,16 @@ public class EcocodeGroupRowConverterFixtureExecutionTest {
 		Map<String, Object> stepHits = fixtureLoader.mapValue(policyContext.get("step_hits"), scenarioName + ".policy_context.step_hits");
 		traceHelper.reset();
 		if (Boolean.TRUE.equals(stepHits.get("trace_lookup"))) {
-			traceHelper.setMatch(TestEcocodeGroup.create(
+			EcocodeGroup existing = TestEcocodeGroup.create(
 					fixtureLoader.integerValue(state.get("existing_row_id"), scenarioName + ".policy_context.state.existing_row_id"),
 					fixtureLoader.stringValue(sourceRow.get("EcoGroupCode"), scenarioName + ".source_rows[0].EcoGroupCode"),
 					fixtureLoader.stringValue(sourceRow.get("EcoName"), scenarioName + ".source_rows[0].EcoName"),
 					createKochSystem()
-			));
+			);
+			if (state != null && state.containsKey("existing_error_message")) {
+				existing.addError(fixtureLoader.stringValue(state.get("existing_error_message"), scenarioName + ".policy_context.state.existing_error_message"));
+			}
+			traceHelper.setMatch(existing);
 		}
 	}
 
@@ -92,7 +101,15 @@ public class EcocodeGroupRowConverterFixtureExecutionTest {
 
 	private Map<String, Object> actualReconciliationResult(EcocodeGroup result, Map<String, Object> sourceRow) {
 		Map<String, Object> reconciliationResult = new LinkedHashMap<String, Object>();
-		if (result.getId() == null) {
+		if (!result.isErrorFree()) {
+			reconciliationResult.put("result_kind", "return_existing_error");
+			reconciliationResult.put("persisted_action", "keep_existing_error");
+			reconciliationResult.put("source", "trace_lookup");
+			Map<String, Object> issue = new LinkedHashMap<String, Object>();
+			issue.put("severity", "error");
+			issue.put("message", result.getErrorMessages().get(0));
+			reconciliationResult.put("issue", issue);
+		} else if (result.getId() == null) {
 			reconciliationResult.put("result_kind", "insert_new");
 			reconciliationResult.put("source", "create_new");
 		} else {

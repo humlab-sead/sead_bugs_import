@@ -147,6 +147,21 @@ public class TaxaSpeciesConverterFixtureExecutionTest {
 		assertRelatedOutputGraphScenarioMatchesCurrentJavaBehavior("mixed_species_related_output_graph_when_upper_tree_exists");
 	}
 
+	@Test
+	public void familyReuseSpeciesRelatedOutputGraphFixtureMatchesCurrentJavaBehavior() throws Exception {
+		assertRelatedOutputGraphScenarioMatchesCurrentJavaBehavior("reuse_family_then_create_species_related_output_graph");
+	}
+
+	@Test
+	public void noAuthorSpeciesRelatedOutputGraphFixtureMatchesCurrentJavaBehavior() throws Exception {
+		assertRelatedOutputGraphScenarioMatchesCurrentJavaBehavior("reuse_upper_tree_without_author_in_species_related_output_graph");
+	}
+
+	@Test
+	public void noDataSpeciesRelatedOutputGraphFixtureMatchesCurrentJavaBehavior() throws Exception {
+		assertRelatedOutputGraphScenarioMatchesCurrentJavaBehavior("reuse_no_data_species_related_output_graph_shortcut");
+	}
+
 	private void assertScenarioMatchesCurrentJavaBehavior(String scenarioName) throws Exception {
 		Map<String, Object> fixture = fixtureLoader.loadFixture("species.fixture.yml");
 		Map<String, Object> scenario = fixtureLoader.findScenario(fixture, scenarioName);
