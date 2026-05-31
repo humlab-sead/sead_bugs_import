@@ -1,6 +1,7 @@
 package se.sead.bugsimport.species.converters;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.stereotype.Component;
 import se.sead.bugsimport.species.seadmodel.TaxonomicOrder;
 import se.sead.repositories.TaxonomicOrderRepository;
@@ -19,8 +20,12 @@ public class TaxonomicOrderConverter {
 
     public TaxonomicOrder convertToSeadType(Double code) {
         if(code instanceof Double){
+            // try {
             BigDecimal codeForSeadDatabase = BigDecimalDefinition.convertToSeadCode(code);
             return getOrCreate(codeForSeadDatabase);
+            // } catch (IncorrectResultSizeDataAccessException ex) {
+            //     return null;
+            // }
         }
         return null;
     }
