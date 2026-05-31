@@ -113,6 +113,7 @@ scenarios:
       step_hits: {}
     expects:
       related_outputs: [dataset]
+      row_changed: true
       graph_result:
         dataset:
           dataset_id: null
@@ -151,6 +152,7 @@ scenarios:
         master_set_id: 71
     expects:
       related_outputs: [analysis_entity]
+      row_changed: true
       graph_result:
         analysis_entity:
           analysis_entity_id: null

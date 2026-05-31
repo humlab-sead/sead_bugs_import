@@ -477,6 +477,7 @@ scenarios:
       step_hits: {}
     expects:
       related_outputs: [relative_age]
+      row_changed: true
       graph_result:
         relative_age:
           relative_age_id: null
@@ -502,6 +503,7 @@ scenarios:
         existing_relative_age_id: 71
     expects:
       related_outputs: [relative_age]
+      row_changed: false
       graph_result:
         relative_age:
           relative_age_id: 71
@@ -534,6 +536,7 @@ scenarios:
     expects:
       known_divergence_areas: [created_supporting_rows_mark_updated]
       related_outputs: [dataset]
+      row_changed: true
       graph_result:
         dataset:
           dataset_id: null
@@ -575,6 +578,7 @@ scenarios:
         existing_master_set_id: 50
     expects:
       related_outputs: [dataset]
+      row_changed: true
       graph_result:
         dataset:
           dataset_id: 61
@@ -616,6 +620,7 @@ scenarios:
         existing_master_set_id: 51
     expects:
       related_outputs: [dataset]
+      row_changed: false
       graph_result:
         dataset:
           dataset_id: 62
@@ -650,6 +655,7 @@ scenarios:
         master_set_id: 51
     expects:
       related_outputs: [analysis_entity]
+      row_changed: true
       graph_result:
         analysis_entity:
           analysis_entity_id: null
@@ -689,6 +695,7 @@ scenarios:
         existing_master_set_id: 50
     expects:
       related_outputs: [analysis_entity]
+      row_changed: true
       graph_result:
         analysis_entity:
           analysis_entity_id: 91
@@ -728,6 +735,7 @@ scenarios:
         existing_master_set_id: 51
     expects:
       related_outputs: [analysis_entity]
+      row_changed: false
       graph_result:
         analysis_entity:
           analysis_entity_id: 92

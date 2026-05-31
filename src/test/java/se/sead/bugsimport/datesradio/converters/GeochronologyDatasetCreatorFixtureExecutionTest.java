@@ -38,7 +38,12 @@ public class GeochronologyDatasetCreatorFixtureExecutionTest {
 		Map<String, Object> expects = fixtureLoader.mapValue(scenario.get("expects"), "create_dataset_for_new_geochronology_row.expects");
 		Dataset dataset = executeScenario(scenario, "create_dataset_for_new_geochronology_row");
 
+		assertEquals(fixtureLoader.booleanValue(expects.get("row_changed"), "create_dataset_for_new_geochronology_row.expects.row_changed"), rowChanged(dataset));
 		assertEquals(FixtureExpectationHelper.toNestedMap(fixtureLoader, expects.get("graph_result"), "create_dataset_for_new_geochronology_row.expects.graph_result"), actualGraphResult(dataset));
+	}
+
+	private boolean rowChanged(Dataset dataset) {
+		return dataset.getId() == null || dataset.isUpdated();
 	}
 
 	private Dataset executeScenario(Map<String, Object> scenario, String scenarioName) throws Exception {

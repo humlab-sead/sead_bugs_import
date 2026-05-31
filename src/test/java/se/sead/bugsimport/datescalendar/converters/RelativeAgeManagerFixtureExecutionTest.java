@@ -36,6 +36,7 @@ public class RelativeAgeManagerFixtureExecutionTest {
 		Map<String, Object> expects = fixtureLoader.mapValue(scenario.get("expects"), "create_single_relative_age_when_missing.expects");
 		RelativeAge relativeAge = executeScenario(scenario, "create_single_relative_age_when_missing");
 
+		assertEquals(fixtureLoader.booleanValue(expects.get("row_changed"), "create_single_relative_age_when_missing.expects.row_changed"), rowChanged(relativeAge));
 		assertEquals(FixtureExpectationHelper.toNestedMap(fixtureLoader, expects.get("graph_result"), "create_single_relative_age_when_missing.expects.graph_result"), actualGraphResult(relativeAge));
 	}
 
@@ -46,7 +47,12 @@ public class RelativeAgeManagerFixtureExecutionTest {
 		Map<String, Object> expects = fixtureLoader.mapValue(scenario.get("expects"), "reuse_single_relative_age_when_present.expects");
 		RelativeAge relativeAge = executeScenario(scenario, "reuse_single_relative_age_when_present");
 
+		assertEquals(fixtureLoader.booleanValue(expects.get("row_changed"), "reuse_single_relative_age_when_present.expects.row_changed"), rowChanged(relativeAge));
 		assertEquals(FixtureExpectationHelper.toNestedMap(fixtureLoader, expects.get("graph_result"), "reuse_single_relative_age_when_present.expects.graph_result"), actualGraphResult(relativeAge));
+	}
+
+	private boolean rowChanged(RelativeAge relativeAge) {
+		return relativeAge.getId() == null;
 	}
 
 	private RelativeAge executeScenario(Map<String, Object> scenario, String scenarioName) {

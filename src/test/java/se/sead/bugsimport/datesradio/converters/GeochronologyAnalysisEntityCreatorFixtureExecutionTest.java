@@ -53,7 +53,12 @@ public class GeochronologyAnalysisEntityCreatorFixtureExecutionTest {
 
 		Map<String, Object> actualGraphResult = new LinkedHashMap<String, Object>();
 		actualGraphResult.put("analysis_entity", actualGraphResult(analysisEntity).get("analysis_entity"));
+		assertEquals(fixtureLoader.booleanValue(expects.get("row_changed"), "create_analysis_entity_for_new_geochronology_row.expects.row_changed"), rowChanged(analysisEntity));
 		assertEquals(FixtureExpectationHelper.toNestedMap(fixtureLoader, expects.get("graph_result"), "create_analysis_entity_for_new_geochronology_row.expects.graph_result"), actualGraphResult);
+	}
+
+	private boolean rowChanged(AnalysisEntity analysisEntity) {
+		return analysisEntity.getId() == null;
 	}
 
 	private void assertScenarioMatchesCurrentJavaBehavior(String scenarioName) throws Exception {

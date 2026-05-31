@@ -101,7 +101,14 @@ public class RelativeDateUpdaterForCalendarFixtureExecutionTest {
 		Map<String, Object> actualGraphResult = new LinkedHashMap<String, Object>();
 		actualGraphResult.put(outputName, result.graphResult.get(outputName));
 
+		assertEquals(fixtureLoader.booleanValue(expects.get("row_changed"), scenarioName + ".expects.row_changed"), rowChanged(outputName, actualGraphResult));
 		assertEquals(FixtureExpectationHelper.toNestedMap(fixtureLoader, expects.get("graph_result"), scenarioName + ".expects.graph_result"), actualGraphResult);
+	}
+
+	private boolean rowChanged(String outputName, Map<String, Object> actualGraphResult) {
+		Map<String, Object> outputResult = fixtureLoader.mapValue(actualGraphResult.get(outputName), outputName);
+		String supportingAction = fixtureLoader.stringValue(outputResult.get("supporting_action"), outputName + ".supporting_action");
+		return !"keep".equals(supportingAction) && !"reuse".equals(supportingAction);
 	}
 
 	private GraphExecutionResult executeUpdaterForScenario(Map<String, Object> scenario, String scenarioName) {
