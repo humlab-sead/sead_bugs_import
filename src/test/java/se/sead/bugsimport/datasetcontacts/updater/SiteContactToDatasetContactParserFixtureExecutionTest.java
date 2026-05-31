@@ -76,7 +76,21 @@ public class SiteContactToDatasetContactParserFixtureExecutionTest {
 		SiteContactToDatasetContactParser parser = new SiteContactToDatasetContactParser(createContactTypeRepository(), accessor);
 		List<DatasetContact> contacts = parser.parseIntoNonDatabaseSyncedContacts(createContactData(args));
 
+		assertEquals(FixtureExpectationHelper.toStringList(fixtureLoader, expects.get("related_outputs"), scenarioName + ".expects.related_outputs"), java.util.Collections.singletonList("contacts"));
+		assertEquals(fixtureLoader.booleanValue(expects.get("row_changed"), scenarioName + ".expects.row_changed"), rowChanged(actualGraphResult(contacts, accessor)));
 		assertEquals(FixtureExpectationHelper.toNestedMap(fixtureLoader, expects.get("graph_result"), scenarioName + ".expects.graph_result"), actualGraphResult(contacts, accessor));
+	}
+
+	private boolean rowChanged(Map<String, Object> graphResult) {
+		Map<String, Object> contacts = fixtureLoader.mapValue(graphResult.get("contacts"), "graph_result.contacts");
+		for (Map.Entry<String, Object> entry : contacts.entrySet()) {
+			Map<String, Object> contact = fixtureLoader.mapValue(entry.getValue(), entry.getKey());
+			String supportingAction = fixtureLoader.stringValue(contact.get("supporting_action"), entry.getKey() + ".supporting_action");
+			if (!"reuse".equals(supportingAction) && !"keep".equals(supportingAction)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private SiteContactReader.SiteContactStringData createContactData(Map<String, Object> args) {

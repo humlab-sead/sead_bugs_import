@@ -133,7 +133,15 @@ public class AnalysisEntityManagerFixtureExecutionTest {
 			actualGraphResult.put("analysis_entity", actualGraphResult(abundance).get("analysis_entity"));
 		}
 
+		assertEquals(FixtureExpectationHelper.toStringList(fixtureLoader, expects.get("related_outputs"), scenarioName + ".expects.related_outputs"), Collections.singletonList(outputName));
+		assertEquals(fixtureLoader.booleanValue(expects.get("row_changed"), scenarioName + ".expects.row_changed"), rowChanged(outputName, actualGraphResult));
 		assertEquals(FixtureExpectationHelper.toNestedMap(fixtureLoader, expects.get("graph_result"), scenarioName + ".expects.graph_result"), actualGraphResult);
+	}
+
+	private boolean rowChanged(String outputName, Map<String, Object> graphResult) {
+		Map<String, Object> output = fixtureLoader.mapValue(graphResult.get(outputName), "graph_result." + outputName);
+		String supportingAction = fixtureLoader.stringValue(output.get("supporting_action"), outputName + ".supporting_action");
+		return !"reuse".equals(supportingAction) && !"keep".equals(supportingAction);
 	}
 
 	private void assertScenarioMatchesDatasetMode(String scenarioName, boolean expectedAllowDatasetUpdates, String expectedDatasetLinkMode) throws IOException {

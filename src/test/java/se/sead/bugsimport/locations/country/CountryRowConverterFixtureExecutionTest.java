@@ -132,9 +132,11 @@ public class CountryRowConverterFixtureExecutionTest {
 			reconciliationResult.put("issue", issue);
 		} else if (result.getId() == null && result.isErrorFree()) {
 			reconciliationResult.put("result_kind", "insert_new");
+			reconciliationResult.put("persisted_action", "create");
 			reconciliationResult.put("source", "create_new");
 		} else {
 			reconciliationResult.put("result_kind", "update_existing");
+			reconciliationResult.put("persisted_action", "update");
 			reconciliationResult.put("source", matchedRuleName);
 		}
 		assertTrue("Expected existing-country lookup branch to mark the row updated", !"existing_country_lookup".equals(matchedRuleName) || result.isUpdated());

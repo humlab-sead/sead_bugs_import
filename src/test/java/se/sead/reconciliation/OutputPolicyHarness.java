@@ -232,6 +232,7 @@ public class OutputPolicyHarness {
 					stringOrNull(resolvedContact, "last_name")
 			));
 		}
+		result.rowChanged = hasOutputChanges(result.outputResult);
 		return result;
 	}
 

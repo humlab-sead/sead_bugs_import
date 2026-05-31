@@ -135,7 +135,10 @@ public class ReconciliationPolicyHarness {
 				|| "speciesbiology".equals(policyName)
 				|| "specieskeys".equals(policyName)
 				|| "speciessynonyms".equals(policyName)
-				|| "speciesdistribution".equals(policyName);
+				|| "speciesdistribution".equals(policyName)
+				|| "period".equals(policyName)
+				|| "country".equals(policyName)
+				|| "taxanotes".equals(policyName);
 	}
 
 	private boolean supportsNoWritePersistedAction(String policyName) {

@@ -17,6 +17,7 @@ scenarios:
       step_hits: {}
     expects:
       related_outputs: [contacts]
+      row_changed: true
       graph_result:
         contacts:
           contact_1:
@@ -48,6 +49,7 @@ scenarios:
             last_name: Archer
     expects:
       related_outputs: [contacts]
+      row_changed: false
       graph_result:
         contacts:
           contact_1:
@@ -84,6 +86,7 @@ scenarios:
             last_name: Archer
     expects:
       related_outputs: [contacts]
+      row_changed: false
       graph_result:
         contacts:
           contact_1:
@@ -109,6 +112,7 @@ scenarios:
       step_hits: {}
     expects:
       related_outputs: [contacts]
+      row_changed: true
       graph_result:
         contacts:
           contact_1:
@@ -148,6 +152,7 @@ scenarios:
       step_hits: {}
     expects:
       related_outputs: [contacts]
+      row_changed: true
       graph_result:
         contacts:
           contact_1:
@@ -179,6 +184,7 @@ scenarios:
             last_name: null
     expects:
       related_outputs: [contacts]
+      row_changed: false
       graph_result:
         contacts:
           contact_1:
@@ -211,6 +217,7 @@ scenarios:
             first_name: null
             last_name: Archer
     expects:
+      row_changed: true
       output_result:
         row_1:
           result_kind: insert_new
@@ -265,6 +272,7 @@ scenarios:
             first_name: null
             last_name: Archer
     expects:
+      row_changed: true
       output_result:
         row_1:
           result_kind: keep_existing
@@ -324,6 +332,7 @@ scenarios:
             first_name: University of Ottawa
             last_name: null
     expects:
+      row_changed: false
       output_result:
         row_1:
           result_kind: keep_existing
@@ -368,6 +377,7 @@ scenarios:
             first_name: null
             last_name: Archer
     expects:
+      row_changed: false
       output_result:
         row_1:
           result_kind: keep_existing

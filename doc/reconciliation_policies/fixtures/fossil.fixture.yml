@@ -16,6 +16,7 @@ scenarios:
         allow_dataset_updates: false
     expects:
       related_outputs: [dataset]
+      row_changed: true
       graph_result:
         dataset:
           dataset_id: null
@@ -36,6 +37,7 @@ scenarios:
         allow_dataset_updates: true
     expects:
       related_outputs: [dataset]
+      row_changed: false
       graph_result:
         dataset:
           dataset_id: 20
@@ -56,6 +58,7 @@ scenarios:
         allow_dataset_updates: true
     expects:
       related_outputs: [analysis_entity]
+      row_changed: true
       graph_result:
         analysis_entity:
           supporting_action: create
@@ -77,6 +80,7 @@ scenarios:
         existing_analysis_entity_id: 30
     expects:
       related_outputs: [analysis_entity]
+      row_changed: false
       graph_result:
         analysis_entity:
           analysis_entity_id: 30

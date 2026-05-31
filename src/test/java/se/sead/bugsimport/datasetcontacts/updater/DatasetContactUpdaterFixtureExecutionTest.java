@@ -69,7 +69,20 @@ public class DatasetContactUpdaterFixtureExecutionTest {
 		DatasetContactUpdater updater = createUpdater(args, state, dataset);
 		updater.update(dataset, "fixture-site");
 
+		assertEquals(fixtureLoader.booleanValue(expects.get("row_changed"), scenarioName + ".expects.row_changed"), hasOutputChanges(dataset.getContacts()));
 		assertEquals(FixtureExpectationHelper.toNestedMap(fixtureLoader, expects.get("output_result"), scenarioName + ".expects.output_result"), actualOutputResult(dataset.getContacts()));
+	}
+
+	private boolean hasOutputChanges(List<DatasetContact> contacts) {
+		if (contacts == null) {
+			return false;
+		}
+		for (int i = 0; i < contacts.size(); i++) {
+			if (contacts.get(i).getId() == null) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private DatasetContactUpdater createUpdater(Map<String, Object> args, Map<String, Object> state, Dataset dataset) throws Exception {
