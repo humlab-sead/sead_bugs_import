@@ -336,6 +336,7 @@ scenarios:
         import_order_id: 701
     expects:
       related_outputs: [taxa_family, taxa_genus, taxa_author, taxa_species]
+      row_changed: true
       updates_target_fields: [taxon_id]
       graph_result:
         taxa_family:
@@ -380,6 +381,7 @@ scenarios:
         existing_species_id: 804
     expects:
       related_outputs: [taxa_family, taxa_genus, taxa_author, taxa_species]
+      row_changed: false
       updates_target_fields: [taxon_id]
       graph_result:
         taxa_family:
@@ -422,6 +424,7 @@ scenarios:
         existing_genus_id: 812
     expects:
       related_outputs: [taxa_family, taxa_genus, taxa_author, taxa_species]
+      row_changed: true
       updates_target_fields: [taxon_id]
       graph_result:
         taxa_family:
@@ -463,6 +466,7 @@ scenarios:
         existing_family_id: 821
     expects:
       related_outputs: [taxa_family, taxa_genus, taxa_author, taxa_species]
+      row_changed: true
       updates_target_fields: [taxon_id]
       graph_result:
         taxa_family:
@@ -505,6 +509,7 @@ scenarios:
         existing_genus_id: 802
     expects:
       related_outputs: [taxa_family, taxa_genus, taxa_author, taxa_species]
+      row_changed: true
       updates_target_fields: [taxon_id]
       graph_result:
         taxa_family:
@@ -547,6 +552,7 @@ scenarios:
         no_data_genus_id: 904
     expects:
       related_outputs: [taxa_family, taxa_genus, taxa_author, taxa_species]
+      row_changed: false
       updates_target_fields: [taxon_id]
       graph_result:
         taxa_family:

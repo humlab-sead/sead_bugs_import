@@ -63,7 +63,29 @@ public class SiteLocationBugsTableRowConverterFixtureExecutionTest {
 		configureScenario(args, state, scenarioName);
 		List<SiteLocation> result = converter.convertListForDataRow(createBugsSiteLocation(sourceRow, scenarioName));
 
+		assertEquals(fixtureLoader.booleanValue(expects.get("row_changed"), scenarioName + ".expects.row_changed"), rowChanged(result));
 		assertEquals(FixtureExpectationHelper.toNestedMap(fixtureLoader, expects.get("output_result"), scenarioName + ".expects.output_result"), actualOutputResult(result));
+	}
+
+	private boolean rowChanged(List<SiteLocation> rows) {
+		boolean hasErrors = false;
+		for (int i = 0; i < rows.size(); i++) {
+			SiteLocation row = rows.get(i);
+			if (!row.isErrorFree()) {
+				hasErrors = true;
+				break;
+			}
+		}
+		if (hasErrors) {
+			return false;
+		}
+		for (int i = 0; i < rows.size(); i++) {
+			SiteLocation row = rows.get(i);
+			if (row.isMarkedForDeletion() || row.getId() == null) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private void configureScenario(Map<String, Object> args, Map<String, Object> state, String scenarioName) {

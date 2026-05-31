@@ -21,6 +21,7 @@ scenarios:
             location_id: 602
             location_name: Sweden
     expects:
+      row_changed: true
       output_result:
         row_1:
           result_kind: insert_new
@@ -72,6 +73,7 @@ scenarios:
             location_name: Sweden
     expects:
       known_divergence_areas: [replacement_expressed_as_row_actions]
+      row_changed: true
       output_result:
         row_1:
           result_kind: mark_for_deletion
@@ -122,6 +124,7 @@ scenarios:
             location_id: 607
             location_name: Norway
     expects:
+      row_changed: false
       output_result:
         row_1:
           result_kind: keep_existing
@@ -166,6 +169,7 @@ scenarios:
             location_name: Sweden
     expects:
       known_divergence_areas: [replacement_expressed_as_row_actions]
+      row_changed: true
       output_result:
         row_1:
           result_kind: mark_for_deletion
@@ -203,6 +207,7 @@ scenarios:
           status: missing_imported_site
           error_message: Could not find imported site
     expects:
+      row_changed: false
       output_result:
         row_1:
           result_kind: error
@@ -236,6 +241,7 @@ scenarios:
             location_name: Halland
             error_message: null
     expects:
+      row_changed: false
       output_result:
         row_1:
           result_kind: error

@@ -301,13 +301,13 @@ public class RelatedOutputPolicyHarness {
 			result.relatedOutputs.add(stringValue(relatedOutput.get("name"), "related_outputs.item.name"));
 		}
 		result.updatedTargetFields.add("taxon_id");
-		result.rowChanged = true;
 		Integer importOrderId = configOverrides != null && configOverrides.containsKey("import_order_id")
 				? integerValue(configOverrides.get("import_order_id"), "import_order_id")
 				: integerOrDefault(stateOverrides, "import_order_id", Integer.valueOf(701));
+		boolean noDataShortcut = integerOrNull(stateOverrides, "no_data_species_id") != null;
 
 		Map<String, Object> familyResult = new LinkedHashMap<String, Object>();
-		Integer familyId = integerOrNull(stateOverrides, "existing_family_id");
+		Integer familyId = noDataShortcut ? integerOrDefault(stateOverrides, "no_data_family_id", Integer.valueOf(903)) : integerOrNull(stateOverrides, "existing_family_id");
 		familyResult.put("result_kind", familyId == null ? "insert_new" : "return_existing");
 		familyResult.put("supporting_action", familyId == null ? "create" : "reuse");
 		familyResult.put("family_id", familyId);
@@ -315,7 +315,7 @@ public class RelatedOutputPolicyHarness {
 		familyResult.put("order_id", importOrderId);
 
 		Map<String, Object> genusResult = new LinkedHashMap<String, Object>();
-		Integer genusId = integerOrNull(stateOverrides, "existing_genus_id");
+		Integer genusId = noDataShortcut ? integerOrNull(stateOverrides, "no_data_genus_id") : integerOrNull(stateOverrides, "existing_genus_id");
 		genusResult.put("result_kind", genusId == null ? "insert_new" : "return_existing");
 		genusResult.put("supporting_action", genusId == null ? "create" : "reuse");
 		genusResult.put("genus_id", genusId);
@@ -330,13 +330,14 @@ public class RelatedOutputPolicyHarness {
 		authorResult.put("author_name", stringOrNull(stateOverrides, "existing_author_name") == null ? stringOrNull(sourceRow, "AUTHORITY") : stringOrNull(stateOverrides, "existing_author_name"));
 
 		Map<String, Object> speciesResult = new LinkedHashMap<String, Object>();
-		Integer speciesId = integerOrNull(stateOverrides, "existing_species_id");
+		Integer speciesId = noDataShortcut ? integerOrNull(stateOverrides, "no_data_species_id") : integerOrNull(stateOverrides, "existing_species_id");
 		speciesResult.put("result_kind", speciesId == null ? "insert_new" : "return_existing");
 		speciesResult.put("supporting_action", speciesId == null ? "create" : "reuse");
 		speciesResult.put("species_id", speciesId);
 		speciesResult.put("species", stringValue(sourceRow.get("SPECIES"), "SPECIES"));
 		speciesResult.put("genus_id", genusId);
 		speciesResult.put("author_id", authorId);
+		result.rowChanged = speciesId == null;
 
 		result.graphResult.put("taxa_family", familyResult);
 		result.graphResult.put("taxa_genus", genusResult);

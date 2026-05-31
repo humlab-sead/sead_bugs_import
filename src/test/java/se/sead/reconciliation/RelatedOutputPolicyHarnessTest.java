@@ -115,6 +115,26 @@ public class RelatedOutputPolicyHarnessTest {
 		assertScenarioMatchesPolicy("species.fixture.yml", "species", "reuse_species_related_output_graph_when_tree_exists");
 	}
 
+	@Test
+	public void speciesMixedGraphScenarioMatchesPolicyRelatedOutputResult() throws IOException {
+		assertScenarioMatchesPolicy("species.fixture.yml", "species", "mixed_species_related_output_graph_when_upper_tree_exists");
+	}
+
+	@Test
+	public void speciesFamilyReuseGraphScenarioMatchesPolicyRelatedOutputResult() throws IOException {
+		assertScenarioMatchesPolicy("species.fixture.yml", "species", "reuse_family_then_create_species_related_output_graph");
+	}
+
+	@Test
+	public void speciesNoAuthorGraphScenarioMatchesPolicyRelatedOutputResult() throws IOException {
+		assertScenarioMatchesPolicy("species.fixture.yml", "species", "reuse_upper_tree_without_author_in_species_related_output_graph");
+	}
+
+	@Test
+	public void speciesNoDataGraphScenarioMatchesPolicyRelatedOutputResult() throws IOException {
+		assertScenarioMatchesPolicy("species.fixture.yml", "species", "reuse_no_data_species_related_output_graph_shortcut");
+	}
+
 	private void assertScenarioMatchesPolicy(String scenarioName) throws IOException {
 		assertScenarioMatchesPolicy("fossil.fixture.yml", "fossil", scenarioName);
 	}

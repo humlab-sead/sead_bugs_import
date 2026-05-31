@@ -63,7 +63,18 @@ public class SiteOtherRecordUpdaterFixtureExecutionTest {
 		SiteOtherRecordUpdater updater = new SiteOtherRecordUpdater(createBugsData(sourceRow), new RecordingRecordTypeCache(recordTypes), site);
 		updater.update(priorVersions);
 
+		assertEquals(fixtureLoader.booleanValue(expects.get("row_changed"), scenarioName + ".expects.row_changed"), rowChanged(priorVersions));
 		assertEquals(FixtureExpectationHelper.toNestedMap(fixtureLoader, expects.get("output_result"), scenarioName + ".expects.output_result"), actualOutputResult(priorVersions));
+	}
+
+	private boolean rowChanged(List<SiteOtherRecord> rows) {
+		for (int i = 0; i < rows.size(); i++) {
+			SiteOtherRecord row = rows.get(i);
+			if (row.isMarkedForDeletion() || row.getId() == null) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private SiteOtherProxies createBugsData(Map<String, Object> sourceRow) {

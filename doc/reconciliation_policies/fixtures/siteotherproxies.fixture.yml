@@ -27,6 +27,7 @@ scenarios:
             record_type_id: 402
             record_type_name: Diatoms
     expects:
+      row_changed: true
       output_result:
         row_1:
           result_kind: insert_new
@@ -83,6 +84,7 @@ scenarios:
             record_type_name: Diatoms
     expects:
       known_divergence_areas: [replacement_expressed_as_row_actions]
+      row_changed: true
       output_result:
         row_1:
           result_kind: keep_existing
@@ -136,6 +138,7 @@ scenarios:
             record_type_id: 401
             record_type_name: External pollen data
     expects:
+      row_changed: false
       output_result:
         row_1:
           result_kind: keep_existing
@@ -181,6 +184,7 @@ scenarios:
             record_type_name: Diatoms
     expects:
       known_divergence_areas: [replacement_expressed_as_row_actions]
+      row_changed: true
       output_result:
         row_1:
           result_kind: mark_for_deletion

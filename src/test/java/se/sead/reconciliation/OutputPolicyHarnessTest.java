@@ -105,6 +105,9 @@ public class OutputPolicyHarnessTest {
 
 		OutputPolicyHarness.OutputResult result = outputPolicyHarness.execute(policyName, args, state, sourceRow);
 
+		if (expects.containsKey("row_changed")) {
+			assertEquals(fixtureLoader.booleanValue(expects.get("row_changed"), scenarioName + ".expects.row_changed"), result.isRowChanged());
+		}
 		assertEquals(FixtureExpectationHelper.toNestedMap(fixtureLoader, expects.get("output_result"), scenarioName + ".expects.output_result"), result.getOutputResult());
 	}
 }

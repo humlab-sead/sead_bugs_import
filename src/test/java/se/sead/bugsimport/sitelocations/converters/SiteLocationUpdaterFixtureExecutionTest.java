@@ -61,7 +61,18 @@ public class SiteLocationUpdaterFixtureExecutionTest {
 		SiteLocationUpdater updater = new SiteLocationUpdater(bugsLocations, storedLocations);
 		List<SiteLocation> result = updater.getClearedItems();
 
+		assertEquals(fixtureLoader.booleanValue(expects.get("row_changed"), scenarioName + ".expects.row_changed"), rowChanged(result));
 		assertEquals(FixtureExpectationHelper.toNestedMap(fixtureLoader, expects.get("output_result"), scenarioName + ".expects.output_result"), actualOutputResult(result));
+	}
+
+	private boolean rowChanged(List<SiteLocation> rows) {
+		for (int i = 0; i < rows.size(); i++) {
+			SiteLocation row = rows.get(i);
+			if (row.isMarkedForDeletion() || row.getId() == null) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private List<SiteLocation> createGeneratedLocations(Map<String, Object> args, Map<String, Object> state, SeadSite site, String scenarioName) {

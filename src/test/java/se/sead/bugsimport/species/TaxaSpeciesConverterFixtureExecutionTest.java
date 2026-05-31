@@ -191,7 +191,13 @@ public class TaxaSpeciesConverterFixtureExecutionTest {
 		Map<String, Object> actualGraphResult = actualRelatedOutputGraphResult(sourceRow, scenarioName);
 
 		assertEquals(FixtureExpectationHelper.toStringList(fixtureLoader, expects.get("related_outputs"), scenarioName + ".expects.related_outputs"), java.util.Arrays.asList("taxa_family", "taxa_genus", "taxa_author", "taxa_species"));
+		assertEquals(fixtureLoader.booleanValue(expects.get("row_changed"), scenarioName + ".expects.row_changed"), rowChanged(actualGraphResult));
 		assertEquals(FixtureExpectationHelper.toNestedMap(fixtureLoader, expects.get("graph_result"), scenarioName + ".expects.graph_result"), actualGraphResult);
+	}
+
+	private boolean rowChanged(Map<String, Object> graphResult) {
+		Map<String, Object> species = fixtureLoader.mapValue(graphResult.get("taxa_species"), "graph_result.taxa_species");
+		return species.get("species_id") == null;
 	}
 
 	private void configureScenario(Map<String, Object> state, Map<String, Object> sourceRow) {

@@ -35,6 +35,7 @@ public class OutputPolicyHarness {
 		Integer siteId = integerOrNull(args, "site_id");
 		Map<String, Object> siteLookup = mapOrNull(state, "site_lookup");
 		if (siteLookup != null && "missing_imported_site".equals(stringOrNull(siteLookup, "status"))) {
+			result.rowChanged = false;
 			result.outputResult.put("row_1", siteLocationRow(
 					"error",
 					null,
@@ -50,6 +51,7 @@ public class OutputPolicyHarness {
 
 		Map<String, Object> generatedLocations = mapOrNull(state, "generated_locations");
 		if (generatedLocations != null && containsGeneratedLocationErrors(generatedLocations)) {
+			result.rowChanged = false;
 			for (Map.Entry<String, Object> entry : generatedLocations.entrySet()) {
 				Map<String, Object> row = mapValue(entry.getValue(), entry.getKey());
 				String errorMessage = stringOrNull(row, "error_message");
@@ -110,6 +112,7 @@ public class OutputPolicyHarness {
 		}
 
 		if (rowsToDelete.isEmpty() && rowsToInsert.isEmpty()) {
+			result.rowChanged = false;
 			if (existingRows != null) {
 				for (Map.Entry<String, Object> entry : existingRows.entrySet()) {
 					Map<String, Object> row = mapValue(entry.getValue(), entry.getKey());
@@ -127,6 +130,8 @@ public class OutputPolicyHarness {
 			}
 			return result;
 		}
+
+		result.rowChanged = true;
 
 		for (int i = 0; i < rowsToDelete.size(); i++) {
 			result.outputResult.put("row_" + Integer.valueOf(result.outputResult.size() + 1), rowsToDelete.get(i));
@@ -175,6 +180,7 @@ public class OutputPolicyHarness {
 					false
 			));
 		}
+		result.rowChanged = hasOutputChanges(result.outputResult);
 		return result;
 	}
 
@@ -282,6 +288,17 @@ public class OutputPolicyHarness {
 			return "stop_before_list_update";
 		}
 		return resultKind;
+	}
+
+	private boolean hasOutputChanges(Map<String, Object> outputRows) {
+		for (Map.Entry<String, Object> entry : outputRows.entrySet()) {
+			Map<String, Object> row = mapValue(entry.getValue(), entry.getKey());
+			String resultKind = stringOrNull(row, "result_kind");
+			if (!"keep_existing".equals(resultKind)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private boolean containsGeneratedLocationErrors(Map<String, Object> generatedLocations) {
@@ -498,9 +515,14 @@ public class OutputPolicyHarness {
 	public static class OutputResult {
 
 		private final Map<String, Object> outputResult = new LinkedHashMap<String, Object>();
+		private boolean rowChanged;
 
 		public Map<String, Object> getOutputResult() {
 			return outputResult;
+		}
+
+		public boolean isRowChanged() {
+			return rowChanged;
 		}
 	}
 }
