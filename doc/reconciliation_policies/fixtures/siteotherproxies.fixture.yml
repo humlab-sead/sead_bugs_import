@@ -30,6 +30,7 @@ scenarios:
       output_result:
         row_1:
           result_kind: insert_new
+          persisted_action: append_new
           site_other_record_id: null
           site_id: 301
           record_type_id: 401
@@ -37,6 +38,7 @@ scenarios:
           marked_for_deletion: false
         row_2:
           result_kind: insert_new
+          persisted_action: append_new
           site_other_record_id: null
           site_id: 301
           record_type_id: 402
@@ -80,9 +82,11 @@ scenarios:
             record_type_id: 402
             record_type_name: Diatoms
     expects:
+      known_divergence_areas: [replacement_expressed_as_row_actions]
       output_result:
         row_1:
           result_kind: keep_existing
+          persisted_action: keep_existing
           site_other_record_id: 501
           site_id: 302
           record_type_id: 401
@@ -90,6 +94,7 @@ scenarios:
           marked_for_deletion: false
         row_2:
           result_kind: mark_for_deletion
+          persisted_action: mark_for_deletion
           site_other_record_id: 502
           site_id: 302
           record_type_id: 402
@@ -97,6 +102,7 @@ scenarios:
           marked_for_deletion: true
         row_3:
           result_kind: insert_new
+          persisted_action: append_new
           site_other_record_id: null
           site_id: 302
           record_type_id: 403
@@ -133,6 +139,7 @@ scenarios:
       output_result:
         row_1:
           result_kind: keep_existing
+          persisted_action: keep_existing
           site_other_record_id: 503
           site_id: 303
           record_type_id: 401
@@ -173,9 +180,11 @@ scenarios:
             record_type_id: 402
             record_type_name: Diatoms
     expects:
+      known_divergence_areas: [replacement_expressed_as_row_actions]
       output_result:
         row_1:
           result_kind: mark_for_deletion
+          persisted_action: mark_for_deletion
           site_other_record_id: 504
           site_id: 304
           record_type_id: 401
@@ -183,6 +192,7 @@ scenarios:
           marked_for_deletion: true
         row_2:
           result_kind: mark_for_deletion
+          persisted_action: mark_for_deletion
           site_other_record_id: 505
           site_id: 304
           record_type_id: 402

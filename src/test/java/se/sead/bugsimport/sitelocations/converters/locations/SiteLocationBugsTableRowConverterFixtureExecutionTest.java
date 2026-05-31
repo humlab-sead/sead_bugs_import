@@ -117,7 +117,9 @@ public class SiteLocationBugsTableRowConverterFixtureExecutionTest {
 		for (int i = 0; i < rows.size(); i++) {
 			SiteLocation row = rows.get(i);
 			Map<String, Object> output = new LinkedHashMap<String, Object>();
-			output.put("result_kind", row.isErrorFree() ? (hasErrors ? "return_generated" : "insert_new") : "error");
+			String resultKind = row.isErrorFree() ? (hasErrors ? "return_generated" : "insert_new") : "error";
+			output.put("result_kind", resultKind);
+			output.put("persisted_action", "insert_new".equals(resultKind) ? "append_new" : "error".equals(resultKind) || "return_generated".equals(resultKind) ? "stop_before_list_update" : resultKind);
 			output.put("site_location_id", row.getId());
 			output.put("site_id", row.getSite() == null ? null : row.getSite().getId());
 			output.put("location_id", row.getLocation() == null ? null : row.getLocation().getId());

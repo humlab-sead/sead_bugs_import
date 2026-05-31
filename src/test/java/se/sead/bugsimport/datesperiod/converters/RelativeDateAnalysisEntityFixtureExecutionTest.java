@@ -61,9 +61,11 @@ public class RelativeDateAnalysisEntityFixtureExecutionTest {
 		Map<String, Object> fixture = fixtureLoader.loadFixture("datesperiod.fixture.yml");
 		Map<String, Object> scenario = fixtureLoader.findScenario(fixture, scenarioName);
 		Map<String, Object> expects = fixtureLoader.mapValue(scenario.get("expects"), scenarioName + ".expects");
+		Map<String, Object> policyContext = fixtureLoader.mapValue(scenario.get("policy_context"), scenarioName + ".policy_context");
+		Map<String, Object> state = policyContext.containsKey("state") ? fixtureLoader.mapValue(policyContext.get("state"), scenarioName + ".policy_context.state") : null;
 		AnalysisEntity analysisEntity = executeUpdaterForScenario(scenario, scenarioName);
 
-		assertEquals(FixtureExpectationHelper.toNestedMap(fixtureLoader, expects.get("graph_result"), scenarioName + ".expects.graph_result"), actualGraphResult(analysisEntity));
+		assertEquals(FixtureExpectationHelper.toNestedMap(fixtureLoader, expects.get("graph_result"), scenarioName + ".expects.graph_result"), actualGraphResult(analysisEntity, state));
 	}
 
 	private AnalysisEntity executeUpdaterForScenario(Map<String, Object> scenario, String scenarioName) {
@@ -118,14 +120,36 @@ public class RelativeDateAnalysisEntityFixtureExecutionTest {
 		);
 	}
 
-	private Map<String, Object> actualGraphResult(AnalysisEntity analysisEntity) {
+	private Map<String, Object> actualGraphResult(AnalysisEntity analysisEntity, Map<String, Object> state) {
 		Map<String, Object> graphResult = new LinkedHashMap<String, Object>();
 		Map<String, Object> analysisEntityResult = new LinkedHashMap<String, Object>();
 		analysisEntityResult.put("analysis_entity_id", analysisEntity.getId());
+		analysisEntityResult.put("supporting_action", analysisEntityAction(analysisEntity, state));
 		analysisEntityResult.put("physical_sample_id", analysisEntity.getSample() == null ? null : analysisEntity.getSample().getId());
 		analysisEntityResult.put("dataset_id", analysisEntity.getDataset() == null ? null : analysisEntity.getDataset().getId());
 		graphResult.put("analysis_entity", analysisEntityResult);
 		return graphResult;
+	}
+
+	private String analysisEntityAction(AnalysisEntity analysisEntity, Map<String, Object> state) {
+		if (analysisEntity.getId() == null) {
+			return "create";
+		}
+		Integer existingPhysicalSampleId = state == null || !state.containsKey("existing_physical_sample_id") ? null : integerValue(state.get("existing_physical_sample_id"));
+		Integer existingDatasetId = state == null || !state.containsKey("existing_dataset_id") ? null : integerValue(state.get("existing_dataset_id"));
+		Integer currentPhysicalSampleId = analysisEntity.getSample() == null ? null : analysisEntity.getSample().getId();
+		Integer currentDatasetId = analysisEntity.getDataset() == null ? null : analysisEntity.getDataset().getId();
+		if (!sameInteger(existingPhysicalSampleId, currentPhysicalSampleId) || !sameInteger(existingDatasetId, currentDatasetId)) {
+			return "update";
+		}
+		return "keep";
+	}
+
+	private boolean sameInteger(Integer left, Integer right) {
+		if (left == null) {
+			return right == null;
+		}
+		return left.equals(right);
 	}
 
 	private Integer integerValue(Object value) {

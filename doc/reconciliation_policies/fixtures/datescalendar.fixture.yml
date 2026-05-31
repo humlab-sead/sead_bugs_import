@@ -480,6 +480,7 @@ scenarios:
       graph_result:
         relative_age:
           relative_age_id: null
+          supporting_action: create
           abbreviation: CAL_1200_BC
           name: CAL_1200_BC
           type_name: Calendar date
@@ -504,6 +505,7 @@ scenarios:
       graph_result:
         relative_age:
           relative_age_id: 71
+          supporting_action: reuse
           abbreviation: CAL_1450_AD
           name: CAL_1450_AD
           type_name: Calendar date
@@ -530,10 +532,12 @@ scenarios:
         data_type_id: 41
         master_set_id: 51
     expects:
+      known_divergence_areas: [created_supporting_rows_mark_updated]
       related_outputs: [dataset]
       graph_result:
         dataset:
           dataset_id: null
+          supporting_action: create
           dataset_name: CAL_DATASET_1
           data_type_id: 41
           method_abbreviation: CalendarCal
@@ -574,6 +578,7 @@ scenarios:
       graph_result:
         dataset:
           dataset_id: 61
+          supporting_action: update
           dataset_name: CAL_DATASET_2
           data_type_id: 41
           method_abbreviation: CalendarCal
@@ -614,6 +619,7 @@ scenarios:
       graph_result:
         dataset:
           dataset_id: 62
+          supporting_action: keep
           dataset_name: CAL_DATASET_3
           data_type_id: 41
           method_abbreviation: CalendarCal
@@ -647,6 +653,7 @@ scenarios:
       graph_result:
         analysis_entity:
           analysis_entity_id: null
+          supporting_action: create
           physical_sample_id: 81
           dataset_id: null
   - name: update_existing_calendar_analysis_entity_when_values_change
@@ -685,6 +692,7 @@ scenarios:
       graph_result:
         analysis_entity:
           analysis_entity_id: 91
+          supporting_action: update
           physical_sample_id: 83
           dataset_id: 61
   - name: keep_existing_calendar_analysis_entity_when_values_match
@@ -723,6 +731,7 @@ scenarios:
       graph_result:
         analysis_entity:
           analysis_entity_id: 92
+          supporting_action: keep
           physical_sample_id: 82
           dataset_id: 62
   - name: create_related_output_graph_for_new_calendar_row
@@ -743,17 +752,20 @@ scenarios:
         data_type_id: 41
         master_set_id: 51
     expects:
+      known_divergence_areas: [created_supporting_rows_mark_updated]
       related_outputs: [relative_age, dataset, analysis_entity]
       updates_target_fields: [analysis_entity_id]
       row_changed: true
       graph_result:
         relative_age:
           relative_age_id: null
+          supporting_action: create
           abbreviation: CAL_1200_AD
           name: CAL_1200_AD
           type_name: Calendar date
         dataset:
           dataset_id: null
+          supporting_action: create
           dataset_name: CAL_GRAPH_1
           data_type_id: 41
           method_abbreviation: CalendarCal
@@ -761,5 +773,6 @@ scenarios:
           updated: true
         analysis_entity:
           analysis_entity_id: null
+          supporting_action: create
           physical_sample_id: 81
           dataset_id: null

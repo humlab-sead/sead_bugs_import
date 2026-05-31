@@ -116,6 +116,7 @@ scenarios:
       graph_result:
         dataset:
           dataset_id: null
+          supporting_action: create
           dataset_name: RAD_DATASET_1
           data_type_id: 61
           method_abbreviation: Radiocarbon
@@ -153,6 +154,7 @@ scenarios:
       graph_result:
         analysis_entity:
           analysis_entity_id: null
+          supporting_action: create
           physical_sample_id: 81
           dataset_id: null
   - name: create_related_output_graph_for_new_geochronology_row
@@ -183,6 +185,7 @@ scenarios:
       graph_result:
         dataset:
           dataset_id: null
+          supporting_action: create
           dataset_name: RAD_GRAPH_1
           data_type_id: 61
           method_abbreviation: Radiocarbon
@@ -190,6 +193,7 @@ scenarios:
           updated: false
         analysis_entity:
           analysis_entity_id: null
+          supporting_action: create
           physical_sample_id: 81
           dataset_id: null
   - name: missing_sample_emits_geochronology_graph_issue

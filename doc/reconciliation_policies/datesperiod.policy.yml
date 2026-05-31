@@ -228,6 +228,12 @@ tracing:
   sead_table: tbl_relative_dates
   write_on: [insert, update]
 
+known_divergences:
+  - area: created_supporting_rows_mark_updated
+    status: behavior_ambiguous
+    description: Current relative-date updater create paths can still surface supporting dataset rows as updated=true. Fixtures now carry explicit supporting_action values and preserve updated=true only as parity evidence.
+    policy_choice: match_intended_behavior
+
 resolvers:
   - name: resolve_relative_date_method
     description: Resolve the dating method used for the period-based relative-date dataset through blank fallback, direct abbreviation lookup, then a period-years-type suffix.

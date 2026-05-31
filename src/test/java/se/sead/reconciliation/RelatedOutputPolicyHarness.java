@@ -135,6 +135,7 @@ public class RelatedOutputPolicyHarness {
 
 		Map<String, Object> datasetResult = new LinkedHashMap<String, Object>();
 		datasetResult.put("dataset_id", null);
+		datasetResult.put("supporting_action", "create");
 		datasetResult.put("dataset_name", stringValue(sourceRow.get("DateCODE"), "DateCODE"));
 		datasetResult.put("data_type_id", integerValue(stateOverrides.get("data_type_id"), "data_type_id"));
 		datasetResult.put("method_abbreviation", stringValue(stateOverrides.get("method_abbreviation"), "method_abbreviation"));
@@ -143,6 +144,7 @@ public class RelatedOutputPolicyHarness {
 
 		Map<String, Object> analysisEntityResult = new LinkedHashMap<String, Object>();
 		analysisEntityResult.put("analysis_entity_id", null);
+		analysisEntityResult.put("supporting_action", "create");
 		analysisEntityResult.put("physical_sample_id", integerValue(stateOverrides.get("physical_sample_id"), "physical_sample_id"));
 		analysisEntityResult.put("dataset_id", null);
 
@@ -177,17 +179,23 @@ public class RelatedOutputPolicyHarness {
 		}
 		result.updatedTargetFields.add("analysis_entity_id");
 		Map<String, Object> datasetResult = new LinkedHashMap<String, Object>();
-		datasetResult.put("dataset_id", integerOrNull(stateOverrides, "existing_dataset_id"));
+		Integer datasetId = integerOrNull(stateOverrides, "existing_dataset_id");
+		datasetResult.put("dataset_id", datasetId);
 		datasetResult.put("dataset_name", stringValue(sourceRow.get("PeriodDateCODE"), "PeriodDateCODE"));
 		datasetResult.put("data_type_id", integerValue(stateOverrides.get("data_type_id"), "data_type_id"));
 		datasetResult.put("method_abbreviation", stringValue(stateOverrides.get("method_abbreviation"), "method_abbreviation"));
 		datasetResult.put("master_set_id", integerValue(stateOverrides.get("master_set_id"), "master_set_id"));
-		datasetResult.put("updated", datasetUpdated(stateOverrides, datasetResult));
+		boolean datasetUpdated = datasetUpdated(stateOverrides, datasetResult);
+		datasetResult.put("updated", datasetUpdated);
+		datasetResult.put("supporting_action", datasetAction(datasetId, datasetUpdated));
 
 		Map<String, Object> analysisEntityResult = new LinkedHashMap<String, Object>();
-		analysisEntityResult.put("analysis_entity_id", integerOrNull(stateOverrides, "existing_analysis_entity_id"));
-		analysisEntityResult.put("physical_sample_id", integerValue(stateOverrides.get("physical_sample_id"), "physical_sample_id"));
-		analysisEntityResult.put("dataset_id", datasetResult.get("dataset_id"));
+		Integer analysisEntityId = integerOrNull(stateOverrides, "existing_analysis_entity_id");
+		Integer physicalSampleId = integerValue(stateOverrides.get("physical_sample_id"), "physical_sample_id");
+		analysisEntityResult.put("analysis_entity_id", analysisEntityId);
+		analysisEntityResult.put("physical_sample_id", physicalSampleId);
+		analysisEntityResult.put("dataset_id", datasetId);
+		analysisEntityResult.put("supporting_action", analysisEntityAction(stateOverrides, analysisEntityId, physicalSampleId, datasetId));
 
 		result.rowChanged = booleanValue(datasetResult.get("updated"), "dataset.updated");
 		result.graphResult.put("dataset", datasetResult);
@@ -222,24 +230,32 @@ public class RelatedOutputPolicyHarness {
 		result.updatedTargetFields.add("analysis_entity_id");
 
 		Map<String, Object> relativeAgeResult = new LinkedHashMap<String, Object>();
-		relativeAgeResult.put("relative_age_id", integerOrNull(stateOverrides, "existing_relative_age_id"));
+		Integer relativeAgeId = integerOrNull(stateOverrides, "existing_relative_age_id");
+		relativeAgeResult.put("relative_age_id", relativeAgeId);
+		relativeAgeResult.put("supporting_action", relativeAgeId == null ? "create" : "reuse");
 		String abbreviation = "CAL_" + integerValue(sourceRow.get("Date"), "Date") + "_" + stringValue(sourceRow.get("BCADBP"), "BCADBP");
 		relativeAgeResult.put("abbreviation", abbreviation);
 		relativeAgeResult.put("name", abbreviation);
 		relativeAgeResult.put("type_name", "Calendar date");
 
 		Map<String, Object> datasetResult = new LinkedHashMap<String, Object>();
-		datasetResult.put("dataset_id", integerOrNull(stateOverrides, "existing_dataset_id"));
+		Integer datasetId = integerOrNull(stateOverrides, "existing_dataset_id");
+		datasetResult.put("dataset_id", datasetId);
 		datasetResult.put("dataset_name", stringValue(sourceRow.get("CalendarCODE"), "CalendarCODE"));
 		datasetResult.put("data_type_id", integerValue(stateOverrides.get("data_type_id"), "data_type_id"));
 		datasetResult.put("method_abbreviation", stringValue(stateOverrides.get("method_abbreviation"), "method_abbreviation"));
 		datasetResult.put("master_set_id", integerValue(stateOverrides.get("master_set_id"), "master_set_id"));
-		datasetResult.put("updated", datasetUpdated(stateOverrides, datasetResult));
+		boolean datasetUpdated = datasetUpdated(stateOverrides, datasetResult);
+		datasetResult.put("updated", datasetUpdated);
+		datasetResult.put("supporting_action", datasetAction(datasetId, datasetUpdated));
 
 		Map<String, Object> analysisEntityResult = new LinkedHashMap<String, Object>();
-		analysisEntityResult.put("analysis_entity_id", integerOrNull(stateOverrides, "existing_analysis_entity_id"));
-		analysisEntityResult.put("physical_sample_id", integerValue(stateOverrides.get("physical_sample_id"), "physical_sample_id"));
-		analysisEntityResult.put("dataset_id", datasetResult.get("dataset_id"));
+		Integer analysisEntityId = integerOrNull(stateOverrides, "existing_analysis_entity_id");
+		Integer physicalSampleId = integerValue(stateOverrides.get("physical_sample_id"), "physical_sample_id");
+		analysisEntityResult.put("analysis_entity_id", analysisEntityId);
+		analysisEntityResult.put("physical_sample_id", physicalSampleId);
+		analysisEntityResult.put("dataset_id", datasetId);
+		analysisEntityResult.put("supporting_action", analysisEntityAction(stateOverrides, analysisEntityId, physicalSampleId, datasetId));
 
 		result.rowChanged = booleanValue(datasetResult.get("updated"), "dataset.updated")
 				|| !abbreviation.equals(stringOrNull(stateOverrides, "existing_relative_age_abbreviation"));
@@ -247,6 +263,32 @@ public class RelatedOutputPolicyHarness {
 		result.graphResult.put("dataset", datasetResult);
 		result.graphResult.put("analysis_entity", analysisEntityResult);
 		return result;
+	}
+
+	private String datasetAction(Integer datasetId, boolean updated) {
+		if (datasetId == null) {
+			return "create";
+		}
+		return updated ? "update" : "keep";
+	}
+
+	private String analysisEntityAction(Map<String, Object> state, Integer analysisEntityId, Integer physicalSampleId, Integer datasetId) {
+		if (analysisEntityId == null) {
+			return "create";
+		}
+		Integer existingPhysicalSampleId = integerOrNull(state, "existing_physical_sample_id");
+		Integer existingDatasetId = integerOrNull(state, "existing_dataset_id");
+		if (!sameInteger(existingPhysicalSampleId, physicalSampleId) || !sameInteger(existingDatasetId, datasetId)) {
+			return "update";
+		}
+		return "keep";
+	}
+
+	private boolean sameInteger(Integer left, Integer right) {
+		if (left == null) {
+			return right == null;
+		}
+		return left.equals(right);
 	}
 
 	private RelatedOutputResult executeSpeciesStyleGraph(List<Object> relatedOutputs, Map<String, Object> configOverrides, Map<String, Object> stateOverrides, Map<String, Object> sourceRow) {
@@ -264,6 +306,7 @@ public class RelatedOutputPolicyHarness {
 		Map<String, Object> familyResult = new LinkedHashMap<String, Object>();
 		Integer familyId = integerOrNull(stateOverrides, "existing_family_id");
 		familyResult.put("result_kind", familyId == null ? "insert_new" : "return_existing");
+		familyResult.put("supporting_action", familyId == null ? "create" : "reuse");
 		familyResult.put("family_id", familyId);
 		familyResult.put("family_name", stringValue(sourceRow.get("FAMILY"), "FAMILY"));
 		familyResult.put("order_id", importOrderId);
@@ -271,6 +314,7 @@ public class RelatedOutputPolicyHarness {
 		Map<String, Object> genusResult = new LinkedHashMap<String, Object>();
 		Integer genusId = integerOrNull(stateOverrides, "existing_genus_id");
 		genusResult.put("result_kind", genusId == null ? "insert_new" : "return_existing");
+		genusResult.put("supporting_action", genusId == null ? "create" : "reuse");
 		genusResult.put("genus_id", genusId);
 		genusResult.put("genus_name", stringValue(sourceRow.get("GENUS"), "GENUS"));
 		genusResult.put("family_id", familyId);
@@ -278,12 +322,14 @@ public class RelatedOutputPolicyHarness {
 		Map<String, Object> authorResult = new LinkedHashMap<String, Object>();
 		Integer authorId = integerOrNull(stateOverrides, "existing_author_id");
 		authorResult.put("result_kind", authorId == null ? "insert_new" : "return_existing");
+		authorResult.put("supporting_action", authorId == null ? "create" : "reuse");
 		authorResult.put("author_id", authorId);
 		authorResult.put("author_name", stringOrNull(stateOverrides, "existing_author_name") == null ? stringOrNull(sourceRow, "AUTHORITY") : stringOrNull(stateOverrides, "existing_author_name"));
 
 		Map<String, Object> speciesResult = new LinkedHashMap<String, Object>();
 		Integer speciesId = integerOrNull(stateOverrides, "existing_species_id");
 		speciesResult.put("result_kind", speciesId == null ? "insert_new" : "return_existing");
+		speciesResult.put("supporting_action", speciesId == null ? "create" : "reuse");
 		speciesResult.put("species_id", speciesId);
 		speciesResult.put("species", stringValue(sourceRow.get("SPECIES"), "SPECIES"));
 		speciesResult.put("genus_id", genusId);

@@ -90,6 +90,7 @@ public class SupportingOutputPolicyHarness {
 		Map<String, Object> result = new LinkedHashMap<String, Object>();
 		Integer familyId = integerOrNull(state, "existing_family_id");
 		result.put("result_kind", familyId == null ? "insert_new" : "return_existing");
+		result.put("supporting_action", familyId == null ? "create" : "reuse");
 		result.put("family_id", familyId);
 		result.put("family_name", stringValue(sourceRow.get("FAMILY"), "FAMILY"));
 		result.put("order_id", integerValue(args.get("import_order_id"), "import_order_id"));
@@ -100,6 +101,7 @@ public class SupportingOutputPolicyHarness {
 		Map<String, Object> result = new LinkedHashMap<String, Object>();
 		Integer genusId = integerOrNull(state, "existing_genus_id");
 		result.put("result_kind", genusId == null ? "insert_new" : "return_existing");
+		result.put("supporting_action", genusId == null ? "create" : "reuse");
 		result.put("genus_id", genusId);
 		result.put("genus_name", stringValue(sourceRow.get("GENUS"), "GENUS"));
 		result.put("family_id", integerOrNull(state, "existing_family_id"));
@@ -110,6 +112,7 @@ public class SupportingOutputPolicyHarness {
 		Map<String, Object> result = new LinkedHashMap<String, Object>();
 		Integer authorId = integerOrNull(state, "existing_author_id");
 		result.put("result_kind", authorId == null ? "insert_new" : "return_existing");
+		result.put("supporting_action", authorId == null ? "create" : "reuse");
 		result.put("author_id", authorId);
 		result.put("author_name", stringOrNull(sourceRow, "AUTHORITY"));
 		return result;
@@ -122,6 +125,7 @@ public class SupportingOutputPolicyHarness {
 		Integer genusId = noDataSpecies ? integerOrNull(state, "no_data_genus_id") : integerOrNull(state, "existing_genus_id");
 		Integer authorId = noDataSpecies ? integerOrNull(state, "no_data_author_id") : integerOrNull(state, "existing_author_id");
 		result.put("result_kind", speciesId == null ? "insert_new" : "return_existing");
+		result.put("supporting_action", speciesId == null ? "create" : "reuse");
 		result.put("species_id", speciesId);
 		result.put("species", stringValue(sourceRow.get("SPECIES"), "SPECIES"));
 		result.put("genus_id", genusId);
@@ -229,7 +233,9 @@ public class SupportingOutputPolicyHarness {
 
 	private Map<String, Object> relativeAgeResult(String policyName, Map<String, Object> state, Map<String, Object> sourceRow) {
 		Map<String, Object> result = new LinkedHashMap<String, Object>();
-		result.put("relative_age_id", integerOrNull(state, "existing_relative_age_id"));
+		Integer relativeAgeId = integerOrNull(state, "existing_relative_age_id");
+		result.put("relative_age_id", relativeAgeId);
+		result.put("supporting_action", relativeAgeId == null ? "create" : "reuse");
 		if ("datescalendar".equals(policyName)) {
 			String abbreviation = "CAL_" + integerValue(sourceRow.get("Date"), "Date") + "_" + stringValue(sourceRow.get("BCADBP"), "BCADBP");
 			result.put("abbreviation", abbreviation);
@@ -263,9 +269,13 @@ public class SupportingOutputPolicyHarness {
 	private Map<String, Object> analysisEntityResult(String policyName, Map<String, Object> args, Map<String, Object> state, Map<String, Object> sourceRow) {
 		Map<String, Object> dataset = datasetResult(policyName, args, state, sourceRow);
 		Map<String, Object> result = new LinkedHashMap<String, Object>();
-		result.put("analysis_entity_id", integerOrNull(state, "existing_analysis_entity_id"));
-		result.put("physical_sample_id", integerValue(args.get("physical_sample_id"), "physical_sample_id"));
-		result.put("dataset_id", dataset.get("dataset_id"));
+		Integer analysisEntityId = integerOrNull(state, "existing_analysis_entity_id");
+		Integer physicalSampleId = integerValue(args.get("physical_sample_id"), "physical_sample_id");
+		Integer datasetId = integerObject(dataset.get("dataset_id"));
+		result.put("analysis_entity_id", analysisEntityId);
+		result.put("physical_sample_id", physicalSampleId);
+		result.put("dataset_id", datasetId);
+		result.put("supporting_action", analysisEntityAction(state, analysisEntityId, physicalSampleId, datasetId));
 		return result;
 	}
 
@@ -288,7 +298,41 @@ public class SupportingOutputPolicyHarness {
 		result.put("method_abbreviation", methodAbbreviation);
 		result.put("master_set_id", masterSetId);
 		result.put("updated", updated);
+		result.put("supporting_action", datasetAction(datasetId, updated));
 		return result;
+	}
+
+	private String datasetAction(Integer datasetId, boolean updated) {
+		if (datasetId == null) {
+			return "create";
+		}
+		return updated ? "update" : "keep";
+	}
+
+	private String analysisEntityAction(Map<String, Object> state, Integer analysisEntityId, Integer physicalSampleId, Integer datasetId) {
+		if (analysisEntityId == null) {
+			return "create";
+		}
+		Integer existingPhysicalSampleId = integerOrNull(state, "existing_physical_sample_id");
+		Integer existingDatasetId = integerOrNull(state, "existing_dataset_id");
+		if (!sameInteger(existingPhysicalSampleId, physicalSampleId) || !sameInteger(existingDatasetId, datasetId)) {
+			return "update";
+		}
+		return "keep";
+	}
+
+	private Integer integerObject(Object value) {
+		if (value == null) {
+			return null;
+		}
+		return integerValue(value, "value");
+	}
+
+	private boolean sameInteger(Integer left, Integer right) {
+		if (left == null) {
+			return right == null;
+		}
+		return left.equals(right);
 	}
 
 	private String datasetName(String policyName, Map<String, Object> sourceRow) {

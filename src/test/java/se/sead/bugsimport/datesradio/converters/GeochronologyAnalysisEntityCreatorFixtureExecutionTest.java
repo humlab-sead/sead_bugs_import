@@ -107,6 +107,7 @@ public class GeochronologyAnalysisEntityCreatorFixtureExecutionTest {
 		Map<String, Object> graphResult = new LinkedHashMap<String, Object>();
 		Map<String, Object> datasetResult = new LinkedHashMap<String, Object>();
 		datasetResult.put("dataset_id", analysisEntity.getDataset().getId());
+		datasetResult.put("supporting_action", "create");
 		datasetResult.put("dataset_name", analysisEntity.getDataset().getName());
 		datasetResult.put("data_type_id", analysisEntity.getDataset().getDataType().getId());
 		datasetResult.put("method_abbreviation", analysisEntity.getDataset().getMethod().getAbbreviation());
@@ -114,6 +115,7 @@ public class GeochronologyAnalysisEntityCreatorFixtureExecutionTest {
 		datasetResult.put("updated", analysisEntity.getDataset().isUpdated());
 		Map<String, Object> analysisEntityResult = new LinkedHashMap<String, Object>();
 		analysisEntityResult.put("analysis_entity_id", analysisEntity.getId());
+		analysisEntityResult.put("supporting_action", "create");
 		analysisEntityResult.put("physical_sample_id", analysisEntity.getSample() == null ? null : analysisEntity.getSample().getId());
 		analysisEntityResult.put("dataset_id", analysisEntity.getDataset() == null ? null : analysisEntity.getDataset().getId());
 		graphResult.put("dataset", datasetResult);

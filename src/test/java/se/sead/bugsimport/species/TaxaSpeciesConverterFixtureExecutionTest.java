@@ -278,12 +278,14 @@ public class TaxaSpeciesConverterFixtureExecutionTest {
 		Map<String, Object> result = new LinkedHashMap<String, Object>();
 		if (family == null) {
 			result.put("result_kind", "insert_new");
+			result.put("supporting_action", "create");
 			result.put("family_id", null);
 			result.put("family_name", null);
 			result.put("order_id", null);
 			return result;
 		}
 		result.put("result_kind", family.getId() == null ? "insert_new" : "return_existing");
+		result.put("supporting_action", family.getId() == null ? "create" : "reuse");
 		result.put("family_id", family.getId());
 		result.put("family_name", family.getFamilyName());
 		result.put("order_id", family.getOrder() == null ? null : family.getOrder().getId());
@@ -294,12 +296,14 @@ public class TaxaSpeciesConverterFixtureExecutionTest {
 		Map<String, Object> result = new LinkedHashMap<String, Object>();
 		if (genus == null) {
 			result.put("result_kind", "insert_new");
+			result.put("supporting_action", "create");
 			result.put("genus_id", null);
 			result.put("genus_name", null);
 			result.put("family_id", null);
 			return result;
 		}
 		result.put("result_kind", genus.getId() == null ? "insert_new" : "return_existing");
+		result.put("supporting_action", genus.getId() == null ? "create" : "reuse");
 		result.put("genus_id", genus.getId());
 		result.put("genus_name", genus.getGenusName());
 		result.put("family_id", genus.getFamily() == null ? null : genus.getFamily().getId());
@@ -310,11 +314,13 @@ public class TaxaSpeciesConverterFixtureExecutionTest {
 		Map<String, Object> result = new LinkedHashMap<String, Object>();
 		if (author == null) {
 			result.put("result_kind", "insert_new");
+			result.put("supporting_action", "create");
 			result.put("author_id", null);
 			result.put("author_name", null);
 			return result;
 		}
 		result.put("result_kind", author.getId() == null ? "insert_new" : "return_existing");
+		result.put("supporting_action", author.getId() == null ? "create" : "reuse");
 		result.put("author_id", author.getId());
 		result.put("author_name", author.getAuthorName());
 		return result;
@@ -323,6 +329,7 @@ public class TaxaSpeciesConverterFixtureExecutionTest {
 	private Map<String, Object> taxaSpeciesResult(TaxaSpecies species) {
 		Map<String, Object> result = new LinkedHashMap<String, Object>();
 		result.put("result_kind", species.getId() == null ? "insert_new" : "return_existing");
+		result.put("supporting_action", species.getId() == null ? "create" : "reuse");
 		result.put("species_id", species.getId());
 		result.put("species", species.getSpeciesName());
 		result.put("genus_id", species.getGenus() == null ? null : species.getGenus().getId());

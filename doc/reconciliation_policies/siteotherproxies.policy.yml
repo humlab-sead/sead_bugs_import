@@ -143,6 +143,12 @@ tracing:
   sead_table: tbl_site_other_records
   write_on: [insert, update]
 
+known_divergences:
+  - area: replacement_expressed_as_row_actions
+    status: behavior_ambiguous
+    description: Current list reconciliation exposes full replacement as a mix of marked-for-deletion rows and inserted rows instead of a first-class replacement result. Fixtures now add persisted_action labels and keep the row-level Java shape for parity.
+    policy_choice: match_intended_behavior
+
 helpers:
   - name: resolve_site_id
     description: Resolve the Bugs site code to the traced SEAD site row from the Site importer trace.

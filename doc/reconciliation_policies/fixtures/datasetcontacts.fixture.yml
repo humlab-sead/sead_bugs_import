@@ -206,6 +206,7 @@ scenarios:
       output_result:
         row_1:
           result_kind: insert_new
+          persisted_action: append_new
           dataset_contact_id: null
           dataset_id: 201
           contact_id: 301
@@ -214,6 +215,7 @@ scenarios:
           last_name: Archer
         row_2:
           result_kind: insert_new
+          persisted_action: append_new
           dataset_contact_id: null
           dataset_id: 201
           contact_id: null
@@ -258,6 +260,7 @@ scenarios:
       output_result:
         row_1:
           result_kind: keep_existing
+          persisted_action: keep_existing
           dataset_contact_id: 701
           dataset_id: 202
           contact_id: 501
@@ -266,6 +269,7 @@ scenarios:
           last_name: Archer
         row_2:
           result_kind: insert_new
+          persisted_action: append_new
           dataset_contact_id: null
           dataset_id: 202
           contact_id: 302
@@ -274,6 +278,7 @@ scenarios:
           last_name: Bookland
         row_3:
           result_kind: insert_new
+          persisted_action: append_new
           dataset_contact_id: null
           dataset_id: 202
           contact_id: 303
@@ -314,6 +319,7 @@ scenarios:
       output_result:
         row_1:
           result_kind: keep_existing
+          persisted_action: keep_existing
           dataset_contact_id: 702
           dataset_id: 203
           contact_id: 502
@@ -322,6 +328,7 @@ scenarios:
           last_name: Archer
         row_2:
           result_kind: keep_existing
+          persisted_action: keep_existing
           dataset_contact_id: 703
           dataset_id: 203
           contact_id: 503
@@ -356,6 +363,7 @@ scenarios:
       output_result:
         row_1:
           result_kind: keep_existing
+          persisted_action: keep_existing
           dataset_contact_id: 704
           dataset_id: 204
           contact_id: 504

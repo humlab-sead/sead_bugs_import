@@ -347,6 +347,12 @@ tracing:
   write_on: [insert, update]
   comment: DatesCalendarPersister updates RelativeAgeCache when newly created relative ages are stored.
 
+known_divergences:
+  - area: created_supporting_rows_mark_updated
+    status: behavior_ambiguous
+    description: Current relative-date updater create paths can still surface supporting dataset rows as updated=true. Fixtures now carry explicit supporting_action values and preserve updated=true only as parity evidence.
+    policy_choice: match_intended_behavior
+
 helpers:
   - name: resolve_calendar_relative_age_id
     description: Resolve or create the provisional single-date RelativeAge row identified by CAL_<Date>_<BCADBP> through RelativeAgeManager before optional range merging.

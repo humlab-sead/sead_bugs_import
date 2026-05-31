@@ -103,6 +103,7 @@ public class RelativeAgeManagerFixtureExecutionTest {
 		Map<String, Object> graphResult = new LinkedHashMap<String, Object>();
 		Map<String, Object> relativeAgeResult = new LinkedHashMap<String, Object>();
 		relativeAgeResult.put("relative_age_id", relativeAge.getId());
+		relativeAgeResult.put("supporting_action", relativeAge.getId() == null ? "create" : "reuse");
 		relativeAgeResult.put("abbreviation", relativeAge.getAbbreviation());
 		relativeAgeResult.put("name", relativeAge.getName());
 		relativeAgeResult.put("type_name", relativeAge.getType() == null ? null : relativeAge.getType().getType());

@@ -111,7 +111,9 @@ public class SiteOtherRecordUpdaterFixtureExecutionTest {
 		for (int i = 0; i < rows.size(); i++) {
 			SiteOtherRecord row = rows.get(i);
 			Map<String, Object> output = new LinkedHashMap<String, Object>();
-			output.put("result_kind", row.isMarkedForDeletion() ? "mark_for_deletion" : row.getId() == null ? "insert_new" : "keep_existing");
+			String resultKind = row.isMarkedForDeletion() ? "mark_for_deletion" : row.getId() == null ? "insert_new" : "keep_existing";
+			output.put("result_kind", resultKind);
+			output.put("persisted_action", "insert_new".equals(resultKind) ? "append_new" : "keep_existing".equals(resultKind) ? "keep_existing" : "mark_for_deletion");
 			output.put("site_other_record_id", row.getId());
 			output.put("site_id", row.getSite() == null ? null : row.getSite().getId());
 			output.put("record_type_id", row.getRecordType() == null ? null : row.getRecordType().getId());

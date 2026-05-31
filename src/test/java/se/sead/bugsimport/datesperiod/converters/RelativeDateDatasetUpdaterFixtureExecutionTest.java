@@ -45,9 +45,11 @@ public class RelativeDateDatasetUpdaterFixtureExecutionTest {
 		Map<String, Object> fixture = fixtureLoader.loadFixture("datesperiod.fixture.yml");
 		Map<String, Object> scenario = fixtureLoader.findScenario(fixture, scenarioName);
 		Map<String, Object> expects = fixtureLoader.mapValue(scenario.get("expects"), scenarioName + ".expects");
+		Map<String, Object> policyContext = fixtureLoader.mapValue(scenario.get("policy_context"), scenarioName + ".policy_context");
+		Map<String, Object> state = policyContext.containsKey("state") ? fixtureLoader.mapValue(policyContext.get("state"), scenarioName + ".policy_context.state") : null;
 		Dataset dataset = executeUpdaterForScenario(scenario, scenarioName);
 
-		assertEquals(FixtureExpectationHelper.toNestedMap(fixtureLoader, expects.get("graph_result"), scenarioName + ".expects.graph_result"), actualGraphResult(dataset));
+		assertEquals(FixtureExpectationHelper.toNestedMap(fixtureLoader, expects.get("graph_result"), scenarioName + ".expects.graph_result"), actualGraphResult(dataset, state));
 	}
 
 	private Dataset executeUpdaterForScenario(Map<String, Object> scenario, String scenarioName) {
@@ -81,10 +83,11 @@ public class RelativeDateDatasetUpdaterFixtureExecutionTest {
 		);
 	}
 
-	private Map<String, Object> actualGraphResult(Dataset dataset) {
+	private Map<String, Object> actualGraphResult(Dataset dataset, Map<String, Object> state) {
 		Map<String, Object> graphResult = new LinkedHashMap<String, Object>();
 		Map<String, Object> datasetResult = new LinkedHashMap<String, Object>();
 		datasetResult.put("dataset_id", dataset.getId());
+		datasetResult.put("supporting_action", dataset.getId() == null ? "create" : dataset.isUpdated() ? "update" : "keep");
 		datasetResult.put("dataset_name", dataset.getName());
 		datasetResult.put("data_type_id", dataset.getDataType().getId());
 		datasetResult.put("method_abbreviation", dataset.getMethod().getAbbreviation());

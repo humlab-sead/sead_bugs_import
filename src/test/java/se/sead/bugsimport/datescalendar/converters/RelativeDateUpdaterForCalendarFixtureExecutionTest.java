@@ -133,9 +133,9 @@ public class RelativeDateUpdaterForCalendarFixtureExecutionTest {
 		result.relatedOutputs.add("analysis_entity");
 		result.updatedTargetFields.add("analysis_entity_id");
 		result.rowChanged = original.isUpdated();
-		result.graphResult.put("relative_age", relativeAgeResult(original.getRelativeAge()));
+		result.graphResult.put("relative_age", relativeAgeResult(original.getRelativeAge(), state));
 		result.graphResult.put("dataset", datasetResult(original.getAnalysisEntity().getDataset()));
-		result.graphResult.put("analysis_entity", analysisEntityResult(original.getAnalysisEntity()));
+		result.graphResult.put("analysis_entity", analysisEntityResult(original.getAnalysisEntity(), state));
 		return result;
 	}
 
@@ -178,9 +178,11 @@ public class RelativeDateUpdaterForCalendarFixtureExecutionTest {
 		);
 	}
 
-	private Map<String, Object> relativeAgeResult(RelativeAge relativeAge) {
+	private Map<String, Object> relativeAgeResult(RelativeAge relativeAge, Map<String, Object> state) {
 		Map<String, Object> result = new LinkedHashMap<String, Object>();
 		result.put("relative_age_id", relativeAge.getId());
+		Integer existingRelativeAgeId = state == null || !state.containsKey("existing_relative_age_id") ? null : integerValue(state.get("existing_relative_age_id"));
+		result.put("supporting_action", existingRelativeAgeId == null ? "create" : "reuse");
 		result.put("abbreviation", relativeAge.getAbbreviation());
 		result.put("name", relativeAge.getName());
 		result.put("type_name", relativeAge.getType() == null ? null : relativeAge.getType().getType());
@@ -190,6 +192,7 @@ public class RelativeDateUpdaterForCalendarFixtureExecutionTest {
 	private Map<String, Object> datasetResult(Dataset dataset) {
 		Map<String, Object> result = new LinkedHashMap<String, Object>();
 		result.put("dataset_id", dataset.getId());
+		result.put("supporting_action", dataset.getId() == null ? "create" : dataset.isUpdated() ? "update" : "keep");
 		result.put("dataset_name", dataset.getName());
 		result.put("data_type_id", dataset.getDataType().getId());
 		result.put("method_abbreviation", dataset.getMethod().getAbbreviation());
@@ -198,12 +201,31 @@ public class RelativeDateUpdaterForCalendarFixtureExecutionTest {
 		return result;
 	}
 
-	private Map<String, Object> analysisEntityResult(AnalysisEntity analysisEntity) {
+	private Map<String, Object> analysisEntityResult(AnalysisEntity analysisEntity, Map<String, Object> state) {
 		Map<String, Object> result = new LinkedHashMap<String, Object>();
 		result.put("analysis_entity_id", analysisEntity.getId());
+		result.put("supporting_action", analysisEntity.getId() == null ? "create" : analysisEntityAction(analysisEntity, state));
 		result.put("physical_sample_id", analysisEntity.getSample() == null ? null : analysisEntity.getSample().getId());
 		result.put("dataset_id", analysisEntity.getDataset() == null ? null : analysisEntity.getDataset().getId());
 		return result;
+	}
+
+	private String analysisEntityAction(AnalysisEntity analysisEntity, Map<String, Object> state) {
+		Integer existingPhysicalSampleId = state == null || !state.containsKey("existing_physical_sample_id") ? null : integerValue(state.get("existing_physical_sample_id"));
+		Integer existingDatasetId = state == null || !state.containsKey("existing_dataset_id") ? null : integerValue(state.get("existing_dataset_id"));
+		Integer currentPhysicalSampleId = analysisEntity.getSample() == null ? null : analysisEntity.getSample().getId();
+		Integer currentDatasetId = analysisEntity.getDataset() == null ? null : analysisEntity.getDataset().getId();
+		if (!sameInteger(existingPhysicalSampleId, currentPhysicalSampleId) || !sameInteger(existingDatasetId, currentDatasetId)) {
+			return "update";
+		}
+		return "keep";
+	}
+
+	private boolean sameInteger(Integer left, Integer right) {
+		if (left == null) {
+			return right == null;
+		}
+		return left.equals(right);
 	}
 
 	private void setBaseField(Object target, String fieldName, Object value) {

@@ -24,6 +24,7 @@ scenarios:
       output_result:
         row_1:
           result_kind: insert_new
+          persisted_action: append_new
           site_location_id: null
           site_id: 501
           location_id: 601
@@ -33,6 +34,7 @@ scenarios:
           error_message: null
         row_2:
           result_kind: insert_new
+          persisted_action: append_new
           site_location_id: null
           site_id: 501
           location_id: 602
@@ -69,9 +71,11 @@ scenarios:
             location_id: 604
             location_name: Sweden
     expects:
+      known_divergence_areas: [replacement_expressed_as_row_actions]
       output_result:
         row_1:
           result_kind: mark_for_deletion
+          persisted_action: mark_for_deletion
           site_location_id: 701
           site_id: 502
           location_id: 605
@@ -81,6 +85,7 @@ scenarios:
           error_message: null
         row_2:
           result_kind: insert_new
+          persisted_action: append_new
           site_location_id: null
           site_id: 502
           location_id: 603
@@ -120,6 +125,7 @@ scenarios:
       output_result:
         row_1:
           result_kind: keep_existing
+          persisted_action: keep_existing
           site_location_id: 703
           site_id: 503
           location_id: 606
@@ -129,6 +135,7 @@ scenarios:
           error_message: null
         row_2:
           result_kind: keep_existing
+          persisted_action: keep_existing
           site_location_id: 704
           site_id: 503
           location_id: 607
@@ -158,9 +165,11 @@ scenarios:
             location_id: 609
             location_name: Sweden
     expects:
+      known_divergence_areas: [replacement_expressed_as_row_actions]
       output_result:
         row_1:
           result_kind: mark_for_deletion
+          persisted_action: mark_for_deletion
           site_location_id: 705
           site_id: 504
           location_id: 608
@@ -170,6 +179,7 @@ scenarios:
           error_message: null
         row_2:
           result_kind: mark_for_deletion
+          persisted_action: mark_for_deletion
           site_location_id: 706
           site_id: 504
           location_id: 609
@@ -196,6 +206,7 @@ scenarios:
       output_result:
         row_1:
           result_kind: error
+          persisted_action: stop_before_list_update
           site_location_id: null
           site_id: null
           location_id: null
@@ -228,6 +239,7 @@ scenarios:
       output_result:
         row_1:
           result_kind: error
+          persisted_action: stop_before_list_update
           site_location_id: null
           site_id: 505
           location_id: null
@@ -237,6 +249,7 @@ scenarios:
           error_message: Location name cannot be empty
         row_2:
           result_kind: return_generated
+          persisted_action: stop_before_list_update
           site_location_id: null
           site_id: 505
           location_id: 610

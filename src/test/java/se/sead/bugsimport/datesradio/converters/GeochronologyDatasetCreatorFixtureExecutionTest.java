@@ -74,6 +74,7 @@ public class GeochronologyDatasetCreatorFixtureExecutionTest {
 		Map<String, Object> graphResult = new LinkedHashMap<String, Object>();
 		Map<String, Object> datasetResult = new LinkedHashMap<String, Object>();
 		datasetResult.put("dataset_id", dataset.getId());
+		datasetResult.put("supporting_action", "create");
 		datasetResult.put("dataset_name", dataset.getName());
 		datasetResult.put("data_type_id", dataset.getDataType().getId());
 		datasetResult.put("method_abbreviation", dataset.getMethod().getAbbreviation());

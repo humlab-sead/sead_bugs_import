@@ -57,6 +57,7 @@ scenarios:
       graph_result:
         taxa_family:
           result_kind: insert_new
+          supporting_action: create
           family_id: null
           family_name: CARABIDAE
           order_id: 701
@@ -80,6 +81,7 @@ scenarios:
       graph_result:
         taxa_family:
           result_kind: return_existing
+          supporting_action: reuse
           family_id: 801
           family_name: CARABIDAE
           order_id: 701
@@ -102,6 +104,7 @@ scenarios:
       graph_result:
         taxa_genus:
           result_kind: insert_new
+          supporting_action: create
           genus_id: null
           genus_name: Cicindela
           family_id: 801
@@ -125,6 +128,7 @@ scenarios:
       graph_result:
         taxa_genus:
           result_kind: return_existing
+          supporting_action: reuse
           genus_id: 802
           genus_name: Cicindela
           family_id: 801
@@ -145,6 +149,7 @@ scenarios:
       graph_result:
         taxa_author:
           result_kind: insert_new
+          supporting_action: create
           author_id: null
           author_name: L.
   - name: reuse_existing_taxa_author
@@ -166,6 +171,7 @@ scenarios:
       graph_result:
         taxa_author:
           result_kind: return_existing
+          supporting_action: reuse
           author_id: 803
           author_name: L.
   - name: return_null_taxa_author_when_authority_missing
@@ -185,6 +191,7 @@ scenarios:
       graph_result:
         taxa_author:
           result_kind: insert_new
+          supporting_action: create
           author_id: null
           author_name: null
   - name: create_taxa_species_when_missing
@@ -208,6 +215,7 @@ scenarios:
       graph_result:
         taxa_species:
           result_kind: insert_new
+          supporting_action: create
           species_id: null
           species: sylvatica
           genus_id: 802
@@ -232,6 +240,7 @@ scenarios:
       graph_result:
         taxa_species:
           result_kind: insert_new
+          supporting_action: create
           species_id: null
           species: germanica
           genus_id: 802
@@ -258,6 +267,7 @@ scenarios:
       graph_result:
         taxa_species:
           result_kind: return_existing
+          supporting_action: reuse
           species_id: 804
           species: sylvatica
           genus_id: 802
@@ -283,6 +293,7 @@ scenarios:
       graph_result:
         taxa_species:
           result_kind: return_existing
+          supporting_action: reuse
           species_id: 806
           species: hybrida
           genus_id: 802
@@ -307,6 +318,7 @@ scenarios:
       graph_result:
         taxa_species:
           result_kind: return_existing
+          supporting_action: reuse
           species_id: 905
           species: No data
           genus_id: 904
@@ -328,20 +340,24 @@ scenarios:
       graph_result:
         taxa_family:
           result_kind: insert_new
+          supporting_action: create
           family_id: null
           family_name: CARABIDAE
           order_id: 701
         taxa_genus:
           result_kind: insert_new
+          supporting_action: create
           genus_id: null
           genus_name: Cicindela
           family_id: null
         taxa_author:
           result_kind: insert_new
+          supporting_action: create
           author_id: null
           author_name: L.
         taxa_species:
           result_kind: insert_new
+          supporting_action: create
           species_id: null
           species: sylvatica
           genus_id: null
@@ -368,20 +384,24 @@ scenarios:
       graph_result:
         taxa_family:
           result_kind: return_existing
+          supporting_action: reuse
           family_id: 801
           family_name: CARABIDAE
           order_id: 701
         taxa_genus:
           result_kind: return_existing
+          supporting_action: reuse
           genus_id: 802
           genus_name: Cicindela
           family_id: 801
         taxa_author:
           result_kind: return_existing
+          supporting_action: reuse
           author_id: 803
           author_name: L.
         taxa_species:
           result_kind: return_existing
+          supporting_action: reuse
           species_id: 804
           species: sylvatica
           genus_id: 802

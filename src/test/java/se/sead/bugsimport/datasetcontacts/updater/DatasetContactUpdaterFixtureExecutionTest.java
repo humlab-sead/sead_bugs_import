@@ -94,7 +94,9 @@ public class DatasetContactUpdaterFixtureExecutionTest {
 		for (int i = 0; i < contacts.size(); i++) {
 			DatasetContact datasetContact = contacts.get(i);
 			Map<String, Object> row = new LinkedHashMap<String, Object>();
-			row.put("result_kind", datasetContact.getId() == null ? "insert_new" : "keep_existing");
+			String resultKind = datasetContact.getId() == null ? "insert_new" : "keep_existing";
+			row.put("result_kind", resultKind);
+			row.put("persisted_action", "insert_new".equals(resultKind) ? "append_new" : "keep_existing");
 			row.put("dataset_contact_id", datasetContact.getId());
 			row.put("dataset_id", datasetContact.getDataset() == null ? null : datasetContact.getDataset().getId());
 			row.put("contact_id", datasetContact.getContact() == null ? null : datasetContact.getContact().getId());

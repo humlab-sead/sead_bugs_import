@@ -110,7 +110,9 @@ public class SiteLocationUpdaterFixtureExecutionTest {
 		for (int i = 0; i < rows.size(); i++) {
 			SiteLocation row = rows.get(i);
 			Map<String, Object> output = new LinkedHashMap<String, Object>();
-			output.put("result_kind", row.isMarkedForDeletion() ? "mark_for_deletion" : row.getId() == null ? "insert_new" : "keep_existing");
+			String resultKind = row.isMarkedForDeletion() ? "mark_for_deletion" : row.getId() == null ? "insert_new" : "keep_existing";
+			output.put("result_kind", resultKind);
+			output.put("persisted_action", row.isErrorFree() ? persistedAction(resultKind) : "stop_before_list_update");
 			output.put("site_location_id", row.getId());
 			output.put("site_id", row.getSite() == null ? null : row.getSite().getId());
 			output.put("location_id", row.getLocation() == null ? null : row.getLocation().getId());
@@ -121,6 +123,16 @@ public class SiteLocationUpdaterFixtureExecutionTest {
 			result.put("row_" + Integer.valueOf(i + 1), output);
 		}
 		return result;
+	}
+
+	private String persistedAction(String resultKind) {
+		if ("keep_existing".equals(resultKind)) {
+			return "keep_existing";
+		}
+		if ("insert_new".equals(resultKind)) {
+			return "append_new";
+		}
+		return "mark_for_deletion";
 	}
 
 	private Integer integerValue(Object value) {

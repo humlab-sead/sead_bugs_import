@@ -232,6 +232,7 @@ public class OutputPolicyHarness {
 	private Map<String, Object> outputRow(String resultKind, Integer datasetContactId, Integer datasetId, Integer contactId, Integer contactTypeId, String firstName, String lastName) {
 		Map<String, Object> row = new LinkedHashMap<String, Object>();
 		row.put("result_kind", resultKind);
+		row.put("persisted_action", persistedAction(resultKind));
 		row.put("dataset_contact_id", datasetContactId);
 		row.put("dataset_id", datasetId);
 		row.put("contact_id", contactId);
@@ -244,6 +245,7 @@ public class OutputPolicyHarness {
 	private Map<String, Object> siteOtherRow(String resultKind, Integer siteOtherRecordId, Integer siteId, Integer recordTypeId, String recordTypeName, boolean markedForDeletion) {
 		Map<String, Object> row = new LinkedHashMap<String, Object>();
 		row.put("result_kind", resultKind);
+		row.put("persisted_action", persistedAction(resultKind));
 		row.put("site_other_record_id", siteOtherRecordId);
 		row.put("site_id", siteId);
 		row.put("record_type_id", recordTypeId);
@@ -255,6 +257,7 @@ public class OutputPolicyHarness {
 	private Map<String, Object> siteLocationRow(String resultKind, Integer siteLocationId, Integer siteId, Integer locationId, String locationName, boolean markedForDeletion, boolean isError, String errorMessage) {
 		Map<String, Object> row = new LinkedHashMap<String, Object>();
 		row.put("result_kind", resultKind);
+		row.put("persisted_action", persistedAction(resultKind));
 		row.put("site_location_id", siteLocationId);
 		row.put("site_id", siteId);
 		row.put("location_id", locationId);
@@ -263,6 +266,22 @@ public class OutputPolicyHarness {
 		row.put("is_error", Boolean.valueOf(isError));
 		row.put("error_message", errorMessage);
 		return row;
+	}
+
+	private String persistedAction(String resultKind) {
+		if ("keep_existing".equals(resultKind)) {
+			return "keep_existing";
+		}
+		if ("insert_new".equals(resultKind)) {
+			return "append_new";
+		}
+		if ("mark_for_deletion".equals(resultKind)) {
+			return "mark_for_deletion";
+		}
+		if ("error".equals(resultKind) || "return_generated".equals(resultKind)) {
+			return "stop_before_list_update";
+		}
+		return resultKind;
 	}
 
 	private boolean containsGeneratedLocationErrors(Map<String, Object> generatedLocations) {
