@@ -94,6 +94,7 @@ public class ReconciliationPolicyHarness {
 			applyGuardResult(ruleName, state, sourceRow, reconciliationResult, policyName);
 		} else if (existingErrorMessage != null) {
 			reconciliationResult.put("result_kind", "return_existing_error");
+			applyPersistedAction(reconciliationResult, policyName, "return_existing_error");
 			Map<String, Object> issue = new LinkedHashMap<String, Object>();
 			issue.put("severity", "error");
 			issue.put("message", existingErrorMessage);
@@ -111,25 +112,46 @@ public class ReconciliationPolicyHarness {
 	}
 
 	private void applyPersistedAction(Map<String, Object> reconciliationResult, String policyName, String resultKind) {
-		if (!("speciesassociation".equals(policyName)
-				|| "speciesbiology".equals(policyName)
-				|| "specieskeys".equals(policyName)
-				|| "speciessynonyms".equals(policyName)
-				|| "speciesdistribution".equals(policyName))) {
-			return;
-		}
-		if ("insert_new".equals(resultKind)) {
+		if (supportsWritePersistedAction(policyName) && "insert_new".equals(resultKind)) {
 			reconciliationResult.put("persisted_action", "create");
 			return;
 		}
-		if ("update_existing".equals(resultKind)) {
+		if (supportsWritePersistedAction(policyName) && "update_existing".equals(resultKind)) {
 			reconciliationResult.put("persisted_action", "update");
+			return;
 		}
+		if (supportsNoWritePersistedAction(policyName) && "return_existing_error".equals(resultKind)) {
+			reconciliationResult.put("persisted_action", "keep_existing_error");
+			return;
+		}
+		if (supportsNoWritePersistedAction(policyName) && "return_guard_error".equals(resultKind)) {
+			reconciliationResult.put("persisted_action", "stop_before_write");
+		}
+	}
+
+	private boolean supportsWritePersistedAction(String policyName) {
+		return "speciesassociation".equals(policyName)
+				|| "speciesbiology".equals(policyName)
+				|| "specieskeys".equals(policyName)
+				|| "speciessynonyms".equals(policyName)
+				|| "speciesdistribution".equals(policyName);
+	}
+
+	private boolean supportsNoWritePersistedAction(String policyName) {
+		return supportsWritePersistedAction(policyName)
+				|| "period".equals(policyName)
+				|| "lab".equals(policyName)
+				|| "bibliography".equals(policyName)
+				|| "rdbcode".equals(policyName)
+				|| "rdbsystem".equals(policyName)
+				|| "ecocodedefinition_bugs".equals(policyName)
+				|| "ecocodedefinition_koch".equals(policyName);
 	}
 
 	private void applyGuardResult(String sourceName, Map<String, Object> state, Map<String, Object> sourceRow, Map<String, Object> reconciliationResult, String policyName) {
 		String guardErrorMessage = guardErrorMessage(state);
 		reconciliationResult.put("result_kind", "return_guard_error");
+		applyPersistedAction(reconciliationResult, policyName, "return_guard_error");
 		Map<String, Object> issue = new LinkedHashMap<String, Object>();
 		issue.put("severity", "error");
 		issue.put("message", guardErrorMessage);

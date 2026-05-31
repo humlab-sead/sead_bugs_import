@@ -127,6 +127,7 @@ public class PeriodRowConverterFixtureExecutionTest {
 		String periodCode = (String) sourceRow.get("PeriodCODE");
 		if ("?".equals(periodCode)) {
 			reconciliationResult.put("result_kind", "return_guard_error");
+			reconciliationResult.put("persisted_action", "stop_before_write");
 			reconciliationResult.put("source", "ignore_unknown_period_code");
 			Map<String, Object> issue = new LinkedHashMap<String, Object>();
 			issue.put("severity", "error");
@@ -138,6 +139,7 @@ public class PeriodRowConverterFixtureExecutionTest {
 		}
 		if (!result.isErrorFree()) {
 			reconciliationResult.put("result_kind", "return_existing_error");
+			reconciliationResult.put("persisted_action", "keep_existing_error");
 			reconciliationResult.put("source", "trace_lookup");
 			Map<String, Object> issue = new LinkedHashMap<String, Object>();
 			issue.put("severity", "error");

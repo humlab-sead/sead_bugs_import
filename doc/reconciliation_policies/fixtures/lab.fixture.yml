@@ -133,6 +133,7 @@ scenarios:
       reconciliation_path: [trace_lookup]
       reconciliation_result:
         result_kind: return_existing_error
+        persisted_action: keep_existing_error
         source: trace_lookup
         row_id: 11
         lab_id: LAB_ERROR

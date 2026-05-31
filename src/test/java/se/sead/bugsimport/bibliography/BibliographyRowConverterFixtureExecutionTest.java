@@ -114,6 +114,7 @@ public class BibliographyRowConverterFixtureExecutionTest {
 		Map<String, Object> reconciliationResult = new LinkedHashMap<String, Object>();
 		if (!result.isErrorFree()) {
 			reconciliationResult.put("result_kind", "return_existing_error");
+			reconciliationResult.put("persisted_action", "keep_existing_error");
 			reconciliationResult.put("source", repository.getRecordedPath().isEmpty() ? "trace_lookup" : "database_lookup");
 			Map<String, Object> issue = new LinkedHashMap<String, Object>();
 			issue.put("severity", "error");

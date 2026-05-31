@@ -135,6 +135,7 @@ public class RdbCodeTableRowConverterFixtureExecutionTest {
 		if (!result.isErrorFree()) {
 			String source = duplicateValueGuard.getRecordedPath().isEmpty() ? "trace_lookup" : "duplicate_value_guard";
 			reconciliationResult.put("result_kind", result.getId() == null ? "return_guard_error" : "return_existing_error");
+			reconciliationResult.put("persisted_action", result.getId() == null ? "stop_before_write" : "keep_existing_error");
 			reconciliationResult.put("source", source);
 			Map<String, Object> issue = new LinkedHashMap<String, Object>();
 			issue.put("severity", "error");
