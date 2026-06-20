@@ -9,6 +9,9 @@ meta:
     The importer uses an ordered search chain: trace lookup by the compressed
     tuple, a history-conflict guard for externally edited species RDB rows, and
     then a repository lookup by traced code, country, and species.
+    Converted 2026-06-20: resolved resolve_rdb_code_id, resolve_country_location_id,
+    and resolve_taxon_id helpers to structured resolvers. Added known_divergences
+    for history conflict detection and trace-based resolution being adapter-only.
 
 policy:
   domain: rdb
@@ -127,16 +130,78 @@ tracing:
   sead_table: tbl_rdb
   write_on: [insert, update]
 
-helpers:
+# ── KNOWN DIVERGENCES ────────────────────────────────────────────────────────
+
+known_divergences:
+  - area: history_conflict_detection_adapter
+    status: schema_limit
+    description: The importer checks if any RDB row for the species was edited after the latest trace for this Bugs code. If so, an error carrier is returned. This history conflict detection (CheckTaxaRdbHistoryRule) is adapter-only behavior that compares trace timestamps with SEAD row modification times.
+    policy_choice: match_java_runtime
+  - area: trace_based_resolution_adapter
+    status: schema_limit
+    description: All three foreign keys (RDB code, country location, taxon) are resolved via trace lookups against previously imported rows. The actual trace helpers and repository chains are adapter-only behavior.
+    policy_choice: match_java_runtime
+
+# ── RESOLVERS ────────────────────────────────────────────────────────────────
+
+resolvers:
   - name: resolve_rdb_code_id
     description: Resolve the traced RDB code imported from TRDBCodes to tbl_rdb_codes.rdb_code_id.
-    signature: "resolve_rdb_code_id(rdb_code: int | None) -> int | None"
+    returns: scalar
+    args: ["source.RDBCode"]
+    steps:
+      - name: trace_lookup
+        action: trace_lookup
+        bugs_table: TRDBCodes
+        identifier_expr: "source.RDBCode"
+        return: return_entity
+        comment: RdbCodeTraceSearch looks up the latest trace for the RDB code value.
     used_by: [rdb_code_id]
   - name: resolve_country_location_id
     description: Resolve the traced country row imported by CountryImporter to tbl_locations.location_id.
-    signature: "resolve_country_location_id(country_code: str | None) -> int | None"
+    returns: scalar
+    args: ["source.CountryCode"]
+    steps:
+      - name: trace_lookup
+        action: trace_lookup
+        bugs_table: TCountry
+        identifier_expr: "source.CountryCode"
+        return: return_entity
+        comment: CountryTraceSearch looks up the latest trace for the country code.
     used_by: [location_id]
   - name: resolve_taxon_id
     description: Resolve the Bugs species code to tbl_taxa_tree_master.taxon_id.
-    signature: "resolve_taxon_id(code: float | None) -> int | None"
+    returns: scalar
+    args: ["source.CODE"]
+    steps:
+      - name: trace_lookup
+        action: trace_lookup
+        bugs_table: TTaxa
+        identifier_expr: "source.CODE"
+        return: return_entity
+        comment: TaxaTraceSearch looks up the latest trace for the species code.
     used_by: [taxon_id]
+
+# ── HELPERS ──────────────────────────────────────────────────────────────────
+
+helpers:
+  - name: resolve_rdb_code_id
+    description: >
+      Superseded by structured resolver resolve_rdb_code_id.
+      Previously resolved the traced RDB code imported from TRDBCodes to
+      tbl_rdb_codes.rdb_code_id.
+    signature: "resolve_rdb_code_id(rdb_code: int | None) -> int | None"
+    used_by: []
+  - name: resolve_country_location_id
+    description: >
+      Superseded by structured resolver resolve_country_location_id.
+      Previously resolved the traced country row imported by CountryImporter
+      to tbl_locations.location_id.
+    signature: "resolve_country_location_id(country_code: str | None) -> int | None"
+    used_by: []
+  - name: resolve_taxon_id
+    description: >
+      Superseded by structured resolver resolve_taxon_id.
+      Previously resolved the Bugs species code to tbl_taxa_tree_master.taxon_id.
+    signature: "resolve_taxon_id(code: float | None) -> int | None"
+    used_by: []

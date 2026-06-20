@@ -135,12 +135,62 @@ tracing:
   sead_table: tbl_rdb_systems
   write_on: [insert, update]
 
-helpers:
+# ── KNOWN DIVERGENCES ────────────────────────────────────────────────────────
+
+known_divergences:
+  - area: bibliography_resolution_adapter
+    status: schema_limit
+    description: The bibliography ID is resolved from the Bugs reference value via a database query against tbl_biblio with case-insensitive matching on bugs_reference. The actual repository call and error handling behavior is adapter-only.
+    policy_choice: match_java_runtime
+  - area: location_resolution_adapter
+    status: schema_limit
+    description: The location ID is resolved from the Bugs country code via a database query against tbl_locations with type='Country'. The actual repository call and error handling behavior is adapter-only.
+    policy_choice: match_java_runtime
+
+# ── RESOLVERS ────────────────────────────────────────────────────────────────
+
+resolvers:
   - name: resolve_biblio_id
-    description: Resolve the Bugs reference value to tbl_biblio.biblio_id.
-    signature: "resolve_biblio_id(reference: str | None) -> int | None"
+    description: Resolve the Bugs reference value to tbl_biblio.biblio_id using case-insensitive Bugs-reference matching.
+    returns: scalar
+    args: ["source.Ref"]
+    steps:
+      - name: database_query
+        action: database_query
+        table: tbl_biblio
+        where: "bugs_reference ILIKE :reference"
+        bind:
+          reference: "source.Ref"
+        return: return_entity
+        comment: BiblioDataRepository.findBiblioByReference performs case-insensitive lookup on bugs_reference.
     used_by: [biblio_id]
   - name: resolve_location_id
-    description: Resolve the Bugs country code to tbl_locations.location_id.
-    signature: "resolve_location_id(country_code: str | None) -> int | None"
+    description: Resolve the Bugs country code to tbl_locations.location_id for the Country location type.
+    returns: scalar
+    args: ["source.CountryCode"]
+    steps:
+      - name: database_query
+        action: database_query
+        table: tbl_locations
+        where: "name = :country_code AND type = 'Country'"
+        bind:
+          country_code: "source.CountryCode"
+        return: return_entity
+        comment: CountryImporter resolves country codes to country-type locations.
     used_by: [location_id]
+
+# ── HELPERS ──────────────────────────────────────────────────────────────────
+
+helpers:
+  - name: resolve_biblio_id
+    description: >
+      Superseded by structured resolver resolve_biblio_id.
+      Previously resolved the Bugs reference value to tbl_biblio.biblio_id.
+    signature: "resolve_biblio_id(reference: str | None) -> int | None"
+    used_by: []
+  - name: resolve_location_id
+    description: >
+      Superseded by structured resolver resolve_location_id.
+      Previously resolved the Bugs country code to tbl_locations.location_id.
+    signature: "resolve_location_id(country_code: str | None) -> int | None"
+    used_by: []

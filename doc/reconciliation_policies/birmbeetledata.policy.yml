@@ -8,7 +8,9 @@ meta:
   notes: >
     This importer resolves a species from CODE, then looks up an existing row
     by the composite key of taxon_id plus MCRRow. The mcr_data value is built
-    by concatenating the ordered Field1..Field60 values.
+    by concatenating the ordered Field1..Field60 values. No trace helper exists
+    for this policy — reconciliation uses a custom repository lookup.
+    Converted to structured resolvers and known_divergences on 2026-06-20.
 
 policy:
   domain: birmbeetledata
@@ -347,12 +349,48 @@ tracing:
   sead_table: tbl_mcrdata_birmbeetledat
   write_on: [insert, update]
 
+resolvers:
+  - name: resolve_taxon_id
+    description: >
+      Resolve the Bugs species code to tbl_taxa_tree_master.taxon_id.
+      Converts the decimal CODE to a BigDecimal before lookup.
+    returns: scalar
+    args: [code]
+    steps:
+      - name: species_lookup
+        action: database_query
+        table: tbl_taxa_tree_master
+        where: "bugs_code = :bugs_code"
+        bind:
+          bugs_code: "BigDecimalDefinition.convertToSeadCode(code)"
+        return: return_entity
+    used_by: [taxon_id]
+
 helpers:
   - name: build_birm_mcr_data
-    description: Concatenate the ordered Field1..Field60 values exactly as BirmBeetleDat.compressFieldValues() does.
+    description: >
+      No structured resolver available. This is a field transformation (concatenates Field1..Field60) not a database lookup.
+      The buildBirmMcrData() method uses a StringBuilder to join non-empty field values with spaces.
     signature: "build_birm_mcr_data(source_row: object) -> str"
     used_by: [mcr_data]
+
   - name: resolve_taxon_id
-    description: Resolve the Bugs species code to tbl_taxa_tree_master.taxon_id.
+    description: >
+      Superseded by structured resolver resolve_taxon_id.
+      Previously resolved the Bugs species code to taxon_id.
     signature: "resolve_taxon_id(code: float | None) -> int | None"
-    used_by: [taxon_id]
+    used_by: []
+
+known_divergences:
+  - area: no_trace_helper
+    status: schema_limit
+    description: "This policy has no trace helper. Reconciliation uses a custom repository method findByTaxonIdAndMcrRow() which performs a composite-key lookup on (taxon_id, mcr_row). This is different from the trace-first pattern used by most other policies."
+    policy_choice: match_java_runtime
+  - area: lossy_field_concatenation
+    status: behavior_ambiguous
+    description: "The buildBirmMcrData() method concatenates Field1..Field60 values using a StringBuilder, skipping null or empty values. This is a lossy operation — the original field boundaries are not preserved in the output string. Reconstructing individual fields from the concatenated string is not possible."
+    policy_choice: match_java_runtime
+  - area: composite_key_lookup
+    status: schema_limit
+    description: "The reconciliation lookup uses two fields (taxon_id and MCRRow) as a composite key. This is unusual — most policies use a single natural key or trace-based lookup."
+    policy_choice: match_java_runtime

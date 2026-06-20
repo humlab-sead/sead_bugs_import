@@ -10,6 +10,37 @@ meta:
     lookup by RDBCode, then a duplicate-value guard that checks category,
     definition, and traced RDB system. A value match returns an error carrier,
     not the existing row.
+    Converted 2026-06-20: resolved resolve_rdb_system_id helper to structured
+    resolver with trace lookup. Added known_divergences for duplicate-value
+    guard returning error carrier and RDB system resolution being trace-based.
+
+# ── KNOWN DIVERGENCES ────────────────────────────────────────────────────────
+
+known_divergences:
+  - area: duplicate_value_returns_error_carrier
+    status: behavior_ambiguous
+    description: The duplicate-value guard (RdbCodeByValues) returns an error carrier with message 'Sead data matches values' instead of returning the existing row. This means the row is not updated or inserted, but the error is not propagated to the user as a failure — it's silently skipped.
+    policy_choice: match_java_runtime
+  - area: rdb_system_resolution_is_trace_based
+    status: schema_limit
+    description: The RDB system ID is resolved from the RDB system code via a trace lookup against previously imported RDB systems. The actual trace helper and repository chain is adapter-only behavior.
+    policy_choice: match_java_runtime
+
+# ── RESOLVERS ────────────────────────────────────────────────────────────────
+
+resolvers:
+  - name: resolve_rdb_system_id
+    description: Resolve the traced RDB system imported from TRDBSystems to tbl_rdb_systems.rdb_system_id.
+    returns: scalar
+    args: ["source.RDBSystemCode"]
+    steps:
+      - name: trace_lookup
+        action: trace_lookup
+        bugs_table: TRDBSystems
+        identifier_expr: "source.RDBSystemCode"
+        return: return_entity
+        comment: RdbSystemTraceSearch looks up the latest trace for the RDB system code.
+    used_by: [rdb_system_id]
 
 policy:
   domain: rdbcode
@@ -119,8 +150,13 @@ tracing:
   sead_table: tbl_rdb_codes
   write_on: [insert, update]
 
+# ── HELPERS ──────────────────────────────────────────────────────────────────
+
 helpers:
   - name: resolve_rdb_system_id
-    description: Resolve the traced RDB system imported from TRDBSystems to tbl_rdb_systems.rdb_system_id.
+    description: >
+      Superseded by structured resolver resolve_rdb_system_id.
+      Previously resolved the traced RDB system imported from TRDBSystems
+      to tbl_rdb_systems.rdb_system_id.
     signature: "resolve_rdb_system_id(rdb_system_code: int | None) -> int | None"
-    used_by: [rdb_system_id]
+    used_by: []

@@ -9,6 +9,8 @@ meta:
     SynonymImporter is trace-first only. If no trace row exists for the full
     synonym record, it creates a new SpeciesAssociation plus any missing synonym
     species, genus, and author rows required by the new source species.
+    This is the most complex policy with 3 nested managers and multiple in-memory caches.
+    Converted to structured resolvers and known_divergences on 2026-06-20.
 
 policy:
   domain: speciessynonyms
@@ -124,20 +126,128 @@ tracing:
   sead_table: tbl_species_associations
   write_on: [insert, update]
 
+resolvers:
+  - name: resolve_taxon_id
+    description: >
+      Resolve the source species code to tbl_taxa_tree_master.taxon_id.
+      This is the associated_taxon (target species) in the synonym relationship.
+    returns: scalar
+    args: [code]
+    steps:
+      - name: species_lookup
+        action: database_query
+        table: tbl_taxa_tree_master
+        where: "bugs_code = :bugs_code"
+        bind:
+          bugs_code: "BigDecimalDefinition.convertToSeadCode(code)"
+        return: return_entity
+    used_by: [associated_taxon_id]
+
+  - name: resolve_synonym_taxon_id
+    description: >
+      Resolve or create the synonym species from genus/species/authority.
+      Uses SynonymSpeciesManager which may create new TaxaTreeMaster, Genus,
+      and Author rows as needed. Falls back to the target species (CODE) if
+      synonym parts cannot be resolved.
+    returns: scalar
+    args: [genus, species, authority, code]
+    steps:
+      - name: find_existing_synonym
+        action: database_query
+        table: tbl_taxa_tree_master
+        where: "genus = :genus AND species = :species AND authority = :authority"
+        bind:
+          genus: "genus"
+          species: "species"
+          authority: "authority"
+        return: return_entity
+      - name: create_synonym_species
+        action: emit_issue
+        emit:
+          severity: warning
+          code: synonym_species_created
+          message: "Creating new synonym species: {genus} {species} {authority}"
+        return: empty_entity
+    used_by: [taxon_id]
+
+  - name: resolve_synonym_association_type_id
+    description: >
+      Return the fixed synonym association type ID. Uses a cached lookup with
+      fallback to the configured synonym.assocation.type.name property value.
+      Note: Java source has a typo "assocation" (missing 'i') in the property name.
+    returns: scalar
+    args: []
+    steps:
+      - name: synonym_type_lookup
+        action: database_query
+        table: tbl_species_association_types
+        where: "LOWER(name) = LOWER(:type_name)"
+        bind:
+          type_name: "synonym.assocation.type.name"
+        return: return_entity
+    used_by: [association_type_id]
+
+  - name: resolve_biblio_id
+    description: >
+      Resolve the reference code to tbl_biblio.biblio_id.
+      Uses the BibliographyTraceHelper for trace-based lookup.
+    returns: scalar
+    args: [reference]
+    steps:
+      - name: trace_lookup
+        action: trace_lookup
+        bugs_table: TBiblio
+        identifier_expr: "reference"
+        return: return_entity
+    used_by: [biblio_id]
+
 helpers:
   - name: resolve_taxon_id
-    description: Resolve the source species code to tbl_taxa_tree_master.taxon_id.
+    description: >
+      Superseded by structured resolver resolve_taxon_id.
+      Previously resolved the source species code to taxon_id.
     signature: "resolve_taxon_id(code: float | None) -> int | None"
-    used_by: [associated_taxon_id]
+    used_by: []
+
   - name: resolve_synonym_taxon_id
-    description: Resolve or create the synonym species from genus/species/authority using the target species from CODE as fallback context.
+    description: >
+      Superseded by structured resolver resolve_synonym_taxon_id.
+      Previously resolved or created the synonym species from genus/species/authority.
     signature: "resolve_synonym_taxon_id(genus: str | None, species: str | None, authority: str | None, code: float | None) -> int | None"
-    used_by: [taxon_id]
+    used_by: []
+
   - name: resolve_synonym_association_type_id
-    description: Return the fixed association type used for synonym rows, defaulting to the configured synonym.assocation.type.name value.
+    description: >
+      Superseded by structured resolver resolve_synonym_association_type_id.
+      Previously returned the fixed synonym association type ID.
     signature: "resolve_synonym_association_type_id() -> int | None"
-    used_by: [association_type_id]
+    used_by: []
+
   - name: resolve_biblio_id
-    description: Resolve the reference code to tbl_biblio.biblio_id.
+    description: >
+      Superseded by structured resolver resolve_biblio_id.
+      Previously resolved the reference code to biblio_id.
     signature: "resolve_biblio_id(reference: str | None) -> int | None"
-    used_by: [biblio_id]
+    used_by: []
+
+known_divergences:
+  - area: most_complex_policy
+    status: schema_limit
+    description: "SynonymImporter is the most complex reconciliation policy with 3 nested managers (SynonymSpeciesManager, TaxaTreeManager, AuthorManager), multiple in-memory caches, and a multi-step creation path for missing synonym parts. The resolver captures the essential lookup behavior but cannot fully model the cascading creation logic."
+    policy_choice: defer_exact_parity
+  - area: in_memory_caches
+    status: schema_limit
+    description: "The synonym resolution uses in-memory caches for association types and species lookups. These caches are managed by SynonymAssociationTypeManager and SynonymSpeciesManager. The caching behavior is not visible in the policy YAML but affects performance."
+    policy_choice: match_java_runtime
+  - area: three_field_composite_lookup
+    status: schema_limit
+    description: "The synonym species lookup uses three fields (genus, species, authority) as a composite key. This is different from the single-field lookups used by most other policies."
+    policy_choice: match_java_runtime
+  - area: typo_in_property_name
+    status: schema_limit
+    description: "The Java source has a typo in the property name: 'synonym.assocation.type.name' (missing 'i' in 'association'). This typo is preserved in the resolver to match the actual property name in application.properties."
+    policy_choice: match_java_runtime
+  - area: notes_field_in_trace_key
+    status: behavior_ambiguous
+    description: "The Notes field is included in the trace key template but is marked as role: ignored in the source fields. This means Notes affects trace lookup but is not written to the SEAD model. Different Notes values will create different trace keys, potentially causing duplicate associations."
+    policy_choice: match_java_runtime

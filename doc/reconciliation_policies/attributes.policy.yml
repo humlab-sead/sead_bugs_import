@@ -12,6 +12,37 @@ meta:
     collapses some missing-value combinations into ignored-item errors. This
     importer does not persist child or supporting rows; species resolution is a
     lookup against previously imported taxonomy rows.
+    Converted 2026-06-20: resolved resolve_taxon_id helper to structured resolver
+    with trace lookup. Added known_divergences for species resolution being
+    trace-based and missing-value collapse being adapter-only.
+
+# ── KNOWN DIVERGENCES ────────────────────────────────────────────────────────
+
+known_divergences:
+  - area: species_resolution_is_trace_based
+    status: schema_limit
+    description: The species taxon ID is resolved from the Bugs CODE value via a trace lookup against previously imported taxonomy rows. The actual trace helper and repository chain is adapter-only behavior.
+    policy_choice: match_java_runtime
+  - area: missing_value_collapse_adapter
+    status: schema_limit
+    description: The Java updater collapses some missing type/unit/value combinations into ignored-item errors. This data-quality check is adapter-only behavior not expressible in policy.
+    policy_choice: match_java_runtime
+
+# ── RESOLVERS ────────────────────────────────────────────────────────────────
+
+resolvers:
+  - name: resolve_taxon_id
+    description: Resolve the Bugs species code to tbl_taxa_tree_master.taxon_id.
+    returns: scalar
+    args: ["source.CODE"]
+    steps:
+      - name: trace_lookup
+        action: trace_lookup
+        bugs_table: TTaxa
+        identifier_expr: "source.CODE"
+        return: return_entity
+        comment: AttributesTraceSearch looks up the latest trace for the species CODE.
+    used_by: [taxon_id]
 
 policy:
   domain: attributes
@@ -149,8 +180,12 @@ tracing:
   sead_table: tbl_taxa_measured_attributes
   write_on: [insert, update]
 
+# ── HELPERS ──────────────────────────────────────────────────────────────────
+
 helpers:
   - name: resolve_taxon_id
-    description: Resolve the Bugs species code to tbl_taxa_tree_master.taxon_id.
+    description: >
+      Superseded by structured resolver resolve_taxon_id.
+      Previously resolved the Bugs species code to tbl_taxa_tree_master.taxon_id.
     signature: "resolve_taxon_id(code: float | None) -> int | None"
-    used_by: [taxon_id]
+    used_by: []

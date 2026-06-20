@@ -8,6 +8,7 @@ meta:
   notes: >
     This importer resolves two taxon references, an association type, and an
     optional bibliography reference. Reconciliation is trace-first.
+    Converted to structured resolvers and known_divergences on 2026-06-20.
 
 policy:
   domain: speciesassociation
@@ -121,20 +122,115 @@ tracing:
   sead_table: tbl_species_associations
   write_on: [insert, update]
 
+resolvers:
+  - name: resolve_taxon_id
+    description: >
+      Resolve the source species code to tbl_taxa_tree_master.taxon_id.
+      Converts the decimal CODE to a BigDecimal before lookup.
+    returns: scalar
+    args: [code]
+    steps:
+      - name: species_lookup
+        action: database_query
+        table: tbl_taxa_tree_master
+        where: "bugs_code = :bugs_code"
+        bind:
+          bugs_code: "BigDecimalDefinition.convertToSeadCode(code)"
+        return: return_entity
+    used_by: [taxon_id]
+
+  - name: resolve_associated_taxon_id
+    description: >
+      Resolve the associated species code to tbl_taxa_tree_master.taxon_id.
+      Converts the decimal CODE to a BigDecimal before lookup.
+    returns: scalar
+    args: [code]
+    steps:
+      - name: associated_species_lookup
+        action: database_query
+        table: tbl_taxa_tree_master
+        where: "bugs_code = :bugs_code"
+        bind:
+          bugs_code: "BigDecimalDefinition.convertToSeadCode(code)"
+        return: return_entity
+    used_by: [associated_taxon_id]
+
+  - name: resolve_association_type_id
+    description: >
+      Resolve the Bugs association type to tbl_species_association_types.
+      Uses a case-insensitive lookup with a default fallback type.
+    returns: scalar
+    args: [association_type]
+    steps:
+      - name: type_lookup
+        action: database_query
+        table: tbl_species_association_types
+        where: "LOWER(name) = LOWER(:association_type)"
+        bind:
+          association_type: "association_type"
+        return: return_entity
+      - name: fallback_to_default
+        action: emit_issue
+        emit:
+          severity: warning
+          code: association_type_fallback
+          message: "Using default association type for: {association_type}"
+        return: empty_entity
+    used_by: [association_type_id]
+
+  - name: resolve_biblio_id
+    description: >
+      Resolve the reference code to tbl_biblio.biblio_id.
+      Uses the BibliographyTraceHelper for trace-based lookup.
+    returns: scalar
+    args: [reference]
+    steps:
+      - name: trace_lookup
+        action: trace_lookup
+        bugs_table: TBiblio
+        identifier_expr: "reference"
+        return: return_entity
+    used_by: [biblio_id]
+
 helpers:
   - name: resolve_taxon_id
-    description: Resolve the source species code to tbl_taxa_tree_master.taxon_id.
-    signature: "resolve_taxon_id(code: str | None) -> int | None"
-    used_by: [taxon_id]
+    description: >
+      Superseded by structured resolver resolve_taxon_id.
+      Previously resolved the source species code to taxon_id.
+    signature: "resolve_taxon_id(code: float | None) -> int | None"
+    used_by: []
+
   - name: resolve_associated_taxon_id
-    description: Resolve the associated species code to tbl_taxa_tree_master.taxon_id.
-    signature: "resolve_associated_taxon_id(code: str | None) -> int | None"
-    used_by: [associated_taxon_id]
+    description: >
+      Superseded by structured resolver resolve_associated_taxon_id.
+      Previously resolved the associated species code to taxon_id.
+    signature: "resolve_associated_taxon_id(code: float | None) -> int | None"
+    used_by: []
+
   - name: resolve_association_type_id
-    description: Resolve the Bugs association type to tbl_species_association_types.association_type_id.
+    description: >
+      Superseded by structured resolver resolve_association_type_id.
+      Previously resolved the Bugs association type to association_type_id.
     signature: "resolve_association_type_id(association_type: str | None) -> int | None"
-    used_by: [association_type_id]
+    used_by: []
+
   - name: resolve_biblio_id
-    description: Resolve the reference code to tbl_biblio.biblio_id.
+    description: >
+      Superseded by structured resolver resolve_biblio_id.
+      Previously resolved the reference code to biblio_id.
     signature: "resolve_biblio_id(reference: str | None) -> int | None"
-    used_by: [biblio_id]
+    used_by: []
+
+known_divergences:
+  - area: code_string_to_bigdecimal
+    status: behavior_ambiguous
+    description: "The CODE field in TSpeciesAssociations is stored as a string in the source table, but the Java converter converts it to BigDecimal for lookup. This is consistent with the taxon resolution pattern used across multiple policies."
+    policy_choice: match_java_runtime
+  - area: default_association_type_fallback
+    status: behavior_ambiguous
+    description: "The AssociationTypeManager has a fallback mechanism that returns a default association type when the lookup fails. This is different from most other resolvers which would add an error on not-found."
+    policy_choice: match_java_runtime
+  - area: standalone_helper_pattern
+    status: schema_limit
+    description: "The taxon resolution helpers (resolve_taxon_id and resolve_associated_taxon_id) are standalone @Component classes, not inner classes. This is different from policies like ecocodegroup which use inner class trace helpers."
+    policy_choice: match_java_runtime

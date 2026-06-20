@@ -9,6 +9,38 @@ meta:
     This policy covers the standalone TCountry importer only. Other importer
     paths can still create country locations internally, but CountryImporter
     itself follows the normal BugsTable → row converter → persister pattern.
+    Converted 2026-06-20: resolved resolve_country_type_id helper to structured
+    resolver with fixed database query. Added known_divergences for update
+    detection being a no-op and country type being a fixed lookup.
+
+# ── KNOWN DIVERGENCES ────────────────────────────────────────────────────────
+
+known_divergences:
+  - area: update_detection_is_no_op
+    status: behavior_ambiguous
+    description: "The importer marks existing rows as updated even when no fields change, solely to attach the Bugs row to the existing location through trace logging. The policy documents this as strategy: never with on_change: ignore, but the Java runtime still calls save() on matched rows."
+    policy_choice: match_java_runtime
+  - area: country_type_is_fixed_lookup
+    status: schema_limit
+    description: The country location type ID is resolved from LocationTypeRepository.getCountryType() which returns a single fixed row. The policy expresses this as a structured resolver, but the actual repository call and caching behavior is adapter-only.
+    policy_choice: match_java_runtime
+
+# ── RESOLVERS ────────────────────────────────────────────────────────────────
+
+resolvers:
+  - name: resolve_country_type_id
+    description: Return the fixed country location type row from LocationTypeRepository.getCountryType().
+    returns: scalar
+    args: []
+    steps:
+      - name: country_type_lookup
+        action: database_query
+        table: tbl_location_types
+        where: "name = 'Country'"
+        return: return_entity
+        comment: LocationTypeRepository.getCountryType() returns the single row with name 'Country'.
+    used_by: [location_type_id]
+
 
 policy:
   domain: country
@@ -98,8 +130,13 @@ tracing:
   sead_table: tbl_locations
   write_on: [insert, update]
 
+# ── HELPERS ──────────────────────────────────────────────────────────────────
+
 helpers:
   - name: resolve_country_type_id
-    description: Return the fixed country location type row from LocationTypeRepository.getCountryType().
+    description: >
+      Superseded by structured resolver resolve_country_type_id.
+      Previously returned the fixed country location type row from
+      LocationTypeRepository.getCountryType().
     signature: "resolve_country_type_id() -> int | None"
-    used_by: [location_type_id]
+    used_by: []

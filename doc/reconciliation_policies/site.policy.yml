@@ -27,6 +27,8 @@ meta:
     allow.site.updates config flag (defaults to false).  The trace check also
     detects whether the SEAD row was externally edited after the last import
     and blocks re-import if so.
+    Converted 2026-06-20: added known_divergences for external edit detection
+    and float-to-decimal type conversion being adapter-only behavior.
 
 policy:
   domain: site
@@ -298,8 +300,31 @@ reconciliation:
     - name: create_new
       order: 3
       type: create_new
-      description: No existing record found; allocate a new site_id and insert.
+      description: No existing record; allocate a new site_id and insert.
       on_match: insert
+
+# ── KNOWN DIVERGENCES ────────────────────────────────────────────────────────
+
+known_divergences:
+  - area: external_edit_detection_adapter
+    status: schema_limit
+    description: The trace lookup detects whether the SEAD row was externally edited after the last import by comparing the trace timestamp with the SEAD row's last modification time. If an external edit is detected, the row is rejected with error "Sead data has been updated since last bugs import". This timestamp comparison logic is adapter-only behavior.
+    policy_choice: match_java_runtime
+  - area: float_to_decimal_conversion_adapter
+    status: behavior_ambiguous
+    description: Latitude, longitude, and altitude values are converted from Java float to BigDecimal using BigDecimalDefinition.convertToSeadContext(). This type conversion is adapter-only behavior and not expressed as a structured resolver. The helper float_to_decimal documents this transformation but the actual rounding and scale behavior is implementation-specific.
+    policy_choice: match_java_runtime
+
+# ── HELPERS ──────────────────────────────────────────────────────────────────
+
+helpers:
+  - name: float_to_decimal
+    description: >
+      Converts a Java float value to BigDecimal using BigDecimalDefinition.convertToSeadContext().
+      Used for latitude_dd, longitude_dd, and altitude fields.
+      This is a type conversion, not a lookup resolver.
+    signature: "float_to_decimal(value: float | None) -> decimal | None"
+    used_by: [latitude_dd, longitude_dd, altitude]
 
 # ── UPDATE DETECTION ─────────────────────────────────────────────────────────
 
@@ -350,16 +375,3 @@ tracing:
     A trace row is also read during reconciliation rule 1 (trace_lookup).
     The trace write on update only fires when allow.site.updates = true and
     a field difference was actually detected and applied.
-
-# ── HELPERS ──────────────────────────────────────────────────────────────────
-
-helpers:
-  - name: float_to_decimal
-    signature: "float_to_decimal(value: float | None) -> Decimal | None"
-    description: >
-      Converts a Java Float (Python float | None) to a Decimal with the
-      precision used in the SEAD tbl_sites schema.  Mirrors
-      BigDecimalDefinition.convertToSeadContext() — round to 10 decimal
-      places (SEAD convention).  Returns None unchanged.
-    expression: "Decimal(str(round(value, 10))) if value is not None else None"
-    used_by: [latitude_dd, longitude_dd, altitude]

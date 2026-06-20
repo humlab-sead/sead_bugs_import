@@ -388,3 +388,89 @@ scenarios:
           contact_type_id: 601
           first_name: null
           last_name: Archer
+  - name: dataset_resolved_via_trace_and_database_lookup
+    intent: resolver_path
+    source_rows:
+      - CountsheetCODE: CS_9
+        CountsheetName: Countsheet 9
+        SiteCODE: SITE_9
+        SheetContext: null
+        SheetType: null
+    policy_context:
+      args:
+        countsheet_code: CS_9
+      step_hits:
+        trace_lookup: true
+        dataset_lookup: true
+      state:
+        sample_group_traces:
+          cs9_trace:
+            bugs_table: TCountsheet
+            bugs_identifier: CS_9
+            sead_table: tbl_datasets
+            sead_reference_id: 300
+            translated_compressed_data: "CS_9,Countsheet 9,SITE_9,context,typeA"
+        datasets:
+          dataset_from_trace:
+            dataset_id: 300
+            dataset_name: CS_9
+            data_type_id: 10
+            method_id: 5
+            master_set_id: 1
+    expects:
+      resolver: resolve_dataset_id_from_countsheet_code
+      resolver_path: [trace_lookup, dataset_lookup]
+      target_field: dataset_id
+      resolver_result:
+        result_kind: return_entity
+        source: dataset_lookup
+        dataset_id: 300
+  - name: dataset_resolver_returns_error_when_no_trace_exists
+    intent: resolver_path
+    source_rows:
+      - CountsheetCODE: CS_10
+        CountsheetName: Countsheet 10
+        SiteCODE: SITE_10
+        SheetContext: null
+        SheetType: null
+    policy_context:
+      args:
+        countsheet_code: CS_10
+      step_hits:
+        trace_lookup: false
+    expects:
+      resolver: resolve_dataset_id_from_countsheet_code
+      resolver_path: [trace_lookup, no_trace_error]
+      target_field: dataset_id
+      resolver_result:
+        result_kind: empty_entity
+        source: no_trace_error
+        issue:
+          severity: error
+          code: no_sample_group_trace
+          message: "No samplegroup trace found"
+      emit_codes: [no_sample_group_trace]
+  - name: dataset_resolver_returns_error_for_empty_countsheet_code
+    intent: resolver_path
+    source_rows:
+      - CountsheetCODE: ""
+        CountsheetName: null
+        SiteCODE: null
+        SheetContext: null
+        SheetType: null
+    policy_context:
+      args:
+        countsheet_code: ""
+      step_hits: {}
+    expects:
+      resolver: resolve_dataset_id_from_countsheet_code
+      resolver_path: [empty_countsheet_code_error]
+      target_field: dataset_id
+      resolver_result:
+        result_kind: empty_entity
+        source: empty_countsheet_code_error
+        issue:
+          severity: error
+          code: empty_countsheet_code
+          message: "No dataset can be found for empty countsheet code"
+      emit_codes: [empty_countsheet_code]

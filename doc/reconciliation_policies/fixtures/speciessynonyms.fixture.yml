@@ -18,8 +18,8 @@ scenarios:
     expects:
       reconciliation_path: [trace_lookup]
       reconciliation_result:
-        result_kind: update_existing
-        persisted_action: update
+        result_kind: return_as_is
+        persisted_action: keep_existing
         source: trace_lookup
         row_id: 401
         species_code: 10010020

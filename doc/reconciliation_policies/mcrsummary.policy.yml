@@ -9,6 +9,37 @@ meta:
     This importer resolves a species from the Bugs CODE value, then looks up an
     existing summary row by taxon_id. If a row already exists it is returned
     unchanged; otherwise a new summary row is created.
+    Converted 2026-06-20: resolved resolve_taxon_id helper to structured resolver
+    with trace lookup. Added known_divergences for species resolution being
+    trace-based and update detection being a no-op.
+
+# ── KNOWN DIVERGENCES ────────────────────────────────────────────────────────
+
+known_divergences:
+  - area: species_resolution_is_trace_based
+    status: schema_limit
+    description: The species taxon ID is resolved from the Bugs CODE value via a trace lookup against previously imported taxonomy rows. The actual trace helper and repository chain is adapter-only behavior.
+    policy_choice: match_java_runtime
+  - area: update_detection_is_no_op
+    status: behavior_ambiguous
+    description: "The importer has no update path — existing summary rows are returned unchanged (return_as_is). The policy documents this as strategy: never with on_change: ignore, but the Java runtime still creates new rows for species without existing summaries."
+    policy_choice: match_java_runtime
+
+# ── RESOLVERS ────────────────────────────────────────────────────────────────
+
+resolvers:
+  - name: resolve_taxon_id
+    description: Resolve the Bugs CODE value to the SEAD species taxon_id used by tbl_mcr_summary_data.
+    returns: scalar
+    args: ["source.CODE"]
+    steps:
+      - name: trace_lookup
+        action: trace_lookup
+        bugs_table: TTaxa
+        identifier_expr: "source.CODE"
+        return: return_entity
+        comment: MCRSummaryTraceSearch looks up the latest trace for the species CODE.
+    used_by: [taxon_id]
 
 policy:
   domain: mcrsummary
@@ -147,8 +178,13 @@ tracing:
   sead_table: tbl_mcr_summary_data
   write_on: [insert, update]
 
+# ── HELPERS ──────────────────────────────────────────────────────────────────
+
 helpers:
   - name: resolve_taxon_id
-    description: Resolve the Bugs species code to tbl_taxa_tree_master.taxon_id through TaxonomicOrderConverter.
+    description: >
+      Superseded by structured resolver resolve_taxon_id.
+      Previously resolved the Bugs CODE value to the SEAD species taxon_id
+      used by tbl_mcr_summary_data.
     signature: "resolve_taxon_id(code: float | None) -> int | None"
-    used_by: [taxon_id]
+    used_by: []

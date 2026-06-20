@@ -9,6 +9,37 @@ meta:
     The row converter iterates two ordered MCRSearch strategies: trace lookup by
     Bugs identifier first, then repository lookup by the resolved species taxon
     ID. A new row is created only if neither strategy returns a match.
+    Converted 2026-06-20: resolved resolve_taxon_id helper to structured resolver
+    with trace lookup. Added known_divergences for species resolution being
+    trace-based and tempCODE field being ignored.
+
+# ── KNOWN DIVERGENCES ────────────────────────────────────────────────────────
+
+known_divergences:
+  - area: species_resolution_is_trace_based
+    status: schema_limit
+    description: The species taxon ID is resolved from the Bugs CODE value via a trace lookup against previously imported taxonomy rows. The actual trace helper and repository chain is adapter-only behavior.
+    policy_choice: match_java_runtime
+  - area: tempcode_field_ignored
+    status: schema_limit
+    description: Source field tempCODE is read from TMCRNames but not written to tbl_mcr_names. The field is present in the source row but excluded from the mapping.
+    policy_choice: match_java_runtime
+
+# ── RESOLVERS ────────────────────────────────────────────────────────────────
+
+resolvers:
+  - name: resolve_taxon_id
+    description: Resolve the Bugs CODE value to the SEAD species taxon_id used by tbl_mcr_names.
+    returns: scalar
+    args: ["source.CODE"]
+    steps:
+      - name: trace_lookup
+        action: trace_lookup
+        bugs_table: TTaxa
+        identifier_expr: "source.CODE"
+        return: return_entity
+        comment: MCRNamesTraceSearch looks up the latest trace for the species CODE.
+    used_by: [comparison_notes]
 
 policy:
   domain: mcrnames
@@ -131,8 +162,13 @@ tracing:
   write_on: [insert, update]
   comment: Both matched updates and inserts write new trace rows after persistence.
 
+# ── HELPERS ──────────────────────────────────────────────────────────────────
+
 helpers:
   - name: resolve_taxon_id
-    description: Resolve the Bugs CODE value to the SEAD species taxon_id used by tbl_mcr_names.
+    description: >
+      Superseded by structured resolver resolve_taxon_id.
+      Previously resolved the Bugs CODE value to the SEAD species taxon_id
+      used by tbl_mcr_names.
     signature: "resolve_taxon_id(code: float | None) -> int | None"
-    used_by: [comparison_notes]
+    used_by: []

@@ -10,6 +10,10 @@ meta:
     to two child SampleDimension rows for upper and lower depth. X and Y are
     not written; their presence only records an error because the importer
     expects depth-based samples here.
+    Converted 2026-06-20: resolved three helpers to structured resolvers
+    (resolve_sample_group_id, resolve_default_alternative_reference_type_id,
+    resolve_default_sample_type_id) and added known_divergences for X/Y error
+    detection and sample dimension supporting-output behavior.
 
 policy:
   domain: sample
@@ -191,19 +195,98 @@ tracing:
   sead_table: tbl_physical_samples
   write_on: [insert, update]
 
-helpers:
+known_divergences:
+  - area: xy_coordinate_error_detection
+    status: behavior_ambiguous
+    description: The importer checks if X or Y fields are non-empty and adds an error "X or Y values is probably an error" to the sample row. These fields are not mapped to any SEAD column and do not affect reconciliation outcomes beyond the error flag. This data-quality check is adapter-only behavior that the policy cannot express as a reconciliation rule.
+    policy_choice: match_java_runtime
+  - area: sample_dimensions_as_supporting_output
+    status: behavior_ambiguous
+    description: The DimensionUpdater manages up to two child SampleDimension rows (upper and lower depth) using fixed method (depth-from-datum) and dimension (upper/lower) IDs. Each dimension follows create/update/keep/delete semantics based on numeric depth value comparison. When an incoming depth becomes null and an existing dimension has a value, the dimension is marked for deletion. The generate_sample_dimension_items helper expands ZorDepthTop/ZorDepthBot into dimension items.
+    policy_choice: match_java_runtime
+
+resolvers:
   - name: resolve_sample_group_id
-    description: Resolve CountsheetCODE through SampleGroupBugsTraceReader to tbl_sample_groups.sample_group_id.
-    signature: "resolve_sample_group_id(countsheet_code: str | None) -> int | None"
+    description: Resolve CountsheetCODE through trace lookup to the matching tbl_sample_groups row. If the countsheet code is empty or null, emit an error. If no trace exists for the countsheet code, emit an error indicating the countsheet was not found.
+    returns: entity_ref
+    args: ["source.CountsheetCODE"]
+    steps:
+      - name: empty_countsheet_code_error
+        when: "source.CountsheetCODE is None or source.CountsheetCODE.strip() == ''"
+        action: emit_issue
+        emit:
+          severity: error
+          code: missing_countsheet_code
+          message: "No countsheet specified"
+        return: empty_entity
+        comment: SampleUpdater.setGroup() adds error and returns false when CountsheetCODE is null or empty.
+      - name: trace_lookup
+        action: trace_lookup
+        bugs_table: TCountsheet
+        identifier_expr: "source.CountsheetCODE"
+        return: continue
+        comment: SampleGroupBugsTraceReader.getFromLastTrace(countsheet_code) looks up the sample group from the countsheet trace.
+      - name: no_trace_error
+        action: emit_issue
+        emit:
+          severity: error
+          code: countsheet_not_found
+          message: "No countsheet found"
+        return: empty_entity
+        comment: When trace lookup returns null, SampleUpdater adds error and returns false without setting group.
     used_by: [sample_group_id]
   - name: resolve_default_alternative_reference_type_id
-    description: Return the fixed alternative reference type row from findOtherAlternativeSampleName().
-    signature: "resolve_default_alternative_reference_type_id() -> int"
+    description: Return the fixed alternative reference type row with name 'Other alternative sample name' from AlternativeReferenceTypeRepository.findOtherAlternativeSampleName(). This is a singleton lookup that always returns the same row.
+    returns: entity_ref
+    args: []
+    steps:
+      - name: alt_ref_type_lookup
+        action: database_query
+        table: tbl_alternative_reference_types
+        where: "name = 'Other alternative sample name'"
+        bind: {}
+        return: return_entity
+        comment: The alternative reference type is the singleton row returned by findOtherAlternativeSampleName().
     used_by: [alt_ref_type_id]
   - name: resolve_default_sample_type_id
-    description: Return the fixed unspecified sample type row from getUnspecifiedType().
-    signature: "resolve_default_sample_type_id() -> int"
+    description: Return the fixed sample type row with name 'Unspecified' from SampleTypeRepository.getUnspecifiedType(). This is a singleton lookup that always returns the same row.
+    returns: entity_ref
+    args: []
+    steps:
+      - name: sample_type_lookup
+        action: database_query
+        table: tbl_sample_types
+        where: "name = 'Unspecified'"
+        bind: {}
+        return: return_entity
+        comment: The default sample type is the singleton row returned by getUnspecifiedType().
     used_by: [sample_type_id]
+
+# ── HELPERS ──────────────────────────────────────────────────────────────────
+
+helpers:
+  - name: resolve_sample_group_id
+    description: >
+      Superseded by structured resolver resolve_sample_group_id.
+      Previously resolved CountsheetCODE through SampleGroupBugsTraceReader
+      to tbl_sample_groups.sample_group_id, adding errors for empty code or
+      missing trace.
+    signature: "resolve_sample_group_id(countsheet_code: str | None) -> int | None"
+    used_by: []
+  - name: resolve_default_alternative_reference_type_id
+    description: >
+      Superseded by structured resolver resolve_default_alternative_reference_type_id.
+      Previously returned the fixed alternative reference type row from
+      findOtherAlternativeSampleName().
+    signature: "resolve_default_alternative_reference_type_id() -> int"
+    used_by: []
+  - name: resolve_default_sample_type_id
+    description: >
+      Superseded by structured resolver resolve_default_sample_type_id.
+      Previously returned the fixed unspecified sample type row from
+      getUnspecifiedType().
+    signature: "resolve_default_sample_type_id() -> int"
+    used_by: []
   - name: generate_sample_dimension_items
     description: Build upper and lower depth SampleDimension items using the fixed depth-from-datum method and the configured upper/lower dimensions.
     signature: "generate_sample_dimension_items(sample_code: str | None, z_top: float | None, z_bottom: float | None) -> list[SampleDimensionItem]"

@@ -9,6 +9,7 @@ meta:
     This importer does not update matched rows. It checks trace by the full
     compressed tuple and either returns the existing ecocode unchanged or
     creates a new one from traced definition and species lookups.
+    Converted to structured resolvers and known_divergences on 2026-06-20.
 
 policy:
   domain: ecocode_koch
@@ -90,12 +91,59 @@ tracing:
   sead_table: tbl_ecocodes
   write_on: [insert, update]
 
+resolvers:
+  - name: resolve_koch_ecocode_definition_id
+    description: >
+      Resolve the traced Koch ecocode definition imported from TEcoDefKoch to
+      tbl_ecocode_definitions.ecocode_definition_id. Uses the trace helper from
+      KochDefinitionRowConverter (cross-converter dependency).
+    returns: scalar
+    args: [koch_code]
+    steps:
+      - name: trace_lookup
+        action: trace_lookup
+        bugs_table: TEcoDefKoch
+        identifier_expr: "koch_code"
+        return: return_entity
+    used_by: [ecocode_definition_id]
+
+  - name: resolve_taxon_id
+    description: >
+      Resolve the Bugs species code to tbl_taxa_tree_master.taxon_id.
+      Converts the decimal CODE to a BigDecimal before lookup.
+    returns: scalar
+    args: [code]
+    steps:
+      - name: species_lookup
+        action: database_query
+        table: tbl_taxa_tree_master
+        where: "bugs_code = :bugs_code"
+        bind:
+          bugs_code: "BigDecimalDefinition.convertToSeadCode(code)"
+        return: return_entity
+    used_by: [taxon_id]
+
 helpers:
   - name: resolve_koch_ecocode_definition_id
-    description: Resolve the traced Koch ecocode definition imported from TEcoDefKoch to tbl_ecocode_definitions.ecocode_definition_id.
+    description: >
+      Superseded by structured resolver resolve_koch_ecocode_definition_id.
+      Previously resolved the traced Koch ecocode definition.
     signature: "resolve_koch_ecocode_definition_id(koch_code: str | None) -> int | None"
-    used_by: [ecocode_definition_id]
+    used_by: []
+
   - name: resolve_taxon_id
-    description: Resolve the Bugs species code to tbl_taxa_tree_master.taxon_id.
+    description: >
+      Superseded by structured resolver resolve_taxon_id.
+      Previously resolved the Bugs species code to taxon_id.
     signature: "resolve_taxon_id(code: float | None) -> int | None"
-    used_by: [taxon_id]
+    used_by: []
+
+known_divergences:
+  - area: trace_lookup_uses_compress_to_string
+    status: behavior_ambiguous
+    description: "The trace lookup uses compressToString() instead of getBugsIdentifier(). The compressed form is {CODE,BugsKochCode}, not the standard identifier format. This means the trace key includes both the species code and the ecocode value, not just a single natural key."
+    policy_choice: match_java_runtime
+  - area: cross_converter_dependency
+    status: schema_limit
+    description: "The definition trace helper is injected from another converter (KochDefinitionRowConverter.KochDefinitionTraceHelper). This is a cross-converter dependency that ties the ecocode_koch importer to the ecocodedefinition_koch importer at the Java level."
+    policy_choice: match_java_runtime

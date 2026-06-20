@@ -11,6 +11,14 @@ meta:
     sample group and the countsheet type stored in that group's translated trace
     data. Cache management is part of the runtime behavior.
 
+    Feature 1 conversion (2026-06-20): the dataset and analysis_entity related
+    outputs now use phase: before_parent, and the parent abundance row references
+    analysis_entity_id via related.analysis_entity.analysis_entity_id instead of
+    the resolve_fossil_analysis_entity_id helper call. The analysis_entity
+    dataset_id mapping uses related.dataset.dataset_id instead of a generated
+    field. This proves the expression language resolves related-output references
+    correctly and replaces the last helper call in the parent mapping.
+
 policy:
   domain: fossil
   description: >
@@ -59,6 +67,7 @@ related_outputs:
     table: tbl_datasets
     mode: zero_or_one
     relationship: supporting
+    phase: before_parent
     persistence: cache_then_save
     key_fields: [dataset_name, data_type_id, method_id, master_set_id]
     identity:
@@ -120,11 +129,12 @@ related_outputs:
           property: allow.dataset.updates
           default: true
           description: When false, an existing dataset may be cloned through updated_dataset instead of reused directly.
-    comment: The dataset comes from the traced sample-group countsheet code and countsheet type, uses the fixed Palaeoentomology method, and may clone an existing dataset when updates are disabled.
+    comment: The dataset comes from the traced sample-group countsheet code and countsheet type, uses the fixed Palaeoentomology method, and may clone an existing dataset when updates are disabled. Evaluated before the parent abundance row so its dataset_id is available to downstream related outputs.
   - name: analysis_entity
     table: tbl_analysis_entities
     mode: zero_or_one
     relationship: supporting
+    phase: before_parent
     persistence: cache_then_link
     key_fields: [physical_sample_id, dataset_id]
     identity:
@@ -143,15 +153,20 @@ related_outputs:
         type: integer
         nullable: false
         transform:
-          type: generated
-          field: dataset_id
+          type: expr
+          expr: "related.dataset.dataset_id"
+        comment: >
+          References the dataset created or resolved by the sibling
+          related output.  Uses the related.<name>.<field> expression
+          instead of a helper call, so the dataset identity flows
+          through the policy contract rather than Java-only glue.
     reconciliation:
       existing_rows:
         table: tbl_analysis_entities
         where: "physical_sample_id = :physical_sample_id AND dataset_id = :dataset_id"
         bind:
           physical_sample_id: "generated.physical_sample_id"
-          dataset_id: "generated.dataset_id"
+          dataset_id: "related.dataset.dataset_id"
       compare_fields: [physical_sample_id, dataset_id]
       on_missing_generated: insert
       on_missing_existing: keep
@@ -161,7 +176,7 @@ related_outputs:
       strategy: never
       fields: []
       on_change: ignore
-    comment: AnalysisEntity rows are cached by sample and dataset to avoid duplicate rows during the import run.
+    comment: AnalysisEntity rows are cached by sample and dataset to avoid duplicate rows during the import run. Evaluated before the parent abundance row (after dataset) so its analysis_entity_id is available to the parent mapping.
 
 mappings:
   - target_field: abundance
@@ -178,9 +193,13 @@ mappings:
     type: integer
     nullable: true
     transform:
-      type: call
-      helper: resolve_fossil_analysis_entity_id
-      args: ["source.SampleCODE"]
+      type: expr
+      expr: "related.analysis_entity.analysis_entity_id"
+    comment: >
+      References the analysis entity created or resolved by the sibling
+      related output.  Replaces the resolve_fossil_analysis_entity_id
+      helper call with a direct related-output reference, so the parent
+      row receives the child identity through the policy contract.
   - target_field: taxon_id
     type: integer
     nullable: true
@@ -233,9 +252,15 @@ tracing:
 
 helpers:
   - name: resolve_fossil_analysis_entity_id
-    description: Resolve or create the dataset and analysis entity for the traced sample using the sample-group trace, the countsheet-derived data type, the Bugs master set, and the fixed Palaeoentomology method.
+    description: >
+      SUPERSEDED by related.analysis_entity.analysis_entity_id expression.
+      Previously resolved or created the dataset and analysis entity for the
+      traced sample.  The policy now uses phase: before_parent on the dataset
+      and analysis_entity related outputs, and references the analysis entity
+      ID directly via the related-output expression language.  Retained for
+      historical reference only.
     signature: "resolve_fossil_analysis_entity_id(sample_code: str | None) -> int | None"
-    used_by: [analysis_entity_id]
+    used_by: []
   - name: generate_fossil_dataset_items
     description: Build the dataset candidate for the traced sample group, including a cloned updated_dataset row when dataset updates are disabled and abundance changes require a new dataset version.
     signature: "generate_fossil_dataset_items(sample_code: str | None, abundance_changed: bool) -> list[FossilDatasetItem]"

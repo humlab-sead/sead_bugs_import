@@ -221,3 +221,62 @@ scenarios:
         severity: error
         message: No sample specified
       comment: Blank sample codes should stop before trace lookup, emit the current Java error, and still return a changed result from AnalysisEntityManager.
+  - name: analysis_entity_references_dataset_via_related_expression
+    intent: related_output_graph
+    source_rows:
+      - FossilBugsCODE: FOSSIL_EXPR_1
+        CODE: 12
+        SampleCODE: SAMPLE_FOSSIL_EXPR_1
+        Abundance: 6
+    policy_context:
+      config:
+        allow_dataset_updates: true
+      state:
+        resolved_dataset_id: 40
+    expects:
+      related_outputs: [dataset, analysis_entity]
+      updates_target_fields: [analysis_entity_id]
+      row_changed: true
+      graph_result:
+        dataset:
+          dataset_id: 40
+          updated_dataset_id: null
+          supporting_action: reuse
+        analysis_entity:
+          analysis_entity_id: 50
+          supporting_action: create
+          physical_sample_id: 10
+          dataset_id: 40
+      comment: >
+        Validates that the related.<name>.<field> expression resolves
+        correctly: dataset is evaluated first (phase: before_parent),
+        its dataset_id is referenced by analysis_entity via
+        related.dataset.dataset_id, and the parent abundance row
+        references analysis_entity_id via
+        related.analysis_entity.analysis_entity_id.  This replaces
+        the resolve_fossil_analysis_entity_id helper call.
+  - name: analysis_entity_dataset_id_null_when_dataset_missing
+    intent: related_output_graph
+    source_rows:
+      - FossilBugsCODE: FOSSIL_EXPR_2
+        CODE: 12
+        SampleCODE: SAMPLE_FOSSIL_EXPR_2
+        Abundance: 8
+    policy_context:
+      config:
+        allow_dataset_updates: true
+      state:
+        sample_found: false
+    expects:
+      related_outputs: [dataset, analysis_entity]
+      updates_target_fields: [analysis_entity_id]
+      row_changed: false
+      graph_issue:
+        severity: error
+        message: No sample found for code
+      comment: >
+        Validates that a null dataset_id propagates through the
+        related-output chain: analysis_entity cannot be created
+        without dataset_id, and the parent mapping receives null
+        for analysis_entity_id.  Confirms the expression language
+        handles null propagation correctly.

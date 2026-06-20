@@ -9,6 +9,9 @@ meta:
     The converter first validates the site and bibliography reference. Existing
     site-reference rows are deduplicated by the tuple of site_id and biblio_id;
     matched rows are returned unchanged.
+    Converted 2026-06-20: resolved resolve_site_id and resolve_biblio_id helpers
+    to structured resolvers with trace lookups. Added known_divergences for
+    tuple deduplication semantics and update detection being a no-op.
 
 policy:
   domain: sitereferences
@@ -95,12 +98,62 @@ tracing:
   sead_table: tbl_site_references
   write_on: [insert, update]
 
-helpers:
+# ── KNOWN DIVERGENCES ────────────────────────────────────────────────────────
+
+known_divergences:
+  - area: tuple_deduplication_semantics
+    status: behavior_ambiguous
+    description: "Existing site-reference rows are deduplicated by the (site_id, biblio_id) tuple. If a match is found, the existing row is returned unchanged (return_as_is) rather than updated. The policy documents this as strategy: never with on_change: ignore, but the Java runtime still creates new rows for unique tuples."
+    policy_choice: match_java_runtime
+  - area: site_and_biblio_resolution_trace_based
+    status: schema_limit
+    description: Both site and bibliography IDs are resolved via trace lookups against previously imported rows. The actual trace helpers and repository chains are adapter-only behavior.
+    policy_choice: match_java_runtime
+
+# ── RESOLVERS ────────────────────────────────────────────────────────────────
+
+resolvers:
   - name: resolve_site_id
     description: Resolve the Bugs site code to the traced SEAD site row, disallowing deleted sites.
-    signature: "resolve_site_id(site_code: str | None) -> int | None"
+    returns: scalar
+    args: ["source.SiteCODE"]
+    steps:
+      - name: trace_lookup
+        action: trace_lookup
+        bugs_table: TSites
+        identifier_expr: "source.SiteCODE"
+        return: return_entity
+        comment: SiteFromCodeDisallowDeletedSite looks up the latest trace for the site code and disallows deleted sites.
     used_by: [site_id]
   - name: resolve_biblio_id
     description: Resolve the Bugs reference value to tbl_biblio.biblio_id using case-insensitive Bugs-reference matching.
-    signature: "resolve_biblio_id(reference: str | None) -> int | None"
+    returns: scalar
+    args: ["source.Ref"]
+    steps:
+      - name: database_query
+        action: database_query
+        table: tbl_biblio
+        where: "bugs_reference ILIKE :reference"
+        bind:
+          reference: "source.Ref"
+        return: return_entity
+        comment: BiblioDataRepository.findBiblioByReference performs case-insensitive lookup on bugs_reference.
     used_by: [biblio_id]
+
+# ── HELPERS ──────────────────────────────────────────────────────────────────
+
+helpers:
+  - name: resolve_site_id
+    description: >
+      Superseded by structured resolver resolve_site_id.
+      Previously resolved the Bugs site code to the traced SEAD site row,
+      disallowing deleted sites.
+    signature: "resolve_site_id(site_code: str | None) -> int | None"
+    used_by: []
+  - name: resolve_biblio_id
+    description: >
+      Superseded by structured resolver resolve_biblio_id.
+      Previously resolved the Bugs reference value to tbl_biblio.biblio_id
+      using case-insensitive Bugs-reference matching.
+    signature: "resolve_biblio_id(reference: str | None) -> int | None"
+    used_by: []

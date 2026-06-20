@@ -8,6 +8,7 @@ meta:
   notes: >
     Simple leaf importer with a trace-first reconciliation path. The trace
     helper is implemented as an inner class in the row converter.
+    Converted to structured resolver and known_divergences on 2026-06-20.
 
 policy:
   domain: ecocodegroup
@@ -96,8 +97,36 @@ tracing:
   sead_table: tbl_ecocode_groups
   write_on: [insert, update]
 
+resolvers:
+  - name: resolve_ecocode_system_id
+    description: >
+      Resolve the Koch ecocode system row used by the ecocode-group importer.
+      The Java updater only sets the system on new rows (lazy init), so existing
+      rows imported before this logic will never receive a system assignment.
+    returns: scalar
+    args: []
+    steps:
+      - name: koch_system_lookup
+        action: database_query
+        table: tbl_ecocode_systems
+        where: "name = 'Koch Ecology Codes'"
+        return: return_entity
+    used_by: [ecocode_system_id]
+
 helpers:
   - name: resolve_ecocode_system_id
-    description: Resolve the ecocode system row used by the ecocode-group importer.
+    description: >
+      Superseded by structured resolver resolve_ecocode_system_id.
+      Previously resolved the ecocode system row used by the ecocode-group importer.
     signature: "resolve_ecocode_system_id(group_code: str | None, group_name: str | None) -> int | None"
-    used_by: [ecocode_system_id]
+    used_by: []
+
+known_divergences:
+  - area: ecocode_system_id_lazy_init
+    status: behavior_ambiguous
+    description: "The Java updater only sets the Koch system on new rows (if original.getSystem() == null). Existing rows imported before this logic existed will never get a system assigned on update. This is a lazy-init pattern, not a reconciliation concern, but it means the ecocode_system_id mapping is not idempotent for pre-existing data."
+    policy_choice: match_java_runtime
+  - area: trace_helper_inner_class
+    status: schema_limit
+    description: "The trace helper (EcocodeGroupTraceHelper) is implemented as an inner static class in the row converter rather than as a standalone @Component. This is a structural choice in the Java code that limits how the helper can be reused by other converters."
+    policy_choice: match_java_runtime

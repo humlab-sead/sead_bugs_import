@@ -11,6 +11,11 @@ meta:
     dataset logic, then reads `IDBy` and `Specimens` from TSite by SiteCODE and
     parses those strings into generated contact items.
 
+    Feature 2 conversion (2026-06-20): resolve_dataset_id_from_countsheet_code
+    converted to a structured resolver with trace lookup, empty-code error,
+    no-trace error, and dataset database query steps. Known divergences added
+    for dataset_reuse_from_fossil_import and contact_string_parsing_adapter.
+
 policy:
   domain: datasetcontacts
   description: >
@@ -168,11 +173,74 @@ tracing:
   write_on: [insert, update]
   comment: Trace rows are written per inserted dataset-contact row even though the converter does not perform a trace lookup.
 
+known_divergences:
+  - area: dataset_reuse_from_fossil_import
+    status: behavior_ambiguous
+    description: The datasetcontacts importer reuses datasets created by the fossil importer through DatasetManagerNoCreation. The dataset resolution logic (trace lookup, data type extraction, dataset naming) is shared with the fossil importer but is not visible as a reconciliation rule in this policy. The structured resolver documents the steps, but the actual dataset existence depends on the fossil importer running first.
+    policy_choice: match_java_runtime
+  - area: contact_string_parsing_adapter
+    status: schema_limit
+    description: The parsing of IDBy and Specimens strings from TSite into contact items is handled by SiteContactToDatasetContactParser and is not expressible as a policy resolver. The comma-separated name parsing, contact type assignment (identified-by vs specimen-repository), and deduplication logic are adapter-only behavior. The policy documents the output shape through generated items but cannot express the parsing rules.
+    policy_choice: match_java_runtime
+
+resolvers:
+  - name: resolve_dataset_id_from_countsheet_code
+    description: >
+      Resolve the dataset for a countsheet through DatasetManagerNoCreation.
+      Looks up the latest sample-group trace for the countsheet code, extracts
+      the count sheet code and count sheet type from the trace data, resolves
+      the data type from the count sheet type, then finds the dataset by name,
+      data type, palaeoentomology method, and master dataset. Returns an error
+      if no trace exists or if the dataset cannot be found.
+    returns: entity_ref
+    args: [countsheet_code]
+    steps:
+      - name: empty_countsheet_code_error
+        when: "countsheet_code is None or countsheet_code.strip() == ''"
+        action: emit_issue
+        emit:
+          severity: error
+          code: empty_countsheet_code
+          message: "No dataset can be found for empty countsheet code"
+        return: empty_entity
+      - name: trace_lookup
+        action: trace_lookup
+        bugs_table: TCountsheet
+        identifier_expr: "countsheet_code"
+        return: continue
+        comment: Look up the latest sample-group trace for the countsheet code using SampleGroupBugsTraceReader.
+      - name: no_trace_error
+        action: emit_issue
+        emit:
+          severity: error
+          code: no_sample_group_trace
+          message: "No samplegroup trace found"
+        return: empty_entity
+        comment: If no trace exists, DatasetManagerNoCreation returns an error dataset.
+      - name: dataset_lookup
+        action: database_query
+        table: tbl_datasets
+        where: "dataset_name = :count_sheet_code AND data_type_id = :data_type_id AND method_id = :method_id AND master_set_id = :master_set_id"
+        bind:
+          count_sheet_code: "countsheet_code"
+          data_type_id: "trace_data_type_id"
+          method_id: "config.palaeoentomology_method_id"
+          master_set_id: "config.bugs_master_set_id"
+        return: return_entity
+        comment: Find dataset by name (count sheet code), data type (from trace), palaeoentomology method, and Bugs master dataset.
+    used_by: [dataset_id]
+
+# ── HELPERS ──────────────────────────────────────────────────────────────────
+
 helpers:
   - name: resolve_dataset_id_from_countsheet_code
-    description: Resolve the dataset for the countsheet through DatasetManagerNoCreation using the sample-group trace and the fossil dataset naming rules.
+    description: >
+      Superseded by structured resolver resolve_dataset_id_from_countsheet_code.
+      Previously resolved the dataset for the countsheet through
+      DatasetManagerNoCreation using the sample-group trace and the fossil
+      dataset naming rules.
     signature: "resolve_dataset_id_from_countsheet_code(countsheet_code: str | None) -> int | None"
-    used_by: [dataset_id]
+    used_by: []
   - name: generate_dataset_contact_items
     description: Read `IDBy` and `Specimens` from TSite for the supplied SiteCODE, parse the strings into identified-by and specimen-repository contacts, resolve or create contacts by first and last name, and return generated items with `contact_id` and `contact_type_id`.
     signature: "generate_dataset_contact_items(site_code: str | None) -> list[DatasetContactItem]"

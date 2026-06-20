@@ -8,6 +8,7 @@ meta:
   notes: >
     Trace lookup is case-insensitive for the Bugs identifier. The updater maps
     the incoming Koch group abbreviation to a group row within the Koch system.
+    Converted to structured resolver and known_divergences on 2026-06-20.
 
 policy:
   domain: ecocodedefinition_koch
@@ -120,8 +121,55 @@ tracing:
   sead_table: tbl_ecocode_definitions
   write_on: [insert, update]
 
+resolvers:
+  - name: resolve_koch_ecocode_group_id
+    description: >
+      Resolve the Koch group abbreviation within the Koch ecocode system to
+      tbl_ecocode_groups.ecocode_group_id. Two-step: get Koch system, then
+      find group by abbreviation. Adds error if group not found.
+    returns: scalar
+    args: [koch_group]
+    steps:
+      - name: koch_system_lookup
+        action: database_query
+        table: tbl_ecocode_systems
+        where: "name = 'Koch Ecology Codes'"
+        return: return_entity
+      - name: group_by_abbreviation
+        action: database_query
+        table: tbl_ecocode_groups
+        where: "ecocode_system_id = :system_id AND abbreviation = :koch_group"
+        bind:
+          system_id: "related.resolve_koch_ecocode_group_id.koch_system_lookup"
+          koch_group: "koch_group"
+        return: return_entity
+      - name: group_not_found
+        action: emit_issue
+        emit:
+          severity: error
+          code: koch_group_not_found
+          message: "Koch group not found for abbreviation: {koch_group}"
+        return: empty_entity
+    used_by: [ecocode_group_id]
+
 helpers:
   - name: resolve_koch_ecocode_group_id
-    description: Resolve the Koch group abbreviation within the Koch ecocode system to tbl_ecocode_groups.ecocode_group_id.
+    description: >
+      Superseded by structured resolver resolve_koch_ecocode_group_id.
+      Previously resolved the Koch group abbreviation within the Koch ecocode system.
     signature: "resolve_koch_ecocode_group_id(koch_group: str | None) -> int | None"
-    used_by: [ecocode_group_id]
+    used_by: []
+
+known_divergences:
+  - area: case_insensitive_trace_lookup
+    status: behavior_ambiguous
+    description: "The trace lookup uses IgnoreCaseBugsIdentifierWithSeadDataTable which performs case-insensitive matching on the BugsKochCode. This is a special accessor not used by most other policies."
+    policy_choice: match_java_runtime
+  - area: two_hop_group_resolution
+    status: schema_limit
+    description: "The Koch group resolution is a two-hop lookup: first get the Koch EcocodeSystem (via KochSystemManager which caches the result), then find the group by abbreviation within that system. If the group isn't found, it adds an error rather than creating one."
+    policy_choice: match_java_runtime
+  - area: koch_code_field_ignored
+    status: schema_limit
+    description: "The KochCode field is read from the source but never written to SEAD. Only BugsKochCode becomes the abbreviation in the target model."
+    policy_choice: match_java_runtime

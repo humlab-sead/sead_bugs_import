@@ -9,6 +9,15 @@ meta:
     The importer keys the main reconciliation on Bugs taxonomic code inside the
     fixed Bugs taxonomic-order system. New rows may also create or reuse family,
     genus, author, and species rows before the taxonomic-order row is saved.
+    
+    Feature 1 conversion (2026-06-20): All 4 related outputs (taxa_family, taxa_genus,
+    taxa_author, taxa_species) use phase: before_parent. taxa_genus.family_id uses
+    related.taxa_family.family_id. taxa_species.genus_id uses related.taxa_genus.genus_id
+    and taxa_species.author_id uses related.taxa_author.author_id. Parent taxon_id uses
+    related.taxa_species.taxon_id. resolve_species_taxon_id helper marked as superseded.
+    resolve_bugs_taxonomic_order_system_id and resolve_import_order_id converted to
+    structured resolvers. Known divergences added for no_data_species_shortcut and
+    genus_family_cascade_dependency.
 
 policy:
   domain: species
@@ -62,6 +71,7 @@ related_outputs:
     table: tbl_taxa_tree_families
     mode: zero_or_one
     relationship: supporting
+    phase: before_parent
     item_helper: generate_taxa_family_item
     persistence: cascade
     key_fields: [family_name, order_id]
@@ -105,6 +115,7 @@ related_outputs:
     table: tbl_taxa_tree_genera
     mode: zero_or_one
     relationship: supporting
+    phase: before_parent
     item_helper: generate_taxa_genus_item
     persistence: cascade
     key_fields: [genus_name, family_id]
@@ -124,8 +135,8 @@ related_outputs:
         type: integer
         nullable: true
         transform:
-          type: generated
-          field: family_id
+          type: expr
+          expr: "related.taxa_family.family_id"
     reconciliation:
       existing_rows:
         table: tbl_taxa_tree_genera
@@ -147,6 +158,7 @@ related_outputs:
     table: tbl_taxa_tree_authors
     mode: zero_or_one
     relationship: supporting
+    phase: before_parent
     item_helper: generate_taxa_author_item
     persistence: cache_then_link
     key_fields: [author_name]
@@ -182,6 +194,7 @@ related_outputs:
     table: tbl_taxa_tree_master
     mode: zero_or_one
     relationship: supporting
+    phase: before_parent
     item_helper: generate_taxa_species_item
     persistence: cache_then_link
     key_fields: [species, genus_id, author_id]
@@ -201,14 +214,14 @@ related_outputs:
         type: integer
         nullable: true
         transform:
-          type: generated
-          field: genus_id
+          type: expr
+          expr: "related.taxa_genus.genus_id"
       - target_field: author_id
         type: integer
         nullable: true
         transform:
-          type: generated
-          field: author_id
+          type: expr
+          expr: "related.taxa_author.author_id"
     reconciliation:
       existing_rows:
         table: tbl_taxa_tree_master
@@ -240,9 +253,8 @@ mappings:
     type: integer
     nullable: true
     transform:
-      type: call
-      helper: resolve_species_taxon_id
-      args: ["source.FAMILY", "source.GENUS", "source.SPECIES", "source.AUTHORITY"]
+      type: expr
+      expr: "related.taxa_species.taxon_id"
   - target_field: taxonomic_order_system_id
     type: integer
     nullable: false
@@ -283,18 +295,57 @@ tracing:
   sead_table: tbl_taxonomic_order
   write_on: [insert, update]
 
+known_divergences:
+  - area: no_data_species_shortcut
+    status: behavior_ambiguous
+    description: The no-data species path (CODE 9999.0000001) short-circuits normal family/genus/author/species creation by directly linking to a canonical no-data taxon row. The shortcut is implemented inside the resolve_species_taxon_id helper and is not visible as a separate reconciliation rule or resolver step. Fixtures document the shortcut via reuse_no_data_taxa_species_shortcut but the policy cannot express the early-return logic without the helper.
+    policy_choice: match_java_runtime
+  - area: genus_family_cascade_dependency
+    status: behavior_ambiguous
+    description: Genus creation depends on family resolution (family_id), and species creation depends on genus and author resolution. The Java importer resolves these dependencies sequentially inside one helper call. The policy now uses related.<name>.<field> expressions to surface the dependency chain, but null propagation through the chain (e.g., family not found → genus family_id null → species genus_id null) is an implementation detail of the expression resolver, not the Java code.
+    policy_choice: match_intended_behavior
+
+resolvers:
+  - name: resolve_bugs_taxonomic_order_system_id
+    description: Return the fixed Bugs taxonomic-order system row from TaxonomicOrderSystemRepository.getBugsSystem(). This is a singleton lookup that always returns the same system ID.
+    returns: entity_ref
+    args: []
+    steps:
+      - name: bugs_system_lookup
+        action: database_query
+        table: tbl_taxonomic_order_system
+        where: "1 = 1"
+        bind: {}
+        return: return_entity
+        comment: The Bugs system is the singleton row returned by getBugsSystem(); in practice there is one fixed row matching the Bugs order.
+    used_by: [taxonomic_order_system_id]
+
+# ── HELPERS ──────────────────────────────────────────────────────────────────
+
 helpers:
   - name: resolve_species_taxon_id
-    description: Resolve or create the nested family, genus, author, and species rows used by the taxonomic-order row, including the no-data species shortcut.
+    description: >
+      Superseded by related-output graph with phase: before_parent and
+      related.taxa_species.taxon_id expression. Previously resolved or created
+      the nested family, genus, author, and species rows used by the
+      taxonomic-order row, including the no-data species shortcut.
     signature: "resolve_species_taxon_id(family: str | None, genus: str | None, species: str | None, authority: str | None) -> int | None"
-    used_by: [taxon_id]
+    used_by: []
   - name: resolve_bugs_taxonomic_order_system_id
-    description: Return the fixed Bugs taxonomic-order system row from TaxonomicOrderSystemRepository.getBugsSystem().
+    description: >
+      Superseded by structured resolver resolve_bugs_taxonomic_order_system_id.
+      Previously returned the fixed Bugs taxonomic-order system row from
+      TaxonomicOrderSystemRepository.getBugsSystem().
     signature: "resolve_bugs_taxonomic_order_system_id() -> int"
-    used_by: [taxonomic_order_system_id]
+    used_by: []
   - name: resolve_import_order_id
-    description: Return the fixed default import taxonomic order row from TaxaOrderRepository.getImportOrder().
+    description: >
+      Returns the fixed default import taxonomic order row from
+      TaxaOrderRepository.getImportOrder(). Used by the taxa_family related
+      output to set order_id. Kept as a helper (not a resolver) because it is
+      used by a related-output mapping, not a top-level mapping.
     signature: "resolve_import_order_id() -> int | None"
+    used_by: []
   - name: generate_taxa_family_item
     description: Emit the family candidate for this INDEX row when family creation is part of the normal species path.
     signature: "generate_taxa_family_item(family: str | None, code: float | None, species: str | None) -> list[TaxaFamilyItem]"

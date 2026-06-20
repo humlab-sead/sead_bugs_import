@@ -18,6 +18,7 @@ scenarios:
       reconciliation_path: [trace_lookup]
       reconciliation_result:
         result_kind: update_existing
+        persisted_action: update
         source: trace_lookup
         row_id: 501
         bugs_ecocode_code: BUGS-DEF-1
@@ -61,6 +62,7 @@ scenarios:
       reconciliation_path: [trace_lookup, create_new]
       reconciliation_result:
         result_kind: insert_new
+        persisted_action: create
         source: create_new
         row_id: null
         bugs_ecocode_code: BUGS-DEF-3

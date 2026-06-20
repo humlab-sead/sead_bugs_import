@@ -10,6 +10,8 @@ meta:
     site, expands country and region into one or more location candidates, then
     compares that generated list with all stored site-location rows. Missing old
     rows are marked for deletion and new rows are emitted.
+    Converted 2026-06-20: resolved resolve_site_id helper to structured resolver
+    with trace lookup and deleted-site guard.
 
 policy:
   domain: sitelocations
@@ -117,12 +119,35 @@ known_divergences:
     status: behavior_ambiguous
     description: Current list reconciliation exposes full replacement as a mix of marked-for-deletion rows and inserted rows instead of a first-class replacement result. Fixtures now add persisted_action labels and keep the row-level Java shape for parity.
     policy_choice: match_intended_behavior
+  - area: location_expansion_adapter
+    status: schema_limit
+    description: The expansion of country and region values into location candidates is handled by SiteLocationManagerAccessor and the underlying location managers (country and region). The policy documents the output shape through generated items but cannot express the location resolution rules, type filtering, or error handling for missing locations.
+    policy_choice: match_java_runtime
+
+resolvers:
+  - name: resolve_site_id
+    description: "Resolve the Bugs site code to the traced SEAD site row using SiteFromCodeDisallowDeletedSite. Deleted sites are disallowed: if the latest trace has type DELETE, the resolver returns an empty entity."
+    returns: entity_ref
+    args: ["source.SiteCODE"]
+    steps:
+      - name: trace_lookup
+        action: trace_lookup
+        bugs_table: TSite
+        identifier_expr: "source.SiteCODE"
+        return: return_entity
+        comment: SiteFromCodeDisallowDeletedSite extends SiteFromTrace which uses SeadDataFromTraceHelper to look up the latest trace for the site code. If the trace type is DELETE, the helper returns NO_TRACE (empty entity).
+    used_by: [site_id]
+
+# ── HELPERS ──────────────────────────────────────────────────────────────────
 
 helpers:
   - name: resolve_site_id
-    description: Resolve the Bugs site code to the traced SEAD site row, disallowing deleted sites.
+    description: >
+      Superseded by structured resolver resolve_site_id.
+      Previously resolved the Bugs site code to the traced SEAD site row using
+      SiteFromCodeDisallowDeletedSite, disallowing deleted sites.
     signature: "resolve_site_id(site_code: str | None) -> int | None"
-    used_by: [site_id]
+    used_by: []
   - name: generate_site_location_items
     description: Resolve country and region to the location list emitted for this site, including error items when location lookup fails.
     signature: "generate_site_location_items(site_code: str | None, country: str | None, region: str | None) -> list[SiteLocationItem]"

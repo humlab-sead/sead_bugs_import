@@ -152,3 +152,96 @@ scenarios:
             method_id: 501
             dimension_value: null
             marked_for_deletion: true
+  - name: sample_group_resolved_via_trace_lookup
+    intent: resolver_path
+    source_rows:
+      - SampleCODE: SAMPLE_5
+        CountsheetCODE: CS_SAMPLE_1
+    policy_context:
+      args:
+        countsheet_code: CS_SAMPLE_1
+      step_hits:
+        trace_lookup: true
+    expects:
+      resolver: resolve_sample_group_id
+      resolver_path: [trace_lookup]
+      target_field: sample_group_id
+      resolver_result:
+        result_kind: return_entity
+        source: trace_lookup
+        sample_group_id: 200
+  - name: sample_group_resolver_returns_error_for_empty_countsheet_code
+    intent: resolver_path
+    source_rows:
+      - SampleCODE: SAMPLE_6
+        CountsheetCODE: ""
+    policy_context:
+      args:
+        countsheet_code: ""
+      step_hits: {}
+    expects:
+      resolver: resolve_sample_group_id
+      resolver_path: [empty_countsheet_code_error]
+      target_field: sample_group_id
+      resolver_result:
+        result_kind: empty_entity
+        source: empty_countsheet_code_error
+        issue:
+          severity: error
+          code: missing_countsheet_code
+          message: "No countsheet specified"
+      emit_codes: [missing_countsheet_code]
+  - name: sample_group_resolver_returns_error_when_no_trace_exists
+    intent: resolver_path
+    source_rows:
+      - SampleCODE: SAMPLE_7
+        CountsheetCODE: CS_MISSING
+    policy_context:
+      args:
+        countsheet_code: CS_MISSING
+      step_hits:
+        trace_lookup: false
+    expects:
+      resolver: resolve_sample_group_id
+      resolver_path: [trace_lookup, no_trace_error]
+      target_field: sample_group_id
+      resolver_result:
+        result_kind: empty_entity
+        source: no_trace_error
+        issue:
+          severity: error
+          code: countsheet_not_found
+          message: "No countsheet found"
+      emit_codes: [countsheet_not_found]
+  - name: default_alternative_reference_type_resolved_from_database
+    intent: resolver_path
+    source_rows:
+      - SampleCODE: SAMPLE_8
+    policy_context:
+      args: {}
+      step_hits:
+        alt_ref_type_lookup: true
+    expects:
+      resolver: resolve_default_alternative_reference_type_id
+      resolver_path: [alt_ref_type_lookup]
+      target_field: alt_ref_type_id
+      resolver_result:
+        result_kind: return_entity
+        source: alt_ref_type_lookup
+        alt_ref_type_id: 1
+  - name: default_sample_type_resolved_from_database
+    intent: resolver_path
+    source_rows:
+      - SampleCODE: SAMPLE_9
+    policy_context:
+      args: {}
+      step_hits:
+        sample_type_lookup: true
+    expects:
+      resolver: resolve_default_sample_type_id
+      resolver_path: [sample_type_lookup]
+      target_field: sample_type_id
+      resolver_result:
+        result_kind: return_entity
+        source: sample_type_lookup
+        sample_type_id: 1

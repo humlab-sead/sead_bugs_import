@@ -202,3 +202,82 @@ scenarios:
           record_type_id: 402
           record_type_name: Diatoms
           marked_for_deletion: true
+  - name: site_resolved_via_trace_lookup
+    intent: resolver_path
+    source_rows:
+      - SiteCODE: SITE_1
+        HasPollen: true
+        HasPlantMacro: false
+        HasDiatoms: false
+        HasChironomids: false
+        HasSoilChemistry: false
+        HasIsotopes: false
+        HasAnimalBones: false
+        HasArchaeology: false
+        HasMolluscs: false
+    policy_context:
+      args:
+        site_code: SITE_1
+      step_hits:
+        trace_lookup: true
+    expects:
+      resolver: resolve_site_id
+      resolver_path: [trace_lookup]
+      target_field: site_id
+      resolver_result:
+        result_kind: return_entity
+        source: trace_lookup
+        site_id: 301
+  - name: site_resolver_returns_empty_when_no_trace_exists
+    intent: resolver_path
+    source_rows:
+      - SiteCODE: SITE_MISSING
+        HasPollen: true
+        HasPlantMacro: false
+        HasDiatoms: false
+        HasChironomids: false
+        HasSoilChemistry: false
+        HasIsotopes: false
+        HasAnimalBones: false
+        HasArchaeology: false
+        HasMolluscs: false
+    policy_context:
+      args:
+        site_code: SITE_MISSING
+      step_hits:
+        trace_lookup: false
+    expects:
+      resolver: resolve_site_id
+      resolver_path: [trace_lookup]
+      target_field: site_id
+      resolver_result:
+        result_kind: empty_entity
+        source: trace_lookup
+  - name: site_resolver_returns_empty_when_site_deleted
+    intent: resolver_path
+    source_rows:
+      - SiteCODE: SITE_DELETED
+        HasPollen: true
+        HasPlantMacro: false
+        HasDiatoms: false
+        HasChironomids: false
+        HasSoilChemistry: false
+        HasIsotopes: false
+        HasAnimalBones: false
+        HasArchaeology: false
+        HasMolluscs: false
+    policy_context:
+      args:
+        site_code: SITE_DELETED
+      step_hits:
+        trace_lookup: true
+      state:
+        trace_type: DELETE
+    expects:
+      resolver: resolve_site_id
+      resolver_path: [trace_lookup]
+      target_field: site_id
+      resolver_result:
+        result_kind: empty_entity
+        source: trace_lookup
+        note: SiteFromCodeDisallowDeletedSite returns NO_TRACE when trace type is DELETE

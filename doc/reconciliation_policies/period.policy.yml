@@ -9,6 +9,9 @@ meta:
     Leaf importer with one support dependency on CountryImporter for geography
     resolution. YearsType and BC/AD flags decide whether begin/end values map
     to c14 or calendar age columns.
+    Converted 2026-06-20: resolved resolve_relative_age_type_id and
+    resolve_location_id helpers to structured resolvers. Added known_divergences
+    for relative age type lookup and geography resolution being adapter-only.
 
 policy:
   domain: period
@@ -198,12 +201,65 @@ tracing:
   sead_table: tbl_relative_ages
   write_on: [insert, update]
 
-helpers:
+# ── KNOWN DIVERGENCES ────────────────────────────────────────────────────────
+
+known_divergences:
+  - area: relative_age_type_lookup_adapter
+    status: schema_limit
+    description: The relative age type ID is resolved from the Bugs PeriodType value via a database query against tbl_relative_age_types. The actual repository call and caching behavior is adapter-only.
+    policy_choice: match_java_runtime
+  - area: geography_resolution_adapter
+    status: schema_limit
+    description: The location ID is resolved from the Bugs geography value using Java geography lookup rules that may include country code resolution via CountryImporter. The actual resolution chain is adapter-only behavior.
+    policy_choice: match_java_runtime
+
+# ── RESOLVERS ────────────────────────────────────────────────────────────────
+
+resolvers:
   - name: resolve_relative_age_type_id
     description: Resolve the Bugs PeriodType value to tbl_relative_age_types.relative_age_type_id.
-    signature: "resolve_relative_age_type_id(period_type: str | None) -> int | None"
+    returns: scalar
+    args: ["source.PeriodType"]
+    steps:
+      - name: database_query
+        action: database_query
+        table: tbl_relative_age_types
+        where: "name = :period_type"
+        bind:
+          period_type: "source.PeriodType"
+        return: return_entity
+        comment: RelativeAgeTypeRepository.findByName performs exact match on name column.
     used_by: [relative_age_type_id]
   - name: resolve_location_id
     description: Resolve the Bugs geography value to tbl_locations.location_id using the Java geography lookup rules.
-    signature: "resolve_location_id(geography_name: str | None) -> int | None"
+    returns: scalar
+    args: ["source.PeriodGeog"]
+    steps:
+      - name: database_query
+        action: database_query
+        table: tbl_locations
+        where: "location_name = :geography_name AND location_type_id = :country_type_id"
+        bind:
+          geography_name: "source.PeriodGeog"
+          country_type_id: "resolve_country_type_id()"
+        return: return_entity
+        comment: CountryImporter resolves geography names to country-type locations.
     used_by: [location_id]
+
+# ── HELPERS ──────────────────────────────────────────────────────────────────
+
+helpers:
+  - name: resolve_relative_age_type_id
+    description: >
+      Superseded by structured resolver resolve_relative_age_type_id.
+      Previously resolved the Bugs PeriodType value to
+      tbl_relative_age_types.relative_age_type_id.
+    signature: "resolve_relative_age_type_id(period_type: str | None) -> int | None"
+    used_by: []
+  - name: resolve_location_id
+    description: >
+      Superseded by structured resolver resolve_location_id.
+      Previously resolved the Bugs geography value to tbl_locations.location_id
+      using the Java geography lookup rules.
+    signature: "resolve_location_id(geography_name: str | None) -> int | None"
+    used_by: []

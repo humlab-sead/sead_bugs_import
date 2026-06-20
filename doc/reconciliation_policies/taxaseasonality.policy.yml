@@ -10,6 +10,10 @@ meta:
     formatted seasonality trace key, a history-conflict guard that returns an
     error carrier when previously imported rows were edited, then an exact
     repository lookup by location, fixed adult-active type, species, and season.
+    Converted 2026-06-20: resolved resolve_adult_active_type_id, resolve_season_id,
+    resolve_taxon_id, and resolve_location_id helpers to structured resolvers.
+    Added known_divergences for history conflict detection and trace-based
+    resolution being adapter-only.
 
 policy:
   domain: taxaseasonality
@@ -141,20 +145,99 @@ tracing:
   sead_table: tbl_taxa_seasonality
   write_on: [insert, update]
 
-helpers:
+# ── KNOWN DIVERGENCES ────────────────────────────────────────────────────────
+
+known_divergences:
+  - area: history_conflict_detection_adapter
+    status: schema_limit
+    description: The importer checks if any seasonality row for the species was edited after the latest trace for this Bugs code. If so, an error carrier is returned. This history conflict detection is adapter-only behavior that compares trace timestamps with SEAD row modification times.
+    policy_choice: match_java_runtime
+  - area: trace_based_resolution_adapter
+    status: schema_limit
+    description: All four foreign keys (adult active type, season, taxon, location) are resolved via trace lookups and database queries against previously imported rows. The actual trace helpers and repository chains are adapter-only behavior.
+    policy_choice: match_java_runtime
+
+# ── RESOLVERS ────────────────────────────────────────────────────────────────
+
+resolvers:
   - name: resolve_adult_active_type_id
-    description: Resolve the fixed adult-active activity type used by this importer.
-    signature: "resolve_adult_active_type_id() -> int | None"
+    description: Return the fixed adult-active type row from tbl_activity_types.
+    returns: scalar
+    args: []
+    steps:
+      - name: database_query
+        action: database_query
+        table: tbl_activity_types
+        where: "type_name = :type_name"
+        bind:
+          type_name: "Adult active"
+        return: return_entity
+        comment: Fixed lookup for the 'Adult active' activity type.
     used_by: [activity_type_id]
   - name: resolve_season_id
-    description: Resolve the Bugs season label to tbl_seasons.season_id.
-    signature: "resolve_season_id(season: str | None) -> int | None"
+    description: Resolve the Bugs season value to tbl_seasons.season_id using case-insensitive name matching.
+    returns: scalar
+    args: ["source.HSeason"]
+    steps:
+      - name: database_query
+        action: database_query
+        table: tbl_seasons
+        where: "LOWER(season_name) = LOWER(:season_name)"
+        bind:
+          season_name: "source.HSeason"
+        return: return_entity
+        comment: SeasonRepository.findByNameIgnoreCase performs case-insensitive lookup.
     used_by: [season_id]
   - name: resolve_taxon_id
     description: Resolve the Bugs species code to tbl_taxa_tree_master.taxon_id.
-    signature: "resolve_taxon_id(code: str | None) -> int | None"
+    returns: scalar
+    args: ["source.CODE"]
+    steps:
+      - name: trace_lookup
+        action: trace_lookup
+        bugs_table: TTaxa
+        identifier_expr: "source.CODE"
+        return: return_entity
+        comment: TaxaTraceSearch looks up the latest trace for the species code.
     used_by: [taxon_id]
   - name: resolve_location_id
-    description: Resolve the Bugs country code to tbl_locations.location_id.
-    signature: "resolve_location_id(country_code: str | None) -> int | None"
+    description: Resolve the Bugs country code to tbl_locations.location_id for the Country location type.
+    returns: scalar
+    args: ["source.CountryCode"]
+    steps:
+      - name: trace_lookup
+        action: trace_lookup
+        bugs_table: TCountry
+        identifier_expr: "source.CountryCode"
+        return: return_entity
+        comment: CountryTraceSearch looks up the latest trace for the country code.
     used_by: [location_id]
+
+# ── HELPERS ──────────────────────────────────────────────────────────────────
+
+helpers:
+  - name: resolve_adult_active_type_id
+    description: >
+      Superseded by structured resolver resolve_adult_active_type_id.
+      Previously returned the fixed adult-active type row from tbl_activity_types.
+    signature: "resolve_adult_active_type_id() -> int | None"
+    used_by: []
+  - name: resolve_season_id
+    description: >
+      Superseded by structured resolver resolve_season_id.
+      Previously resolved the Bugs season value to tbl_seasons.season_id
+      using case-insensitive name matching.
+    signature: "resolve_season_id(season: str | None) -> int | None"
+    used_by: []
+  - name: resolve_taxon_id
+    description: >
+      Superseded by structured resolver resolve_taxon_id.
+      Previously resolved the Bugs species code to tbl_taxa_tree_master.taxon_id.
+    signature: "resolve_taxon_id(code: str | None) -> int | None"
+    used_by: []
+  - name: resolve_location_id
+    description: >
+      Superseded by structured resolver resolve_location_id.
+      Previously resolved the Bugs country code to tbl_locations.location_id.
+    signature: "resolve_location_id(country_code: str | None) -> int | None"
+    used_by: []

@@ -20,6 +20,34 @@ meta:
     Leaf importer — no dependencies on other domains.
     The `full_reference` column is a derived field not present in BugsCEP;
     its derivation rule is encoded in the mapping below.
+    Converted 2026-06-20: added known_divergences for notes field exclusion
+    and full_reference derivation adapter. No helpers to convert (already clean).
+
+# ── KNOWN DIVERGENCES ────────────────────────────────────────────────────────
+
+known_divergences:
+  - area: notes_field_not_mapped
+    status: schema_limit
+    description: Source field Notes is read from TBiblio but not written to tbl_biblio because the SEAD schema has no corresponding column. The Notes field is included in the trace key (compressToString) but excluded from the mapping.
+    policy_choice: match_java_runtime
+  - area: full_reference_derivation_adapter
+    status: schema_limit
+    description: The full_reference column is derived from AUTHOR and TITLE fields using a conditional concatenation rule that lives in the Java updater. The policy expresses this as a conditional transform, but the actual derivation logic (including null handling and spacing) is adapter-only behavior.
+    policy_choice: match_java_runtime
+
+# ── TRACING ──────────────────────────────────────────────────────────────────
+
+tracing:
+  bugs_table: TBiblio       # written to bugs_import.bugs_trace.bugs_table
+  sead_table: tbl_biblio    # written to bugs_import.bugs_trace.sead_table
+  write_on: [insert, update]
+
+# ── HELPERS ──────────────────────────────────────────────────────────────────
+
+helpers: []
+# No custom helper functions required for this domain.
+# The only non-trivial logic is the full_reference derivation, which is
+# expressed inline in the mapping above.
 
 policy:
   domain: bibliography
@@ -176,17 +204,3 @@ update_detection:
 dependencies: []
 # Bibliography is a leaf importer.  It is a dependency OF SiteImporter,
 # SiteReferencesImporter, and several others — but it depends on nothing itself.
-
-# ── TRACING ──────────────────────────────────────────────────────────────────
-
-tracing:
-  bugs_table: TBiblio       # written to bugs_import.bugs_trace.bugs_table
-  sead_table: tbl_biblio    # written to bugs_import.bugs_trace.sead_table
-  write_on: [insert, update]
-
-# ── HELPERS ──────────────────────────────────────────────────────────────────
-
-helpers: []
-# No custom helper functions required for this domain.
-# The only non-trivial logic is the full_reference derivation, which is
-# expressed inline in the mapping above.

@@ -28,6 +28,9 @@ meta:
     to tbl_dating_labs (no such columns exist in the SEAD schema).
     Website and email appear as @BugsColumn annotations on BugsLab but are
     not fetched in LabBugsTable.createItem() — they are effectively absent.
+    Converted 2026-06-20: resolve_country_id helper marked as superseded
+    (already has structured resolver). Added known_divergences for country
+    resolution being adapter-only and address/telephone fields being ignored.
 
 policy:
   domain: lab
@@ -221,6 +224,18 @@ tracing:
   write_on: [insert, update]
   comment: Trace writes occur on both insert and update for this importer.
 
+# ── KNOWN DIVERGENCES ────────────────────────────────────────────────────────
+
+known_divergences:
+  - area: country_resolution_adapter
+    status: schema_limit
+    description: The country ID is resolved from the Bugs country name via a database query against tbl_locations with type='Country'. The actual repository call and error handling behavior is adapter-only. The structured resolver documents the ordered steps (blank check, placeholder check, lookup, not found) but the runtime execution is adapter behavior.
+    policy_choice: match_java_runtime
+  - area: address_and_telephone_fields_ignored
+    status: behavior_ambiguous
+    description: Address and Telephone fields are read from the Access table but are NOT written to tbl_dating_labs because no such columns exist in the SEAD schema. The Java code reads these fields but discards them. This is a schema mismatch between source and target.
+    policy_choice: match_java_runtime
+
 resolvers:
   - name: resolve_country_id
     description: Resolve the BugsCEP country name to the Country location row used by tbl_dating_labs.country_id.
@@ -264,10 +279,11 @@ resolvers:
 helpers:
   - name: resolve_country_id
     description: >
-      Resolves a BugsCEP country name to tbl_locations.location_id for the
-      Country location type. Returns an error for blank values, the literal
-      placeholder string "Country", or a name that does not exist in
+      Superseded by structured resolver resolve_country_id.
+      Previously resolved a BugsCEP country name to tbl_locations.location_id
+      for the Country location type. Returns an error for blank values, the
+      literal placeholder string "Country", or a name that does not exist in
       tbl_locations.
     signature: "resolve_country_id(country_name: str | None) -> int | None"
     expression: "lookup_country_id(country_name, location_type='Country')"
-    used_by: [country_id]
+    used_by: []

@@ -8,6 +8,9 @@ meta:
   notes: >
     This importer uses a custom repository lookup on note text, species, and
     reference rather than a trace helper.
+    Converted 2026-06-20: resolved resolve_taxon_id and resolve_biblio_id helpers
+    to structured resolvers with trace lookups. Added known_divergences for
+    species and bibliography resolution being adapter-only.
 
 policy:
   domain: taxanotes
@@ -102,12 +105,60 @@ tracing:
   sead_table: tbl_taxonomy_notes
   write_on: [insert, update]
 
-helpers:
+# ── KNOWN DIVERGENCES ────────────────────────────────────────────────────────
+
+known_divergences:
+  - area: species_and_biblio_resolution_trace_based
+    status: schema_limit
+    description: Both species taxon ID and bibliography ID are resolved via trace lookups against previously imported rows. The actual trace helpers and repository chains are adapter-only behavior.
+    policy_choice: match_java_runtime
+  - area: taxonomy_notes_update_detection
+    status: behavior_ambiguous
+    description: The importer compares taxonomy_notes, taxon_id, and biblio_id fields to determine if an update is needed. If any field differs, the row is marked updated and re-persisted.
+    policy_choice: match_java_runtime
+
+# ── RESOLVERS ────────────────────────────────────────────────────────────────
+
+resolvers:
   - name: resolve_taxon_id
     description: Resolve the Bugs species code to tbl_taxa_tree_master.taxon_id.
-    signature: "resolve_taxon_id(code: str | None) -> int | None"
+    returns: scalar
+    args: ["source.CODE"]
+    steps:
+      - name: trace_lookup
+        action: trace_lookup
+        bugs_table: TTaxa
+        identifier_expr: "source.CODE"
+        return: return_entity
+        comment: TaxaNotesTraceSearch looks up the latest trace for the species CODE.
     used_by: [taxon_id]
   - name: resolve_biblio_id
     description: Resolve the reference code to tbl_biblio.biblio_id.
-    signature: "resolve_biblio_id(reference: str | None) -> int | None"
+    returns: scalar
+    args: ["source.Ref"]
+    steps:
+      - name: database_query
+        action: database_query
+        table: tbl_biblio
+        where: "bugs_reference ILIKE :reference"
+        bind:
+          reference: "source.Ref"
+        return: return_entity
+        comment: BiblioDataRepository.findBiblioByReference performs case-insensitive lookup on bugs_reference.
     used_by: [biblio_id]
+
+# ── HELPERS ──────────────────────────────────────────────────────────────────
+
+helpers:
+  - name: resolve_taxon_id
+    description: >
+      Superseded by structured resolver resolve_taxon_id.
+      Previously resolved the Bugs species code to tbl_taxa_tree_master.taxon_id.
+    signature: "resolve_taxon_id(code: str | None) -> int | None"
+    used_by: []
+  - name: resolve_biblio_id
+    description: >
+      Superseded by structured resolver resolve_biblio_id.
+      Previously resolved the reference code to tbl_biblio.biblio_id.
+    signature: "resolve_biblio_id(reference: str | None) -> int | None"
+    used_by: []

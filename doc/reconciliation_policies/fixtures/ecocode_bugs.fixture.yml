@@ -14,7 +14,8 @@ scenarios:
     expects:
       reconciliation_path: [trace_lookup]
       reconciliation_result:
-        result_kind: update_existing
+        result_kind: return_as_is
+        persisted_action: keep_existing
         source: trace_lookup
         row_id: 81
         species_code: 10010020
@@ -54,6 +55,7 @@ scenarios:
       reconciliation_path: [trace_lookup, create_new]
       reconciliation_result:
         result_kind: insert_new
+        persisted_action: create
         source: create_new
         row_id: null
         species_code: 10010050

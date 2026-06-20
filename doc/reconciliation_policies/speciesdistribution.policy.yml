@@ -7,7 +7,10 @@ meta:
   reviewed: false
   notes: >
     This importer uses a custom repository lookup on distribution text,
-    species, and reference rather than a trace helper.
+    species, and reference rather than a trace helper. The policy YAML says
+    on_match: update but the Java code returns matched rows as-is without
+    field comparison — this is a known divergence documented below.
+    Converted to structured resolvers and known_divergences on 2026-06-20.
 
 policy:
   domain: speciesdistribution
@@ -80,7 +83,8 @@ reconciliation:
         distribution_text: "source.Data"
         taxon_id: "resolve_taxon_id(source.CODE)"
         biblio_id: "resolve_biblio_id(source.Ref)"
-      on_match: update
+      on_match: return_as_is
+      comment: Java returns matched rows as-is; policy YAML originally said 'update' but no field comparison occurs.
     - name: create_new
       order: 2
       type: create_new
@@ -102,12 +106,62 @@ tracing:
   sead_table: tbl_text_distribution
   write_on: [insert, update]
 
+resolvers:
+  - name: resolve_taxon_id
+    description: >
+      Resolve the Bugs species code to tbl_taxa_tree_master.taxon_id.
+      Uses the TaxonomicOrderConverter for lookup.
+    returns: scalar
+    args: [code]
+    steps:
+      - name: species_lookup
+        action: database_query
+        table: tbl_taxa_tree_master
+        where: "bugs_code = :bugs_code"
+        bind:
+          bugs_code: "TaxonomicOrderConverter.convert(code)"
+        return: return_entity
+    used_by: [taxon_id]
+
+  - name: resolve_biblio_id
+    description: >
+      Resolve the reference code to tbl_biblio.biblio_id.
+      Uses the BibliographyTraceHelper for trace-based lookup.
+    returns: scalar
+    args: [reference]
+    steps:
+      - name: trace_lookup
+        action: trace_lookup
+        bugs_table: TBiblio
+        identifier_expr: "reference"
+        return: return_entity
+    used_by: [biblio_id]
+
 helpers:
   - name: resolve_taxon_id
-    description: Resolve the Bugs species code to tbl_taxa_tree_master.taxon_id.
+    description: >
+      Superseded by structured resolver resolve_taxon_id.
+      Previously resolved the Bugs species code to taxon_id.
     signature: "resolve_taxon_id(code: str | None) -> int | None"
-    used_by: [taxon_id]
+    used_by: []
+
   - name: resolve_biblio_id
-    description: Resolve the reference code to tbl_biblio.biblio_id.
+    description: >
+      Superseded by structured resolver resolve_biblio_id.
+      Previously resolved the reference code to biblio_id.
     signature: "resolve_biblio_id(reference: str | None) -> int | None"
-    used_by: [biblio_id]
+    used_by: []
+
+known_divergences:
+  - area: taxonomic_order_converter
+    status: behavior_ambiguous
+    description: "The taxon resolution uses TaxonomicOrderConverter which converts the species code through a specific conversion path. This is different from the BigDecimalDefinition.convertToSeadCode() used by other policies."
+    policy_choice: match_java_runtime
+  - area: case_sensitive_text_lookup
+    status: behavior_ambiguous
+    description: "The distribution text lookup uses case-sensitive comparison. The Java code does not normalize case before the lookup, relying on exact string matching in the database query."
+    policy_choice: match_java_runtime
+  - area: update_as_return_as_is
+    status: behavior_ambiguous
+    description: "The policy YAML originally said on_match: update, but the Java code returns matched rows as-is without field comparison. The SpeciesDistributionImporter does not have an update path — it only creates new rows or returns existing. The on_match value was corrected to return_as_is to match actual behavior."
+    policy_choice: match_java_runtime

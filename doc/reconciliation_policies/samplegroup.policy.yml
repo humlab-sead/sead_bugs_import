@@ -12,6 +12,9 @@ meta:
     is set on create but not compared during updates. This importer does not
     persist child or supporting rows; site, sampling context, and method are
     resolved lookup dependencies only.
+    Converted 2026-06-20: resolved resolve_site_id, resolve_sampling_context_id,
+    and resolve_sampling_method_id helpers to structured resolvers. Added
+    known_divergences for method resolution and site resolution being adapter-only.
 
 policy:
   domain: samplegroup
@@ -133,16 +136,84 @@ tracing:
   sead_table: tbl_sample_groups
   write_on: [insert, update]
 
-helpers:
+# ── KNOWN DIVERGENCES ────────────────────────────────────────────────────────
+
+known_divergences:
+  - area: sampling_method_resolution_adapter
+    status: schema_limit
+    description: The sampling method ID is resolved from a fixed row selected by MethodManager.getSamplingMethodName(). This fixed lookup is adapter-only behavior and not trace-based. The method is set on create but not compared during updates.
+    policy_choice: match_java_runtime
+  - area: site_resolution_trace_based
+    status: schema_limit
+    description: The site ID is resolved via trace lookup against previously imported site rows, disallowing deleted sites. The actual trace helper (SiteFromCodeDisallowDeletedSite) is adapter-only behavior.
+    policy_choice: match_java_runtime
+
+# ── RESOLVERS ────────────────────────────────────────────────────────────────
+
+resolvers:
   - name: resolve_site_id
     description: Resolve the Bugs site code to the traced SEAD site row, disallowing deleted sites.
-    signature: "resolve_site_id(site_code: str | None) -> int | None"
+    returns: scalar
+    args: ["source.SiteCODE"]
+    steps:
+      - name: trace_lookup
+        action: trace_lookup
+        bugs_table: TSites
+        identifier_expr: "source.SiteCODE"
+        return: return_entity
+        comment: SiteFromCodeDisallowDeletedSite looks up the latest trace for the site code and disallows deleted sites.
     used_by: [site_id]
   - name: resolve_sampling_context_id
     description: Resolve SheetContext to tbl_sampling_contexts.sampling_context_id using case-insensitive name matching.
-    signature: "resolve_sampling_context_id(context_name: str | None) -> int | None"
+    returns: scalar
+    args: ["source.SheetContext"]
+    steps:
+      - name: database_query
+        action: database_query
+        table: tbl_sampling_contexts
+        where: "LOWER(context_name) = LOWER(:context_name)"
+        bind:
+          context_name: "source.SheetContext"
+        return: return_entity
+        comment: SamplingContextRepository.findByNameIgnoreCase performs case-insensitive lookup.
     used_by: [sampling_context_id]
   - name: resolve_sampling_method_id
     description: Return the fixed sampling method row selected by MethodManager.getSamplingMethodName().
-    signature: "resolve_sampling_method_id() -> int | None"
+    returns: scalar
+    args: []
+    steps:
+      - name: database_query
+        action: database_query
+        table: tbl_methods
+        where: "method_name = :method_name AND method_type_id = :sampling_type_id"
+        bind:
+          method_name: "Sampling"
+          sampling_type_id: "resolve_sampling_method_type_id()"
+        return: return_entity
+        comment: MethodManager.getSamplingMethodName() returns a fixed method name.
     used_by: [method_id]
+
+# ── HELPERS ──────────────────────────────────────────────────────────────────
+
+helpers:
+  - name: resolve_site_id
+    description: >
+      Superseded by structured resolver resolve_site_id.
+      Previously resolved the Bugs site code to the traced SEAD site row,
+      disallowing deleted sites.
+    signature: "resolve_site_id(site_code: str | None) -> int | None"
+    used_by: []
+  - name: resolve_sampling_context_id
+    description: >
+      Superseded by structured resolver resolve_sampling_context_id.
+      Previously resolved SheetContext to tbl_sampling_contexts.sampling_context_id
+      using case-insensitive name matching.
+    signature: "resolve_sampling_context_id(context_name: str | None) -> int | None"
+    used_by: []
+  - name: resolve_sampling_method_id
+    description: >
+      Superseded by structured resolver resolve_sampling_method_id.
+      Previously returned the fixed sampling method row selected by
+      MethodManager.getSamplingMethodName().
+    signature: "resolve_sampling_method_id() -> int | None"
+    used_by: []

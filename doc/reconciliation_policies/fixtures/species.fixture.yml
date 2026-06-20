@@ -591,3 +591,85 @@ scenarios:
           species: No data
           genus_id: 904
           author_id: null
+  - name: genus_family_id_resolved_via_related_expression
+    intent: related_output_graph
+    source_rows:
+      - CODE: 10010040
+        FAMILY: STAPHYLINIDAE
+        GENUS: Aleochara
+        SPECIES: bipunctata
+        AUTHORITY: Gravenhorst
+    policy_context:
+      config:
+        import_order_id: 701
+    expects:
+      related_outputs: [taxa_family, taxa_genus, taxa_author, taxa_species]
+      row_changed: true
+      updates_target_fields: [taxon_id]
+      graph_result:
+        taxa_family:
+          result_kind: insert_new
+          supporting_action: create
+          family_id: null
+          family_name: STAPHYLINIDAE
+          order_id: 701
+        taxa_genus:
+          result_kind: insert_new
+          supporting_action: create
+          genus_id: null
+          genus_name: Aleochara
+          family_id: null
+        taxa_author:
+          result_kind: insert_new
+          supporting_action: create
+          author_id: null
+          author_name: Gravenhorst
+        taxa_species:
+          result_kind: insert_new
+          supporting_action: create
+          species_id: null
+          species: bipunctata
+          genus_id: null
+          author_id: null
+  - name: species_genus_and_author_resolved_via_related_expressions_when_family_exists
+    intent: related_output_graph
+    source_rows:
+      - CODE: 10010041
+        FAMILY: STAPHYLINIDAE
+        GENUS: Quedius
+        SPECIES: glaucus
+        AUTHORITY: Stephens
+    policy_context:
+      config:
+        import_order_id: 701
+      state:
+        existing_family_id: 831
+    expects:
+      related_outputs: [taxa_family, taxa_genus, taxa_author, taxa_species]
+      row_changed: true
+      updates_target_fields: [taxon_id]
+      graph_result:
+        taxa_family:
+          result_kind: return_existing
+          supporting_action: reuse
+          family_id: 831
+          family_name: STAPHYLINIDAE
+          order_id: 701
+        taxa_genus:
+          result_kind: insert_new
+          supporting_action: create
+          genus_id: null
+          genus_name: Quedius
+          family_id: 831
+        taxa_author:
+          result_kind: insert_new
+          supporting_action: create
+          author_id: null
+          author_name: Stephens
+        taxa_species:
+          result_kind: insert_new
+          supporting_action: create
+          species_id: null
+          species: glaucus
+          genus_id: null
+          author_id: null
