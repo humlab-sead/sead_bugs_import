@@ -4,15 +4,16 @@ import se.sead.bugsimport.bibliography.seadmodel.Biblio;
 
 public class TestBiblio extends Biblio {
 
-    private TestBiblio(Integer id){
-        super.setId(id);
+    private TestBiblio(Integer id) {
+        setId(id);
     }
 
-    public static Biblio create(Integer id, String bugsAuthor, String bugsReference, String bugsTitle){
+    public static Biblio create(Integer id, String bugsReference, String authors, String title) {
         Biblio biblio = new TestBiblio(id);
-        biblio.setAuthors(bugsAuthor);
         biblio.setBugsReference(bugsReference);
-        biblio.setTitle(bugsTitle);
+        biblio.setAuthors(authors);
+        biblio.setTitle(title);
+        biblio.setFullReference(authors == null || title == null ? bugsReference : authors + " " + title);
         return biblio;
     }
 }

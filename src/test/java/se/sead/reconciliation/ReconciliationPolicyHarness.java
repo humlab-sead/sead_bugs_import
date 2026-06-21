@@ -91,6 +91,54 @@ public class ReconciliationPolicyHarness {
 				reconciliationResult.put("issue", issue);
 			}
 			applySourceIdentity(reconciliationResult, sourceRow, policyName);
+		} else if ("ecocode_bugs".equals(policyName) && "trace_lookup".equals(ruleName)) {
+			reconciliationResult.put("result_kind", "return_as_is");
+			reconciliationResult.put("persisted_action", existingErrorMessage != null ? "keep_existing_error" : "keep_existing");
+			reconciliationResult.put("source", ruleName);
+			reconciliationResult.put("row_id", state == null ? null : state.get("existing_row_id"));
+			if (existingErrorMessage != null) {
+				Map<String, Object> issue = new LinkedHashMap<String, Object>();
+				issue.put("severity", "error");
+				issue.put("message", existingErrorMessage);
+				reconciliationResult.put("issue", issue);
+			}
+			applySourceIdentity(reconciliationResult, sourceRow, policyName);
+		} else if ("ecocode_koch".equals(policyName) && "trace_lookup".equals(ruleName)) {
+			reconciliationResult.put("result_kind", "return_as_is");
+			reconciliationResult.put("persisted_action", existingErrorMessage != null ? "keep_existing_error" : "keep_existing");
+			reconciliationResult.put("source", ruleName);
+			reconciliationResult.put("row_id", state == null ? null : state.get("existing_row_id"));
+			if (existingErrorMessage != null) {
+				Map<String, Object> issue = new LinkedHashMap<String, Object>();
+				issue.put("severity", "error");
+				issue.put("message", existingErrorMessage);
+				reconciliationResult.put("issue", issue);
+			}
+			applySourceIdentity(reconciliationResult, sourceRow, policyName);
+		} else if ("birmbeetledata".equals(policyName) && "composite_lookup".equals(ruleName)) {
+			reconciliationResult.put("result_kind", "return_as_is");
+			reconciliationResult.put("persisted_action", existingErrorMessage != null ? "keep_existing_error" : "keep_existing");
+			reconciliationResult.put("source", ruleName);
+			reconciliationResult.put("row_id", state == null ? null : state.get("existing_row_id"));
+			if (existingErrorMessage != null) {
+				Map<String, Object> issue = new LinkedHashMap<String, Object>();
+				issue.put("severity", "error");
+				issue.put("message", existingErrorMessage);
+				reconciliationResult.put("issue", issue);
+			}
+			applySourceIdentity(reconciliationResult, sourceRow, policyName);
+		} else if ("speciessynonyms".equals(policyName) && "trace_lookup".equals(ruleName)) {
+			reconciliationResult.put("result_kind", "return_as_is");
+			reconciliationResult.put("persisted_action", existingErrorMessage != null ? "keep_existing_error" : "keep_existing");
+			reconciliationResult.put("source", ruleName);
+			reconciliationResult.put("row_id", state == null ? null : state.get("existing_row_id"));
+			if (existingErrorMessage != null) {
+				Map<String, Object> issue = new LinkedHashMap<String, Object>();
+				issue.put("severity", "error");
+				issue.put("message", existingErrorMessage);
+				reconciliationResult.put("issue", issue);
+			}
+			applySourceIdentity(reconciliationResult, sourceRow, policyName);
 		} else if (guardErrorMessage != null) {
 			applyGuardResult(ruleName, state, sourceRow, reconciliationResult, policyName);
 		} else if (existingErrorMessage != null) {
@@ -138,7 +186,13 @@ public class ReconciliationPolicyHarness {
 				|| "speciesdistribution".equals(policyName)
 				|| "period".equals(policyName)
 				|| "country".equals(policyName)
-				|| "taxanotes".equals(policyName);
+				|| "taxanotes".equals(policyName)
+				|| "ecocodegroup".equals(policyName)
+				|| "ecocode_bugs".equals(policyName)
+				|| "ecocode_koch".equals(policyName)
+				|| "ecocodedefinition_bugs".equals(policyName)
+				|| "ecocodedefinition_koch".equals(policyName)
+				|| "birmbeetledata".equals(policyName);
 	}
 
 	private boolean supportsNoWritePersistedAction(String policyName) {
@@ -156,7 +210,11 @@ public class ReconciliationPolicyHarness {
 				|| "taxanotes".equals(policyName)
 				|| "taxaseasonality".equals(policyName)
 				|| "ecocodedefinition_bugs".equals(policyName)
-				|| "ecocodedefinition_koch".equals(policyName);
+				|| "ecocodedefinition_koch".equals(policyName)
+				|| "ecocodegroup".equals(policyName)
+				|| "ecocode_bugs".equals(policyName)
+				|| "ecocode_koch".equals(policyName)
+				|| "birmbeetledata".equals(policyName);
 	}
 
 	private void applyGuardResult(String sourceName, Map<String, Object> state, Map<String, Object> sourceRow, Map<String, Object> reconciliationResult, String policyName) {

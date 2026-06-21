@@ -102,11 +102,21 @@ public class BirmBeetleDataRowConverterFixtureExecutionTest {
 
 	private Map<String, Object> actualReconciliationResult(BirmBeetleData result, Map<String, Object> sourceRow) {
 		Map<String, Object> reconciliationResult = new LinkedHashMap<String, Object>();
-		if (result.getId() == null) {
+		if (!result.isErrorFree()) {
+			reconciliationResult.put("result_kind", "return_existing_error");
+			reconciliationResult.put("persisted_action", "keep_existing_error");
+			reconciliationResult.put("source", "composite_lookup");
+			Map<String, Object> issue = new LinkedHashMap<String, Object>();
+			issue.put("severity", "error");
+			issue.put("message", result.getErrorMessages().get(0));
+			reconciliationResult.put("issue", issue);
+		} else if (result.getId() == null) {
 			reconciliationResult.put("result_kind", "insert_new");
+			reconciliationResult.put("persisted_action", "create");
 			reconciliationResult.put("source", "create_new");
 		} else {
-			reconciliationResult.put("result_kind", "update_existing");
+			reconciliationResult.put("result_kind", "return_as_is");
+			reconciliationResult.put("persisted_action", "keep_existing");
 			reconciliationResult.put("source", "composite_lookup");
 		}
 		reconciliationResult.put("row_id", result.getId());
